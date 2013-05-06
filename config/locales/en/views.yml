@@ -1,0 +1,82 @@
+# Cultural network view localization file for English.
+en:
+    about: 'About'
+    child: 'Child'
+    choose:
+        from: 'choose from {{what}}'
+        record: 'choose {{what}}'
+    citation:
+        of: 'Citation of {{what}}'
+        unavailable: 'No citations available.'
+    clone:
+        into: 'Clone {{what}} into {{whom}}'
+        record: 'Clone {{what}}'
+    current: 'Current {{what}}'
+    default: 'Default {{what}}'
+    hide: 'Hide {{what}}'
+    information:
+        general: 'General Information'
+        user: 'User Information'
+    is:
+        translation: 'Is {{this}} a translation of {{that}}?'
+        phonetic: 'Is {{this}} a phonetic transcription of {{that}}?'
+        orthographic: 'Is {{this}} an orthographic transliteration of {{that}}?'
+        alt_spelling: 'Is {{this}} an alt. spelling of {{that}}?'
+    its_original_publication: 'its original online publication'
+    loading: 'Loading...'
+    log:
+        in: 'Log in'
+    no:
+        record: 'No {{what}}'
+    other: 'Other {{what}}'
+    perspective: 'the {{what}} perspective'
+    prefix:
+        with: 'Prefix with {{what}}'
+    priorit:
+        y: 'Priority'
+        ization_of:
+            names: 'Prioritization of Names'
+    read_more: 'Read more'
+    referenced: '{{what}} referenced'
+    relat:
+        ed:
+            record: 'Related {{what}}'
+            to: 'Related To'
+        ion:
+            location: 'locating relation'
+            ship:
+                between: 'Relationship between {{this}} and {{that}}'
+                this: 'Relationship'
+                to: 'relationship to {{what}}'
+            this:
+                one: 'relation'
+                other: 'relations'
+    remove: 'remove'
+    session:
+        preferences: 'Session Preferences'
+    set_primary_essay: 'Set Primary Essay'
+    snippet:
+        essay:
+            needs_parent: 'An Essay can only be created from a resource that uses one.'
+            primary: '''*'' denotes a primary essay'
+            with: 'Show only entries with essays'
+        feature:
+            name:
+                has_transliteration: '{{what}} has a transliteration of {{whom}}'
+                resource: 'resource that uses one'
+        title: 'Use title case for capitalization (e.g. An Exciting...)'
+    suffix:
+        record: '{{what}} suffix'
+    switch: 'Switch {{what}}'
+    title: 'Title'
+    tree:
+        collapse: 'Collapse {{what}}'
+        expand: 'Expand {{what}}'
+    type:
+        adjective: 'Type'
+        in: 'Type in {{what}}'
+        value: 'Type Value'
+    value: 'Value'
+    view:
+        record: 'View {{what}}'
+        this: 'View'

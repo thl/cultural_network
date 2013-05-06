@@ -1,0 +1,13 @@
+<%= javascript_include_tag 'cultural_network/iframe' %>
+<div id="FeatureContainer">
+	<div id="FeaturePanelContainer">
+		<div id="FeaturePanel">
+		  <div class="left" id="FeatureDetail">
+		    <%= render :partial => 'feature', :locals => {:feature => @feature, :show_old_pid => false} %>
+		  </div>
+		  <div class="left" id="Contains">
+		  </div>
+		</div><!-- FeaturePanel -->
+		<br class="clear"/>
+	</div><!-- FeaturePanelContainer -->
+</div><!-- FeatureContainer -->
