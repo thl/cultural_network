@@ -9,6 +9,11 @@ class FeatureRelationType < ActiveRecord::Base
     asymmetric_label = label if is_symmetric
   end
   
+  def self.update_or_create(attributes)
+    r = self.find_by_code(attributes[:code])
+    r.nil? ? self.create(attributes) : r.update_attributes(attributes)
+  end
+  
   # Creates options for a select, marking either the asymmetric label or the original label's id
   # with a prefix of "_", which can be detected and used for switching the parent and child node
   # ids if the relation being selected requires it.

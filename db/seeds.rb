@@ -2,51 +2,51 @@
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
 
-AltSpellingSystem.create([{ :name => 'Variant Spelling', :code => 'var.spell', :description => 'This refers to what is genuinely an accepted variant spelling, as opposed to a simple typo, carvo, or other accidental mispelling of a term.' },
+[ { :name => 'Variant Spelling',  :code => 'var.spell',     :description => 'This refers to what is genuinely an accepted variant spelling, as opposed to a simple typo, carvo, or other accidental mispelling of a term.' },
   { :name => 'Mistaken Spelling', :code => 'mistake.spell', :description => "This is when a term has simply been mispelled. We want to catalog so that people can understand its correct spelling, but we also want to be clear that as far as we understand, this is a typo or carvo or the product of a writer who doesn't know how to spell a word, rather than  a well attested alternative spelling. Of course if enough people \"mispell\" a word, it does become a \"genuine\" alternative spelling..." },
   { :name => 'Acronym',           :code => 'acro.spell',    :description => 'This is used when a term is an acronym of another place name, such as TAR for the Tibet Autonomous Region.' },
   { :name => 'Contraction',       :code => 'contract'},
   { :name => 'Expansion',         :code => 'expform'}
-])
+].each{|a| AltSpellingSystem.update_or_create(a)}
 
-FeatureNameType.create([{:name => 'Official', :code => 'official'}, {:name => 'Popular', :code => 'popular'}])
+[ { :name => 'Official', :code => 'official'}, {:name => 'Popular', :code => 'popular'}].each{|a| FeatureNameType.update_or_create(a)}
 
-FeatureRelationType.create([{:is_symmetric => true, :label => 'is related to', :asymmetric_label => 'is related to', :code => 'is.related.to', :is_hierarchical => false},
-  {:is_symmetric => true,  :label => 'is in conflict with',     :asymmetric_label => 'is in conflict with',    :code => 'is.in.conflict.with',    :is_hierarchical => false},
-  {:is_symmetric => true,  :label => 'is affiliated with',      :asymmetric_label => 'is affiliated with',     :code => 'is.affiliated.with',     :is_hierarchical => false},
-  {:is_symmetric => false, :label => 'is mother of',            :asymmetric_label => 'is child of',            :code => 'is.child.of',            :is_hierarchical => false, :asymmetric_code => 'is.mother.of'},
-  {:is_symmetric => false, :label => 'has as an instantiation', :asymmetric_label => 'is an instantiation of', :code => 'is.an.instantiation.of', :is_hierarchical => false, :asymmetric_code => 'has.as.an.instantiation'},
-  {:is_symmetric => false, :label => 'has as a part',           :asymmetric_label => 'is part of',             :code => 'is.part.of',             :is_hierarchical => true,  :asymmetric_code => 'has.as.a.part'}
-])
+[ { :is_symmetric => true,  :label => 'is related to',           :asymmetric_label => 'is related to',          :code => 'is.related.to', :is_hierarchical => false},
+  { :is_symmetric => true,  :label => 'is in conflict with',     :asymmetric_label => 'is in conflict with',    :code => 'is.in.conflict.with',    :is_hierarchical => false},
+  { :is_symmetric => true,  :label => 'is affiliated with',      :asymmetric_label => 'is affiliated with',     :code => 'is.affiliated.with',     :is_hierarchical => false},
+  { :is_symmetric => false, :label => 'is mother of',            :asymmetric_label => 'is child of',            :code => 'is.child.of',            :is_hierarchical => false, :asymmetric_code => 'is.mother.of'},
+  { :is_symmetric => false, :label => 'has as an instantiation', :asymmetric_label => 'is an instantiation of', :code => 'is.an.instantiation.of', :is_hierarchical => false, :asymmetric_code => 'has.as.an.instantiation'},
+  { :is_symmetric => false, :label => 'has as a part',           :asymmetric_label => 'is part of',             :code => 'is.part.of',             :is_hierarchical => true,  :asymmetric_code => 'has.as.a.part'}
+].each{|a| FeatureRelationType.update_or_create(a)}
 
-Language.create([{:name => 'Urdu', :code => 'urd'},
-  {:name => 'English',    :code => 'eng'},
-  {:name => 'Tibetan',    :code => 'tib'},
-  {:name => 'Nepali',     :code => 'nep'},
-  {:name => 'Dzongkha',   :code => 'dzo'},
-  {:name => 'Chinese',    :code => 'chi'},
-  {:name => 'Mongolian',  :code => 'mon'},
-  {:name => 'French',     :code => 'fre'},
-  {:name => 'German',     :code => 'ger'},
-  {:name => 'Hindi',      :code => 'hin'},
-  {:name => 'Unknown',    :code => 'unk'},
-  {:name => 'Arabic',     :code => 'ara'},
-  {:name => 'Burmese',    :code => 'mya'},
-  {:name => 'Italian',    :code => 'ita'},
-  {:name => 'Japanese',   :code => 'jpn'},
-  {:name => 'Korean',     :code => 'kor'},
-  {:name => 'Latin',      :code => 'lat'},
-  {:name => 'Pali',       :code => 'pli'},
-  {:name => 'Prakrit',    :code => 'pra'},
-  {:name => 'Polish',     :code => 'pol'},
-  {:name => 'Russian',    :code => 'rus'},
-  {:name => 'Sanskrit',   :code => 'san'},
-  {:name => 'Sinhalese ', :code => 'sin'},
-  {:name => 'Spanish',    :code => 'spa'},
-  {:name => 'Thai',       :code => 'tha'}
-])
+[ { :name => 'Urdu',       :code => 'urd'},
+  { :name => 'English',    :code => 'eng'},
+  { :name => 'Tibetan',    :code => 'tib'},
+  { :name => 'Nepali',     :code => 'nep'},
+  { :name => 'Dzongkha',   :code => 'dzo'},
+  { :name => 'Chinese',    :code => 'chi'},
+  { :name => 'Mongolian',  :code => 'mon'},
+  { :name => 'French',     :code => 'fre'},
+  { :name => 'German',     :code => 'ger'},
+  { :name => 'Hindi',      :code => 'hin'},
+  { :name => 'Unknown',    :code => 'unk'},
+  { :name => 'Arabic',     :code => 'ara'},
+  { :name => 'Burmese',    :code => 'mya'},
+  { :name => 'Italian',    :code => 'ita'},
+  { :name => 'Japanese',   :code => 'jpn'},
+  { :name => 'Korean',     :code => 'kor'},
+  { :name => 'Latin',      :code => 'lat'},
+  { :name => 'Pali',       :code => 'pli'},
+  { :name => 'Prakrit',    :code => 'pra'},
+  { :name => 'Polish',     :code => 'pol'},
+  { :name => 'Russian',    :code => 'rus'},
+  { :name => 'Sanskrit',   :code => 'san'},
+  { :name => 'Sinhalese ', :code => 'sin'},
+  { :name => 'Spanish',    :code => 'spa'},
+  { :name => 'Thai',       :code => 'tha'}
+].each{|a| Language.update_or_create(a)}
 
-OrthographicSystem.create([{ :code => 'indo.standard.translit', :name => 'Indological Standard Transliteration', :description => "<p>This is  for representing the spelling of Nepali, Hindi and Sanskrit words from the Devangari script in Latin script through the addition of special diacritic marks. Thus \"maṇḍala\" instead of \"mandala\".</p>" }, 
+[ { :code => 'indo.standard.translit',   :name => 'Indological Standard Transliteration',              :description => "<p>This is  for representing the spelling of Nepali, Hindi and Sanskrit words from the Devangari script in Latin script through the addition of special diacritic marks. Thus \"maṇḍala\" instead of \"mandala\".</p>" }, 
   { :code => 'thl.ext.wyl.translit',     :name => 'THL Extended Wylie Transliteration',                :description => "<p>This is for representing the spelling of Tibetan words in Latin script.</p>" },
   { :code => 'chi.wyl.translit',         :name => 'Chinese Wylie Transliteration',                     :description => "<p>This is a system used only in China for transliterating Tibetan in roman script. It is very close to wylie, but, for example, uses a v instead of an ' for the a chung.</p>" },
   { :code => 'acip.tib.translit',        :name => 'ACIP Tibetan Transliteration',                      :description => "<p>This is the transliteration system for Tibetan used by the Asian Classics Input Project for their monastic text input of Buddhist scriptures in India. It is similar to Wylie but with a number of key differences.</p>" },
@@ -64,9 +64,9 @@ OrthographicSystem.create([{ :code => 'indo.standard.translit', :name => 'Indolo
   { :code => 'loc.cyr.mongol.translit',  :name => 'Library of Congress Cyrillic Mongolian to Latin Transliteration' },
   { :code => 'thl.cyr.mongol.translit',  :name => 'THL Mongolian-Cyrillic Transliteration' },
   { :code => 'san.to.tib.translit',      :name => 'Sanskrit-to-Tibetan Transliteration' }
-])
+].each{|a| OrthographicSystem.update_or_create(a)}
 
-PhoneticSystem.create([{ :code => 'thl.simple.transcrip', :name => 'THL Simplified Tibetan Transcription', :description => "<p>This is for representing the sound of the Tibetan words in Latin Script in very simplified if imprecise fashion.</p>" },
+[ { :code => 'thl.simple.transcrip',        :name => 'THL Simplified Tibetan Transcription',            :description => "<p>This is for representing the sound of the Tibetan words in Latin Script in very simplified if imprecise fashion.</p>" },
   { :code => 'chi.to.tib.script.transcrip', :name => 'Chinese-to-Tibetan Transcription',                :description => "<p>This is for representing the sound of Chinese words in Tibetan script.</p>" },
   { :code => 'tib.to.chi.transcrip',        :name => 'Tibetan-to-Chinese Transcription',                :description => "<p>This is for representing the sound of Tibetan words in traditional or simplified Chinese characters.</p>" },
   { :code => 'pinyin.transcrip',            :name => 'Pinyin Transcription',                            :description => "<p>This is for representing the sound of Chinese characters in Latin script. It can be shown with or without tones; if shown with tones, it uses special diacritic marks.</p>" },
@@ -87,21 +87,21 @@ PhoneticSystem.create([{ :code => 'thl.simple.transcrip', :name => 'THL Simplifi
   { :code => 'wade.giles.transcrip',        :name => 'Wade-Giles Transcription' },
   { :code => 'amdo.transcrip',              :name => 'Amdo Transcription' },
   { :code => 'mon.to.chi.transcrip',        :name => 'Mongolian-to-Chinese Transcription' }
-])
+].each{|a| PhoneticSystem.update_or_create(a)}
 
-View.create([{ :name => 'Popular Standard (romanization)', :code => 'roman.popular' },
-  {:name => 'Scholarly Standard (romanization)',       :code => 'roman.scholar'},
-  {:name => 'Chinese Characters (simplified)',         :code => 'simp.chi'},
-  {:name => 'Tibetan Script (secondary romanization)', :code => 'pri.tib.sec.roman'},
-  {:name => 'Tibetan Script (secondary Chinese)',      :code => 'pri.tib.sec.chi'},
-  {:name => 'Devanagari Script',                       :code => 'deva'}
-])
+[ { :name => 'Popular Standard (romanization)', :code => 'roman.popular' },
+  { :name => 'Scholarly Standard (romanization)',       :code => 'roman.scholar' },
+  { :name => 'Chinese Characters (simplified)',         :code => 'simp.chi' },
+  { :name => 'Tibetan Script (secondary romanization)', :code => 'pri.tib.sec.roman' },
+  { :name => 'Tibetan Script (secondary Chinese)',      :code => 'pri.tib.sec.chi' },
+  { :name => 'Devanagari Script',                       :code => 'deva' }
+].each{|a| View.update_or_create(a)}
 
-WritingSystem.create([{:name => 'Dzongkha', :code => 'dzongkha'},
-  {:name => 'Devanagari script',              :code => 'deva'},
-  {:name => 'Tibetan script',                 :code => 'tibt'},
-  {:name => 'Cyrillic',                       :code => 'cyrl'},
-  {:name => 'Simplified Chinese Characters',  :code => 'hans'},
-  {:name => 'Traditional Chinese Characters', :code => 'hant'},
-  {:name => 'Latin script',                   :code => 'latin'}
-])
+[ { :name => 'Dzongkha', :code => 'dzongkha'},
+  { :name => 'Devanagari script',              :code => 'deva' },
+  { :name => 'Tibetan script',                 :code => 'tibt' },
+  { :name => 'Cyrillic',                       :code => 'cyrl' },
+  { :name => 'Simplified Chinese Characters',  :code => 'hans' },
+  { :name => 'Traditional Chinese Characters', :code => 'hant' },
+  { :name => 'Latin script',                   :code => 'latin' }
+].each{|a| WritingSystem.update_or_create(a)}

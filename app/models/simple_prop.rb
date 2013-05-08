@@ -25,6 +25,11 @@ class SimpleProp < ActiveRecord::Base
   # Validate only within the same class type
   validates_uniqueness_of :code, :scope=>:type
   
+  def self.update_or_create(attributes)
+    r = self.find_by_code(attributes[:code])
+    r.nil? ? self.create(attributes) : r.update_attributes(attributes)
+  end
+  
   def self.name_and_id_list
     self.all.collect {|ft| [ft.name, ft.id] }
   end
