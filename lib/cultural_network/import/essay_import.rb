@@ -5,7 +5,7 @@ module CulturalNetwork
     end
 
     def import_with_book_reader(source, options)
-      reader_url = options[:reader_url] || "#{ThlSite.get_url}/global/php/book_reader.php?url="
+      reader_url = options[:reader_url] || "#{InterfaceUtils::Server.get_url}/global/php/book_reader.php?url="
       public_url = options[:public_url] || ""
       essay_prefix = options[:prefix] || ""
       view_code = !options[:view_code].blank? ? options[:view_code].to_s : "roman.popular"
@@ -111,18 +111,13 @@ module CulturalNetwork
 
     def get_http_content(url)
       uri = URI.parse(URI.encode(url));
-
-      requested_host = uri.host
       headers = {}
 
       # Check to see if the request is for a URL on thlib.org or a subdomain; if so, and if
       # this is being run on sds[3-8], make the appropriate changes to headers and uri.host
-      if requested_host =~ /thlib.org/
-        server_host = Socket.gethostname.downcase
-        if server_host =~ /sds.+\.itc\.virginia\.edu/
-          headers = { 'Host' => requested_host }
-          uri.host = '127.0.0.1'
-        end
+      if [InterfaceUtils::Server::DEVELOPMENT, InterfaceUtils::Server::STAGING, InterfaceUtils::Server::PRODUCTION].include?(InterfaceUtils::Server.environment)
+        headers = { 'Host' => uri.host }
+        uri.host = '127.0.0.1'
       end
 
       # Required for requests without paths (e.g. http://www.google.com)
