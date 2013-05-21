@@ -3,51 +3,51 @@ bo:
     about: 'འབྲེལ་ཡོད་ཀྱི།'
     child: 'བྱིས་པ།'
     choose:
-        from: '{{what}}ཡི་ནང་འདེམས་པ།'
-        record: '{{what}}འདེམས་པ། '
+        from: '%{what}ཡི་ནང་འདེམས་པ།'
+        record: '%{what}འདེམས་པ། '
     citation:
-        of: '{{what}}ཡི་མཆན་འགྲེལ།'
+        of: '%{what}ཡི་མཆན་འགྲེལ།'
         unavailable: 'བེད་སྤྱོད་མེད་པའི་འདྲེན་སྤྱོད།'
     clone:
-        into: '{{what}}ནས་{{whom}}འདྲ་བསྐྱེད་བྱེད་པ།'
+        into: '%{what}ནས་%{whom}འདྲ་བསྐྱེད་བྱེད་པ།'
         record: 'འདྲ་བསྐྱེད།'
-    current: 'མིག་སྔའི་{{what}}'
-    default: '{{what}}སོར་བཞག།'
-    hide: '{{what}}སྦས་པ།'
+    current: 'མིག་སྔའི་%{what}'
+    default: '%{what}སོར་བཞག།'
+    hide: '%{what}སྦས་པ།'
     information:
         general: 'སྤྱིའི་ཆ་འཕྲིན།'
         user: 'སྤྱོད་མཁན་གྱི་ཆ་འཕྲིན།'
     is:
-        translation: '{{this}}ནི་{{that}}的ཡི་ཡིག་བསྒྱུར་རེད་དམ།'
-        phonetic: '{{this}}ནི་{{that}}的ཡི་སྒྲ་བསྒྱུར་རེད་དམ།'
-        orthographic: '{{this}}ནི་{{that}}的ཡི་ཕབ་བསྒྱུར་རེད་དམ།'
-        alt_spelling: '{{this}}ནི་{{that}}的ཡི་འབྲི་ཚུལ་གཞན་ཞིག་རེད་དམ།'
+        translation: '%{this}ནི་%{that}的ཡི་ཡིག་བསྒྱུར་རེད་དམ།'
+        phonetic: '%{this}ནི་%{that}的ཡི་སྒྲ་བསྒྱུར་རེད་དམ།'
+        orthographic: '%{this}ནི་%{that}的ཡི་ཕབ་བསྒྱུར་རེད་དམ།'
+        alt_spelling: '%{this}ནི་%{that}的ཡི་འབྲི་ཚུལ་གཞན་ཞིག་རེད་དམ།'
     its_original_publication: 'ཐོག་མའི་སྐུད་ཐོག་གི་པར་སྐྲུན།'
     loading: 'ནང་འཇུག་བྱེད་བཞིན་པ།'
     log:
         in: 'ཐོ་འགོད།'
     no:
-        record: '{{what}}མེད་པ།'
-    other: '{{what}}གཞན།'
-    perspective: '{{what}}ཡི་ལྟ་བ།'
+        record: '%{what}མེད་པ།'
+    other: '%{what}གཞན།'
+    perspective: '%{what}ཡི་ལྟ་བ།'
     prefix:
-        with: '{{what}}ཡིས་ཚིག་འགོ་བྱས་པ།'
+        with: '%{what}ཡིས་ཚིག་འགོ་བྱས་པ།'
     priorit:
         y: 'སྔོན་ཐོབ་དབང་ཆ།'
         ization_of:
             names: 'མིང་གཞིར་བཟུང་དམིགས་སུ་བཀར་བ།'
     read_more: 'དེ་བས་མང་བ་ཀློག་པ།'
-    referenced: '{{what}}དཔྱད་གཞི།'
+    referenced: '%{what}དཔྱད་གཞི།'
     relat:
         ed:
-            record: '{{what}}ཡི་འབྲེལ་ཡོད།'
+            record: '%{what}ཡི་འབྲེལ་ཡོད།'
             to: 'འབྲེལ་ཡོད་ཀྱི།'
         ion:
             location: 'འབྲེལ་བ་གཏན་འཁེལ་བ།'
             ship:
-                between: '{{this}}དང་{{that}}ཡི་འབྲེལ་བ།'
+                between: '%{this}དང་%{that}ཡི་འབྲེལ་བ།'
                 this: 'འབྲེལ་བ།'
-                to: 'དང་{{that}}ཡི་འབྲེལ་བ།'
+                to: 'དང་%{that}ཡི་འབྲེལ་བ།'
             this:
                 one: 'འབྲེལ་བ།'
                 other: 'འབྲེལ་བ་ཁག།'
@@ -62,21 +62,21 @@ bo:
             with: 'རྩོམ་ཐུང་ཡོད་པའི་ས་བཅད་ཁོ་ན་མངོན་པ།'
         feature:
             name:
-                has_transliteration: '{{what}} ཡི་ཕབ་བསྒྱུར་ནི་{{whom}}ཡིན།'
+                has_transliteration: '%{what} ཡི་ཕབ་བསྒྱུར་ནི་%{whom}ཡིན།'
                 resource: 'ཁྱད་ཆོས་ཀྱི་ཐོན་ཁུངས་སྤྱད་པ།'
         title: 'ཆེ་བྲིས་ཀ་མད་སྤྱོད་རོགས།༼ དཔེར་ན་An Exciting..༽'
     suffix:
-        record: '{{what}}ཚིག་མཇུག།'
-    switch: '{{what}}བརྗེ་བསྒྱུར།'
+        record: '%{what}ཚིག་མཇུག།'
+    switch: '%{what}བརྗེ་བསྒྱུར།'
     title: 'ཁ་བྱང་།'
     tree:
-        collapse: 'ལྟེབ་བརྩེགས།{{what}}'
-        expand: '{{what}}ཁྱབ་སྤེལ་བཏང་བ།'
+        collapse: 'ལྟེབ་བརྩེགས།%{what}'
+        expand: '%{what}ཁྱབ་སྤེལ་བཏང་བ།'
     type:
         adjective: 'རིགས།'
-        in: '{{what}}ནང་འཇུག་བྱས་པ།'
+        in: '%{what}ནང་འཇུག་བྱས་པ།'
         value: 'ནང་འཇུག་གི་ཚད།'
     value: 'གྲངས་ཚད།'
     view:
-        record: '{{what}}ལ་ལྟ་ཞིབ་བྱས་པ།'
+        record: '%{what}ལ་ལྟ་ཞིབ་བྱས་པ།'
         this: 'ལྟ་ཞིབ།'

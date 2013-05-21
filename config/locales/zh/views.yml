@@ -3,51 +3,51 @@ zh:
     about: '关于'
     child: '儿童'
     choose:
-        from: '从{{what}}中选择'
-        record: '选择{{what}}'
+        from: '从%{what}中选择'
+        record: '选择%{what}'
     citation:
-        of: '{{what}}的注释'
+        of: '%{what}的注释'
         unavailable: '无可用的引用'
     clone:
-        into: '克隆{{what}}为'
-        record: '克隆{{what}}'
-    current: '当前{{what}}'
-    default: '默认{{what}}'
-    hide: '隐藏{{what}}'
+        into: '克隆%{what}为'
+        record: '克隆%{what}'
+    current: '当前%{what}'
+    default: '默认%{what}'
+    hide: '隐藏%{what}'
     information:
         general: '基本信息'
         user: '用户信息'
     is:
-        translation: '{{this}}是{{that}}的翻译吗？'
-        phonetic: '{{this}}是{{that}}的音译吗？'
-        orthographic: '{{this}}是{{that}}的转写吗？'
-        alt_spelling: '{{this}}是{{that}}的另一种拼写形式吗？'
+        translation: '%{this}是%{that}的翻译吗？'
+        phonetic: '%{this}是%{that}的音译吗？'
+        orthographic: '%{this}是%{that}的转写吗？'
+        alt_spelling: '%{this}是%{that}的另一种拼写形式吗？'
     its_original_publication: '原始在线出版'
     loading: '正在载入'
     log:
         in: '登录'
     no:
-        record: '无 {{what}}'
-    other: '其它{{what}}'
-    perspective: '{{what}}的观点'
+        record: '无 %{what}'
+    other: '其它%{what}'
+    perspective: '%{what}的观点'
     prefix:
-        with: '以{{what}}为前缀'
+        with: '以%{what}为前缀'
     priorit:
         y: '优先权'
         ization_of:
             names: '按名称优先化'
     read_more: '阅读更多'
-    referenced: '{{what}} 参考'
+    referenced: '%{what} 参考'
     relat:
         ed:
-            record: '相关{{what}}'
+            record: '相关%{what}'
             to: '相关的'
         ion:
             location: '确定关系'
             ship:
-                between: '{{this}}和{{that}}的关系'
+                between: '%{this}和%{that}的关系'
                 this: '关系'
-                to: '和{{what}}的关系'
+                to: '和%{what}的关系'
             this:
                 one: '关系'
                 other: '关系'
@@ -62,21 +62,21 @@ zh:
             with: '仅显示含有短文的词条'
         feature:
             name:
-                has_transliteration: '{{what}} 的转写为{{whom}}'
+                has_transliteration: '%{what} 的转写为%{whom}'
                 resource: '使用特征的资源'
         title: '使用首字母大写 (例： An Exciting...)'
     suffix:
-        record: '{{what}}后缀'
-    switch: '转换{{what}}'
+        record: '%{what}后缀'
+    switch: '转换%{what}'
     title: '标题'
     tree:
-        collapse: '折叠{{what}}'
-        expand: '展开{{what}}'
+        collapse: '折叠%{what}'
+        expand: '展开%{what}'
     type:
         adjective: '类型'
-        in: '输入 {{what}}'
+        in: '输入 %{what}'
         value: '输入值'
     value: '数值'
     view:
-        record: '查看{{what}}'
+        record: '查看%{what}'
         this: '查看'
