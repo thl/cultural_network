@@ -13,7 +13,6 @@ require 'cultural_network/session_manager'
 require 'cultural_network/simple_props_controller_helper'
 
 ActiveRecord::Base.send :include, ActiveRecord::Acts::CulturalNetwork::Extension
-ActiveRecord::Base.send :include, ActiveRecord::Acts::CulturalNetwork::Extension
 ActiveRecord::Base.send :include, ActiveRecord::CulturalNetwork::Extension
 Array.send :include, CulturalNetwork::ArrayExtension
 
