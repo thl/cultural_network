@@ -3,10 +3,10 @@ class FeatureRelation < ActiveRecord::Base
   
   attr_accessor :skip_update
   
-  extend CulturalNetwork::HasTimespan
-  include CulturalNetwork::IsCitable
+  extend KmapsEngine::HasTimespan
+  include KmapsEngine::IsCitable
   extend IsDateable
-  include CulturalNetwork::IsNotable
+  include KmapsEngine::IsNotable
   
   acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {:feature_relation_type_id => FeatureRelationType.hierarchy_ids}
   

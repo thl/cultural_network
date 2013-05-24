@@ -2,7 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  include CulturalNetwork::SessionManager
+  include KmapsEngine::SessionManager
   
   protect_from_forgery
   before_filter :admin_authentication

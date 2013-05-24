@@ -1,5 +1,5 @@
 # require 'config/environment'
-require 'cultural_network/category_caching_utils'
+require 'kmaps_engine/category_caching_utils'
 
 namespace :cache do
   namespace :tree do
@@ -10,7 +10,7 @@ namespace :cache do
       view_code = ENV['VIEW']
       start = Time.now
       puts "#{start}: Creating cache files#{" for #{fid}" if !fid.blank?}..."
-      CulturalNetwork::TreeCache.reheat(fid, perspective_code, view_code) # nil specifies that all nodes should be re-created. Otherwise, this is the id for the node whose descendants and self should be re-generated
+      KmapsEngine::TreeCache.reheat(fid, perspective_code, view_code) # nil specifies that all nodes should be re-created. Otherwise, this is the id for the node whose descendants and self should be re-generated
       stop = Time.now
       puts "#{stop}: Finished successfully. Time lapsed: #{stop - start}"
     end
@@ -20,8 +20,8 @@ namespace :cache do
       desc 'Run to create to empty and re-populate cumulative category association for the first time.'
       task :clear do
         puts 'Clearing up caching...'
-        CulturalNetwork::CategoryCachingUtils.clear_caching_tables
-        CulturalNetwork::CategoryCachingUtils.create_cumulative_feature_associations
+        KmapsEngine::CategoryCachingUtils.clear_caching_tables
+        KmapsEngine::CategoryCachingUtils.create_cumulative_feature_associations
         puts 'Finished successfully.'
       end
     end
@@ -37,9 +37,9 @@ namespace :cache do
       desc 'Run to empty and repopulate cached feature relation categories for the first time.'
       task :create do
         puts 'Clearing up caching...'
-        CulturalNetwork::CategoryCachingUtils.clear_feature_relation_category_table
+        KmapsEngine::CategoryCachingUtils.clear_feature_relation_category_table
         puts 'Creating cache...'
-        CulturalNetwork::CategoryCachingUtils.create_feature_relation_categories
+        KmapsEngine::CategoryCachingUtils.create_feature_relation_categories
         puts 'Finished successfully.'
       end
     end

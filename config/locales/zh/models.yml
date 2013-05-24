@@ -1,4 +1,4 @@
-# Cultural network model localization file for Chinese.
+# Kmaps engine network model localization file for Chinese.
 zh:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.

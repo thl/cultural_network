@@ -1,3 +1,3 @@
 class Admin::OrthographicSystemsController < ResourceController::Base
-  include CulturalNetwork::SimplePropsControllerHelper
+  include KmapsEngine::SimplePropsControllerHelper
 end

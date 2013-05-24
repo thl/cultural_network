@@ -5,7 +5,7 @@
 module FeaturesTreeHelper  
   def new_tree_builder
     # This class is in lib/
-    CulturalNetwork::ContextualTreeBuilder.new(current_perspective, current_view,
+    KmapsEngine::ContextualTreeBuilder.new(current_perspective, current_view,
       {:model=>Feature,
       :parent_method=>:current_parent,
       :children_method=>:current_children,

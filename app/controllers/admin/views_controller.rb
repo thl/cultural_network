@@ -1,3 +1,3 @@
 class Admin::ViewsController < ResourceController::Base
-  include CulturalNetwork::SimplePropsControllerHelper
+  include KmapsEngine::SimplePropsControllerHelper
 end

@@ -6,8 +6,8 @@ class Description < ActiveRecord::Base
     has_and_belongs_to_many :authors, :class_name => 'AuthenticatedSystem::Person', :join_table => 'authors_descriptions', :association_foreign_key => 'author_id'
     accepts_nested_attributes_for :authors
   
-    include CulturalNetwork::IsCitable
-    include CulturalNetwork::IsNotable
+    include KmapsEngine::IsCitable
+    include KmapsEngine::IsNotable
     extend IsDateable
 
     def self.search(filter_value)

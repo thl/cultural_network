@@ -29,10 +29,10 @@ class FeatureName < ActiveRecord::Base
   
   # acts_as_solr
   
-  extend CulturalNetwork::HasTimespan
-  include CulturalNetwork::IsCitable
+  extend KmapsEngine::HasTimespan
+  include KmapsEngine::IsCitable
   extend IsDateable
-  include CulturalNetwork::IsNotable
+  include KmapsEngine::IsNotable
   
   #
   # Associations

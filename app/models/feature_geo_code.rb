@@ -5,10 +5,10 @@ class FeatureGeoCode < ActiveRecord::Base
   belongs_to :geo_code_type
   # belongs_to :info_source, :class_name => 'Document'
   
-  include CulturalNetwork::IsCitable
-  include CulturalNetwork::IsNotable
+  include KmapsEngine::IsCitable
+  include KmapsEngine::IsNotable
   extend IsDateable
-  extend CulturalNetwork::HasTimespan
+  extend KmapsEngine::HasTimespan
   
   def self.search(filter_value)
     # because a GeoCodeType is actualy a SimpleProp, this LIKE query should be checking simple_props (not geo_code_types)

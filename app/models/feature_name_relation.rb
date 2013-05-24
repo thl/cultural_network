@@ -24,9 +24,9 @@ class FeatureNameRelation < ActiveRecord::Base
   # Associations
   #
   #
-  extend CulturalNetwork::HasTimespan
-  include CulturalNetwork::IsCitable
-  include CulturalNetwork::IsNotable
+  extend KmapsEngine::HasTimespan
+  include KmapsEngine::IsCitable
+  include KmapsEngine::IsNotable
   
   belongs_to :perspective
   belongs_to :phonetic_system

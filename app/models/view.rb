@@ -7,8 +7,8 @@ class View < SimpleProp
   #
   has_many :cached_feature_names
   
-  include CulturalNetwork::IsCitable
-  extend CulturalNetwork::HasTimespan
+  include KmapsEngine::IsCitable
+  extend KmapsEngine::HasTimespan
   
   #
   #

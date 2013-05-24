@@ -27,7 +27,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
     unless node_id.nil?
       Rails.cache.delete('tree_tmp')
       spawn(:method => :thread, :nice => 3) do  
-        CulturalNetwork::TreeCache.reheat(node_id)
+        KmapsEngine::TreeCache.reheat(node_id)
       end
     end
   end

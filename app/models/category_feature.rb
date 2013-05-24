@@ -6,10 +6,10 @@ class CategoryFeature < ActiveRecord::Base
   belongs_to :feature
   # belongs_to :category
 
-  extend CulturalNetwork::HasTimespan
-  include CulturalNetwork::IsCitable
+  extend KmapsEngine::HasTimespan
+  include KmapsEngine::IsCitable
   extend IsDateable
-  include CulturalNetwork::IsNotable
+  include KmapsEngine::IsNotable
 
   after_destroy do |record|
     feature = record.feature

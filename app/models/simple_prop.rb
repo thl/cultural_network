@@ -6,7 +6,7 @@
 # See Rails STI (Single Table Inheritance)
 #
 class SimpleProp < ActiveRecord::Base
-  include CulturalNetwork::SimplePropCache
+  include KmapsEngine::SimplePropCache
   
   attr_accessible :name, :code, :description
   

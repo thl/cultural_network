@@ -269,7 +269,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def self.generate_pid
-    CulturalNetwork::FeaturePidGenerator.next
+    KmapsEngine::FeaturePidGenerator.next
   end
   
   #

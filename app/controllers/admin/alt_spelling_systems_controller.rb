@@ -1,5 +1,5 @@
 class Admin::AltSpellingSystemsController < ResourceController::Base
   
-  include CulturalNetwork::SimplePropsControllerHelper
+  include KmapsEngine::SimplePropsControllerHelper
   
 end

@@ -1,5 +1,5 @@
 class Perspective < ActiveRecord::Base
-  include CulturalNetwork::SimplePropCache
+  include KmapsEngine::SimplePropCache
   
   attr_accessible :is_public, :name, :code, :description
   
@@ -8,8 +8,8 @@ class Perspective < ActiveRecord::Base
   # Associations
   #
   #
-  include CulturalNetwork::IsCitable
-  extend CulturalNetwork::HasTimespan
+  include KmapsEngine::IsCitable
+  extend KmapsEngine::HasTimespan
   
   #
   #
