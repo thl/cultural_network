@@ -101,7 +101,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def self.current_roots(current_perspective, current_view)
-    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}/#{current_view.id}", :expires_in => 1.day) do
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", :expires_in => 1.day) do
       joins(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').roots.find_all do |r|
 #      with_scope(:find => includes(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name')) do
  #       roots.find_all do |r|

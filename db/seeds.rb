@@ -89,6 +89,12 @@
   { :code => 'mon.to.chi.transcrip',        :name => 'Mongolian-to-Chinese Transcription' }
 ].each{|a| PhoneticSystem.update_or_create(a)}
 
+p = AuthenticatedSystem::Person.find_by_fullname('Kmaps Admin')
+p = AuthenticatedSystem::Person.create(:fullname => 'Kmaps Admin') if p.nil?
+a = { :login => 'kmaps_admin', :password => 'kmaps2013', :password_confirmation => 'kmaps2013', :email => 'root@' }
+u = AuthenticatedSystem::User.find_by_login(a[:login])
+u.nil? ? p.create_user(a) : u.update_attributes(a)
+
 [ { :name => 'Popular Standard (romanization)', :code => 'roman.popular' },
   { :name => 'Scholarly Standard (romanization)',       :code => 'roman.scholar' },
   { :name => 'Chinese Characters (simplified)',         :code => 'simp.chi' },

@@ -8,7 +8,7 @@ namespace :kmaps_engine do
       end
     end
     desc "Load seeds for kmaps engine tables"
-    task :seed do
+    task :seed => :environment do
       KmapsEngine::Engine.load_seed
     end
   end

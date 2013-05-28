@@ -1,8 +1,10 @@
 <%= render :partial => 'top' %>
 <div class="left" id="Home">
   <div class="has-right-margin">
-    <h2><%= @intro_blurb.title  %></h2>
-<%= @intro_blurb.content.html_safe %>
+<% if !@intro_blurb.nil? %>
+     <h2><%= @intro_blurb.title  %></h2>
+<%=  @intro_blurb.content.html_safe if !@intro_blurb.content.nil? %>
+<% end %>
   </div>
 </div>
 <%= # Check for outdated, hash-based paths for features, like "/#59" and redirect them to the correct path
