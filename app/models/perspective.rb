@@ -36,6 +36,10 @@ class Perspective < ActiveRecord::Base
     self.where(:is_public => true).order('name')
   end
   
+  def self.update_or_create(attributes)
+    r = self.find_by_code(attributes[:code])
+    r.nil? ? self.create(attributes) : r.update_attributes(attributes)
+  end
 end
 
 # == Schema Info

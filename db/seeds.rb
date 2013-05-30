@@ -111,3 +111,5 @@ u.nil? ? p.create_user(a) : u.update_attributes(a)
   { :name => 'Traditional Chinese Characters', :code => 'hant' },
   { :name => 'Latin script',                   :code => 'latin' }
 ].each{|a| WritingSystem.update_or_create(a)}
+
+Blurb.create(:code => 'homepage.intro') if Blurb.find_by_code('homepage.intro').nil?

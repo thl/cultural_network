@@ -150,7 +150,8 @@ module FeatureExtensionForNamePositioning
     Rails.cache.fetch("#{self.cache_key}/combined_name", :expires_in => 1.hour) { self.names.size > 0 ? prioritized_names.collect(&:name).join(sep) : self.pid }
   end
   
-  def calculate_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)
+  def calculate_name_positions(names_param = self.names.roots.order('feature_names.created_at'), position = 1)
+    names = names_param.collect{|n| n}
     sorted_names = Hash.new
     if names.size == 1
       # If there is only one name tree, it will be automatically assigned priority=1 value without need from editor.
@@ -159,13 +160,7 @@ module FeatureExtensionForNamePositioning
       position += 1
     else
       if names.size > 1
-        # Priority 1 for a name tree would be assigned by default to the one with the top level name that has the
-        # language corresponding to the nation (Chinese for China, Nepal for Nepal, Dzongkha for Bhutan, Hindi for
-        # India, etc.)
-        # This would be superceded for top level names with language=Tibetan for TAR, Qinghai, Gansu, Sichuan, and
-        # Yunnan in China
-        name = self.figure_out_name_by_country(names)
-        #If there is no parent Nation, then priority 1 will for whichever name tree was first entered in terms of data entry
+        # priority 1 will for whichever name tree was first entered in terms of data entry
         name = names.shift if name.nil?
         sorted_names[position] = name
         position += 1
@@ -227,10 +222,10 @@ module FeatureExtensionForNamePositioning
       calculated_name = self.calculate_prioritized_name(view)
       cached_name = cached_names.where(:view_id => view.id).first
       if cached_name.nil?
-        cached_names.create(:view => view, :feature_name => calculated_name)
+        cached_names.create(:view_id => view.id, :feature_name_id => calculated_name.id)
       else
         if cached_name.feature_name != calculated_name
-          cached_name.update_attribute(:feature_name, calculated_name)
+          cached_name.update_attribute(:feature_name_id, calculated_name.id)
           # Expire the names that have changed
           Rails.cache.delete("#{self.cache_key}/#{view.cache_key}/prioritized_name")
         end
@@ -247,7 +242,7 @@ module FeatureExtensionForNamePositioning
     trad_chi_name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id)
     simp_chi_name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id)
     return false if trad_chi_name.nil? || simp_chi_name.nil? || !simp_chi_name.parent_relations.empty?
-    FeatureNameRelation.create :is_orthographic => 1, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :parent_node => trad_chi_name, :child_node => simp_chi_name
+    FeatureNameRelation.create :is_orthographic => 1, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :parent_node_id => trad_chi_name.id, :child_node_id => simp_chi_name.id
     return true
     #|| parent_rel.parent_node_id != trad_chi_name.id
     #pinyin_trad_rel = trad_chi_name.child_relations.detect{|r| r.phonetic_system_id==pinyin_id}

@@ -345,24 +345,24 @@ class Feature < ActiveRecord::Base
     return type.nil? ? media_count_hash['Medium'] : media_count_hash[type]
   end
   
-  def kmaps_url
-    TopicalMapResource.get_url + place_path
+  def topical_map_url
+    TopicalMapResource.get_url + kmap_path
   end
 
   def media_url
-    MediaManagementResource.get_url + place_path
+    MediaManagementResource.get_url + kmap_path
   end
 
   def pictures_url
-    MediaManagementResource.get_url + place_path('pictures')
+    MediaManagementResource.get_url + kmap_path('pictures')
   end
 
   def videos_url
-    MediaManagementResource.get_url + place_path('videos')
+    MediaManagementResource.get_url + kmap_path('videos')
   end
 
   def documents_url
-    MediaManagementResource.get_url + place_path('documents')
+    MediaManagementResource.get_url + kmap_path('documents')
   end
   
   #

@@ -122,6 +122,8 @@ Rails.application.routes.draw do
     get :search, :on => :collection
     resources :association_notes
     member do
+      get :expanded
+      get :contracted
       get :descendants
       get :related
     end

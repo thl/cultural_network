@@ -62,10 +62,12 @@ var NodeTree = {
 		this.loadFeatureTabs(id);
 	},
 	
+	// Won't work!
 	expandNode: function(id){
 		jQuery('#node_'+id+'_div').load(this.controller+"expanded/"+id, function(){NodeTree.reselectNode();});
 	},
 	
+	// Won't work!
 	contractNode: function(id){
 		jQuery('#node_'+id+'_div').load(this.controller+"contracted/"+id, function(){NodeTree.reselectNode();});
 	},
@@ -146,7 +148,11 @@ var NodeTree = {
 				id = jQuery(this).parent().attr("id").split("_");
 				id = id[1];
 				if(!NodeTree.inArray(id, ancestors)){
-					jQuery(this).parent().load(NodeTree.controller+"contracted/"+id);
+					link = jQuery(this).parent().find('a.node-minus')
+					link.attr('class', 'node-plus')
+					link.attr('href', NodeTree.controller+"expanded/"+id)
+					jQuery(this).html('')
+					//jQuery(this).parent().load(NodeTree.controller+"contracted/"+id);
 				}
 			});
 		}
