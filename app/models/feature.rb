@@ -346,7 +346,7 @@ class Feature < ActiveRecord::Base
   end
   
   def topical_map_url
-    TopicalMapResource.get_url + kmap_path
+    PlacesIntegration::PlacesResource.get_url + "features/#{self.fid}/topics"
   end
 
   def media_url

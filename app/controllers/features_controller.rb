@@ -295,7 +295,20 @@ class FeaturesController < ApplicationController
     @ancestors_for_current << node.id
     top_level_nodes = Feature.current_roots(current_perspective, current_view)
     render :partial => 'node_tree', :locals => { :children => top_level_nodes }, :layout => false
-  end  
+  end
+  
+  def topics
+    @feature = Feature.get_by_fid(params[:id])
+    if @feature.nil?
+      redirect_to features_url
+    else
+      set_common_variables(session)
+      session[:interface][:context_id] = @feature.id unless @feature.nil?
+      @tab_options = {:entity => @feature}
+      @current_tab_id = :topics
+    end
+    
+  end
     
   def set_session_variables
     defaults = {

@@ -126,6 +126,7 @@ Rails.application.routes.draw do
       get :contracted
       get :descendants
       get :related
+      get :topics
     end
     collection do
       match 'by_fid/:fids.:format' => 'features#by_fid'
