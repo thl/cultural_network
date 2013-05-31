@@ -271,7 +271,7 @@ module ApplicationHelper
   def custom_secondary_tabs_list
     # The :index values are necessary for this hash's elements to be sorted properly
     {
-      :place => {:index => 1, :title => "Place"},
+      :place => {:index => 1, :title => Feature.model_name.human.titleize},
       :descriptions => {:index => 2, :title => "Essays"},
       :related => {:index => 3, :title => "Related"}
     }
