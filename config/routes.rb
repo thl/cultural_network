@@ -129,7 +129,7 @@ Rails.application.routes.draw do
     end
     collection do
       get :characteristics_list
-      get :search
+      post :search
       match 'by_fid/:fids.:format' => 'features#by_fid'
       match 'by_old_pid/:old_pids' => 'features#by_old_pid'
       match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code'
