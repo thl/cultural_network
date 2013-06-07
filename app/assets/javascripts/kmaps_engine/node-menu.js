@@ -406,7 +406,7 @@ var NodeMenu = {
 		
 		jQuery.ajax({
 			type: 'POST',
-			url: this.controller+'set_session_variables/0/',
+			url: this.controller+'set_session_variables/',
 			data: 'menu_item='+menu_item,
 			success: function(){},
 			error: function(){}

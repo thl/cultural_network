@@ -101,7 +101,7 @@ function collapse_all_categories(){
          unless category.nil? 
 	       div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
            <p><strong>
-<%=        link_to Category.find(category_id).title, {:action => :related_list, :id => @feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s},
+<%=        link_to Category.find(category_id).title, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
              :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %>
            </strong> (<%= count %>)
            </p>

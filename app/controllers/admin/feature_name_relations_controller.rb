@@ -1,4 +1,5 @@
-class Admin::FeatureNameRelationsController < ResourceController::Base
+class Admin::FeatureNameRelationsController < AclController
+  resource_controller
   
   belongs_to :feature_name
   

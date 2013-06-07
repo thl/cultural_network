@@ -1,6 +1,6 @@
 module KmapsEngine
   class TreeCache
-    CACHE_DIR = "#{ActionController::Base.cache_store.cache_path}/views/tree/"
+    CACHE_DIR = "/views/tree/"
     CACHE_FILE_PREFIX = 'node_id_'
     CACHE_FILE_SUFFIX = '.cache'
     TIME_FORMAT = '%.2f'
@@ -12,12 +12,12 @@ module KmapsEngine
       self.generate(features, perspectives, views)
     end
 
-    def self.cache_dir(f, p, v)
+    def self.cache_key(f, p, v)
       "#{CACHE_DIR}#{p}/#{v}/#{CACHE_FILE_PREFIX}#{f.id}#{CACHE_FILE_SUFFIX}"
     end
 
     def self.already_cached(f, perspective_ids, view_ids)
-      view_ids.all? { |v| perspective_ids.all? { |p| !Dir[cache_dir(f, p, v)].empty? } }
+      view_ids.all? { |v| perspective_ids.all? { |p| Rails.cache.exist? cache_key(f, p, v) } }
     end
 
     def self.extended_open(url)
@@ -54,8 +54,8 @@ module KmapsEngine
           next if related_perspectives.empty?
           view_ids.each do |v|
             related_perspectives.each do |p|
-              next if !Dir[cache_dir(f, p, v)].empty?
-              url = "#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p}"
+              next if Rails.cache.exist? cache_key(f, p, v) #!Dir[cache_dir(f, p, v)].empty?
+              url = "#{APP_URI}/features/#{f.id}/node_tree_expanded?view_id=#{v}&perspective_id=#{p}"
               begin
                 cache_start = Time.now
                 extended_open(url)

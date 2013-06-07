@@ -118,7 +118,7 @@ module ApplicationHelper
   def f_link(feature, url, html_attrs={}, options={})
     html_attrs[:class] = "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)
-    url = url_for :controller => 'features', :action => 'iframe', :id => feature.id if current_page?(:controller => 'features', :action => 'iframe')
+    url = url_for iframe_feature_path(feature.id) if current_page?(:controller => 'features', :action => 'iframe')
     name = fname_labels(feature)
     name = name.s if !options[:s].nil? && options[:s] == true
     link_to(name, url, html_attrs)

@@ -1,3 +1,4 @@
-class Admin::WritingSystemsController < ResourceController::Base
+class Admin::WritingSystemsController < AclController
+  resource_controller
   include KmapsEngine::SimplePropsControllerHelper
 end

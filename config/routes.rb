@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       :phonetic_systems, :users, :writing_systems, :xml_documents, :views
     match 'openid_new' => 'users#openid_new'
     match 'openid_create' => 'users#create', :via => :post
-    root :to => 'features#index'
+    root :to => 'default#index'
     resources :category_features do
       resources :citations
       resources :notes do
@@ -109,9 +109,6 @@ Rails.application.routes.draw do
     resources :feature_pids do
       get :available, :on => :collection
     end
-    resources :people do
-      resource :user
-    end
     resources :time_units do
       resources :notes do
         get :add_author, :on => :collection
@@ -119,22 +116,27 @@ Rails.application.routes.draw do
     end
   end
   resources :features do
-    get :search, :on => :collection
     resources :association_notes
     member do
       get :expanded
       get :contracted
       get :descendants
+      get :iframe
       get :related
       get :topics
+      get :related_list
+      get :node_tree_expanded
     end
     collection do
+      get :characteristics_list
+      get :search
       match 'by_fid/:fids.:format' => 'features#by_fid'
       match 'by_old_pid/:old_pids' => 'features#by_old_pid'
       match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code'
       match 'by_name/:query.:format' => 'features#by_name', :query => /.*?/
       match 'fids_by_name/:query.:format' => 'features#fids_by_name', :query => /.*?/
       match 'gis_resources/:fids.:format' => 'features#gis_resources'
+      get :set_session_variables
     end
     resources :descriptions do
       member do
@@ -172,5 +174,5 @@ Rails.application.routes.draw do
   end
   resources :topics, :only => 'show'
   root :to => 'features#index'
-  match ':controller(/:action(/:id(.:format)))'
+  # match ':controller(/:action(/:id(.:format)))'
 end

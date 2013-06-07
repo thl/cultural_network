@@ -11,9 +11,9 @@ class ApplicationController < ActionController::Base
   protected
   
   def is_admin_area?
-    params[:controller] =~ /^admin/
+    params[:controller] =~ /^(admin|authenticated_system\/[^s])/
   end
-  
+    
   def admin_authentication
     login_required if is_admin_area?
     #authenticate_or_request_with_http_basic do |username, password|

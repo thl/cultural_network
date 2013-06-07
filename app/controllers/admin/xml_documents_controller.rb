@@ -1,2 +1,3 @@
-class Admin::XMLDocumentsController < ResourceController::Base
+class Admin::XMLDocumentsController < AclController
+  resource_controller
 end

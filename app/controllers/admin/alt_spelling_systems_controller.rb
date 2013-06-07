@@ -1,5 +1,4 @@
-class Admin::AltSpellingSystemsController < ResourceController::Base
-  
+class Admin::AltSpellingSystemsController < AclController
+  resource_controller
   include KmapsEngine::SimplePropsControllerHelper
-  
 end

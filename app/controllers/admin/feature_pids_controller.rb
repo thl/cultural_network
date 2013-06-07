@@ -1,4 +1,4 @@
-class Admin::FeaturePidsController < ApplicationController
+class Admin::FeaturePidsController < AclController
   # GET /feature_pids
   # GET /feature_pids.xml
   def index

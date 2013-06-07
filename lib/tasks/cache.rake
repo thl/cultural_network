@@ -4,7 +4,8 @@ require 'kmaps_engine/category_caching_utils'
 namespace :cache do
   namespace :tree do
     desc 'Run to preheat cache for all nodes of the browse tree.'
-    task :heat do
+    task :heat => :environment do
+      require 'kmaps_engine/tree_cache'
       fid = ENV['FID']
       perspective_code = ENV['PERSPECTIVE']
       view_code = ENV['VIEW']

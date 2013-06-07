@@ -1,5 +1,6 @@
-class Admin::CategoryFeaturesController < ResourceController::Base
-  helper :admin
+class Admin::CategoryFeaturesController < AclController
+  resource_controller
+
   belongs_to :feature
   
   def create

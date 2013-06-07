@@ -1,4 +1,6 @@
-class Admin::FeatureObjectTypesController < ResourceController::Base
+class Admin::FeatureObjectTypesController < AclController
+  resource_controller
+  
   helper :admin, 'admin/category_features'  
   belongs_to :feature
   

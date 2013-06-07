@@ -1,4 +1,6 @@
-class Admin::FeatureGeoCodesController < ResourceController::Base
+class Admin::FeatureGeoCodesController < AclController
+  resource_controller
+  
   belongs_to :feature
   
   protected

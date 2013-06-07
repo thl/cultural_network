@@ -1,4 +1,6 @@
-class Admin::PagesController < ResourceController::Base
+class Admin::PagesController < AclController
+  resource_controller
+  
   belongs_to :citation
   
   create.wants.html { redirect_to polymorphic_url([:admin, object.citation.citable, object.citation]) }

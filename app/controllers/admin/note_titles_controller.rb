@@ -1,4 +1,6 @@
-class Admin::NoteTitlesController < ResourceController::Base
+class Admin::NoteTitlesController < AclController
+  resource_controller
+  
   before_filter :collection
 
   # GET /note_titles

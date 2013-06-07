@@ -1,1 +1,9 @@
-<%= File.read(Rails.root.join('ToDo.txt')).gsub(/\n/, '<br/>') %>
+<div id="featureContextTreeAndList">
+  <div id="featureContextTree">
+    <h2><%= link_to(current_perspective, current_features_path) %> (<%= link_to ts(:switch, :what => Perspective.model_name.human.s), edit_session_path %>)</h2>
+    <ul>
+<%=   new_tree_builder.build(@context_feature) { |node| !node.is_blank? } %>
+    </ul>
+  </div>
+  <br class="clear"/>
+</div>

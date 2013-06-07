@@ -1,4 +1,6 @@
-class Admin::FeatureRelationTypesController < ResourceController::Base
+class Admin::FeatureRelationTypesController < AclController
+  resource_controller
+  
   #before_filter :collection
   
   create.before { @object.asymmetric_label = @object.label if @object.is_symmetric }

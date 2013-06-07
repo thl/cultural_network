@@ -1,4 +1,6 @@
-class Admin::FeatureRelationsController < ResourceController::Base
+class Admin::FeatureRelationsController < AclController
+  resource_controller
+  
   belongs_to :feature
   
   new_action.before {|c| c.send :setup_for_new_relation}

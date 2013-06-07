@@ -1,4 +1,6 @@
-class Admin::DescriptionsController < ResourceController::Base
+class Admin::DescriptionsController < AclController
+  resource_controller
+  
   cache_sweeper :description_sweeper, :only => [:update, :destroy]
   belongs_to :feature
   before_filter :collection

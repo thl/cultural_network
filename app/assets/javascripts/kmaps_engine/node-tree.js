@@ -160,7 +160,7 @@ var NodeTree = {
 	
 	// Loads the entire node tree, expanded to the specified node 
 	loadExpandedTree: function(id){
-		this.list_div.load(this.controller+"node_tree_expanded/"+id, function(){
+		this.list_div.load(this.controller+id+"/node_tree_expanded", function(){
 			NodeTree.selectNode(id);
 			NodeTree.scrollToNode(id);
 		});

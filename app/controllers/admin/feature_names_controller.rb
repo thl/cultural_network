@@ -1,4 +1,6 @@
-class Admin::FeatureNamesController < ResourceController::Base
+class Admin::FeatureNamesController < AclController
+  resource_controller
+  
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   
   belongs_to :feature

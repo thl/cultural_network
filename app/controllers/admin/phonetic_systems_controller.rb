@@ -1,3 +1,5 @@
-class Admin::PhoneticSystemsController < ResourceController::Base
+class Admin::PhoneticSystemsController < AclController
+  resource_controller
+  
   include KmapsEngine::SimplePropsControllerHelper
 end

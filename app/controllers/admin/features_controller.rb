@@ -1,4 +1,6 @@
-class Admin::FeaturesController < ResourceController::Base
+class Admin::FeaturesController < AclController
+  resource_controller
+  
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   
   destroy.before :cache_for_sweeper
