@@ -10,6 +10,7 @@ require 'kmaps_engine/is_citable'
 require 'kmaps_engine/is_notable'
 require 'kmaps_engine/session_manager'
 require 'kmaps_engine/simple_props_controller_helper'
+require 'kmaps_engine/application_settings'
 
 ActiveRecord::Base.send :include, ActiveRecord::KmapsEngine::Extension
 Array.send :include, KmapsEngine::ArrayExtension

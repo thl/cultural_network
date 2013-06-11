@@ -14,7 +14,7 @@ class FeaturesController < ApplicationController
     @active_menu_item = 'search'
 
     # In the event that a Blurb with this code doesn't exist, fail gracefully
-    @intro_blurb = Blurb.find_by_code('homepage.intro') || Blurb.new
+    @intro_blurb = KmapsEngine::ApplicationSettings.homepage_blurb || Blurb.new
         
     respond_to do |format|
       format.html
