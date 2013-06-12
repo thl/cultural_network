@@ -13,8 +13,8 @@ en:
                 one: 'blurp'
                 other: 'blurps'
             category_feature:
-                one: 'subject or characteristic'
-                other: 'subjects & characteristics'
+                one: 'subject'
+                other: 'subjects'
             citation:
                 one: 'citation'
                 other: 'citations'
@@ -121,5 +121,5 @@ en:
     activeresource:
         models:
             topic:
-                one: 'characteristic'
-                other: 'characteristics'
+                one: 'subject'
+                other: 'subjects'
