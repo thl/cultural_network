@@ -55,7 +55,7 @@ module KmapsEngine
           view_ids.each do |v|
             related_perspectives.each do |p|
               next if Rails.cache.exist? cache_key(f, p, v) #!Dir[cache_dir(f, p, v)].empty?
-              url = "#{APP_URI}/features/#{f.id}/node_tree_expanded?view_id=#{v}&perspective_id=#{p}"
+              url = "http://#{APP_URI}/features/#{f.id}/node_tree_expanded?view_id=#{v}&perspective_id=#{p}"
               begin
                 cache_start = Time.now
                 extended_open(url)
