@@ -32,7 +32,7 @@
 %>
 <!--    </div> -->
 <%=     hidden_field_tag :context_id, "" %>
-<%=     label_tag :fid, 'Or Go to THL ID:' %>
+<%=     label_tag :fid, "Or Go to #{Feature.human_attribute_name(:pid)}:" %>
 <%=     text_field_tag :fid %>
       </div>
 <%=   globalized_submit_tag 'search.this', :style => "margin-top: 4px;" %>
