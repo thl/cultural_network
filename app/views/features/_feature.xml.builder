@@ -40,7 +40,7 @@ xml.feature(:id => feature.id, :pid => feature.pid, :fid => feature.fid, :header
       parent.object_types.each { |type| xml.feature_type(:title => type.title, :id => type.id) }
     end
   end
-  per = Perspective.get_by_code('pol.admin.hier')
+  per = Perspective.get_by_code(default_perspective_code)
   hierarchy = feature.closest_ancestors_by_perspective(per)
   xml.ancestors(:perspective => per.code) do
     hierarchy.each do |p|
@@ -53,14 +53,16 @@ xml.feature(:id => feature.id, :pid => feature.pid, :fid => feature.fid, :header
     end
   end
   per = Perspective.get_by_code('cult.reg')
-  hierarchy = feature.closest_ancestors_by_perspective(per)
-  xml.ancestors(:perspective => per.code) do
-    hierarchy.each do |p|
-      name = p.prioritized_name(view)
-      header = name.nil? ? p.pid : name.name
-      xml.ancestor do
-        xml.feature(:id => p.id, :pid => p.pid, :fid => p.fid, :header => header)
-        p.object_types.each { |type| xml.feature_type(:title => type.title, :id => type.id) }
+  if !per.nil?
+    hierarchy = feature.closest_ancestors_by_perspective(per)
+    xml.ancestors(:perspective => per.code) do
+      hierarchy.each do |p|
+        name = p.prioritized_name(view)
+        header = name.nil? ? p.pid : name.name
+        xml.ancestor do
+          xml.feature(:id => p.id, :pid => p.pid, :fid => p.fid, :header => header)
+          p.object_types.each { |type| xml.feature_type(:title => type.title, :id => type.id) }
+        end
       end
     end
   end

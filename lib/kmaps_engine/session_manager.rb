@@ -1,17 +1,21 @@
 module KmapsEngine
   module SessionManager
     protected
+    def default_perspective_code
+      'pol.admin.hier'
+    end
+    
     def current_perspective
       perspective_id = session[:perspective_id]
       begin
         if perspective_id.blank?
-          @@current_perspective = Perspective.get_by_code('pol.admin.hier') if !defined?(@@current_perspect) || @@current_perspective.nil? || @@current_perspective.code != 'pol.admin.hier'
+          @@current_perspective = Perspective.get_by_code(default_perspective_code) if !defined?(@@current_perspect) || @@current_perspective.nil? || @@current_perspective.code != default_perspective_code
         else
           @@current_perspective = Perspective.find(perspective_id) if !defined?(@@current_perspect) || @@current_perspective.nil? || @@current_perspective.id != perspective_id
         end
       rescue ActiveRecord::RecordNotFound
         session[:perspective_id] = nil
-        @@current_perspective = Perspective.get_by_code('pol.admin.hier')
+        @@current_perspective = Perspective.get_by_code(default_perspective_code)
       end
       return @@current_perspective
     end
@@ -66,6 +70,7 @@ module KmapsEngine
     # Inclusion hook to make #current_perspective
     # available as ActionView helper method.
     def self.included(base)
+      base.send :helper_method, :default_perspective_code
       base.send :helper_method, :current_perspective
       base.send :helper_method, :current_view
       base.send :helper_method, :current_show_feature_details
