@@ -1,12 +1,14 @@
 # The following is performed because the name expression returns nil for Feature.find(15512)
 name = feature.prioritized_name(@view)
 header = name.nil? ? feature.pid : name.name
-object_types = feature.object_types
+children = feature.children
 options = { :id => feature.id, :fid => feature.fid, :header => header }
-if object_types.empty?
+if children.empty?
   xml.feature(options)
 else
   xml.feature(options) do # , :pid => feature.pid
-    object_types.each { |type| xml.feature_type(:title => type.title) } #, :id => type.id
+    xml.features do
+      xml << render(:partial => 'recursive_stripped_feature.xml.builder', :collection => children, :as => :feature) if !children.empty?
+    end
   end
 end

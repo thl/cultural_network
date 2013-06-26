@@ -15,6 +15,9 @@ class FeatureSweeper < ActionController::Caching::Sweeper
     FORMATS.each do |format|
       options[:format] = format
       expire_page feature_url(feature.fid, options)
+      expire_page all_feature_url(feature.fid, options)
+      expire_page children_feature_url(feature.fid, options)
+      expire_page list_feature_url(feature.fid, options)
     end
   end
   

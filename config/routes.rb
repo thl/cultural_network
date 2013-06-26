@@ -2,16 +2,6 @@ Rails.application.routes.draw do
   resources :languages
   resource :session
   resources :categories do
-    member do
-      get :expand
-      get :contract
-    end
-    resources(:children, :controller => 'categories') do
-      member do
-        get :expand
-        get :contract
-      end
-    end
     resources :counts, :controller => 'cached_category_counts'
   end
   namespace :admin do
@@ -118,14 +108,17 @@ Rails.application.routes.draw do
   resources :features do
     resources :association_notes
     member do
+      get :all
       get :expanded
+      get :children
       get :contracted
       get :descendants
       get :iframe
-      get :related
-      get :topics
-      get :related_list
+      get :list
       get :node_tree_expanded
+      get :related
+      get :related_list
+      get :topics
     end
     collection do
       get :characteristics_list
@@ -136,7 +129,7 @@ Rails.application.routes.draw do
       match 'by_name/:query.:format' => 'features#by_name', :query => /.*?/
       match 'fids_by_name/:query.:format' => 'features#fids_by_name', :query => /.*?/
       match 'gis_resources/:fids.:format' => 'features#gis_resources'
-      get :set_session_variables
+      post :set_session_variables
     end
     resources :descriptions do
       member do

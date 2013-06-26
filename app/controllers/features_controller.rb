@@ -1,5 +1,5 @@
 class FeaturesController < ApplicationController
-  caches_page :show, :if => Proc.new { |c| c.request.format.xml? }
+  caches_page :show, :all, :children, :list
   caches_action :node_tree_expanded, :cache_path => Proc.new {|c| cache_path}
   
   #
@@ -42,7 +42,7 @@ class FeaturesController < ApplicationController
       end
       format.xml
       format.csv
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
     end
   end 
 
@@ -159,7 +159,7 @@ class FeaturesController < ApplicationController
   end
   
   def characteristics_list
-    render :json => CategoryFeature.get_json_data, :callback => params[:callback]
+    render :json => CategoryFeature.get_json_data
   end
   
   def search
@@ -230,6 +230,38 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.js # search.js.erb
       format.html { render :partial => 'search_results', :locals => {:features => @features} }
+    end
+  end
+  
+  def children
+    feature = Feature.get_by_fid(params[:id])
+    @features = feature.children
+    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    @view ||= View.get_by_code('roman.popular')
+    respond_to do |format|
+      format.xml
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'children.xml.builder')) }
+    end
+  end
+  
+  def list
+    feature = Feature.get_by_fid(params[:id])
+    @features = feature.descendants
+    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    @view ||= View.get_by_code('roman.popular')
+    respond_to do |format|
+      format.xml
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'list.xml.builder')) }
+    end
+  end
+  
+  def all
+    @feature = Feature.get_by_fid(params[:id])
+    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    @view ||= View.get_by_code('roman.popular')
+    respond_to do |format|
+      format.xml
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'all.xml.builder')) }
     end
   end
   
