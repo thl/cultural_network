@@ -11,4 +11,4 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require kmaps_engine/treescroll
-//= require topical_map_integration/jquery.draggable.popup
+//= require subjects_integration/jquery.draggable.popup

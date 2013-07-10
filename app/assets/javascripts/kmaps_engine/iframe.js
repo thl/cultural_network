@@ -13,7 +13,6 @@
 //= require kmaps_engine/jquery-form
 //= require kmaps_engine/jquery.livequery
 //= require kmaps_engine/sections/features
-//= require kmaps_engine/inset-map
 
 jQuery(document).ready(function(){
 

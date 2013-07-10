@@ -1,6 +1,5 @@
 class Feature < ActiveRecord::Base
   attr_accessible :is_public, :fid, :is_blank, :ancestor_ids, :skip_update
-  
   attr_accessor :skip_update
   
   include FeatureExtensionForNamePositioning
@@ -17,6 +16,8 @@ class Feature < ActiveRecord::Base
     end
   end
   
+  @@associated_models = [FeatureName, FeatureGeoCode, XmlDocument]
+  
   # after_update do |r|
   #   node = r.parent.nil? ? r : r.parent
   #   node.expire_children_cache
@@ -31,11 +32,8 @@ class Feature < ActiveRecord::Base
   has_many :association_notes, :foreign_key => "notable_id", :dependent => :destroy
   has_many :cached_feature_names, :dependent => :destroy
   has_many :cached_feature_relation_categories, :dependent => :destroy
-  has_many :category_features, :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
-  has_many :cumulative_category_feature_associations, :dependent => :destroy
   has_many :descriptions, :dependent => :destroy
-  has_many :feature_object_types, :order => :position, :dependent => :destroy
   has_many :geo_codes, :class_name => 'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
   has_many :geo_code_types, :through => :geo_codes
   has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
@@ -43,7 +41,6 @@ class Feature < ActiveRecord::Base
   # This fetches root *FeatureNames* (names that don't have parents),
   # within the scope of the current feature
   has_many :names, :class_name=>'FeatureName', :dependent => :destroy do
-    @@associated_models = [FeatureName, FeatureObjectType, FeatureGeoCode, XmlDocument]  
     #
     #
     #
@@ -52,6 +49,10 @@ class Feature < ActiveRecord::Base
       pa = proxy_association
       pa.reflection.class_name.constantize.roots.where('feature_names.feature_id' => pa.owner.id) #.sort !!! See the FeatureName.<=> method
     end
+  end
+  
+  def self.associated_models
+    @@associated_models
   end
     
   def closest_parent_by_perspective(perspective)
@@ -132,55 +133,6 @@ class Feature < ActiveRecord::Base
     return children.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
-  end
-  
-  def self.descendants_by_perspective_and_topics_with_parent(fids, perspective, topic_ids)
-    topic_ids = topic_ids.first if topic_ids.size==1
-    self.descendants_by_perspective_with_parent(fids, perspective).select{|d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil?}
-  end
-  
-  def self.descendants_by_topic(fids, topic_ids)
-    pending = fids.collect{|fid| Feature.get_by_fid(fid)}
-    des = []
-    while !pending.empty?
-      e = pending.pop
-      FeatureRelation.select('child_node_id').where(:parent_node_id => e, :feature_relation_type_id => FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
-        c = r.child_node_id
-        if !des.include? c
-          des << c
-          pending.push(c)
-        end
-      end
-    end
-    topic_ids = topic_ids.first if topic_ids.size==1
-    des.select{ |f_id| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => f_id).first.nil? }.collect{|f_id| Feature.find(f_id)}
-  end
-  
-  def descendants_by_topic(fids, topic_ids)
-    self.descendants_by_topic([self.fid], topic_ids)
-  end
-
-  def self.descendants_by_topic_with_parent(fids, topic_ids)
-    pending = fids.collect{|fid| Feature.get_by_fid(fid)}
-    des = pending.collect{|f| [f, nil]}
-    des_ids = pending.collect(&:id)
-    while !pending.empty?
-      e = pending.pop
-      FeatureRelation.where(:parent_node_id => e.id).each do |r|
-        c = r.child_node
-        if !des_ids.include? c.id
-          des_ids << c.id
-          des << [c, e, r]
-          pending.push(c)
-        end
-      end
-    end
-    topic_ids = topic_ids.first if topic_ids.size==1
-    des.select{ |d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil? }
-  end
-  
-  def descendants_by_topic_with_parent(topic_ids)
-    Feature.descendants_by_topic_with_parent([self.fid], topic_ids)
   end
   
   # currently only option accepted is 'only_hierarchical'
@@ -322,18 +274,7 @@ class Feature < ActiveRecord::Base
   def self.name_search(filter_value)
     Feature.includes(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
   end
-  
-  #
-  # Shortcut for getting all feature_object_types.object_types
-  #
-  def object_types
-    feature_object_types.collect(&:category).select{|c| c}
-  end
-  
-  def category_count
-    CategoryFeature.where(:feature_id => self.id).count
-  end
-  
+    
   def media_count(options = {})
     media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count", :expires_in => 1.day) do
       media_place_count = MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).dup
@@ -345,10 +286,6 @@ class Feature < ActiveRecord::Base
     return type.nil? ? media_count_hash['Medium'] : media_count_hash[type]
   end
   
-  def topical_map_url
-    PlacesIntegration::PlacesResource.get_url + "features/#{self.fid}/topics"
-  end
-
   def media_url
     MediaManagementResource.get_url + kmap_path
   end

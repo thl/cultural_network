@@ -18,9 +18,8 @@ class FeaturesController < ApplicationController
         
     respond_to do |format|
       format.html
-      format.xml do
-        render :action => 'index'
-      end
+      format.xml  #{ render :xml => Feature.current_roots(Perspective.get_by_code(default_perspective_code), View.get_by_code('roman.popular')).to_xml }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
     end
   end
 
@@ -245,8 +244,13 @@ class FeaturesController < ApplicationController
   end
   
   def list
-    feature = Feature.get_by_fid(params[:id])
-    @features = feature.descendants
+    params_id = params[:id]
+    if params_id.nil?
+      @features = Feature.all
+    else
+      feature = Feature.get_by_fid(params_id)
+      @features = feature.descendants
+    end
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code('roman.popular')
     respond_to do |format|
@@ -256,12 +260,17 @@ class FeaturesController < ApplicationController
   end
   
   def all
-    @feature = Feature.get_by_fid(params[:id])
+    params_id = params[:id]
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code('roman.popular')
+    if params_id.nil?
+      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view)
+    else
+      @feature = Feature.get_by_fid(params_id)
+    end
     respond_to do |format|
-      format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'all.xml.builder')) }
+      format.xml { render 'all_collection' if params_id.nil? }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => params_id.nil? ? 'all_collection.xml.builder' : 'all.xml.builder')) }
     end
   end
   
@@ -288,7 +297,7 @@ class FeaturesController < ApplicationController
     @feature = Feature.find(params[:id])
     @feature_relation_type= FeatureRelationType.find(params[:feature_relation_type_id])
     @feature_is_parent = params[:feature_is_parent]
-    @category = Category.find(params[:category_id])
+    @category = SubjectsIntegration::Feature.find(params[:category_id])
     @relations = CachedFeatureRelationCategory.where(
           'cached_feature_relation_categories.feature_id' => params[:id],
           'cached_feature_relation_categories.category_id' => params[:category_id],

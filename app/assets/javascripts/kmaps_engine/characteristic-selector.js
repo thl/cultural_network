@@ -42,6 +42,7 @@ function CharacteristicSelector(){
 		this.autocompleteInput.autocomplete({ source: this.data, 
 			select: function (event, ui) { 
 				that.hiddenIdInput.val(ui.item.value);
+				that.autocompleteInput.val(ui.item.label);
 				that.treeNames.html('');
 				that.treeRemove.hide();
 				return false;
@@ -50,7 +51,7 @@ function CharacteristicSelector(){
 
 		this.objectList = [];
 		for(var i in this.data){
-			this.objectList[this.data[i].id] = this.data[i];
+			this.objectList[this.data[i].value] = this.data[i];
 		}
 		this.div.append('<br />Input type above or <a href="#" class="tree-link">select from list</a>'+
 			'<span class="tree-names"></span> <a href="#" class="tree-remove">(remove)</a><span class="tree-loading" style="float:right;"></span>');
@@ -106,7 +107,7 @@ function CharacteristicSelector(){
 			}else{
 				var names = [];
 				for(var i in ids){
-					names.push(that.objectList[ids[i]].name);
+					names.push(that.objectList[ids[i]].label);
 				}
 				that.hiddenIdInput.val(ids.join(','));
 				that.autocompleteInput.val('');
@@ -128,23 +129,23 @@ function CharacteristicSelector(){
 	};
 	
 	this.autocompleteFormatItem = function(item, i, max){
-		return jQuery.trim(item.name);
+		return jQuery.trim(item.label);
 	};
 	
 	this.autocompleteFormatMatch = function(item, i, max){
-		return jQuery.trim(item.name);
+		return jQuery.trim(item.label);
 	};
 	
 	this.autocompleteFormatResult = function(item, i, max){
-		return item.id;
+		return item.value;
 	};
 		
 	this.getFormattedData = function(){
 		html = '<ul>';
 		for(var i in this.data){
 			var item = this.data[i];
-			var element_id = this.fieldName+'_'+item.id;
-			html += '<li><input type="checkbox" value="'+item.id+'" id="'+element_id+'" /> <label for='+element_id+'>'+item.name+'</label></li>';
+			var element_id = this.fieldName+'_'+item.value;
+			html += '<li><input type="checkbox" value="'+item.value+'" id="'+element_id+'" /> <label for='+element_id+'>'+item.label+'</label></li>';
 		}
 		html += '</ul>';
 		return html;

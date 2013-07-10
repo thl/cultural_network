@@ -20,7 +20,7 @@
 <%= f.label(:is_public).s %>
 <%= f.check_box :is_public %>
   </div>
-<%= link_to t('add.record', :what => t('new.record', :what => t(:author, :count => 1))).capitalize.s, polymorphic_path([:admin, @object.notable, @object.class.name.tableize], :action => "add_author"), :remote => true %>
+<%= link_to t('add.record', :what => t('new.record', :what => t(:author, :count => 1))).capitalize.s, polymorphic_path([:admin, @object.notable, @object.class.name.tableize], :action => 'add_author'), :remote => true %>
   <div id="authors_div">
 <%  for author in @object.authors %>
 <%=   render :partial => 'authors_selector', :locals => {:selected => author.id} %>

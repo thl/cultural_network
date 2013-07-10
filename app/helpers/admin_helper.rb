@@ -370,7 +370,7 @@ module AdminHelper
           (options[:use_names] ? f_link(other, admin_feature_path(other)) : feature_link(other)) : 
           feature_label(other))
         if options[:show_feature_types]
-          items << "(" + other.object_types.collect{|type| type.title }.join(", ") + ")"
+          items << "(" + other.object_types.collect{|type| type.header }.join(", ") + ")"
         end
       end
       items.join(" ").html_safe

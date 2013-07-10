@@ -8,10 +8,8 @@ module KmapsEngine
     
     initializer :sweepers do |config|
       sweeper_folder = File.join(File.dirname(__FILE__), '..', '..', 'app', 'sweepers')
-      require File.join(sweeper_folder, 'cached_category_count_sweeper')
       require File.join(sweeper_folder, 'feature_sweeper')
       require File.join(sweeper_folder, 'description_sweeper')
-      Rails.application.config.active_record.observers = :cached_category_count_sweeper
     end
     
     initializer :loader do |config|

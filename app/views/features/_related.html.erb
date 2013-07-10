@@ -93,15 +93,15 @@ function collapse_all_categories(){
 <%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
        CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
          # Some of these .finds are returning nil, but it's not clear why.
-         Category.find(a[0]).nil? || Category.find(b[0]).nil? ? 0 : Category.find(a[0]).title.casecmp(Category.find(b[0]).title)
+         SubjectsIntegration::Feature.find(a[0]).nil? || SubjectsIntegration::Feature.find(b[0]).nil? ? 0 : SubjectsIntegration::Feature.find(a[0]).header.casecmp(SubjectsIntegration::Feature.find(b[0]).header)
        end.each do |c|
          category_id, count = c
-         category = Category.find(category_id)
+         category = SubjectsIntegration::Feature.find(category_id)
          # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
          unless category.nil? 
 	       div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
            <p><strong>
-<%=        link_to Category.find(category_id).title, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
+<%=        link_to SubjectsIntegration::Feature.find(category_id).header, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
              :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %>
            </strong> (<%= count %>)
            </p>

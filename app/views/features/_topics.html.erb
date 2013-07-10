@@ -5,7 +5,7 @@
       if !ot.nil? %>
       <li>
 <%      # Is there a way to prevent from hard-coding the Geographical Features category id (20) here? %>
-<%=     link_to ot.title, SubjectsIntegration::SubjectsResource.get_url + "features/#{fot.category_id}" %>
+<%=     link_to ot.header, "#{SubjectsIntegration::SubjectsResource.get_url}features/#{fot.category_id}" %>
 <%=     note_popup_link_for(fot) %>
 <%=     time_units_for(fot) %>
       </li>

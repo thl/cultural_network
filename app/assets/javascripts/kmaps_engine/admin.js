@@ -10,7 +10,7 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require topical_map_integration/application
+//= require subjects_integration/application
 
 jQuery(document).ready(function(){
 	// highlightt .listGrid rows

@@ -1,25 +1,13 @@
 Rails.application.routes.draw do
   resources :languages
   resource :session
-  resources :categories do
-    resources :counts, :controller => 'cached_category_counts'
-  end
   namespace :admin do
     resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
-      :feature_types, :geo_code_types, :languages, :note_titles, :notes, :orthographic_systems, :perspectives,
+      :feature_types, :geo_code_types, :languages, :note_titles, :orthographic_systems, :perspectives,
       :phonetic_systems, :users, :writing_systems, :xml_documents, :views
     match 'openid_new' => 'users#openid_new'
     match 'openid_create' => 'users#create', :via => :post
     root :to => 'default#index'
-    resources :category_features do
-      resources :citations
-      resources :notes do
-        get :add_author, :on => :collection
-      end
-      resources :time_units do
-        get :new_form, :on => :collection
-      end
-    end
     resources :citations do
       resources :pages
     end
@@ -57,15 +45,6 @@ Rails.application.routes.draw do
         get :add_author, :on => :collection
       end
     end
-    resources :feature_object_types do
-      resources :citations
-      resources :notes do
-        get :add_author, :on => :collection
-      end
-      resources :time_units do
-        get :new_form, :on => :collection
-      end
-    end
     resources :feature_relations do
       resources :citations
       resources :notes do
@@ -83,9 +62,8 @@ Rails.application.routes.draw do
       end
       collection do
         match 'prioritize_feature_names/:id' => 'feature_names#prioritize', :as => :prioritize_feature_names
-        match 'prioritize_feature_types/:id' => 'feature_object_types#prioritize', :as => :prioritize_feature_object_types
       end
-      resources :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations
+      resources :citations, :feature_geo_codes, :feature_names, :feature_relations
       resources :association_notes do
         get :add_author, :on => :collection
       end
@@ -98,6 +76,9 @@ Rails.application.routes.draw do
     end
     resources :feature_pids do
       get :available, :on => :collection
+    end
+    resources :notes do
+      get :add_author, :on => :collection
     end
     resources :time_units do
       resources :notes do
@@ -121,7 +102,9 @@ Rails.application.routes.draw do
       get :topics
     end
     collection do
+      get :all
       get :characteristics_list
+      get :list
       post :search
       match 'by_fid/:fids.:format' => 'features#by_fid'
       match 'by_old_pid/:old_pids' => 'features#by_old_pid'
@@ -140,9 +123,6 @@ Rails.application.routes.draw do
     end
     match 'by_topic/:id.:format' => 'topics#feature_descendants'
   end
-  resources :category_features do
-    resources :notes, :citations
-  end
   resources :description do
     resources :notes, :citations
   end
@@ -153,9 +133,6 @@ Rails.application.routes.draw do
     resources :notes, :citations
   end
   resources :feature_name_relations do
-    resources :notes, :citations
-  end
-  resources :feature_object_types do
     resources :notes, :citations
   end
   resources :feature_relations do
