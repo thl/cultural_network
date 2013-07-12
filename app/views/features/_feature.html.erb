@@ -3,7 +3,6 @@
 <%= time_units_for(feature) %>
     <h3><%= ts :for, :what => Feature.model_name.human.titleize.s, :whom => current_perspective %></h3>
 <%= f_breadcrumb(feature) %>
-<% render :partial => 'topics', :locals => {:feature => feature} %>
 <%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 <%  if !feature.descriptions.empty? %>
       <div id='descriptions_div'>

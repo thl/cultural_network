@@ -1,7 +1,7 @@
 class Admin::NotesController < AclController
   resource_controller
   
-  belongs_to :category_feature, :description, :feature_geo_code, :feature_name, :feature_name_relation, :feature_object_type, :feature_relation, :time_unit
+  belongs_to :description, :feature_geo_code, :feature_name, :feature_name_relation, :feature_relation, :time_unit
 
   before_filter :collection
 

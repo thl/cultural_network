@@ -33,14 +33,12 @@
        </tr>
        <tr>
          <th class="leftText"><%= FeatureName.model_name.human(:count => :many).titleize.s %></th>
-         <th class="leftText"><%= Feature.human_attribute_name(:object_type).s %></th>
        </tr>
 <%     features.each do |f| %>
        <tr class="featureRow" id="feature_<%= f.id %>">
          <td class="leftText">
 <%=      link_to h(feature_name_header(f)).s, feature_path(f.fid) %>
          </td>
-         <td class="leftText"><%=h f.object_types.first.title rescue '' %></td>
        </tr>
 <%     end %>
        <tr>

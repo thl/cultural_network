@@ -340,44 +340,6 @@ class Feature < ActiveRecord::Base
     AssociationNote.where(conditions)
   end
     
-  def update_object_type_positions
-    feature_object_types.where(:position => 0).order('created_at').inject(feature_object_types.maximum(:position)+1) do |pos, fot|
-      fot.update_attribute(:position, pos)
-      pos + 1
-    end
-  end
-  
-  def update_cached_feature_relation_categories
-    CachedFeatureRelationCategory.destroy_all(:feature_id => self.id)
-    CachedFeatureRelationCategory.destroy_all(:related_feature_id => self.id)
- 	
-  	self.all_relations.each do |relation|
-  		relation.child_node.feature_object_types.each do |fot|
-  		  CachedFeatureRelationCategory.create({
-  		    :feature_id => relation.parent_node_id,
-  		    :related_feature_id => relation.child_node_id,
-  		    :category_id => fot.category_id,
-  		    :feature_relation_type_id => relation.feature_relation_type_id,
-  		    :feature_is_parent => true,
-  		    :perspective_id => relation.perspective_id
-  		  })
-  		end
-  		parent_node = relation.parent_node
-  		if !parent_node.nil?
-  		  parent_node.feature_object_types.each do |fot|
-    		  CachedFeatureRelationCategory.create({
-    		    :feature_id => relation.child_node_id,
-    		    :related_feature_id => relation.parent_node_id,
-    		    :category_id => fot.category_id,
-    		    :feature_relation_type_id => relation.feature_relation_type_id,
-    		    :feature_is_parent => false,
-    		    :perspective_id => relation.perspective_id
-    		  })
-    		end
-		  end
-  	end
-  end
-  
   def clone_with_names
     new_feature = Feature.create(:fid => Feature.generate_pid, :is_blank => false, :is_public => true, :skip_update => true)
     names = self.names

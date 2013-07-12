@@ -43,7 +43,7 @@ class FeaturesController < ApplicationController
       format.csv
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
     end
-  end 
+  end
 
   #
   #
@@ -167,7 +167,7 @@ class FeaturesController < ApplicationController
     @features = nil
     @params = params
     # The search params that should be observed when creating the session store of search params
-    valid_search_keys = [:filter, :scope, :match, :search_scope, :object_type, :characteristic_id, :has_descriptions, :page ]
+    valid_search_keys = [:filter, :scope, :match, :search_scope, :has_descriptions, :page ]
     fid = params[:fid]
     #search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
     #if !search_scope.blank?
@@ -179,12 +179,6 @@ class FeaturesController < ApplicationController
     #    else
     #    end
     #  when 'contextual'
-    #    if !params[:object_type].blank?
-    #      options[:joins] = "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
-    #      options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
-    #      options[:conditions]['features.is_public'] = 1
-    #      options[:conditions].delete(:is_public)
-    #    end
     #    if params[:context_id].blank?
     #      perform_global_search(options, search_options)
     #    else
@@ -197,19 +191,6 @@ class FeaturesController < ApplicationController
         @features = Feature.where(:is_public => 1, :fid => fid.gsub(/[^\d]/, '').to_i).page(1)
       else
         joins = []
-        if !params[:object_type].blank?
-          joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
-          conditions['ccfa.category_id'] = params[:object_type].split(',')
-          conditions['features.is_public'] = 1
-          conditions.delete(:is_public)
-        end
-        if !params[:characteristic_id].blank?
-          joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
-          conditions['cf.category_id'] = params[:characteristic_id].split(',')
-          conditions['cf.type'] = nil
-          conditions['features.is_public'] = 1
-          conditions.delete(:is_public)
-        end
         if !params[:has_descriptions].blank? && params[:has_descriptions] == '1'
           search_options[:has_descriptions] = true
         end
@@ -292,26 +273,6 @@ class FeaturesController < ApplicationController
       @current_tab_id = :related
     end
   end
-  
-  def related_list
-    @feature = Feature.find(params[:id])
-    @feature_relation_type= FeatureRelationType.find(params[:feature_relation_type_id])
-    @feature_is_parent = params[:feature_is_parent]
-    @category = SubjectsIntegration::Feature.find(params[:category_id])
-    @relations = CachedFeatureRelationCategory.where(
-          'cached_feature_relation_categories.feature_id' => params[:id],
-          'cached_feature_relation_categories.category_id' => params[:category_id],
-          'cached_feature_relation_categories.feature_relation_type_id' => @feature_relation_type,
-          'cached_feature_relation_categories.feature_is_parent' => @feature_is_parent,
-          'cached_feature_names.view_id' => current_view.id
-      ).joins('INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id'
-      ).order('feature_names.name')
-      # Should associations be set up to allow for this to be handled with :include instead?
-    @total_relations_count = @relations.length
-    @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
-    @params = params
-    # render related_list.js.erb
-  end
     
   # The following three methods are used with the Node Tree
   def expanded
@@ -348,7 +309,6 @@ class FeaturesController < ApplicationController
       @tab_options = {:entity => @feature}
       @current_tab_id = :topics
     end
-    
   end
     
   def set_session_variables
@@ -404,14 +364,13 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.xml { render :xml => collection.to_xml }
       format.json { render :json => collection.to_json, :callback => params[:callback] }
-    end   
+    end
   end
   
   def api_format_feature(feature)
     f = {}
     f[:id] = feature.id
     f[:name] = feature.name
-    f[:types] = feature.object_types.collect{|t| {:id => t.id, :title => t.title} }
     f[:descriptions] = feature.descriptions.collect{|d| {
       :id => d.id,
       :is_primary => d.is_primary,

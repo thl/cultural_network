@@ -1,7 +1,7 @@
 class Admin::CitationsController < AclController
   resource_controller
   
-  belongs_to :description, :category_feature, :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_object_type, :feature_geo_code
+  belongs_to :description, :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_geo_code
   
   create.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }
   update.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }

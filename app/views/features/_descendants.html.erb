@@ -5,12 +5,10 @@
      <tr><td colspan="2" style="padding:.3em;"><%= will_paginate descendants, :custom => true %></td></tr>
      <tr>
        <th><%= Feature.human_attribute_name(:descendant).s %></th>
-       <th><%= Feature.human_attribute_name(:object_type).s %></th>
      </tr>
 <%   descendants.each do |child| %>
      <tr id="feature_<%= child.id %>">
        <td><%= f_link(child, feature_path(child.fid)) %></td>
-       <td><%=h child.object_types.first.title rescue '' %></td>
      </tr>
 <%   end %>
      </table>

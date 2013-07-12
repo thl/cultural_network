@@ -349,7 +349,7 @@ var NodeMenu = {
 	// Checks the window.location.hash for a node ID and then loads that node and the expanded tree if necessary
 	loadLocation: function(){
 		if(window.location.search){
-			var search_params = ['context_id', 'filter', 'object_type', 'scope', 'search_scope'];
+			var search_params = ['context_id', 'filter', 'scope', 'search_scope'];
 			var query = window.location.search.substr(1);
 			var is_search = false;
 			for(var i in search_params){
@@ -417,7 +417,5 @@ var NodeMenu = {
 		if(menu_item == 'browse'){
 			setTimeout('NodeTree.scrollToSelectedNode(0);', NodeMenu.item_toggle_speed+1);
 		}
-	}
-	
+	}	
 };
-

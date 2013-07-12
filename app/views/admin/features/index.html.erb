@@ -23,7 +23,6 @@ end %>
       <tr>
         <th class="listActionsCol"></th>
         <th class="leftText"><%= FeatureName.model_name.human(:count => :many).titleize.s %></th>
-        <th><%= Feature.human_attribute_name(:object_type).s %></th>
       </tr>
 <%    @collection.each do |item| %>
       <tr class="<%= @context_feature==item ? 'selected' : '' %>">  
@@ -39,13 +38,6 @@ end %>
         </td>
         <td style="width:60%;">
 <%=     f_label(item) %>
-        </td>
-        <td class="leftText">
-<%      if @context_feature==item %>
-          <strong style="color:black;"><%= item.object_types.first.title rescue '' %></strong>
-<%      else %>
-<%=       link_to item.object_types.first.header, current_features_path(:context_id=>item.id, :filter=>params[:filter]) unless item.object_types.empty? %>
-<%      end %>  
         </td>
       </tr>
 <%    end %>

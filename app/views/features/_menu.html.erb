@@ -23,8 +23,6 @@
 <%=       check_box_tag :has_descriptions, '1', @search_form_params[:has_descriptions] == '1' %>
 <%=       label_tag :has_descriptions, ts('snippet.essay.with') %>
         </div>
-        <div id="tmb_category_selector_object_type"></div>
-        <div id="characteristic_selector"></div>
 <!--    <div>  Select Scope: -->
 <%        # radio_button_tag :search_scope, :global, @search_form_params[:search_scope] == 'global' Global
           # radio_button_tag :search_scope, :contextual, @search_form_params[:search_scope] == 'contextual' Contextual
@@ -93,7 +91,7 @@
 <%=  javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_id_by_perspective(current_perspective)})" %>
 <% end
    # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
-   valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
+   valid_search_params = [:filter, :context_id, :match, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
    unless (params.keys & valid_search_params).empty? %>
 <%=  link_to '', search_features_path, :remote => true, :id => 'ajax_search_results', :style => "display:none;" %>
 <%=  javascript_tag("$('#ajax_search_results').bind('ajax:beforeSend', function(){ NodeMenu.beginSearch() })") %>

@@ -9,14 +9,7 @@
   # Make the Results menu item be shown if a search exists in the session
     node_menu_options[:show_results] = true unless session[:search].blank? %>
 	NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json.html_safe %>);
-	var characteristic_data = <%= CategoryFeature.get_json_data %>;
-	var characteristic_selector = new CharacteristicSelector();
-	characteristic_selector.init('characteristic_selector', {
-		fieldLabel: "<%= ts 'relat.ed.record', :what => Topic.human_name(:count => :many).titleize %>:",
-		data: characteristic_data
-	});
 <% end %>
-<%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => "#{Feature.human_attribute_name(:object_type).s}: ", :exclude_span => true, :options => {:hasTree => 'true'}) %>
 <!--<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>-->
 <div style="clear:both;"></div>
 <div id="FeatureContainer">

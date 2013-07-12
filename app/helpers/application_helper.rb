@@ -19,7 +19,7 @@ module ApplicationHelper
 	  str += "<li>#{link_to 'Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20end%20user%20manual.html', {:hreflang => 'End User Manual'}}</li>"
     str += "<li>#{link_to 'Edit', admin_root_path, {:hreflang => 'Manage places.'}}</li>\n" if logged_in?
     str += "<li>#{link_to 'Editing Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20editorial%20manual.html', {:hreflang => 'Editorial Manual'}}</li>" if logged_in?
-    str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{SubjectsIntegration::Feature.get_url('20')}", {:hreflang => 'Feature Thesaurus'}}</li>"
+    str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{SubjectsIntegration::Feature.get_url('20')}", {:hreflang => 'Feature Thesaurus'}}</li>" if defined?(SubjectsIntegration)
     str += "</ul>"
     return str.html_safe
   end
@@ -246,10 +246,8 @@ module ApplicationHelper
       'description' => 'essay',
       'feature_geo_code' => 'geo_code',
       'feature_name' => 'name',
-      'feature_object_type' => 'feature_type',
       'shape' => 'location',
-      'time_unit' => 'date',
-      'category_feature' => Topic.human_name #'kmap_characteristic'
+      'time_unit' => 'date'
     }
     names[str].nil? ? str : names[str]
   end
