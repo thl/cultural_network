@@ -30,16 +30,6 @@ ActiveRecord::Schema.define(:version => 20130213214759) do
     t.datetime "updated_at"
   end
 
-  create_table "cached_category_counts", :force => true do |t|
-    t.integer  "category_id",       :null => false
-    t.integer  "count",             :null => false
-    t.datetime "cache_updated_at",  :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cached_category_counts", ["category_id"], :name => "index_cached_category_counts_on_category_id", :unique => true
-
   create_table "cached_feature_names", :force => true do |t|
     t.integer  "feature_id",      :null => false
     t.integer  "view_id",         :null => false
@@ -60,26 +50,6 @@ ActiveRecord::Schema.define(:version => 20130213214759) do
     t.integer  "feature_relation_type_id"
     t.boolean  "feature_is_parent"
   end
-
-  create_table "category_features", :force => true do |t|
-    t.integer  "feature_id",                        :null => false
-    t.integer  "category_id",                       :null => false
-    t.integer  "perspective_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "position",       :default => 0,     :null => false
-    t.string   "type"
-    t.string   "string_value"
-    t.integer  "numeric_value"
-    t.boolean  "show_parent",    :default => false, :null => false
-    t.boolean  "show_root",      :default => true,  :null => false
-    t.string   "label"
-    t.boolean  "prefix_label",   :default => true,  :null => false
-  end
-
-  add_index "category_features", ["category_id"], :name => "feature_object_types_object_type_id_idx"
-  add_index "category_features", ["feature_id"], :name => "feature_object_types_feature_id_idx"
-  add_index "category_features", ["perspective_id"], :name => "feature_object_types_perspective_id_idx"
 
   create_table "citations", :force => true do |t|
     t.integer  "info_source_id"
@@ -136,15 +106,6 @@ ActiveRecord::Schema.define(:version => 20130213214759) do
     t.integer  "intercalary_month_end_id"
     t.integer  "intercalary_day_end_id"
   end
-
-  create_table "cumulative_category_feature_associations", :force => true do |t|
-    t.integer  "feature_id",  :null => false
-    t.integer  "category_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "cumulative_category_feature_associations", ["category_id", "feature_id"], :name => "by_category_feature", :unique => true
 
   create_table "descriptions", :force => true do |t|
     t.integer  "feature_id",                    :null => false
