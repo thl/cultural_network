@@ -88,6 +88,13 @@ Rails.application.routes.draw do
   end
   resources :features do
     resources :association_notes
+    resources :descriptions do
+      member do
+        get :expand
+        get :show
+        get :contract
+      end
+    end
     member do
       get :all
       get :expanded
@@ -99,13 +106,13 @@ Rails.application.routes.draw do
       get :node_tree_expanded
       get :related
       get :related_list
-      get :topics
     end
     collection do
       get :all
       get :characteristics_list
       get :list
       post :search
+      get :search
       match 'by_fid/:fids.:format' => 'features#by_fid'
       match 'by_old_pid/:old_pids' => 'features#by_old_pid'
       match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code'
@@ -113,13 +120,6 @@ Rails.application.routes.draw do
       match 'fids_by_name/:query.:format' => 'features#fids_by_name', :query => /.*?/
       match 'gis_resources/:fids.:format' => 'features#gis_resources'
       post :set_session_variables
-    end
-    resources :descriptions do
-      member do
-        get :expand
-        get :show
-        get :contract
-      end
     end
     match 'by_topic/:id.:format' => 'topics#feature_descendants'
   end
