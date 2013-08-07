@@ -47,7 +47,7 @@ module KmapsEngine
     # .note
 
     def do_feature_import(filename)
-      country_type = Category.find_by_title('Nation')
+      country_type = SubjectsIntegration::Feature.find(29)
       country_type_id = country_type.id
       current = 0
       feature_ids_with_changed_relations = Array.new
@@ -338,7 +338,7 @@ module KmapsEngine
             else
               name_relation = name[n].parent_relations.where(:parent_node_id => parent_name.id).first
               if name_relation.nil?
-                name_relation = name[n].parent_relations.create(:skip_update => true, :parent_node => parent_name, :phonetic_system => phonetic_system, :is_phonetic => 1, :is_translation => is_translation)
+                name_relation = name[n].parent_relations.create(:skip_update => true, :parent_node_id => parent_name.id, :phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :is_phonetic => 1, :is_translation => is_translation)
                 if name_relation.nil?
                   puts "Could not associate #{name_str} to Tibetan name for feature #{self.feature.pid}."
                 else
@@ -346,7 +346,7 @@ module KmapsEngine
                   name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
                 end
               else
-                name_relation.update_attributes(:phonetic_system => phonetic_system, :is_phonetic => 1, :orthographic_system => nil, :is_orthographic => 0, :is_translation => is_translation)
+                name_relation.update_attributes(:phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :is_phonetic => 1, :orthographic_system_id => nil, :is_orthographic => 0, :is_translation => is_translation)
               end
             end                
           end
@@ -357,7 +357,7 @@ module KmapsEngine
             if !simp_chi_name.nil?
               name_relation = simp_chi_name.parent_relations.first
               if name_relation.nil?
-                name_relation = name[n].child_relations.create(:skip_update => true, :is_orthographic => 1, :orthographic_system => OrthographicSystem.get_by_code('trad.to.simp.ch.translit'), :is_translation => is_translation, :child_node => simp_chi_name)
+                name_relation = name[n].child_relations.create(:skip_update => true, :is_orthographic => 1, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :is_translation => is_translation, :child_node_id => simp_chi_name.id)
                 if name_relation.nil?
                   puts "Could not make #{name_str} a parent of simplified chinese name for feature #{self.feature.pid}"
                 else
@@ -366,15 +366,15 @@ module KmapsEngine
                 end
               elsif !phonetic_system.nil? && phonetic_system.code=='tib.to.chi.transcrip'
                 # only update if its tibetan
-                name_relation.update_attributes(:phonetic_system => nil, :is_phonetic => 0, :orthographic_system => OrthographicSystem.get_by_code('trad.to.simp.ch.translit'), :is_orthographic => 1, :is_translation => is_translation, :parent_node => name[n])
+                name_relation.update_attributes(:phonetic_system_id => nil, :is_phonetic => 0, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :is_orthographic => 1, :is_translation => is_translation, :parent_node_id => name[n].id)
               end
               # pinyin should be a child of the traditional and not the simplified chinese
-              name_relation = simp_chi_name.child_relations.where(:phonetic_system_id => PhoneticSystem.get_by_code('pinyin.transcrip')).first
-              name_relation.update_attribute(:parent_node, name[n]) if !name_relation.nil?
+              name_relation = simp_chi_name.child_relations.where(:phonetic_system_id => PhoneticSystem.get_by_code('pinyin.transcrip').id).first
+              name_relation.update_attribute(:parent_node_id, name[n].id) if !name_relation.nil?
             end
           end
-        else            
-          conditions = {:skip_update => true, :phonetic_system => phonetic_system, :orthographic_system => orthographic_system, :is_translation => is_translation, :alt_spelling_system => alt_spelling_system}
+        else
+          conditions = {:skip_update => true, :phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :orthographic_system_id => orthographic_system.nil? ? nil : orthographic_system.id, :is_translation => is_translation, :alt_spelling_system_id => alt_spelling_system.nil? ? nil : alt_spelling_system.id}
           is_phonetic = self.fields.delete("#{i}.feature_name_relations.is_phonetic")
           if is_phonetic.blank?
             conditions[:is_phonetic] = phonetic_system.nil? ? 0 : 1
@@ -449,14 +449,14 @@ module KmapsEngine
         prefix = i>0 ? "#{i}.feature_types" : 'feature_types'
         feature_type_id = self.fields.delete("#{prefix}.id")
         next if feature_type_id.blank?
-        category = Category.find(feature_type_id)
+        category = SubjectsIntegration::Feature.find(feature_type_id)
         if category.nil?
           puts "Feature type #{feature_type_id} not found."
           next
         end
         feature_object_type = feature_object_types.where(:category_id => category.id).first
         if feature_object_type.nil?
-          feature_object_type = feature_object_types.create(:category => category, :skip_update => true)
+          feature_object_type = feature_object_types.create(:category_id => category.id, :skip_update => true)
           feature_ids_with_object_types_added << self.feature.id if !feature_ids_with_object_types_added.include? self.feature.id
         end
         if feature_object_type.nil?
@@ -497,7 +497,7 @@ module KmapsEngine
         end
         geocodes = self.feature.geo_codes
         geocode = geocodes.find_by_geo_code_type_id(geocode_type.id)
-        geocode = geocodes.create(:geo_code_type => geocode_type, :geo_code_value => geocode_value) if geocode.nil?
+        geocode = geocodes.create(:geo_code_type_id => geocode_type.id, :geo_code_value => geocode_value) if geocode.nil?
         if geocode.nil?
           puts "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{self.feature.pid}"
           next
@@ -647,7 +647,7 @@ module KmapsEngine
         end
         contestations = self.feature.contestations
         contestation = contestations.where(conditions).first
-        contestation = contestations.create(:administrator => administrator, :claimant => claimant, :contested => (contested.downcase == 'yes')) if contestation.nil?
+        contestation = contestations.create(:administrator_id => administrator.id, :claimant_id => claimant.id, :contested => (contested.downcase == 'yes')) if contestation.nil?
         puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{self.feature.pid}." if contestation.nil?
       end
     end
@@ -748,7 +748,7 @@ module KmapsEngine
         kmap_prefix = "#{i}.kmaps"
         kmap_str = self.fields.delete("#{kmap_prefix}.id")
         next if kmap_str.blank?
-        kmap = Category.find(kmap_str.scan(/\d+/).first.to_i)
+        kmap = SubjectsIntegration::Feature.find(kmap_str.scan(/\d+/).first.to_i)
         if kmap.nil?
           puts "Could find kmap #{kmap_str} for feature #{self.feature.pid}."
           next
@@ -780,7 +780,7 @@ module KmapsEngine
         value = self.fields.delete(key)
         next if value.nil?      
         kmap_id = key.scan(/.*[kK](\d+)/).flatten.first.to_i
-        kmap = Category.find(kmap_id)
+        kmap = SubjectsIntegration::Feature.find(kmap_id)
         if kmap.nil?
           puts "Could find kmap for #{kmap_id} associated with #{key} for #{self.feature.pid}."
           next
@@ -817,7 +817,7 @@ module KmapsEngine
         kmap_id = key.scan(/[kK](\d+)/).flatten.first.to_i
         pos = key =~ /time_units|note|info_source/
         if !pos.nil?
-          kmap = Category.find(kmap_id)
+          kmap = SubjectsIntegration::Feature.find(kmap_id)
           if kmap.nil?
             puts "Could find kmap #{kmap_id} associated with #{key} for #{self.feature.pid}."
             next

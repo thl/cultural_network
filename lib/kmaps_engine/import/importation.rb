@@ -51,7 +51,7 @@ class Importation < CsvImportation
             end
             attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
             if time_unit.nil?
-              time_unit = time_units.build(attrs.merge(:date => complex_date))
+              time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
               if !time_unit.date.nil?
                 time_unit.date.save
                 time_unit.save
@@ -73,7 +73,7 @@ class Importation < CsvImportation
             end
             attrs = {:is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id}
             if time_unit.nil?
-              time_unit = time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
+              time_unit = time_units.build(attrs.merge(:start_date_id => complex_start_date.nil? ? nil : complex_start_date.id, :end_date_id => complex_end_date.nil? ? nil : complex_end_date.id))
               time_unit.start_date.save if !time_unit.start_date.nil?
               time_unit.end_date.save if !time_unit.end_date.nil?
               time_unit.save
@@ -94,7 +94,7 @@ class Importation < CsvImportation
             rabjung_id = self.fields.delete("#{field_prefix}.time_units.date.rabjung_id")
             if !rabjung_id.blank?
               complex_date = ComplexDate.create(:rabjung_id => rabjung_id)
-              time_unit = time_units.build(:date => complex_date)
+              time_unit = time_units.build(:date_id => complex_date.id)
               time_unit.save
             end
           else
@@ -104,7 +104,7 @@ class Importation < CsvImportation
               attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
               if time_unit.nil?
                 complex_date = ComplexDate.create(complex_date_attributes)
-                time_unit = time_units.build(attrs.merge(:date => complex_date))
+                time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
                 time_unit.save
               else
                 time_unit.update_attributes(attrs)
@@ -117,7 +117,7 @@ class Importation < CsvImportation
               if time_unit.nil?
                 complex_start_date = ComplexDate.create(complex_start_date_attributes)
                 complex_end_date = ComplexDate.create(complex_end_date_attributes)
-                time_unit = time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
+                time_unit = time_units.build(attrs.merge(:start_date_id => complex_start_date.nil? ? nil : complex_start_date.id, :end_date_id => complex_end_date.nil? ? nil : complex_end_date.id))
                 time_unit.save
               else
                 time_unit.update_attributes(attrs)
@@ -130,7 +130,7 @@ class Importation < CsvImportation
           attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
           if time_unit.nil?
             complex_date = ComplexDate.create(complex_date_attributes)
-            time_unit = time_units.build(attrs.merge(:date => complex_date))
+            time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
             time_unit.save
           else
             time_unit.update_attributes(attrs)
@@ -148,7 +148,7 @@ class Importation < CsvImportation
         end
         attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
         if time_unit.nil?
-          time_unit = time_units.build(attrs.merge(:date => complex_date))
+          time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
           if !time_unit.date.nil?
             time_unit.date.save
             time_unit.save
