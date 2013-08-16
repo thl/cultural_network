@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resource :session
   namespace :admin do
     resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
-      :feature_types, :geo_code_types, :languages, :note_titles, :orthographic_systems, :perspectives,
+      :feature_types, :geo_code_types, :importation_tasks, :languages, :note_titles, :orthographic_systems, :perspectives,
       :phonetic_systems, :users, :writing_systems, :xml_documents, :views
     match 'openid_new' => 'users#openid_new'
     match 'openid_create' => 'users#create', :via => :post

@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: features
+#
+#  id                         :integer          not null, primary key
+#  is_public                  :integer
+#  position                   :integer          default(0)
+#  ancestor_ids               :string(255)
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  old_pid                    :string(255)
+#  is_blank                   :boolean          default(FALSE), not null
+#  fid                        :integer          not null
+#  is_name_position_overriden :boolean          default(FALSE), not null
+#
+
 class Feature < ActiveRecord::Base
   attr_accessible :is_public, :fid, :is_blank, :ancestor_ids, :skip_update
   attr_accessor :skip_update
@@ -36,6 +52,7 @@ class Feature < ActiveRecord::Base
   has_many :descriptions, :dependent => :destroy
   has_many :geo_codes, :class_name => 'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
   has_many :geo_code_types, :through => :geo_codes
+  has_many :imports, :as => 'item', :dependent => :destroy
   has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
   
   # This fetches root *FeatureNames* (names that don't have parents),
@@ -385,19 +402,3 @@ class Feature < ActiveRecord::Base
     
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: features
-#
-#  id                         :integer         not null, primary key
-#  ancestor_ids               :string(255)
-#  fid                        :integer         not null
-#  is_blank                   :boolean         not null
-#  is_name_position_overriden :boolean         not null
-#  is_public                  :integer(2)
-#  old_pid                    :string(255)
-#  position                   :integer         default(0)
-#  created_at                 :datetime
-#  updated_at                 :datetime

@@ -1,4 +1,6 @@
 class Importation < CsvImportation
+  attr_accessor :spreadsheet
+  
   def self.to_complex_date(str, certainty_id = nil, season_id = nil)
     complex_date = nil
     dash = str.index('-')
@@ -19,6 +21,19 @@ class Importation < CsvImportation
     h.delete('id')
     h.delete('updated_at')
     h.delete('created_at')
+    h.delete('animal_certainty_id')
+    h.delete('calendrical_certainty_id')
+    h.delete('day_certainty_id')
+    h.delete('day_of_week_certainty_id')
+    h.delete('element_certainty_id')
+    h.delete('gender_certainty_id')
+    h.delete('hour_certainty_id')
+    h.delete('minute_certainty_id')
+    h.delete('month_certainty_id')
+    h.delete('rabjung_certainty_id')
+    h.delete('season_certainty_id')
+    h.delete('time_of_day_certainty_id')
+    h.delete('year_certainty_id')
     h
   end
   
@@ -51,14 +66,12 @@ class Importation < CsvImportation
             end
             attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
             if time_unit.nil?
-              time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
-              if !time_unit.date.nil?
-                time_unit.date.save
-                time_unit.save
-              end
+              complex_date.save
+              time_unit = time_units.create(attrs.merge(:date_id => complex_date.id))
             else
               time_unit.update_attributes(attrs)
             end
+            self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
           end
         else
           complex_start_date = start_date.blank? ? nil : Importation.to_complex_date(start_date, start_certainty_id, season_id)
@@ -73,13 +86,13 @@ class Importation < CsvImportation
             end
             attrs = {:is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id}
             if time_unit.nil?
-              time_unit = time_units.build(attrs.merge(:start_date_id => complex_start_date.nil? ? nil : complex_start_date.id, :end_date_id => complex_end_date.nil? ? nil : complex_end_date.id))
-              time_unit.start_date.save if !time_unit.start_date.nil?
-              time_unit.end_date.save if !time_unit.end_date.nil?
-              time_unit.save
+              complex_start_date.save if !complex_start_date.nil?
+              complex_end_date.save if !complex_end_date.nil?
+              time_unit = time_units.create(attrs.merge(:start_date_id => complex_start_date.nil? ? nil : complex_start_date.id, :end_date_id => complex_end_date.nil? ? nil : complex_end_date.id))
             else
               time_unit.update_attributes(attrs)
             end
+            self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
           end
         end
       else
@@ -94,8 +107,8 @@ class Importation < CsvImportation
             rabjung_id = self.fields.delete("#{field_prefix}.time_units.date.rabjung_id")
             if !rabjung_id.blank?
               complex_date = ComplexDate.create(:rabjung_id => rabjung_id)
-              time_unit = time_units.build(:date_id => complex_date.id)
-              time_unit.save
+              time_unit = time_units.create(:date_id => complex_date.id)
+              self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
             end
           else
             if start_day==end_day && start_month==end_month
@@ -104,11 +117,11 @@ class Importation < CsvImportation
               attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
               if time_unit.nil?
                 complex_date = ComplexDate.create(complex_date_attributes)
-                time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
-                time_unit.save
+                time_unit = time_units.create(attrs.merge(:date_id => complex_date.id))
               else
                 time_unit.update_attributes(attrs)
               end
+              self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
             else
               complex_start_date_attributes = {:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id}
               complex_end_date_attributes = {:day => end_day, :day_certainty_id => end_certainty_id, :month => end_month, :month_certainty_id => end_certainty_id, :season_id => season_id, :season_certainty_id => end_certainty_id}
@@ -117,8 +130,7 @@ class Importation < CsvImportation
               if time_unit.nil?
                 complex_start_date = ComplexDate.create(complex_start_date_attributes)
                 complex_end_date = ComplexDate.create(complex_end_date_attributes)
-                time_unit = time_units.build(attrs.merge(:start_date_id => complex_start_date.nil? ? nil : complex_start_date.id, :end_date_id => complex_end_date.nil? ? nil : complex_end_date.id))
-                time_unit.save
+                time_unit = time_units.create(attrs.merge(:start_date_id => complex_start_date.nil? ? nil : complex_start_date.id, :end_date_id => complex_end_date.nil? ? nil : complex_end_date.id))
               else
                 time_unit.update_attributes(attrs)
               end
@@ -130,11 +142,11 @@ class Importation < CsvImportation
           attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
           if time_unit.nil?
             complex_date = ComplexDate.create(complex_date_attributes)
-            time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
-            time_unit.save
+            time_unit = time_units.create(attrs.merge(:date_id => complex_date.id))
           else
             time_unit.update_attributes(attrs)
           end
+          self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
         end
       end
     else
@@ -148,15 +160,13 @@ class Importation < CsvImportation
         end
         attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
         if time_unit.nil?
-          time_unit = time_units.build(attrs.merge(:date_id => complex_date.id))
-          if !time_unit.date.nil?
-            time_unit.date.save
-            time_unit.save
-          end
+          complex_date.save
+          time_unit = time_units.create(attrs.merge(:date_id => complex_date.id))
         else
           time_unit.update_attributes(attrs)
         end
+        self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
       end
-    end            
+    end
   end
 end

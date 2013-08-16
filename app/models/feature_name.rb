@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: feature_names
+#
+#  id                          :integer          not null, primary key
+#  feature_id                  :integer          not null
+#  name                        :string(255)      not null
+#  feature_name_type_id        :integer
+#  ancestor_ids                :string(255)
+#  position                    :integer          default(0)
+#  etymology                   :text
+#  writing_system_id           :integer
+#  language_id                 :integer          not null
+#  created_at                  :datetime
+#  updated_at                  :datetime
+#  is_primary_for_romanization :boolean          default(FALSE)
+#
+
 class FeatureName < ActiveRecord::Base
   attr_accessible :name, :feature_name_type_id, :language_id, :writing_system_id, :etymology, :feature_name,
     :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id
@@ -44,6 +62,7 @@ class FeatureName < ActiveRecord::Base
   belongs_to :type, :class_name=>'FeatureNameType', :foreign_key=>:feature_name_type_id
   # belongs_to :info_source, :class_name => 'Document'
   has_many :cached_feature_names
+  has_many :imports, :as => 'item', :dependent => :destroy
   
   #
   #
@@ -94,21 +113,3 @@ class FeatureName < ActiveRecord::Base
     self.where(build_like_conditions(%W(feature_names.name feature_names.etymology), filter_value))
   end  
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: feature_names
-#
-#  id                          :integer         not null, primary key
-#  feature_id                  :integer         not null
-#  feature_name_type_id        :integer
-#  language_id                 :integer         not null
-#  writing_system_id           :integer
-#  ancestor_ids                :string(255)
-#  etymology                   :text
-#  is_primary_for_romanization :boolean
-#  name                        :string(255)     not null
-#  position                    :integer         default(0)
-#  created_at                  :timestamp
-#  updated_at                  :timestamp

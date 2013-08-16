@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: feature_relations
+#
+#  id                       :integer          not null, primary key
+#  child_node_id            :integer          not null
+#  parent_node_id           :integer          not null
+#  ancestor_ids             :string(255)
+#  notes                    :text
+#  role                     :string(20)
+#  perspective_id           :integer          not null
+#  created_at               :datetime
+#  updated_at               :datetime
+#  feature_relation_type_id :integer          not null
+#
+
 class FeatureRelation < ActiveRecord::Base
   attr_accessible :perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update
   
@@ -33,6 +49,7 @@ class FeatureRelation < ActiveRecord::Base
   #
   belongs_to :perspective
   belongs_to :feature_relation_type
+  has_many :imports, :as => 'item', :dependent => :destroy
   
   #
   #
@@ -103,19 +120,3 @@ class FeatureRelation < ActiveRecord::Base
     end
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: feature_relations
-#
-#  id                       :integer         not null, primary key
-#  child_node_id            :integer         not null
-#  feature_relation_type_id :integer         not null
-#  parent_node_id           :integer         not null
-#  perspective_id           :integer         not null
-#  ancestor_ids             :string(255)
-#  notes                    :text
-#  role                     :string(20)
-#  created_at               :timestamp
-#  updated_at               :timestamp

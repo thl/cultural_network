@@ -46,6 +46,7 @@ module AdminHelper
     resources[FeatureRelation.model_name.human(:count => :many).titleize.s] = admin_feature_relations_path if authorized? hash_for_admin_feature_relations_path
     resources[FeatureRelationType.model_name.human(:count => :many).titleize.s] = admin_feature_relation_types_path if authorized? hash_for_admin_feature_relation_types_path
     resources[GeoCodeType.model_name.human(:count => :many).titleize.s] = admin_geo_code_types_path if authorized? hash_for_admin_geo_code_types_path
+    resources[ImportationTask.model_name.human(:count => :many).titleize.s] = admin_importation_tasks_path if authorized? hash_for_admin_importation_tasks_path
     resources[Language.model_name.human(:count => :many).titleize.s] = admin_languages_path if authorized? hash_for_admin_languages_path
     resources[Note.model_name.human(:count => :many).titleize.s] = admin_notes_path if authorized? admin_notes_path hash_for_admin_notes_path
     resources[NoteTitle.model_name.human(:count => :many).titleize.s] = admin_note_titles_path if authorized? hash_for_admin_note_titles_path

@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: feature_name_relations
+#
+#  id                     :integer          not null, primary key
+#  child_node_id          :integer          not null
+#  parent_node_id         :integer          not null
+#  ancestor_ids           :string(255)
+#  is_phonetic            :integer
+#  is_orthographic        :integer
+#  is_translation         :integer
+#  is_alt_spelling        :integer
+#  phonetic_system_id     :integer
+#  orthographic_system_id :integer
+#  alt_spelling_system_id :integer
+#  created_at             :datetime
+#  updated_at             :datetime
+#
+
 class FeatureNameRelation < ActiveRecord::Base
   attr_accessible :is_translation, :is_phonetic, :phonetic_system_id, :is_orthographic, :orthographic_system_id,
     :is_alt_spelling, :alt_spelling_system_id, :parent_node_id, :child_node_id, :ancestor_ids, :skip_update
@@ -32,6 +51,7 @@ class FeatureNameRelation < ActiveRecord::Base
   belongs_to :phonetic_system
   belongs_to :alt_spelling_system
   belongs_to :orthographic_system
+  has_many :imports, :as => 'item', :dependent => :destroy
   
   def to_s
     "\"#{child_node}\" relation to \"#{parent_node}\""
@@ -64,24 +84,4 @@ class FeatureNameRelation < ActiveRecord::Base
     self.where(build_like_conditions(%W(children.name parents.name), filter_value)
     ).joins('LEFT JOIN feature_names parents ON parents.id=feature_name_relations.parent_node_id LEFT JOIN feature_names children ON children.id=feature_name_relations.child_node_id')
   end
-  
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: feature_name_relations
-#
-#  id                     :integer         not null, primary key
-#  alt_spelling_system_id :integer
-#  child_node_id          :integer         not null
-#  orthographic_system_id :integer
-#  parent_node_id         :integer         not null
-#  phonetic_system_id     :integer
-#  ancestor_ids           :string(255)
-#  is_alt_spelling        :integer
-#  is_orthographic        :integer
-#  is_phonetic            :integer
-#  is_translation         :integer
-#  created_at             :timestamp
-#  updated_at             :timestamp

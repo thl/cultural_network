@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: notes
+#
+#  id                :integer          not null, primary key
+#  notable_type      :string(255)
+#  notable_id        :integer
+#  note_title_id     :integer
+#  custom_note_title :string(255)
+#  content           :text
+#  created_at        :datetime
+#  updated_at        :datetime
+#  association_type  :string(255)
+#  is_public         :boolean          default(TRUE)
+#
+
 class Note < ActiveRecord::Base
   # Included for use of model_display_name in notable_type_name.  Is there
   # a better approach to this?
@@ -7,6 +23,8 @@ class Note < ActiveRecord::Base
   belongs_to :notable, :polymorphic=>true
   belongs_to :note_title
   has_and_belongs_to_many :authors, :class_name => 'AuthenticatedSystem::Person', :join_table => 'authors_notes', :association_foreign_key => 'author_id'
+  has_many :imports, :as => 'item', :dependent => :destroy
+  
   accepts_nested_attributes_for :authors
   
   before_save :determine_title
@@ -41,21 +59,4 @@ class Note < ActiveRecord::Base
       self.custom_note_title = ""
     end
   end
-  
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: notes
-#
-#  id                :integer         not null, primary key
-#  notable_id        :integer
-#  note_title_id     :integer
-#  association_type  :string(255)
-#  content           :text
-#  custom_note_title :string(255)
-#  is_public         :boolean         default(TRUE)
-#  notable_type      :string(255)
-#  created_at        :timestamp
-#  updated_at        :timestamp

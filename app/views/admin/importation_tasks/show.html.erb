@@ -1,0 +1,20 @@
+<% add_breadcrumb_item link_to(collection_name, collection_path)
+   add_breadcrumb_item link_to(@object.task_code, admin_importation_task_path(@object)) %>
+<fieldset>
+  <legend>
+<%= model_name.titleize %>
+<%= edit_item_link @object %>
+  </legend>
+  <div class="row">
+    <label><%= ImportationTask.human_attribute_name(:task_code).s %></label>
+    <span><%= def_if_blank(@object, :task_code) %></span>
+  </div>
+  <p>
+    <b><%= ImportedSpreadsheet.human_attribute_name(:filename).s %></b>
+  </p>
+    <ul>
+<%  for spreadsheet in @object.spreadsheets %>
+      <li><i><%= spreadsheet.filename %></i>: <%= spreadsheet.imports.count %> imported items.<li>
+<%  end %>
+    </ul>
+</fieldset>

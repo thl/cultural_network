@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: feature_relation_types
+#
+#  id               :integer          not null, primary key
+#  is_symmetric     :boolean
+#  label            :string(255)      not null
+#  asymmetric_label :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  code             :string(255)      not null
+#  is_hierarchical  :boolean          default(FALSE), not null
+#  asymmetric_code  :string(255)
+#
+
 class FeatureRelationType < ActiveRecord::Base
   attr_accessible :is_hierarchical, :is_symmetric, :label, :asymmetric_label, :code, :asymmetric_code
   
@@ -66,18 +81,3 @@ class FeatureRelationType < ActiveRecord::Base
     frt_id.nil? ? nil : FeatureRelationType.find(frt_id)
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: feature_relation_types
-#
-#  id               :integer         not null, primary key
-#  asymmetric_code  :string(255)
-#  asymmetric_label :string(255)
-#  code             :string(255)     not null
-#  is_hierarchical  :boolean         not null
-#  is_symmetric     :boolean
-#  label            :string(255)     not null
-#  created_at       :datetime
-#  updated_at       :datetime

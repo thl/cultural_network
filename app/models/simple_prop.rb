@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: simple_props
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  code        :string(255)
+#  description :text
+#  notes       :text
+#  type        :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 # now Language has all attributes and methods of SimpleProp
 # end
 #
@@ -42,17 +56,3 @@ class SimpleProp < ActiveRecord::Base
     self.where(build_like_conditions(%W(simple_props.name simple_props.code simple_props.description simple_props.notes), filter_value))
   end  
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: simple_props
-#
-#  id          :integer         not null, primary key
-#  code        :string(255)
-#  description :text
-#  name        :string(255)
-#  notes       :text
-#  type        :string(255)
-#  created_at  :timestamp
-#  updated_at  :timestamp

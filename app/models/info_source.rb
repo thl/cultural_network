@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: info_sources
+#
+#  id             :integer          not null, primary key
+#  code           :string(255)      not null
+#  title          :string(255)
+#  agent          :string(255)
+#  date_published :date
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
 class InfoSource < ActiveRecord::Base
   has_many :citations
   has_many :feature_geo_codes
@@ -25,16 +38,3 @@ class InfoSource < ActiveRecord::Base
     info_source
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: info_sources
-#
-#  id             :integer         not null, primary key
-#  agent          :string(255)
-#  code           :string(255)     not null
-#  date_published :date
-#  title          :string(255)
-#  created_at     :timestamp
-#  updated_at     :timestamp
