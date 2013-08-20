@@ -52,8 +52,10 @@ class Feature < ActiveRecord::Base
   has_many :descriptions, :dependent => :destroy
   has_many :geo_codes, :class_name => 'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
   has_many :geo_code_types, :through => :geo_codes
+  has_many :illustrations, :dependent => :destroy
+  has_one  :illustration, :conditions => { :is_primary => true }
   has_many :imports, :as => 'item', :dependent => :destroy
-  has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
+  has_one  :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
   
   # This fetches root *FeatureNames* (names that don't have parents),
   # within the scope of the current feature
@@ -294,7 +296,7 @@ class Feature < ActiveRecord::Base
     
   def media_count(options = {})
     media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count", :expires_in => 1.day) do
-      media_place_count = MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).dup
+      media_place_count = MmsIntegration::MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).dup
       media_count_hash = { 'Medium' => media_place_count.shift.count.to_i }
       media_place_count.each{|count| media_count_hash[count.medium_type] = count.count.to_i }
       media_count_hash
@@ -304,19 +306,19 @@ class Feature < ActiveRecord::Base
   end
   
   def media_url
-    MediaManagementResource.get_url + kmap_path
+    MmsIntegration::MediaManagementResource.get_url + kmap_path
   end
 
   def pictures_url
-    MediaManagementResource.get_url + kmap_path('pictures')
+    MmsIntegration::MediaManagementResource.get_url + kmap_path('pictures')
   end
 
   def videos_url
-    MediaManagementResource.get_url + kmap_path('videos')
+    MmsIntegration::MediaManagementResource.get_url + kmap_path('videos')
   end
 
   def documents_url
-    MediaManagementResource.get_url + kmap_path('documents')
+    MmsIntegration::MediaManagementResource.get_url + kmap_path('documents')
   end
   
   #

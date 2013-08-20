@@ -104,11 +104,11 @@ module KmapsEngine
         if info_source_id.blank?
           info_source_code = self.fields.delete("#{field_prefix}.info_source.code")
           if !info_source_code.blank?
-            info_source = Document.find_by_original_medium_id(info_source_code)
+            info_source = MmsIntegration::Document.find_by_original_medium_id(info_source_code)
             puts "Info source with code #{info_source_code} was not found." if info_source.nil?
           end
         else
-          info_source = Document.find(info_source_id)
+          info_source = MmsIntegration::Document.find(info_source_id)
           puts "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
         end              
       rescue Exception => e

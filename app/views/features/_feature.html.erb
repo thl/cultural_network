@@ -16,7 +16,7 @@
       ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
     ]
     if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
-      <h3><%= ts 'associate.d.record', :what => Medium.human_name(:count => :many).titleize %></h3>
+      <h3><%= ts 'associate.d.record', :what => MmsIntegration::Medium.human_name(:count => :many).titleize %></h3>
       <ul><%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("").html_safe %></ul>
 <%  end %>
     <p>

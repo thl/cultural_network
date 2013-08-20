@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  feature_id: 1
+  picture_id: 1
+  picture_type: MyString
+  is_primary: false
+
+two:
+  feature_id: 1
+  picture_id: 1
+  picture_type: MyString
+  is_primary: false

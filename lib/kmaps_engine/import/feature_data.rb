@@ -179,7 +179,7 @@ module KmapsEngine
     def extract_citations(doc, object)
       authorities = (doc/'/authority')
       authorities.each do |authority|
-        is = Document.find(authority.inner_text)
+        is = MmsIntegration::Document.find(authority.inner_text)
         cit = Citation.create(:info_source_id => is.id, :citable=> object)
       end
 
