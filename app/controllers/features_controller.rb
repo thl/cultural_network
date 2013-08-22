@@ -1,5 +1,6 @@
 class FeaturesController < ApplicationController
-  caches_page :show, :all, :children, :list
+  caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? }
+  caches_page :all, :children, :list
   caches_action :node_tree_expanded, :cache_path => Proc.new {|c| cache_path}
   
   #

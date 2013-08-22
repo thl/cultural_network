@@ -5,7 +5,7 @@ require 'kmaps_engine/import/feature_importation'
 namespace :db do
   namespace :import do
     csv_desc = "Use to import CSV containing features into DB.\n" +
-                  "Syntax: rake db:import:csv SOURCE=csv-file-name TASK=task_code"
+                  "Syntax: rake db:import:features SOURCE=csv-file-name TASK=task_code"
     desc csv_desc
     task :features => :environment do
       source = ENV['SOURCE']
