@@ -13,11 +13,5 @@ namespace :kmaps_engine do
         puts 'User and password needed! Use MMS_USER= to set user from command-line.'
       end
     end
-    
-    desc 'Imports thumbnails from MMS'
-    task :illustrations => :environment do |t|
-      require File.join(File.dirname(__FILE__), '../kmaps_engine/import/image_import.rb')
-      ImageImport.do_image_import
-    end
   end
 end

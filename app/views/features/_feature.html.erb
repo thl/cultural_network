@@ -3,6 +3,17 @@
 <%= time_units_for(feature) %>
     <h3><%= ts :for, :what => Feature.model_name.human.titleize.s, :whom => current_perspective %></h3>
 <%= f_breadcrumb(feature) %>
+<%  if !feature.illustration.nil?
+	  picture = feature.illustration.picture %>
+	  <p>&nbsp;</p>
+	  <div id="gallery"><div id="illustration">
+<%=   image_tag(picture.url, :height => 200) %>
+<%    if !picture.caption.nil? %>
+        <p><%= picture.caption %></p>
+<%    end %>
+      </div></div>
+	  <div style="clear: both;"></div>
+<%  end %>
 <%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 <%  if !feature.descriptions.empty? %>
       <div id='descriptions_div'>
