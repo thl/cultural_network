@@ -1,6 +1,6 @@
 class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? }
-  caches_page :all, :children, :list
+  caches_page :all, :children, :list, :nested
   caches_action :node_tree_expanded, :cache_path => Proc.new {|c| cache_path}
   
   #
@@ -253,6 +253,21 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.xml { render 'all_collection' if params_id.nil? }
       format.json { render :json => Hash.from_xml(render_to_string(:action => params_id.nil? ? 'all_collection.xml.builder' : 'all.xml.builder')) }
+    end
+  end
+  
+  def nested
+    params_id = params[:id]
+    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    @view ||= View.get_by_code('roman.popular')
+    if params_id.nil?
+      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view)
+    else
+      @feature = Feature.get_by_fid(params_id)
+    end
+    respond_to do |format|
+      format.xml { render 'nested_collection' if params_id.nil? }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => params_id.nil? ? 'nested_collection.xml.builder' : 'nested.xml.builder')) }
     end
   end
   

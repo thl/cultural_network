@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       get :descendants
       get :iframe
       get :list
+      get :nested
       get :node_tree_expanded
       get :related
       get :related_list
@@ -111,6 +112,7 @@ Rails.application.routes.draw do
       get :all
       get :characteristics_list
       get :list
+      get :nested
       post :search
       get :search
       match 'by_fid/:fids.:format' => 'features#by_fid'
