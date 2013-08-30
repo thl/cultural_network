@@ -29,4 +29,17 @@ class Illustration < ActiveRecord::Base
   def to_s
     self.picture.instance_of?(MmsIntegration::Picture) ? self.picture.get_url(nil, :format => '') : self.picture.url
   end
+  
+  def ensure_one_primary
+    parent = self.feature
+    primary_illustrations = parent.illustrations.where(:is_primary => true)
+    case primary_illustrations.count
+    when 0
+      parent.illustrations.order('updated_at ASC').first.update_attribute(:is_primary, true)
+    when 1
+    else
+      keep = self.is_primary? ? self : primary_illustrations.order('updated_at DESC').first
+      primary_illustrations.where(['id <> ?', keep.id]).update_all(:is_primary => false) if !keep.nil?
+    end
+  end
 end
