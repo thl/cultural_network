@@ -1,0 +1,37 @@
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@object.feature)
+   add_breadcrumb_item link_to(collection_name, admin_feature_illustrations_path(@object.feature))
+   add_breadcrumb_item link_to(@object.id, object_path)
+   add_breadcrumb_item ts('edit.this') %>
+<%= form_for [:admin, @object.feature, @object] do |f| %>
+<%=   error_messages_for model_name %>
+      <fieldset>
+      <legend><%= model_name.titleize %></legend>	
+      <div class="row">
+<%=     f.label :feature, Feature.model_name.human.titleize.s %>
+        <span><%= f_label(@object.feature) %></span>
+      </div>
+<%    if @object.picture.instance_of?(MmsIntegration::Picture) %>
+        <div class="row">
+<%=       f.label :picture_id, MmsIntegration::Picture.human_name.titleize.s %>
+<%=       f.text_field :picture_id, :class => :text %>
+        </div>
+<%    else %>
+<%=     f.fields_for :picture, @object.picture do |picture_fields| %>
+          <div class="row">
+<%=         picture_fields.label :url, ExternalPicture.human_attribute_name(:url).s %>
+<%=         picture_fields.text_field :url, :class => :text %>
+          </div>
+          <div class="row">
+<%=         picture_fields.label :caption, ExternalPicture.human_attribute_name(:caption).s %>
+<%=         picture_fields.text_field :caption, :class => :text %>
+          </div>
+<%      end 
+      end %>
+	  <div class="row">
+<%=     f.label(:is_primary).s %>
+<%=     f.radio_button(:is_primary, :true ) %><b><%= ts(:affirmation) %></b>&nbsp;&nbsp;
+<%=     f.radio_button(:is_primary, :false ) %><b><%= ts(:negation) %></b>
+	  </div>
+<%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'update.this' %>
+<%  end %>

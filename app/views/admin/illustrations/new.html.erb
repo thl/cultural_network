@@ -1,0 +1,47 @@
+<%  add_breadcrumb_item features_link
+    add_breadcrumb_item feature_link(@object.feature)
+    add_breadcrumb_item link_to(collection_name, collection_path)
+    add_breadcrumb_item ts('new.this') %>
+<%= form_for [:admin, @object.feature, @object] do |f| %>
+<%=   error_messages_for model_name %>
+      <fieldset>
+      <legend><%= model_name.titleize %></legend>	
+      <div class="row">
+<%=     f.label :feature, Feature.model_name.human.titleize.s %>
+        <span><%= f_label(@object.feature) %></span>
+      </div>
+      <div class="row">
+<%=     label :picture_type, Illustration.human_attribute_name(:picture_type).s %>
+<%=     select_tag(:picture_type, options_for_select([['External','ExternalPicture'],['MMS','MmsIntegration::Picture']])) %>
+      </div>
+      <div class="row mms">
+<%=     f.label :picture_id, MmsIntegration::Picture.human_name.titleize.s %>
+<%=     f.text_field :picture_id, :class => :text %>
+      </div>
+      <div class="row external">
+<%=     label :external_picture, :url, ExternalPicture.human_attribute_name(:url).s %>
+<%=     text_field :external_picture, :url, :class => :text %>
+      </div>
+      <div class="row external">
+<%=     label :external_picture, :caption, ExternalPicture.human_attribute_name(:caption).s %>
+<%=     text_field :external_picture, :caption, :class => :text %>
+      </div>
+	  <div class="row">
+<%=     f.label(:is_primary).s %>
+<%=     f.radio_button(:is_primary, :true ) %><b><%= ts(:affirmation) %></b>&nbsp;&nbsp;
+<%=     f.radio_button(:is_primary, :false ) %><b><%= ts(:negation) %></b>
+	  </div>
+<%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this' %>
+<%  end %>
+<%= javascript_on_load do %>
+      $(".mms").hide();
+      $("#picture_type").change(function() { 
+	    if ($("#picture_type").val()=="MmsIntegration::Picture") {
+	      $(".external").hide();
+	      $(".mms").show();
+	    } else {
+	      $(".external").show();
+	      $(".mms").hide();
+		}
+      });
+<%  end %>

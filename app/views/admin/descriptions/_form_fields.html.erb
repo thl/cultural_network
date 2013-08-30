@@ -19,7 +19,7 @@ input[type=text] {
 <%= f.text_field(:title, :class => :text) %>
   </div><br/>
 </p>
-<p><b><%= f.label(:content, Description.model_name.human.s) %></b><br/>
+<p><b><%= f.label(:content, Description.model_name.human.titleize.s) %></b><br/>
   <div class="row">
 <%= f.text_area :content, :rows => 16, :cols => 65, :class => 'mceEditor' %>
   </div>
