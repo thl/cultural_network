@@ -12,8 +12,6 @@ class FeaturesController < ApplicationController
     @tab_options = {:entity => @feature}
     @current_tab_id = :home
     
-    @active_menu_item = 'search'
-
     # In the event that a Blurb with this code doesn't exist, fail gracefully
     @intro_blurb = KmapsEngine::ApplicationSettings.homepage_blurb || Blurb.new
         

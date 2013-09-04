@@ -113,4 +113,8 @@ module FeaturesHelper
     # slippery way of getting this link to be ajaxy and to 'know' its url; see views/features/_descendants.html.erb
     "<a href='#' class='ajax_get' name='#{url_for(params.merge(:page => page != 1 ? page : nil))}'>#{text}</a>".html_safe
   end
+  
+  def active_menu_item
+    !session[:interface].blank? && !session[:interface][:menu_item].blank? ? session[:interface][:menu_item] : 'browse'
+  end
 end

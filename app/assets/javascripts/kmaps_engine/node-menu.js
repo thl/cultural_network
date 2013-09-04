@@ -70,6 +70,7 @@ var NodeMenu = {
 		}
 		if(options.default_item){ this.default_item = options.default_item; }
 		if(options.show_results){ this.show_results = options.show_results; }
+		if(options.width)       { this.width = options.width; }
 	
 		// Set the object's attributes
 		this.div_id = div_id;
