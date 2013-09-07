@@ -5,7 +5,8 @@
   <ul class="normal">
 <%  @relations.each do |relation| %>
     <li>
-<%=   "#{f_link(relation.related_feature, feature_path(relation.related_feature.fid), {}, {:s => true})} (#{ts :from, :where => t(:perspective, :what => relation.perspective)})".html_safe %>
+<%    feature = @feature_is_parent==0 ? relation.parent_node : relation.child_node %>
+<%=   "#{f_link(feature, feature_path(feature.fid), {}, {:s => true})} (#{ts :from, :where => t(:perspective, :what => relation.perspective)})".html_safe %>
 <%=   note_popup_link_for(relation) %>
 <%=   time_units_for(relation) %>
     </li>
@@ -14,7 +15,7 @@
 <%  pagination = will_paginate @relations, :params => @params, :container => false 
     unless pagination.nil? %>
 <%=   pagination %>
-      <span style='color:#aaa'><%= ts :for, :what => '', :whom => t('feature.record', :what => @category.title, :count => @total_relations_count) %></span>
+      <span style='color:#aaa'><%= ts :for, :what => '', :whom => t('feature.record', :what => @feature_is_parent==0 ? @feature_relation_type.asymmetric_label : @feature_relation_type.label, :count => @total_relations_count) %></span>
 <%  end %>
     </li>
   </ul>

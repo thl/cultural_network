@@ -29,7 +29,7 @@
 // Ajax div to be open at once.
 var accordion_enabled = true;
 
-function on_category_click(ajax_div_id){
+function on_click(ajax_div_id){
   var ajax_div = $('#'+ajax_div_id);
   var link_parent = ajax_div.prev('p').find('a');
   var toggle_speed = 300;
@@ -60,61 +60,52 @@ function on_category_click(ajax_div_id){
   return true;
 }
 
-function expand_all_categories(){
+function expand_all(){
   accordion_enabled = false;
-  $('.related-features-categories .expandable-link-contracted').click();
+  $('.related-features .expandable-link-contracted').click();
   accordion_enabled = true;
-  $('.collapse-all-categories').show();
-  $('.expand-all-categories').hide();
+  $('.collapse-all').show();
+  $('.expand-all').hide();
 }
 
-function collapse_all_categories(){
+function collapse_all(){
   accordion_enabled = false;
-  $('.related-features-categories .expandable-link-expanded').click();
+  $('.related-features .expandable-link-expanded').click();
   accordion_enabled = true;
-  $('.expand-all-categories').show();
-  $('.collapse-all-categories').hide();
+  $('.expand-all').show();
+  $('.collapse-all').hide();
 }
 </script>
-
-<% feature_label = fname_labels(@feature).s
-   relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
-   if relation_counts.length > 0 %>
-   <p>
-<%=  link_to_function ts('tree.expand', :what => t('all.these')), "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%=  link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
-   </p>
-   <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
-<%   relation_counts.each do |rc|
-       feature_relation_type = FeatureRelationType.find(rc[:feature_relation_type_id])
-       feature_is_parent = rc[:feature_is_parent]
-       count = rc[:count] %>
-       <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> the following features (<%= count %>):</h3>
-<%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
-       CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
-         # Some of these .finds are returning nil, but it's not clear why.
-         SubjectsIntegration::Feature.find(a[0]).nil? || SubjectsIntegration::Feature.find(b[0]).nil? ? 0 : SubjectsIntegration::Feature.find(a[0]).header.casecmp(SubjectsIntegration::Feature.find(b[0]).header)
-       end.each do |c|
-         category_id, count = c
-         category = SubjectsIntegration::Feature.find(category_id)
-         # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
-         unless category.nil? 
-	       div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
-           <p><strong>
-<%=        link_to SubjectsIntegration::Feature.find(category_id).header, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
-             :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %>
-           </strong> (<%= count %>)
-           </p>
-           <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
-<%=        javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_category_click('#{div_id}')) return false; });") %>
-<%       end
-       end
-     end %>
+<% parent_relation_counts = FeatureRelation.select('feature_relation_type_id, COUNT(DISTINCT id) as count').where(:child_node_id => @feature.id).group('feature_relation_type_id').order('feature_relation_type_id')
+   child_relation_counts = FeatureRelation.select('feature_relation_type_id, COUNT(DISTINCT id) as count').where(:parent_node_id => @feature.id).group('feature_relation_type_id').order('feature_relation_type_id')
+   if parent_relation_counts.length + child_relation_counts.length > 0 %>
+     <p>
+<%=    link_to_function ts('tree.expand', :what => t('all.these')), "expand_all()", :class => "expand-all expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%=    link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all()", :class => "collapse-all expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+     </p>
+     <div class="related-features has-ajax-pagination has-hash-feature-links">
+	 <h3><%= fname_labels(@feature).s %></h3>
+<%   parent_relation_counts.each do |rc|
+       feature_relation_type = rc.feature_relation_type
+       count = rc.count.to_i
+       div_id = "list_#{feature_relation_type.id}_0" %>
+       <p><strong><%= link_to feature_relation_type.asymmetric_label.capitalize, related_list_feature_path(@feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => 0), :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %> the following <%= Feature.model_name.human(:count => count) %></strong> (<%= count %>):</p>
+       <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
+<%=    javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_click('#{div_id}')) return false; });") %>
+<%   end %>
+<%   child_relation_counts.each do |rc|
+       feature_relation_type = rc.feature_relation_type
+       count = rc.count.to_i
+       div_id = "list_#{feature_relation_type.id}_1" %>
+       <p><strong><%= link_to feature_relation_type.label.capitalize, related_list_feature_path(@feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => 1), :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %> the following <%= Feature.model_name.human(:count => :many) %></strong> (<%= count %>):</p>
+       <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
+<%=    javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_click('#{div_id}')) return false; });") %>
+<%   end %>
    </div>
 <br />
 <p>
-<%= link_to_function ts('tree.expand', :what => t('all.these')), "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%= link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+<%= link_to_function ts('tree.expand', :what => t('all.these')), "expand_all()", :class => "expand-all expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%= link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all()", :class => "collapse-all expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
 </p>
 <% else %>
      <p><%= ts 'snippet.feature.not.related' %></p>
