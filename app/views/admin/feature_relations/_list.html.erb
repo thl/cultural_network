@@ -32,7 +32,11 @@
 <%     # if there is a parent_object (feature id in the url)
        # display the relationship, relative to the feature (parent_object)
        # else, display the relation, relative to the relations child node
-%><%=  feature_relation_role_label(parent, item, :use_first => use_first, :use_names => use_names, :link_relation => false, :show_feature_types => true) %>
+       if object == item.child_node %>
+<%=      feature_relation_role_label(object, item, :use_first => use_first, :use_names => use_names, :link_relation => false, :show_feature_types => true) %>
+<%     else %>
+<%=      feature_relation_role_label(parent, item, :use_first => use_first, :use_names => use_names, :link_relation => false, :show_feature_types => true) %>
+<%     end %>
        </td>
        <td><%= item.perspective %></td>
        <td><%= note_link_list_for item %></td>
