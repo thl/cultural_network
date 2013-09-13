@@ -95,7 +95,7 @@ module AdminHelper
     "A #{model_name.titleize} can only be created from a resource that uses one.".html_safe
   end
   
-  def empty_collection_message(message="No #{model_name.titleize.pluralize} found.")
+  def empty_collection_message(message="No #{model_name.classify.constantize.model_name.human(:count => :many).titleize} found.")
     "<div class='info'>#{message}</div>".html_safe
   end
   
@@ -156,7 +156,7 @@ module AdminHelper
   #
   #
   def features_link
-    link_to_unless_current('features', admin_features_path)
+    link_to_unless_current(Feature.model_name.human(:count => :many), admin_features_path)
   end
   
   #
@@ -253,7 +253,7 @@ module AdminHelper
     	padding = name.all_parents.size * 25
     	html +=	'<td style="padding-left: ' + padding.to_s + 'px">'
     	html += (name.name) + '</td>'
-    	html += '<td>' + def_if_blank(name, :class).to_s + '</td>'
+    	html += '<td>' + def_if_blank(name, :feature_name_type).to_s + '</td>'
     	html += '<td>' + def_if_blank(name, :language).to_s + '</td>'
     	html += '<td>' + def_if_blank(name, :writing_system).to_s + '</td>'
     	html += '<td>' + fn_relationship(name).to_s + '</td>'
