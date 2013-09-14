@@ -31,7 +31,9 @@ class Note < ActiveRecord::Base
   
   # AssociationNote uses single-table inheritance from Note, so we need to make sure that no AssociationNotes are
   # returned by .find. 
-  default_scope where(:association_type => nil)
+  def self.default_scope
+    where(:association_type => nil)
+  end
   
   def title
     self.custom_note_title.blank? ? (self.note_title.nil? ? nil : self.note_title.title) : self.custom_note_title
