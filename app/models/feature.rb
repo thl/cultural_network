@@ -232,10 +232,6 @@ class Feature < ActiveRecord::Base
     self.name
   end
   
-  def pid
-    "F#{self.fid}"
-  end
-  
   #
   #
   #
