@@ -40,17 +40,6 @@ ActiveRecord::Schema.define(:version => 20130213214759) do
 
   add_index "cached_feature_names", ["feature_id", "view_id"], :name => "index_cached_feature_names_on_feature_id_and_view_id", :unique => true
 
-  create_table "cached_feature_relation_categories", :force => true do |t|
-    t.integer  "feature_id"
-    t.integer  "related_feature_id"
-    t.integer  "category_id"
-    t.integer  "perspective_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "feature_relation_type_id"
-    t.boolean  "feature_is_parent"
-  end
-
   create_table "citations", :force => true do |t|
     t.integer  "info_source_id"
     t.string   "citable_type"
