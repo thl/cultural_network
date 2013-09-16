@@ -84,14 +84,16 @@ module KmapsEngine
       # running triggers on feature_relation
       feature_ids_with_changed_relations.each do |id| 
         feature = Feature.find(id)
-        feature.update_cached_feature_relation_categories
+        #this has to be added to places dictionary!!!
+        #feature.update_cached_feature_relation_categories
         feature.update_hierarchy
       end
 
       # running triggers for feature_object_type
       feature_ids_with_object_types_added.each do |id|
         feature = Feature.find(id)
-        feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
+        # have to add this to places dictionary!!!
+        # feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
         feature.update_object_type_positions
       end
       puts "#{Time.now}: Importation done."
