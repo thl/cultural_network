@@ -241,8 +241,6 @@ ActiveRecord::Schema.define(:version => 20130213214759) do
     t.string "fullname", :null => false
   end
 
-  add_index "people", ["fullname"], :name => "index_people_on_fullname", :unique => true
-
   create_table "permissions", :force => true do |t|
     t.string "title",       :limit => 60, :null => false
     t.text   "description"
