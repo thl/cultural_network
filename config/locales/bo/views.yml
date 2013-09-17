@@ -13,6 +13,7 @@ bo:
         record: 'འདྲ་བསྐྱེད།'
     current: 'མིག་སྔའི་%{what}'
     default: '%{what}སོར་བཞག།'
+    location: 'Location'
     hide: '%{what}སྦས་པ།'
     information:
         general: 'སྤྱིའི་ཆ་འཕྲིན།'

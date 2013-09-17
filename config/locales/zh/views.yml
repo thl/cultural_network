@@ -13,6 +13,7 @@ zh:
         record: '克隆%{what}'
     current: '当前%{what}'
     default: '默认%{what}'
+    location: 'Location'
     hide: '隐藏%{what}'
     information:
         general: '基本信息'
