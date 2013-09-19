@@ -1,4 +1,4 @@
-<% if @feature.descriptions.size > 0 %>
+<% if @feature.descriptions.size > 1 %>
    <p>
 <%=  ts 'view.record', :what => t(:other, :what => Description.model_name.human(:count => :many)) %>:
 <%   description_options = @feature.descriptions.collect{|desc| [strip_tags(description_simple_title(desc)), feature_description_url(@feature.fid, desc)]}.sort %>
