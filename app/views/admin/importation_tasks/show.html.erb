@@ -1,8 +1,8 @@
-<% add_breadcrumb_item link_to(collection_name, collection_path)
+<% add_breadcrumb_item link_to(ImportationTask.model_name.human(:count => :many).s, collection_path)
    add_breadcrumb_item link_to(@object.task_code, admin_importation_task_path(@object)) %>
 <fieldset>
   <legend>
-<%= model_name.titleize %>
+<%= ImportationTask.model_name.human.titleize.s %>
 <%= edit_item_link @object %>
   </legend>
   <div class="row">

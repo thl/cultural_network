@@ -1,8 +1,8 @@
-<% add_breadcrumb_item link_to(collection_name, collection_path)
+<% add_breadcrumb_item link_to(Perspective.model_name.human(:count => :many).s, collection_path)
    add_breadcrumb_item @object %>
 <fieldset>
   <legend>
-<%= model_name.titleize %>
+<%= Perspective.model_name.human.titleize.s %>
 <%= edit_item_link @object %>
   </legend>
   <div class="row">

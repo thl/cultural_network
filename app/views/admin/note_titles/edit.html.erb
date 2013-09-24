@@ -1,4 +1,4 @@
-<%  add_breadcrumb_item link_to(collection_name, collection_path)
+<%  add_breadcrumb_item link_to(NoteTitle.model_name.human(:count => :many).s, collection_path)
     add_breadcrumb_item link_to(@object.title, object_path(@object))
     add_breadcrumb_item ts('edit.this') %>
 <%= form_for [:admin, @object] do |f| %>

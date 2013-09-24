@@ -1,12 +1,12 @@
 <% add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to(collection_name, admin_feature_illustrations_path(@object.feature))
+   add_breadcrumb_item link_to(Illustration.model_name.human(:count => :many).s, admin_feature_illustrations_path(@object.feature))
    add_breadcrumb_item link_to(@object.id, object_path)
    add_breadcrumb_item ts('edit.this') %>
 <%= form_for [:admin, @object.feature, @object] do |f| %>
 <%=   error_messages_for model_name %>
       <fieldset>
-      <legend><%= model_name.titleize %></legend>	
+      <legend><%= Illustration.model_name.human.titleize.s %></legend>	
       <div class="row">
 <%=     f.label :feature, Feature.model_name.human.titleize.s %>
         <span><%= f_label(@object.feature) %></span>

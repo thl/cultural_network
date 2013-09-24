@@ -23,11 +23,7 @@ module ApplicationHelper
     str += "</ul>"
     return str.html_safe
   end
-  
-  def collection_name
-    model_name ? model_name.humanize.downcase.pluralize : nil
-  end
-  
+    
   #
   #
   #
