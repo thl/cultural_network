@@ -1,4 +1,4 @@
-<%= javascript_include_tag 'jquery.ajax.sortable' %>
+<%= javascript_include_tag 'kmaps_engine/jquery.ajax.sortable' %>
 <%= javascript_on_load do %>
 	jQuery('#featureNamesList').ajaxSortable({
 		action: '<%= "#{admin_feature_names_path}/set_priorities" %>',
