@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kmaps_engine (1.2.2)
+    kmaps_engine (1.4.8)
       rails (~> 3.2.13)
 
 GEM

@@ -48,6 +48,7 @@ class Feature < ActiveRecord::Base
   has_many :association_notes, :foreign_key => "notable_id", :dependent => :destroy
   has_many :cached_feature_names, :dependent => :destroy
   has_many :cached_feature_relation_categories, :dependent => :destroy
+  has_many :captions, :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
   has_many :descriptions, :dependent => :destroy
   has_many :geo_codes, :class_name => 'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
@@ -55,6 +56,7 @@ class Feature < ActiveRecord::Base
   has_many :illustrations, :dependent => :destroy
   has_one  :illustration, :conditions => { :is_primary => true }
   has_many :imports, :as => 'item', :dependent => :destroy
+  has_many :summaries, :dependent => :destroy
   has_one  :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
   
   # This fetches root *FeatureNames* (names that don't have parents),
@@ -379,6 +381,16 @@ class Feature < ActiveRecord::Base
     new_feature.update_cached_feature_names
     names.each{ |name| name.update_hierarchy }
     return new_feature
+  end
+  
+  def summary
+    current_language = Language.where(['code LIKE ?', "#{I18n.locale}%"]).first
+    current_language.nil? ? nil : self.summaries.where(:language_id => current_language.id).first
+  end
+  
+  def caption
+    current_language = Language.where(['code LIKE ?', "#{I18n.locale}%"]).first
+    current_language.nil? ? nil : self.captions.where(:language_id => current_language.id).first
   end
   
   def expire_children_cache

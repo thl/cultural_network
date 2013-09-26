@@ -3,7 +3,12 @@
 <%= time_units_for(feature) %>
     <h3><%= ts :in, :what => t(:location), :where => t('app.this') %></h3>
 <%= f_breadcrumb(feature) %>
-<%  if !feature.illustration.nil?
+<%  summary = feature.summary
+    if !summary.nil? %>
+      <p>&nbsp;</p>
+<%=   summary.content.html_safe %>
+<%  end
+    if !feature.illustration.nil?
 	  picture = feature.illustration.picture %>
 	  <p>&nbsp;</p>
 	  <div id="gallery"><div id="illustration">

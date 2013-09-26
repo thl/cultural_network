@@ -63,7 +63,7 @@ Rails.application.routes.draw do
       collection do
         match 'prioritize_feature_names/:id' => 'feature_names#prioritize', :as => :prioritize_feature_names
       end
-      resources :citations, :feature_geo_codes, :feature_names, :feature_relations, :illustrations
+      resources :captions, :citations, :feature_geo_codes, :feature_names, :feature_relations, :illustrations, :summaries
       resources :association_notes do
         get :add_author, :on => :collection
       end
