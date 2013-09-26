@@ -385,7 +385,7 @@ class Feature < ActiveRecord::Base
     # Avoiding "regular expression too big" error by slicing node up
     descendants.collect(&:id).push(id).each_slice(1000) do |nodes|
       next if nodes.blank?
-      ActionController::Base.new.expire_fragment(Regexp.new("/views/tree/.*/node_id_(#{nodes.join('|')}).*"))
+      ActionController::Base.new.expire_fragment(Regexp.new("tree/.*/node_id_(#{nodes.join('|')})"))
     end
   end
   

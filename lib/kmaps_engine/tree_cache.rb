@@ -1,6 +1,6 @@
 module KmapsEngine
   class TreeCache
-    CACHE_DIR = 'views/tree/'
+    CACHE_DIR = 'tree/'
     CACHE_FILE_PREFIX = 'node_id_'
     TIME_FORMAT = '%.2f'
 

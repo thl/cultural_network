@@ -218,6 +218,8 @@ module FeatureExtensionForNamePositioning
     cached_names = self.cached_feature_names
     # First expire rails cache
     Rails.cache.delete("#{self.cache_key}/prioritized_names")
+    Rails.cache.delete_matched(Regexp.new("#{self.cache_key}/.*/prioritized_names"))
+    Rails.cache.delete("#{self.cache_key}/combined_name")
     View.get_all.each do |view|
       calculated_name = self.calculate_prioritized_name(view)
       cached_name = cached_names.where(:view_id => view.id).first
