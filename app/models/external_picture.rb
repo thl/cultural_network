@@ -13,4 +13,12 @@ class ExternalPicture < ActiveRecord::Base
   attr_accessible :caption, :url
   
   has_many :illustrations, :as => :picture
+  
+  def width
+    nil
+  end
+  
+  def height
+    nil
+  end
 end

@@ -18,4 +18,5 @@ class Summary < ActiveRecord::Base
   belongs_to :author, :class_name => 'AuthenticatedSystem::Person'
   
   validates :language_id, :uniqueness => {:scope => :feature_id}
+  validates :content, :length => { :in => 350..750 }
 end

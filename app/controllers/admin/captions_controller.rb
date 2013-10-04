@@ -18,6 +18,11 @@ class Admin::CaptionsController < AclController
     @authors = AuthenticatedSystem::Person.order('fullname')
   end
   
+  create.before do
+    @languages = Language.order('name')
+    @authors = AuthenticatedSystem::Person.order('fullname')
+  end
+  
   update.before do
     @languages = Language.order('name')
     @authors = AuthenticatedSystem::Person.order('fullname')
