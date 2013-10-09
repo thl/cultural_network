@@ -8,15 +8,27 @@
       <p>&nbsp;</p>
 <%=   summary.content.html_safe %>
 <%  end
-    if !feature.illustration.nil?
+    illustration = feature.illustration
+    if !illustration.nil?
 	  picture = feature.illustration.picture
 	  rendered_height = 200
 	  rendered_width = picture.width.nil? || picture.height.nil? ? nil : picture.width * rendered_height / picture.height %>
 	  <p>&nbsp;</p>
 	  <div id="gallery"><div id="illustration"<%= " style=\"width:#{rendered_width}px;\"".html_safe if !rendered_width.nil? %>>
 <%=   image_tag(picture.url, :height => rendered_height) %>
-<%    if !picture.caption.nil? %>
-        <p><%= picture.caption %></p>
+<%    location = illustration.location
+      parent = location.parents.first
+      if picture.caption.nil? %>
+<%      if !location.nil? %>
+          <p><%= location.header %><%= ", #{parent.header}" if !parent.nil? %></p>
+<%      end
+      else %>
+        <p>
+<%=       picture.caption %>
+<%        if !location.nil? %>
+            (<%= location.header %><%= ", #{parent.header}" if !parent.nil? %>)
+<%        end %>
+        </p>
 <%    end %>
       </div></div>
 	  <div style="clear: both;"></div>
