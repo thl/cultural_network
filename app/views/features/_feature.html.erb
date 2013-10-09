@@ -18,15 +18,22 @@
 <%=   image_tag(picture.url, :height => rendered_height) %>
 <%    location = illustration.location
       parent = location.parents.first
+      if !location.nil?
+	    location_str = location.header
+	    location_str << ", #{parent.header}" if !parent.nil?
+	    location_str = link_to location_str, PlacesIntegration::Feature.element_url(location.id, :format => 'html')
+	  else
+		location_str = nil
+	  end
       if picture.caption.nil? %>
-<%      if !location.nil? %>
-          <p><%= location.header %><%= ", #{parent.header}" if !parent.nil? %></p>
+<%      if !location_str.nil? %>
+          <p><%= location_str %></p>
 <%      end
       else %>
         <p>
 <%=       picture.caption %>
-<%        if !location.nil? %>
-            (<%= location.header %><%= ", #{parent.header}" if !parent.nil? %>)
+<%        if !location_str.nil? %>
+            (<%= location_str %>)
 <%        end %>
         </p>
 <%    end %>
