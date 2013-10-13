@@ -15,25 +15,21 @@
 	  rendered_width = picture.width.nil? || picture.height.nil? ? nil : picture.width * rendered_height / picture.height %>
 	  <p>&nbsp;</p>
 	  <div id="gallery"><div id="illustration"<%= " style=\"width:#{rendered_width}px;\"".html_safe if !rendered_width.nil? %>>
-<%=   image_tag(picture.url, :height => rendered_height) %>
+<%    if picture.instance_of?(MmsIntegration::Picture) %>
+<%=     link_to image_tag(picture.url, :height => rendered_height), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
+<%    else %>
+<%=     link_to image_tag(picture.url, :height => rendered_height), picture.url %>
+<%    end %>
 <%    location = illustration.location
-      parent = location.parents.first
-      if !location.nil?
-	    location_str = location.header
-	    location_str << ", #{parent.header}" if !parent.nil?
-	    location_str = link_to location_str, PlacesIntegration::Feature.element_url(location.id, :format => 'html')
-	  else
-		location_str = nil
-	  end
-      if picture.caption.nil? %>
-<%      if !location_str.nil? %>
-          <p><%= location_str %></p>
+      if picture.caption.nil?
+        if !location.nil? %>
+          <p><%= location %></p>
 <%      end
       else %>
         <p>
 <%=       picture.caption %>
-<%        if !location_str.nil? %>
-            (<%= location_str %>)
+<%        if !location.nil? %>
+            (<%= location %>)
 <%        end %>
         </p>
 <%    end %>

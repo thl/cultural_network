@@ -21,6 +21,9 @@ bo:
             description:
                 one: 'རྩོམ་ཡིག'
                 other: 'རྩོམ་ཡིག'
+            external_picture:
+                one: 'external picture'
+                other: 'external pictures'
             feature_name:
                 one: 'མིང་།'
                 other: 'མིང་གཞན།'
@@ -79,6 +82,8 @@ bo:
                 content: 'ཁ་བྱང་།'
                 is_primary: 'གཙོ་བོ་ཡིན།'
                 title: 'རྩོམ་ཡིག་གི་ཁ་བྱང་།'
+            external_picture:
+                place_id: 'Place (Places Dictionary FID)'
             feature_geo_code:
                 geo_code_value: 'གྲངས་ཐང་།'
             feature_name:

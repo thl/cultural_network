@@ -21,6 +21,9 @@ zh:
             description:
                 one: '文章'
                 other: '文章'
+            external_picture:
+                one: 'external picture'
+                other: 'external pictures'
             feature_name:
                 one: '名字'
                 other: '别名'
@@ -79,6 +82,8 @@ zh:
                 content: '题目'
                 is_primary: '是主要的'
                 title: '文章标题'
+            external_picture:
+                place_id: 'Place (Places Dictionary FID)'
             feature_geo_code:
                 geo_code_value: '数值'
             feature_name:

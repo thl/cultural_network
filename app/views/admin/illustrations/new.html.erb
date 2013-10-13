@@ -26,6 +26,10 @@
 <%=     label :external_picture, :caption, ExternalPicture.human_attribute_name(:caption).s %>
 <%=     text_field :external_picture, :caption, :class => :text %>
       </div>
+      <div class="row external">
+<%=     label :external_picture, :place_id, ExternalPicture.human_attribute_name(:place_id).s %>
+<%=     text_field :external_picture, :place_id, :class => :text %>
+      </div>
 	  <div class="row">
 <%=     f.label(:is_primary).s %>
 <%=     f.radio_button(:is_primary, :true ) %><b><%= ts(:affirmation) %></b>&nbsp;&nbsp;

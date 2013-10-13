@@ -26,6 +26,11 @@
 <%=         picture_fields.label :caption, ExternalPicture.human_attribute_name(:caption).s %>
 <%=         picture_fields.text_field :caption, :class => :text %>
           </div>
+	      <div class="row">
+<%=         picture_fields.label :place_id, ExternalPicture.human_attribute_name(:place_id).s %>
+<%=         picture_fields.text_field :place_id, :class => :text %>
+	      </div>
+
 <%      end 
       end %>
 	  <div class="row">

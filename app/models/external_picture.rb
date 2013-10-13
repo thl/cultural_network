@@ -7,10 +7,11 @@
 #  caption    :text
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  place_id   :integer
 #
 
 class ExternalPicture < ActiveRecord::Base
-  attr_accessible :caption, :url
+  attr_accessible :caption, :url, :place_id
   
   has_many :illustrations, :as => :picture
   
@@ -23,6 +24,6 @@ class ExternalPicture < ActiveRecord::Base
   end
   
   def location
-    nil
+    place_id
   end
 end

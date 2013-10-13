@@ -21,6 +21,9 @@ en:
             description:
                 one: 'essay'
                 other: 'essays'
+            external_picture:
+                one: 'external picture'
+                other: 'external pictures'
             feature_name:
                 one: 'name'
                 other: 'names'
@@ -79,6 +82,8 @@ en:
                 content: 'Content'
                 is_primary: 'Primary?'
                 title: 'Essay Title'
+            external_picture:
+                place_id: 'Place (Places Dictionary FID)'
             feature_geo_code:
                 geo_code_value: 'Value'
             feature_name:

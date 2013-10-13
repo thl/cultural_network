@@ -23,7 +23,8 @@ class Admin::IllustrationsController < AclController
     primary_illustrations = parent_object.illustrations.where(:is_primary => true)
     case primary_illustrations.count
     when 0
-      parent_object.illustrations.order('updated_at ASC').first.update_attribute(:is_primary, true)
+      other = parent_object.illustrations.order('updated_at ASC').first
+      other.update_attribute(:is_primary, true) if !other.nil?
     when 1
     else
       keep = primary_illustrations.order('updated_at ASC').first
