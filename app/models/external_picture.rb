@@ -22,8 +22,4 @@ class ExternalPicture < ActiveRecord::Base
   def height
     nil
   end
-  
-  def location
-    place_id
-  end
 end

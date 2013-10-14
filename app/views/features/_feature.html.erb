@@ -19,17 +19,17 @@
 <%=     link_to image_tag(picture.url, :height => rendered_height), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
 <%    else %>
 <%=     link_to image_tag(picture.url, :height => rendered_height), picture.url %>
-<%    end %>
-<%    location = illustration.location
+<%    end
+      location = illustration.location
       if picture.caption.nil?
         if !location.nil? %>
-          <p><%= location %></p>
+          <p><%= link_to location, PlacesIntegration::Feature.element_url(picture.location, :format => 'html') %></p>
 <%      end
       else %>
         <p>
 <%=       picture.caption %>
 <%        if !location.nil? %>
-            (<%= location %>)
+            (<%= link_to location, PlacesIntegration::Feature.element_url(picture.location, :format => 'html') %>)
 <%        end %>
         </p>
 <%    end %>
