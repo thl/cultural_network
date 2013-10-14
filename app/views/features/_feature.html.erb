@@ -20,7 +20,14 @@
 <%    else %>
 <%=     link_to image_tag(picture.url, :height => rendered_height), picture.url %>
 <%    end
-      location = illustration.location
+      place = illustration.place
+      if place.nil?
+	    location = nil
+	  else
+	    location = link_to place.header, PlacesIntegration::Feature.element_url(place.id, :format => 'html')
+	    parent_place = place.context_feature
+	    location << ", #{link_to parent_place.header, PlacesIntegration::Feature.element_url(parent_place.id, :format => 'html')}".html_safe if !parent_place.nil?
+	  end
       if picture.caption.nil?
         if !location.nil? %>
           <p><%= link_to location, PlacesIntegration::Feature.element_url(picture.location, :format => 'html') %></p>
