@@ -531,7 +531,9 @@ module KmapsEngine
         geocodes = self.feature.geo_codes
         geocode = geocodes.find_by_geo_code_type_id(geocode_type.id)
         if geocode.nil?
-          geocode = geocodes.create(:geo_code_type_id => geocode_type.id, :geo_code_value => geocode_value)
+          conditions = {:geo_code_type_id => geocode_type.id, :geo_code_value => geocode_value}
+          geocode = geocodes.where(conditions).first
+          geocode = geocodes.create(conditions) if geocode.nil?
           self.spreadsheet.imports.create(:item => geocode) if geocode.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
         end
         if geocode.nil?

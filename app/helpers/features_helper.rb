@@ -92,7 +92,7 @@ module FeaturesHelper
       html += feature_name_ul(nil, use_links, name.children.order('position'), completed)
       html += '</li>'
     end
-    (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe
+    (html.blank? ? '' : "<ul style='margin:0; margin-top: 5px;'>#{html}</ul>").html_safe
   end
   
   def feature_name_display(name, options={})
