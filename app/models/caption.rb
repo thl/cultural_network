@@ -12,11 +12,13 @@
 #
 
 class Caption < ActiveRecord::Base
+  include ActionView::Helpers::SanitizeHelper
+  
   attr_accessible :author_id, :content, :feature_id, :language_id
   belongs_to :feature
   belongs_to :language
   belongs_to :author, :class_name => 'AuthenticatedSystem::Person'
   
   validates :language_id, :uniqueness => {:scope => :feature_id}
-  validates :content, :length => { :maximum => 150 }
+  validates_length_of :content, :maximum => 140 #, :tokenizer => lambda { |str| HTML::FullSanitizer.new.sanitize(str, :tags=>[]).split(//) }
 end

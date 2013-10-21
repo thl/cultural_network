@@ -7,7 +7,7 @@
 <fieldset>
   <legend><%= ts 'information.general' %> <%= edit_item_link @object %></legend>
   <div class="row">
-    <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= @object.pid %></span>
+    <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= @object.fid %></span>
   </div>
 <% if !@object.old_pid.blank? %>
    <div class="row">

@@ -29,27 +29,22 @@
 	  end
       if picture.caption.nil?
         if !location.nil? %>
-          <p><%= link_to location, PlacesIntegration::Feature.element_url(picture.location, :format => 'html') %></p>
+          <p class = "view-on-map"><%= location %></p>
 <%      end
       else %>
-        <p>
+        <p class = "view-on-map">
 <%=       picture.caption %>
 <%        if !location.nil? %>
-            (<%= link_to location, PlacesIntegration::Feature.element_url(picture.location, :format => 'html') %>)
+            (<%= location %>)
 <%        end %>
         </p>
 <%    end %>
       </div></div>
 	  <div style="clear: both;"></div>
 <%  end %>
-<%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
-<%  if !feature.descriptions.empty? %>
-      <div id='descriptions_div'>
-<%=     render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
-      </div>
-<%=   note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
-<%  end
-    associated_resources = [
+<%  associated_resources = [
+      [Description.model_name.human.titleize, feature.descriptions.size, feature_description_path(feature.fid, feature.descriptions.first)],
+      ['Places', feature.feature_count, feature.kmaps_url],
       ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
       ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
       ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
