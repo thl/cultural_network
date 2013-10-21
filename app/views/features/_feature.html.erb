@@ -43,12 +43,12 @@
 	  <div style="clear: both;"></div>
 <%  end %>
 <%  associated_resources = [
-      [Description.model_name.human.titleize, feature.descriptions.size, feature_description_path(feature.fid, feature.descriptions.first)],
       ['Places', feature.feature_count, feature.kmaps_url],
       ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
       ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
       ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
     ]
+    associated_resources.unshift([Description.model_name.human.titleize, feature.descriptions.size, feature_description_path(feature.fid, feature.descriptions.first)]) if !feature.descriptions.empty?
     if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
       <h3><%= ts 'associate.d.record', :what => MmsIntegration::Medium.human_name(:count => :many).titleize %></h3>
       <ul><%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("").html_safe %></ul>
