@@ -31,6 +31,9 @@ bo:
         record: '%{what}མེད་པ།'
     other: '%{what}གཞན།'
     perspective: '%{what}ཡི་ལྟ་བ།'
+    place:
+        one: 'ས་གནས།'
+        other: 'ས་གནས་དག་'
     prefix:
         with: '%{what}ཡིས་ཚིག་འགོ་བྱས་པ།'
     priorit:
@@ -78,6 +81,9 @@ bo:
         in: '%{what}ནང་འཇུག་བྱས་པ།'
         value: 'ནང་འཇུག་གི་ཚད།'
     value: 'གྲངས་ཚད།'
+    video:
+        one: 'གློག་བརྙན་གྱི་མིང་།'
+        other: 'གློག་བརྙན་གྱི་མིང་དག་'
     view:
         record: '%{what}ལ་ལྟ་ཞིབ་བྱས་པ།'
         this: 'ལྟ་ཞིབ།'

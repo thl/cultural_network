@@ -31,6 +31,9 @@ en:
         record: 'No %{what}'
     other: 'Other %{what}'
     perspective: 'the %{what} perspective'
+    place:
+        one: 'Place'
+        other: 'Places'
     prefix:
         with: 'Prefix with %{what}'
     priorit:
@@ -78,6 +81,9 @@ en:
         in: 'Type in %{what}'
         value: 'Type Value'
     value: 'Value'
+    video:
+        one: 'Video title'
+        other: 'Video titles'
     view:
         record: 'View %{what}'
         this: 'View'
