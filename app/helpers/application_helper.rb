@@ -297,11 +297,11 @@ module ApplicationHelper
             remove_tab = true
           else
             url = feature_description_path(entity.fid, entity.descriptions.first)
-            count = entity.descriptions.length
+            count = entity.descriptions.size
           end
         when :related
           url = related_feature_path(entity.fid)
-          count = nil
+          count = FeatureRelation.where(['child_node_id = ? OR parent_node_id = ?', entity.id, entity.id]).size
         end
       else
         tab_url = tab[:url]
