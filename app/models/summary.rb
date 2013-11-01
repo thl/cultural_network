@@ -18,5 +18,5 @@ class Summary < ActiveRecord::Base
   belongs_to :author, :class_name => 'AuthenticatedSystem::Person'
   
   validates :language_id, :uniqueness => {:scope => :feature_id}
-  validates_length_of :content, :within => 141..750, :tokenizer => lambda { |str| str.strip_tags.split(//) }
+  validates_length_of :content, :within => 1..750, :tokenizer => lambda { |str| str.strip_tags.split(//) }
 end
