@@ -127,34 +127,6 @@ class FeaturesController < ApplicationController
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')), :callback => params[:callback] }
     end
   end
-
-  def fids_by_name
-    params[:filter] = params[:query]
-    conditions = { :is_public => 1 }
-    search_options = {
-      :scope => params[:scope] || 'name',
-      :match => params[:match]
-    }
-    joins = []
-    if !params[:feature_type].blank?
-      joins << 'LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id'
-      conditions['ccfa.category_id'] = params[:feature_type].split(',')
-      conditions['features.is_public'] = 1
-      conditions.delete(:is_public)
-    end
-    if !params[:characteristic_id].blank?
-      joins << 'LEFT JOIN category_features cf ON cf.feature_id = features.id'
-      conditions['cf.category_id'] = params[:characteristic_id].split(',')
-      conditions['cf.type'] = nil
-      conditions['features.is_public'] = 1
-      conditions.delete(:is_public)
-    end
-    @features = perform_global_search(search_options).where(conditions).includes(:include => :shapes)
-    @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
-    respond_to do |format|
-      format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }
-    end
-  end
   
   def characteristics_list
     render :json => CategoryFeature.get_json_data
