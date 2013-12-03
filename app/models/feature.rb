@@ -132,7 +132,7 @@ class Feature < ActiveRecord::Base
       end.collect(&:id)
     #  end
     end
-    feature_ids.collect{ |fid| Feature.find(fid) }.sort{|a,b| a.prioritized_name(current_view) <=> b.prioritized_name(current_view)}
+    feature_ids.collect{ |fid| Feature.find(fid) }.sort{|a,b| a.prioritized_name(current_view).name <=> b.prioritized_name(current_view).name}
   end
 
   def self.current_roots_by_perspective(current_perspective)

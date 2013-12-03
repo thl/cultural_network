@@ -231,7 +231,7 @@ class FeaturesController < ApplicationController
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code('roman.popular')
     if params_id.nil?
-      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view)
+      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view).sort{|a,b| a.prioritized_name(@view).name <=> b.prioritized_name(@view).name}
     else
       @feature = Feature.get_by_fid(params_id)
     end
