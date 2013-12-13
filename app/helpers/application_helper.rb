@@ -283,7 +283,7 @@ module ApplicationHelper
     
     current_tab_id = :place unless (tabs.keys << :home).include? current_tab_id
     
-    tabs = tabs.sort{|a,b| a[1][:index] <=> b[1][:index]}.collect{|tab_id, tab|
+    tabs = tabs.sort_by{ |t| t[1][:index] }.collect{|tab_id, tab|
       remove_tab = false
       if tab[:url].blank? && !@tab_options[:entity].blank?
         entity = @tab_options[:entity]

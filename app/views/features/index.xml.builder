@@ -1,4 +1,6 @@
-@features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), View.get_by_code('roman.popular'))
+p = Perspective.get_by_code(default_perspective_code)
+v = View.get_by_code('roman.popular')
+@features = Feature.current_roots(p, v).sort_by{ |f| f.prioritized_name(v).name }
 xml.instruct!
 xml.features(:type => 'array') do
   xml << render(:partial => 'features/feature.xml.builder', :collection => @features) if !@features.empty?

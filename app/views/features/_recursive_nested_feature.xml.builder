@@ -1,7 +1,7 @@
 name = feature.prioritized_name(@view)
 # The following is performed because the name expression returns nil for Feature.find(15512)
 header = name.nil? ? feature.pid : name.name
-children = feature.children.sort{|a,b| a.prioritized_name(@view).name <=> b.prioritized_name(@view).name}
+children = feature.children.sort_by{ |f| f.prioritized_name(@view).name }
 caption = feature.caption
 options = { :id => feature.fid, :childCount => children.size, :title => header }
 options[:caption] = caption.content if !caption.nil?

@@ -227,7 +227,7 @@ module AdminHelper
   #
   def feature_name_tr(feature, root_names=nil, completed=[])
     root_names = feature.names.roots.order('position') if feature
-    root_names = root_names.sort_by{ |i| i[:position] }
+    root_names = root_names.sort{ |a, b| a.position <=> b.position }
     html=''
     root_names.each do |name|
       next if completed.include? name

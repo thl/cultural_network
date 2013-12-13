@@ -63,8 +63,6 @@ class FeaturesController < ApplicationController
     end
     respond_to do |format|
       format.html { render :action => 'show' }
-      format.xml  { render :action => 'show' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
     end
   end
     
@@ -127,11 +125,7 @@ class FeaturesController < ApplicationController
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')), :callback => params[:callback] }
     end
   end
-  
-  def characteristics_list
-    render :json => CategoryFeature.get_json_data
-  end
-  
+    
   def search
     conditions = {:is_public => 1}
     search_options = { :scope => params[:scope], :match => params[:match] }
@@ -186,9 +180,9 @@ class FeaturesController < ApplicationController
   
   def children
     feature = Feature.get_by_fid(params[:id])
-    @features = feature.children
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code('roman.popular')
+    @features = feature.children.sort_by{|f| f.prioritized_name(@view).name }
     respond_to do |format|
       format.xml
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'children.xml.builder')) }
@@ -197,14 +191,14 @@ class FeaturesController < ApplicationController
   
   def list
     params_id = params[:id]
-    if params_id.nil?
-      @features = Feature.all
-    else
-      feature = Feature.get_by_fid(params_id)
-      @features = feature.descendants
-    end
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code('roman.popular')
+    if params_id.nil?
+      @features = Feature.all.sort_by{|f| f.prioritized_name(@view).name }
+    else
+      feature = Feature.get_by_fid(params_id)
+      @features = feature.descendants.sort_by{ |f| f.prioritized_name(@view).name }
+    end
     respond_to do |format|
       format.xml
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'list.xml.builder')) }
@@ -231,7 +225,7 @@ class FeaturesController < ApplicationController
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code('roman.popular')
     if params_id.nil?
-      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view).sort{|a,b| a.prioritized_name(@view).name <=> b.prioritized_name(@view).name}
+      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view).sort_by{ |f| f.prioritized_name(@view).name }
     else
       @feature = Feature.get_by_fid(params_id)
     end
@@ -277,11 +271,13 @@ class FeaturesController < ApplicationController
   
   def node_tree_expanded
     set_common_variables(session) if params[:view_id] || params[:perspective_id]
+    view = current_view
+    
     node = Feature.find(params[:id])
     # @ancestors_for_current = node.closest_ancestors_by_perspective(current_perspective).collect{|a| a.id}
     @ancestors_for_current = node.current_ancestors(current_perspective).collect(&:id)
     @ancestors_for_current << node.id
-    top_level_nodes = Feature.current_roots(current_perspective, current_view)
+    top_level_nodes = Feature.current_roots(current_perspective, view).sort_by{ |f| f.prioritized_name(view).name }
     render :partial => 'node_tree', :locals => { :children => top_level_nodes }, :layout => false
   end
       

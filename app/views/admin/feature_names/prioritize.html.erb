@@ -27,8 +27,7 @@
        <th><%= ts 'relat.ion.ship.this' %></th>
        <th><%= ts 'priorit.y' %></th>
      </tr>
-<%   list.sort!{ |a,b| a.position <=> b.position }
-     list.each do |item| %>
+<%   list.sort_by{ |l| l.position }.each do |item| %>
        <tr id="feature_name_<%= item.id.to_s %>">
          <td class="centerText">
 <%       if @locating_relation %>

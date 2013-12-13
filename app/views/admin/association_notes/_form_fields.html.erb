@@ -9,7 +9,7 @@
 	</div>
 	<div class="row">
 <%=   f.label(:note_title_id, t('or.record', :what => t('choose.from', :what => NoteTitle.model_name.human(:count => :many))).capitalize.s) %>
-<%=   f.collection_select :note_title_id, NoteTitle.all.sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
+<%=   f.collection_select :note_title_id, NoteTitle.all.sort_by{ |n| n.to_s }, :id, :to_s, :include_blank=>true %>
 	</div>
 	<div class="row">
 <%=   f.label :content, Note.model_name.human.titleize.s %>

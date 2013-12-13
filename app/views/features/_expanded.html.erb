@@ -1,4 +1,4 @@
-<%  children = expanded.current_children(current_perspective, current_view)
+<%  children = expanded.current_children(current_perspective, current_view).sort_by{ |f| f.prioritized_name(current_view).name }
     if children.empty? %>
       <span class="node-empty"></span>
 <%  else %>
