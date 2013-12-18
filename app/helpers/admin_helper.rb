@@ -200,26 +200,7 @@ module AdminHelper
   def add_breadcrumb_items(*items)
     items.each {|item| add_breadcrumb_item item}
   end
-  
-  #
-  # Pass in a set of root FeatureNames (having the same parent)
-  # to build a ul list
-  # "completed" is used only by this method
-  #
-  def feature_name_ul(feature, use_links=true, root_names=nil, completed=[])
-    root_names = feature.names.roots.order('position') if feature
-    html=''
-    root_names.each do |name|
-      next if completed.include? name
-      completed << name
-      html += '<li style="margin-left:1em; list-style:square;">'
-      html += (use_links ? link_to(name.name, admin_feature_name_path(name)) : name.name)
-      html += feature_name_ul(nil, use_links, name.children, completed)
-      html += '</li>'
-    end
-    (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe
-  end
-  
+    
   #
   # Pass in a set of root FeatureNames (having the same parent)
   # to build a ul list

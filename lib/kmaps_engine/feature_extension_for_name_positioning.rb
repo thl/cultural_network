@@ -143,6 +143,19 @@ module FeatureExtensionForNamePositioning
     name_ids.collect{ |id| FeatureName.find(id) }
   end
   
+  def flattened_name_tree(names = self.names.roots.order('position'), completed=[])
+    names.each do |n|
+      next if completed.include? n
+      completed << n
+      flattened_name_tree(n.children.order('position'), completed)
+    end
+    completed
+  end
+  
+  def detailed_names(sep=', ')
+    self.flattened_name_tree.collect(&:detailed_name).join(sep)
+  end
+  
   #
   # Join all of the FeatureNames together
   #

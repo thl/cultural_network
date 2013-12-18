@@ -76,6 +76,14 @@ class FeatureName < ActiveRecord::Base
     name
   end
   
+  def name_details
+    "#{self.language.to_s}, #{self.writing_system.to_s}, #{self.pp_display_string}"
+  end
+    
+  def detailed_name
+    "#{self.name} (#{self.name_details})"
+  end
+  
   def display_string
     return 'Original' if is_original?
     parent_relations.first.display_string
