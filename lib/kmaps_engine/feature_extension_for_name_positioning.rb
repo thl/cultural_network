@@ -10,8 +10,7 @@ module FeatureExtensionForNamePositioning
       if cached_name.nil?
         break nil
       else
-        name = cached_name.feature_name
-        break name.nil? ? nil : name.id
+        break cached_name.feature_name_id
       end
     end
     name_id.nil? ? nil : FeatureName.find(name_id)

@@ -151,7 +151,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_children(current_perspective, current_view)
-    return children.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
+    return children.includes([{:cached_feature_names => :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
