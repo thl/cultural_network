@@ -4,9 +4,9 @@ module KmapsEngine
     CACHE_FILE_PREFIX = 'node_id_'
     TIME_FORMAT = '%.2f'
 
-    def self.reheat(fid, perspective_code, view_code)
-      perspectives = perspective_code.blank? ? nil : [Perspective.get_by_code(perspective_code)]
-      views = view_code.blank? ? nil : [View.get_by_code(view_code)]
+    def self.reheat(fid, perspective_codes, view_codes)
+      perspectives = perspective_codes.blank? ? nil : perspective_codes.split(',').collect{|c| Perspective.get_by_code(c)}
+      views = view_codes.blank? ? nil : view_codes.split(',').collect{|c| View.get_by_code(c)}
       features = fid.blank? ? Feature.roots.reject(&:is_blank?).sort{|a, b| a.fid <=> b.fid} : [Feature.get_by_fid(fid)]
       self.generate(features, perspectives, views)
     end
