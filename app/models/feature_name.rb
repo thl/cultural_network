@@ -95,7 +95,7 @@ class FeatureName < ActiveRecord::Base
   end
   
   def is_original?
-    relations.empty? or parent_relations.empty?
+    parent_relations.empty?
   end
   
   def in_western_language?
