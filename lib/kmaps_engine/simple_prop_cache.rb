@@ -11,7 +11,7 @@ module KmapsEngine
       end
 
       def get_by_code(code)
-        prop_id = Rails.cache.fetch("simple-props-code/#{code}", :expires_in => 1.week) do
+        prop_id = Rails.cache.fetch("#{self.model_name}-code/#{code}", :expires_in => 1.week) do
           prop = self.find_by_code(code)
           prop.nil? ? nil : prop.id
         end
