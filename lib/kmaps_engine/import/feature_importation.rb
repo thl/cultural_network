@@ -461,8 +461,8 @@ module KmapsEngine
       # running triggers for feature_name
       self.feature.update_name_positions if name_added
       if name_added || name_changed
-        self.feature.update_cached_feature_names
-        self.feature.expire_tree_cache
+        views = self.feature.update_cached_feature_names
+        self.feature.expire_tree_cache(views)
       end
 
       # running triggers for feature_name_relation

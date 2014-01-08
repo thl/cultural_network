@@ -111,7 +111,7 @@ class FeatureRelation < ActiveRecord::Base
     fid = Rails.cache.read('fid')
     #puts "fid from fr model: #{fid}, child_node_id: #{child_node_id}, parent_node_id = #{parent_node_id}"
     if child_node_id == fid.to_i
-      Rails.cache.write('tree_tmp', parent_node_id)
+      #Rails.cache.write('tree_tmp', parent_node_id)
       parent_node.expire_children_cache unless parent_node.nil?
     end
   end

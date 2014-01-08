@@ -229,6 +229,7 @@ module FeatureExtensionForNamePositioning
   def update_cached_feature_names
     cached_names = self.cached_feature_names
     # First expire rails cache
+    changed_views = []
     Rails.cache.delete("#{self.cache_key}/prioritized_names")
     Rails.cache.delete_matched(Regexp.new("#{self.cache_key}/.*/prioritized_names"))
     Rails.cache.delete("#{self.cache_key}/combined_name")
@@ -237,14 +238,17 @@ module FeatureExtensionForNamePositioning
       cached_name = cached_names.where(:view_id => view.id).first
       if cached_name.nil?
         cached_names.create(:view_id => view.id, :feature_name_id => calculated_name.id)
+        changed_views << view.id
       else
         if cached_name.feature_name != calculated_name
           cached_name.update_attribute(:feature_name_id, calculated_name.id)
+          changed_views << view.id
           # Expire the names that have changed
           Rails.cache.delete("#{self.cache_key}/#{view.cache_key}/prioritized_name")
         end
       end
     end
+    changed_views
   end
   
   def reset_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)

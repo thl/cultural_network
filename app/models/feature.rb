@@ -382,17 +382,17 @@ class Feature < ActiveRecord::Base
     current_language.nil? ? nil : self.captions.where(:language_id => current_language.id).first
   end
   
-  def expire_children_cache
+  def expire_children_cache(views)
     # Avoiding "regular expression too big" error by slicing node up
     descendants.collect(&:id).push(id).each_slice(1000) do |nodes|
       next if nodes.blank?
-      ActionController::Base.new.expire_fragment(Regexp.new("tree/.*/node_id_(#{nodes.join('|')})"))
-    end
+      ActionController::Base.new.expire_fragment(Regexp.new("tree/.*/#{views.join('|')}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{nodes.join('|')})"))
+    end if !views.blank?
   end
   
-  def expire_tree_cache
+  def expire_tree_cache(views)
     node = self.parent.nil? ? self : self.parent
-    node.expire_children_cache
+    node.expire_children_cache(views)
   end
       
   private

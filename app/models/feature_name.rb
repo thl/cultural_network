@@ -25,10 +25,10 @@ class FeatureName < ActiveRecord::Base
   
   after_save do |record|
     feature = record.feature
-    Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))
+    #Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))
     if !record.skip_update
-      feature.update_cached_feature_names
-      feature.expire_tree_cache
+      views = feature.update_cached_feature_names
+      feature.expire_tree_cache(views)
    end
   end #{ |record| record.update_hierarchy
   
