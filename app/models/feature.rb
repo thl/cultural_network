@@ -367,7 +367,6 @@ class Feature < ActiveRecord::Base
       new_relation.save
     end
     new_feature.update_name_positions
-    new_feature.update_cached_feature_names
     names.each{ |name| name.update_hierarchy }
     return new_feature
   end

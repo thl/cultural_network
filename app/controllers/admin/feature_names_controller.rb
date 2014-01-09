@@ -35,7 +35,7 @@ class Admin::FeatureNamesController < AclController
     if changed
       feature.update_is_name_position_overriden
       views = feature.update_cached_feature_names
-      feature.expire_tree_cache(views)
+      feature.expire_tree_cache(views) if !views.blank?
     end
     render :nothing => true
   end

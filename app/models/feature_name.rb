@@ -23,12 +23,12 @@ class FeatureName < ActiveRecord::Base
   attr_accessor :skip_update
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
   
-  after_save do |record|
+  after_update do |record|
     feature = record.feature
     #Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))
     if !record.skip_update
       views = feature.update_cached_feature_names
-      feature.expire_tree_cache(views)
+      feature.expire_tree_cache(views) if !views.blank?
    end
   end #{ |record| record.update_hierarchy
   

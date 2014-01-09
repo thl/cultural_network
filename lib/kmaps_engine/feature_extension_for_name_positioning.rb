@@ -220,9 +220,9 @@ module FeatureExtensionForNamePositioning
         end
         pos + 1
       end
-      self.update_cached_feature_names if updated
+      return updated ? self.update_cached_feature_names : []
     else
-      self.reset_name_positions
+      return self.reset_name_positions
     end
   end
   
@@ -251,8 +251,18 @@ module FeatureExtensionForNamePositioning
     changed_views
   end
   
-  def reset_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)
-    calculate_name_positions(names, position).each { |pos, name| FeatureName.find(name.id).update_attribute(:position, pos) }
+  def reset_name_positions
+    names = self.names.roots.order('feature_names.created_at')
+    position = 1
+    updated = false
+    calculate_name_positions(names, position).each do |pos, name|
+      if name.position != pos
+        updated = true if !updated
+        name = FeatureName.find(name.id)
+        name.update_attributes(:position => pos, :skip_update => true)
+      end
+    end
+    return updated ? self.update_cached_feature_names : []
   end
     
   def restructure_chinese_names

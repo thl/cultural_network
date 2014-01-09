@@ -30,7 +30,6 @@ class FeatureNameRelation < ActiveRecord::Base
       [record.parent_node, record.child_node].each {|r| r.update_hierarchy }
       feature = record.feature
       feature.update_name_positions
-      feature.update_cached_feature_names
     end
   end
   
