@@ -7,8 +7,8 @@ class Admin::FeatureNameRelationsController < AclController
   
   # We need to update the child FeatureName associated with this relation
   # doing this will setup the ancestor_ids value
-  new_action.after {|c| @object.child_node.save}
-  update.after {|c| @object.child_node.save}
+  #new_action.after {|c| @object.child_node.save}
+  #update.after {|c| @object.child_node.save}
   
   private
   
