@@ -33,7 +33,7 @@
 <%      end
       else %>
         <p class = "view-on-map">
-<%=       picture.caption %>
+<%=       picture.caption.html_safe %>
 <%        if !location.nil? %>
             (<%= location %>)
 <%        end %>
