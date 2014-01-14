@@ -38,7 +38,7 @@ module KmapsEngine
     # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
 
     # info_source fields:
-    # .info_source.id/code, info_source.notes, .info_source[.i].volume, info_source[.i].pages
+    # .info_source.id/code, info_source.note, .info_source[.i].volume, info_source[.i].pages
 
     # Fields that accept note:
     # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
@@ -117,7 +117,7 @@ module KmapsEngine
         puts e.to_s
       end
       if !info_source.nil?
-        notes = self.fields.delete("#{field_prefix}.info_source.notes")
+        notes = self.fields.delete("#{field_prefix}.info_source.note")
         citations = citable.citations
         citation = citations.where(:info_source_id => info_source.id).first
         if citation.nil?

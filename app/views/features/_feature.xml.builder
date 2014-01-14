@@ -29,12 +29,12 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
   end
   descriptions = feature.descriptions
-  if !descriptions.empty?
+  xml.descriptions(:type => 'array') do
     descriptions.each do |d|
       options = {:id => d.id, :is_primary => d.is_primary}
       options[:source_url] = d.source_url if !d.source_url.blank?
       options[:title] = d.title if !d.title.blank?
-      xml.desc(options)
+      xml.description(options)
     end
   end
   xml.created_at(feature.created_at, :type => 'datetime')
