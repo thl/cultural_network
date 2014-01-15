@@ -22,9 +22,6 @@ module FeaturesHelper
     'fid' == params[:search_scope]
   end
   
-  #
-  # This method is getting called from the ContextualTreeBuilder
-  #
   def node_li_value(node, target)
     if target && node.id == target.id
       f_label(node, :class=>:selected)

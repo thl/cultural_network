@@ -197,56 +197,6 @@ ID BASE STYLES
     padding-bottom: 3px;
 }
 
-#featureContextTree{
-    float:right;
-    width:20%;
-    background-color:#efefef;
-    border:solid 1px lightgray;
-    min-height:340px;
-    padding:.5em;
-    font-size: 120%;
-    text-align: left;
-}
-
-#featureContextTree h2 {font-size: 110%;}
-
-#featureContextTree ul{
-    letter-spacing:.5px;
-    margin:0;
-    padding:0;
-    margin-top:1em;
-    margin-left:1em;
-}
-
-#featureContextTree ul li {
-    margin:0;
-    margin-bottom:.5em;
-    padding:0;
-    text-indent:0em;
-    letter-spacing: 0px;
-}
-
-#featureContextTree ul li:before {
-    content: " \0020";
-    color:black;
-}
-#featureContextTree ul li.closed:before {
-    content: "+ \0020";
-}
-#featureContextTree ul li.opened:before {
-    content: "- \0020";
-}
-#featureContextTree a, #featureContextTree span {
-}
-
-#featureContextTree ul li a {
-    text-decoration: none;
-}
-
-#featureContextTree ul li a:hover {
-    color:#666;
-}
-
 #feature_description {
     font-size: 100%;
 }
