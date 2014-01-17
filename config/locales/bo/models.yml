@@ -30,9 +30,6 @@ bo:
             feature_name_type:
                 one: 'མིང་གི་རིགས།'
                 other: 'མིང་གི་རིགས་ཁག '
-            feature_relation_type:
-                one: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བའི་རིགས་ཁག'
-                other: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བའི་རིགས། '
             language:
                 one: 'སྐད་ཡིག'
                 other: 'སྐད་ཡིག་གི་སྡེ།'

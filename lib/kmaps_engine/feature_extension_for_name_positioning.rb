@@ -50,13 +50,13 @@ module FeatureExtensionForNamePositioning
     return nil if all_names.empty?
     latin_id = WritingSystem.get_by_code('latin').id
     first_name = all_names.first    
-    case first_name[:language_id]
+    case first_name.language.code
     # language=tib: SHOW writing_systems=latn & orthographic_systems=thl.ext.wyl.translit
-    when Language.get_by_code('tib').id
+    when 'tib'
       name = HelperMethods.find_name_for_writing_and_orthographic_system(all_names, latin_id, OrthographicSystem.get_by_code('thl.ext.wyl.translit').id)
     # language=nep: SHOW writing_systems=latn & orthographic_systems=indo.standard.translit
     # language=hin: SHOW writing_systems=latn & orthographic_systems=indo.standard.translit
-    when Language.get_by_code('nep').id, Language.get_by_code('hin').id
+    when 'nep', 'hin'
       name = HelperMethods.find_name_for_writing_and_orthographic_system(all_names, latin_id, OrthographicSystem.get_by_code('indo.standard.translit').id)
 
     # language=dzo: Right now we mostly have only the latin version of these names, which is marked as original. That is handled by popular view.
@@ -64,9 +64,9 @@ module FeatureExtensionForNamePositioning
     # The new rule would look like this:
     # name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, OrthographicSsytem.get_by_code('thl.ext.wyl.translit').id)  
     
-    when Language.get_by_code('unk').id
+    when 'unk'
       # language=unk; take in this order of preference, writing system=latn , original if its there,
-      name = first_name if first_name[:writing_system_id] == latin_id
+      name = first_name if first_name.writing_system_id == latin_id
       return name if !name.nil?
       # and otherwise orthographic_systems=thl.ext.wyl.translit,
       name = HelperMethods.find_name_for_writing_and_orthographic_system(all_names, latin_id, OrthographicSystem.get_by_code('thl.ext.wyl.translit').id)
@@ -90,25 +90,25 @@ module FeatureExtensionForNamePositioning
     if first_name.in_western_language? || first_name.in_language_without_transcription_system?
       name = Feature.find_name_for_writing_system(all_names, latin_id)
     else
-      case first_name[:language_id]
+      case first_name.language.code
       # language=chi: SHOW writing_systems=latn & phonetic_systems=pinyin.transcript
-      when Language.get_by_code('chi').id
+      when 'chi'
         name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('pinyin.transcrip').id)
       # language=tib: SHOW writing_systems=latn & phonetic_systems=thl.simple.transcrip
-      when Language.get_by_code('tib').id
+      when 'tib'
         name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('thl.simple.transcrip').id)
       # language=nep: SHOW writing_systems=latn & phonetic_systems=ind.transcrip.transcript
       # language=hin: SHOW writing_systems=latn & phonetic_systems=ind.transcrip.transcript
-      when Language.get_by_code('nep').id, Language.get_by_code('hin').id
+      when 'nep', 'hin'
         name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('ind.transcrip').id)
       # language=dzo: Right now we mostly have only the latin version of these names, which is marked as original.
-      when Language.get_by_code('dzo').id
+      when 'dzo'
         name = HelperMethods.find_name_for_writing_system(all_names, latin_id)
         # Later we will get the writing system=dzongkha or writing system=tibt version, and then this latin version will be demoted to a derivative of those dzongkha script names with writing system=latn , and phonetic_systems=dzo.to.eng.transcript
         # The new rule would look like this:
         # name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('dzo.to.eng.transcript').id)  
       # language=mon; writing_systems=latn
-      when Language.get_by_code('mon').id
+      when 'mon'
         # orthographic_systems=thl.mongol.translit
         name = HelperMethods.find_name_for_writing_and_orthographic_system(all_names, latin_id, OrthographicSystem.get_by_code('thl.mongol.translit').id)
         return name if !name.nil?
@@ -119,9 +119,9 @@ module FeatureExtensionForNamePositioning
         name = HelperMethods.find_name_for_writing_and_orthographic_system(all_names, latin_id, OrthographicSystem.get_by_code('thl.cyr.mongol.translit').id)
         # if that doesn't exist, orthographic_systems=loc.cyr.mongol.translit
         name = HelperMethods.find_name_for_writing_and_orthographic_system(all_names, latin_id, OrthographicSystem.get_by_code('loc.cyr.mongol.translit').id) if name.nil?
-      when Language.get_by_code('unk').id
+      when 'unk'
         # language=unk; take in this order of preference, writing system=latn , original if its there,
-        name = first_name if first_name[:writing_system_id] == latin_id
+        name = first_name if first_name.writing_system_id == latin_id
         return name if !name.nil?
         # and otherwise phonetic_systems=thl_simple_transcrip, 
         name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('thl.simple.transcrip').id)
@@ -134,7 +134,9 @@ module FeatureExtensionForNamePositioning
     end
     # If there is no such name available, show the highest priority form of any type that has writing_systems=latn
     # If there is no writing_systems=latn, display "Unknown"
-    name || HelperMethods.find_name_for_writing_system(all_names, latin_id)
+    name = HelperMethods.find_name_for_writing_system(all_names, latin_id) if name.nil?
+    name = first_name if name.nil?
+    return name
   end
   
   def prioritized_names
@@ -237,11 +239,11 @@ module FeatureExtensionForNamePositioning
       calculated_name = self.calculate_prioritized_name(view)
       cached_name = cached_names.where(:view_id => view.id).first
       if cached_name.nil?
-        cached_names.create(:view_id => view.id, :feature_name_id => calculated_name.id)
+        cached_names.create(:view_id => view.id, :feature_name_id => calculated_name.nil? ? nil : calculated_name.id)
         changed_views << view.id
       else
         if cached_name.feature_name != calculated_name
-          cached_name.update_attribute(:feature_name_id, calculated_name.id)
+          cached_name.update_attribute(:feature_name_id, calculated_name.nil? ? nil : calculated_name.id)
           changed_views << view.id
           # Expire the names that have changed
           Rails.cache.delete("#{self.cache_key}/#{view.cache_key}/prioritized_name")
@@ -313,7 +315,7 @@ module FeatureExtensionForNamePositioning
   
   module HelperMethods    
     def self.find_name_for_writing_system(names, writing_system_id)
-      names.detect{|n| n[:writing_system_id]==writing_system_id}
+      names.detect{|n| n.writing_system_id==writing_system_id}
     end
 
     def self.find_name_for_writing_and_phonetic_system(names, writing_system_id, phonetic_system_id)
@@ -326,7 +328,7 @@ module FeatureExtensionForNamePositioning
 
     def self.find_name_for_writing_and_relational_system(names, writing_system_id, system_name, system_id)
       names.detect do |n|
-        if n[:writing_system_id]==writing_system_id
+        if n.writing_system_id==writing_system_id
           parent_relation = n.parent_relations.first
           !parent_relation.nil? && parent_relation[system_name]==system_id
         else

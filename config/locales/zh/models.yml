@@ -30,9 +30,6 @@ zh:
             feature_name_type:
                 one: '名称类型'
                 other: '名称类型'
-            feature_relation_type:
-                one: '特征关系类型'
-                other: '特征关系类型'
             language:
                 one: '语言'
                 other: '语言'

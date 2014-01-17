@@ -30,9 +30,6 @@ dz:
             feature_name_type:
                 one: 'name type'
                 other: 'name types'
-            feature_relation_type:
-                one: 'relation type'
-                other: 'relation types'
             language:
                 one: 'language'
                 other: 'languages'
