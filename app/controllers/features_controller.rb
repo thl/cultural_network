@@ -356,6 +356,6 @@ class FeaturesController < ApplicationController
   
   def cache_path
     set_common_variables(session) if params[:view_id] || params[:perspective_id]
-    "tree/#{current_perspective.id}/#{current_view.id}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}#{params[:id]}"
+    "tree/#{current_perspective.id}/#{current_view.id}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}#{params[:id]}/"
   end
 end

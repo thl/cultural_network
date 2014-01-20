@@ -383,15 +383,20 @@ class Feature < ActiveRecord::Base
   
   def expire_children_cache(views)
     # Avoiding "regular expression too big" error by slicing node up
-    descendants.collect(&:id).push(id).each_slice(1000) do |nodes|
-      next if nodes.blank?
-      ActionController::Base.new.expire_fragment(Regexp.new("tree/.*/#{views.join('|')}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{nodes.join('|')})"))
-    end if !views.blank?
+    return if views.blank?
+    perspective_ids = Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
+    children = self.child_relations.where(:perspective_id => perspective_ids).select(:child_node_id).uniq.collect(&:child_node)
+    return if children.empty?
+    ActionController::Base.new.expire_fragment(Regexp.new("tree/(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{children.collect(&:id).join('|')})/"))
+    children.each{|c| c.expire_children_cache(views)}
   end
   
   def expire_tree_cache(views)
-    node = self.parent.nil? ? self : self.parent
-    node.expire_children_cache(views)
+    perspective_ids = Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
+    parents = self.parent_relations.where(:perspective_id => perspective_ids).select(:parent_node_id).uniq.collect(&:parent_node)
+    parents = [self] if parents.blank?
+    ActionController::Base.new.expire_fragment(Regexp.new("tree/(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{parents.collect(&:id).join('|')})/"))
+    parents.each{|c| c.expire_children_cache(views)}
   end
       
   private

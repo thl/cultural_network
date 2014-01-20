@@ -27,6 +27,7 @@ class FeatureName < ActiveRecord::Base
     feature = record.feature
     #Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))
     if !record.skip_update
+      record.ensure_one_primary
       views = feature.update_cached_feature_names
       feature.expire_tree_cache(views) if !views.blank?
    end
@@ -41,6 +42,7 @@ class FeatureName < ActiveRecord::Base
   
   after_create do |record|
     if !record.skip_update
+      record.ensure_one_primary
       record.feature.update_name_positions
     end
   end
@@ -119,5 +121,17 @@ class FeatureName < ActiveRecord::Base
   
   def self.search(filter_value)
     self.where(build_like_conditions(%W(feature_names.name feature_names.etymology), filter_value))
-  end  
+  end
+  
+  def ensure_one_primary
+    parent = self.feature
+    primary_names = parent.names.where(:is_primary_for_romanization => true)
+    case primary_names.count
+    when 0
+    when 1
+    else
+      keep = self.is_primary_for_romanization? ? self : primary_names.order('updated_at DESC').first
+      primary_names.where(['id <> ?', keep.id]).update_all(:is_primary_for_romanization => false) if !keep.nil?
+    end
+  end
 end

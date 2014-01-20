@@ -12,7 +12,7 @@ module KmapsEngine
     end
 
     def self.cache_key(f, p, v)
-      "#{CACHE_DIR}#{p}/#{v}/#{CACHE_FILE_PREFIX}#{f.id}"
+      "#{CACHE_DIR}#{p}/#{v}/#{CACHE_FILE_PREFIX}#{f.id}/"
     end
 
     def self.already_cached(f, perspective_ids, view_ids)
