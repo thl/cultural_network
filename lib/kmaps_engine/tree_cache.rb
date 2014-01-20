@@ -1,7 +1,9 @@
 module KmapsEngine
   class TreeCache
-    CACHE_DIR = 'views/tree/'
+    CACHE_DIR = 'views/'
+    CACHE_PREFIX = 'tree/'
     CACHE_FILE_PREFIX = 'node_id_'
+    CACHE_SUFFIX = '/expanded'
     TIME_FORMAT = '%.2f'
 
     def self.reheat(fid, perspective_codes, view_codes)
@@ -12,7 +14,7 @@ module KmapsEngine
     end
 
     def self.cache_key(f, p, v)
-      "#{CACHE_DIR}#{p}/#{v}/#{CACHE_FILE_PREFIX}#{f.id}/"
+      "#{CACHE_DIR}#{CACHE_PREFIX}#{p}/#{v}/#{CACHE_FILE_PREFIX}#{f.id}#{CACHE_SUFFIX}"
     end
 
     def self.already_cached(f, perspective_ids, view_ids)
