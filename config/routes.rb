@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     resources :feature_names do
       resources :citations, :feature_name_relations
       get :locate_for_relation, :on => :member
+      post :set_priorities, :on => :collection
       resources :notes do
         get :add_author, :on => :collection
       end

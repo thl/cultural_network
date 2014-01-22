@@ -18,7 +18,7 @@
 
 class FeatureName < ActiveRecord::Base
   attr_accessible :name, :feature_name_type_id, :language_id, :writing_system_id, :etymology, :feature_name,
-    :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id
+    :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id, :position
   
   attr_accessor :skip_update
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
