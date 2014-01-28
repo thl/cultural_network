@@ -35,6 +35,7 @@ class Admin::FeatureNamesController < AclController
     if changed
       feature.update_is_name_position_overriden
       views = feature.update_cached_feature_names
+      logger.error "Cache expiration: triggered for chaging positions for feature #{feature.fid}."
       feature.expire_tree_cache(views) if !views.blank?
     end
     render :nothing => true

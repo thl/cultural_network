@@ -387,7 +387,9 @@ class Feature < ActiveRecord::Base
     perspective_ids = Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
     children = self.child_relations.where(:perspective_id => perspective_ids).select(:child_node_id).uniq.collect(&:child_node)
     return if children.empty?
-    ActionController::Base.new.expire_fragment(Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{children.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}"))
+    reg_exp = Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{children.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}")
+    logger.error "Cache expiration: #{reg_exp}."
+    ActionController::Base.new.expire_fragment(reg_exp)
     children.each{|c| c.expire_children_cache(views)}
   end
   
@@ -395,7 +397,9 @@ class Feature < ActiveRecord::Base
     perspective_ids = Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
     parents = self.parent_relations.where(:perspective_id => perspective_ids).select(:parent_node_id).uniq.collect(&:parent_node)
     parents = [self] if parents.blank?
-    ActionController::Base.new.expire_fragment(Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{parents.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}"))
+    reg_exp = Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{parents.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}")
+    logger.error "Cache expiration: #{reg_exp}."
+    ActionController::Base.new.expire_fragment(reg_exp)
     parents.each{|c| c.expire_children_cache(views)}
   end
       

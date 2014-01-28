@@ -19,7 +19,7 @@ class Note < ActiveRecord::Base
   # a better approach to this?
   include ApplicationHelper
   
-  attr_accessible :custom_note_title, :note_title_id, :content, :is_public, :id, :author_ids
+  attr_accessible :custom_note_title, :note_title_id, :content, :is_public, :id, :author_ids, :notable_type, :notable_id
   belongs_to :notable, :polymorphic=>true
   belongs_to :note_title
   has_and_belongs_to_many :authors, :class_name => 'AuthenticatedSystem::Person', :join_table => 'authors_notes', :association_foreign_key => 'author_id'

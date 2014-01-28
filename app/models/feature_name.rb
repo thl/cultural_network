@@ -29,6 +29,7 @@ class FeatureName < ActiveRecord::Base
     if !record.skip_update
       record.ensure_one_primary
       views = feature.update_cached_feature_names
+      logger.error "Cache expiration: triggered for chaging feature #{feature.fid} name #{record.name}."
       feature.expire_tree_cache(views) if !views.blank?
    end
   end #{ |record| record.update_hierarchy

@@ -450,9 +450,7 @@ fieldset .highlight .item-icon-new{
 }
 .text {
 	border:solid 1px gray;
-	padding:.1em;
 	display: inline-block;
-	border:none; 
 	padding:5px; 
 	font:normal normal normal 18px/18px verdana, arial, sans-serif;
 }
