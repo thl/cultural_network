@@ -115,7 +115,7 @@ class FeatureName < ActiveRecord::Base
   def <=>(object)
     return -1 if object.language.nil?
     # Put Chinese when sorting
-    return -1 if object.language.code == 'chi'
+    return -1 if object.language.code == 'zho'
     return 1 if object.language.code == 'eng'
     return self.name <=> object.name
   end

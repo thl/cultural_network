@@ -372,12 +372,12 @@ class Feature < ActiveRecord::Base
   end
   
   def summary
-    current_language = Language.where(['code LIKE ?', "#{I18n.locale}%"]).first
+    current_language = Language.current
     current_language.nil? ? nil : self.summaries.where(:language_id => current_language.id).first
   end
   
   def caption
-    current_language = Language.where(['code LIKE ?', "#{I18n.locale}%"]).first
+    current_language = Language.current
     current_language.nil? ? nil : self.captions.where(:language_id => current_language.id).first
   end
   

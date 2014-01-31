@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :languages
-  resource :session
+  resource :session do
+    match 'change_language/:id' => 'sessions#change_language', :as => :change_language
+  end
   namespace :admin do
     resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
       :feature_types, :geo_code_types, :importation_tasks, :languages, :note_titles, :orthographic_systems, :perspectives,

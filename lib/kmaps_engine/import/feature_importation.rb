@@ -315,9 +315,9 @@ module KmapsEngine
         # if language is not specified it may be inferred.
         if language.nil?
           if phonetic_system.nil?
-            language = Language.get_by_code('chi') if !writing_system.nil? && (writing_system.code == 'hant' || writing_system.code == 'hans')
+            language = Language.get_by_code('zho') if !writing_system.nil? && (writing_system.code == 'hant' || writing_system.code == 'hans')
           else
-            language = Language.get_by_code('tib') if phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip'
+            language = Language.get_by_code('bod') if phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip'
           end
         end
         conditions[:language_id] = language.id if !language.nil?          

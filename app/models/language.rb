@@ -29,7 +29,7 @@ class Language < SimpleProp
   validates_uniqueness_of :code
   
   def is_chinese?
-    code == 'chi'
+    code == 'zho'
   end
   
   def is_english?
@@ -41,11 +41,15 @@ class Language < SimpleProp
   end
   
   def is_tibetan?
-    code == 'tib'
+    code == 'bod'
   end
   
   def is_western?
     Language.is_western_id? self.id
+  end
+  
+  def self.current
+    self.where(['code LIKE ?', "#{I18n.locale}%"]).first
   end
 
   def lacks_transcription_system?

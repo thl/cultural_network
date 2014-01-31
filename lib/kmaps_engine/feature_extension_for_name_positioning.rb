@@ -52,7 +52,7 @@ module FeatureExtensionForNamePositioning
     first_name = all_names.first    
     case first_name.language.code
     # language=tib: SHOW writing_systems=latn & orthographic_systems=thl.ext.wyl.translit
-    when 'tib'
+    when 'bod'
       name = HelperMethods.find_name_for_writing_and_orthographic_system(all_names, latin_id, OrthographicSystem.get_by_code('thl.ext.wyl.translit').id)
     # language=nep: SHOW writing_systems=latn & orthographic_systems=indo.standard.translit
     # language=hin: SHOW writing_systems=latn & orthographic_systems=indo.standard.translit
@@ -92,10 +92,10 @@ module FeatureExtensionForNamePositioning
     else
       case first_name.language.code
       # language=chi: SHOW writing_systems=latn & phonetic_systems=pinyin.transcript
-      when 'chi'
+      when 'zho'
         name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('pinyin.transcrip').id)
       # language=tib: SHOW writing_systems=latn & phonetic_systems=thl.simple.transcrip
-      when 'tib'
+      when 'bod'
         name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('thl.simple.transcrip').id)
       # language=nep: SHOW writing_systems=latn & phonetic_systems=ind.transcrip.transcript
       # language=hin: SHOW writing_systems=latn & phonetic_systems=ind.transcrip.transcript
