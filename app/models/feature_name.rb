@@ -24,14 +24,14 @@ class FeatureName < ActiveRecord::Base
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
   
   after_update do |record|
-    feature = record.feature
     #Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))
     if !record.skip_update
+      feature = record.feature
       record.ensure_one_primary
       views = feature.update_cached_feature_names
-      logger.error "Cache expiration: triggered for chaging feature #{feature.fid} name #{record.name}."
-      feature.expire_tree_cache(views) if !views.blank?
-   end
+      logger.error "Cache expiration: triggered for changing feature #{feature.fid} name #{record.name}."
+      feature.expire_tree_cache(:views => views) if !views.blank?
+    end
   end #{ |record| record.update_hierarchy
   
   # Too much for the importer to deal with!
@@ -44,7 +44,20 @@ class FeatureName < ActiveRecord::Base
   after_create do |record|
     if !record.skip_update
       record.ensure_one_primary
-      record.feature.update_name_positions
+      feature = record.feature
+      feature.update_name_positions
+      views = feature.update_cached_feature_names
+      logger.error "Cache expiration: triggered for creating feature #{feature.fid} name #{record.name}."
+      feature.expire_tree_cache(:views => views) if !views.blank?
+    end
+  end
+  
+  after_destroy do |record|
+    if !record.skip_update
+      feature = record.feature
+      views = feature.update_cached_feature_names
+      logger.error "Cache expiration: triggered for deleting feature #{feature.fid} name #{record.name}."
+      feature.expire_tree_cache(:views => views) if !views.blank?
     end
   end
   

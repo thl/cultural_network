@@ -26,17 +26,37 @@ class FeatureRelation < ActiveRecord::Base
   
   acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {:feature_relation_type_id => FeatureRelationType.hierarchy_ids}
   
+  before_update do |record|
+    if !record.skip_update
+      perspective_ids = record.perspective_id_changed? ? [record.perspective_id, record.perspective_id_was] : [record.perspective_id]
+      perspective_ids = perspective_ids.collect{|p_id| Perspective.find(p_id)}.select(&:is_public?).collect(&:id)
+      if record.parent_node_id_changed?
+        [record.parent_node_id, record.parent_node_id_was].each do |f_id|
+          f = Feature.find(f_id)
+          f.expire_tree_cache(:perspectives => perspective_ids, :include_parents => false)
+        end
+      elsif record.child_node_id_changed? || record.perspective_id_changed? || record.feature_relation_type_id?
+        record.parent_node.expire_tree_cache(:perspectives => perspective_ids, :include_parents => false)
+      end
+    end
+  end
+  
+  after_create do |record|
+    if !record.skip_update && record.perspective.is_public?
+      record.parent_node.expire_tree_cache(:perspectives => [record.perspective_id], :include_parents => false)
+    end    
+  end
+  
   after_save do |record|
     if !record.skip_update
-      record.expire_cache
       # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
       [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
     end
   end
   
-  before_destroy do |r|
-    if !r.skip_update
-      r.expire_cache
+  after_destroy do |record|
+    if !record.skip_update && record.perspective.is_public?
+      record.parent_node.expire_tree_cache(:perspectives => [record.perspective_id], :include_parents => false)
     end
   end
   
@@ -105,14 +125,5 @@ class FeatureRelation < ActiveRecord::Base
     # need to do a join here (not :include) because we're searching parents and children feature.pids
     self.where(build_like_conditions(%W(role parents.fid children.fid), filter_value)
     ).joins('LEFT JOIN features parents ON parents.id=feature_relations.parent_node_id LEFT JOIN features children ON children.id=feature_relations.child_node_id')
-  end
-    
-  def expire_cache
-    fid = Rails.cache.read('fid')
-    #puts "fid from fr model: #{fid}, child_node_id: #{child_node_id}, parent_node_id = #{parent_node_id}"
-    if child_node_id == fid.to_i
-      #Rails.cache.write('tree_tmp', parent_node_id)
-      parent_node.expire_children_cache unless parent_node.nil?
-    end
   end
 end

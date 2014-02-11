@@ -25,19 +25,13 @@ class Feature < ActiveRecord::Base
   validates_uniqueness_of :fid
   validates_numericality_of :position, :allow_nil=>true
   
-  after_destroy do |r|
-    if !r.skip_update
-      node = r.parent.nil? ? r : r.parent
-      node.expire_children_cache
+  after_destroy do |record|
+    if !record.skip_update
+      record.expire_tree_cache
     end
   end
   
   @@associated_models = [FeatureName, FeatureGeoCode, XmlDocument]
-  
-  # after_update do |r|
-  #   node = r.parent.nil? ? r : r.parent
-  #   node.expire_children_cache
-  # end
   
   # acts_as_solr :fields=>[:pid]
   
@@ -381,26 +375,26 @@ class Feature < ActiveRecord::Base
     current_language.nil? ? nil : self.captions.where(:language_id => current_language.id).first
   end
   
-  def expire_children_cache(views)
+  def expire_children_cache(views, perspectives)
     # Avoiding "regular expression too big" error by slicing node up
-    return if views.blank?
-    perspective_ids = Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
-    children = self.child_relations.where(:perspective_id => perspective_ids).select(:child_node_id).uniq.collect(&:child_node)
+    return if views.blank? || perspectives.blank?
+    children = self.child_relations.where(:perspective_id => perspectives).select(:child_node_id).uniq.collect(&:child_node)
     return if children.empty?
-    reg_exp = Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{children.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}")
+    reg_exp = Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspectives.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{children.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}")
     logger.error "Cache expiration: #{reg_exp}."
     ActionController::Base.new.expire_fragment(reg_exp)
-    children.each{|c| c.expire_children_cache(views)}
+    children.each{|c| c.expire_children_cache(views, perspectives)}
   end
   
-  def expire_tree_cache(views)
-    perspective_ids = Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
-    parents = self.parent_relations.where(:perspective_id => perspective_ids).select(:parent_node_id).uniq.collect(&:parent_node)
+  def expire_tree_cache(options = {})
+    views = options[:views] || Rails.cache.fetch("views/all", :expires_in => 1.week) { View.all.collect(&:id) }
+    perspectives = options[:perspectives] || Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
+    parents = !options[:include_parents].nil? && !options[:include_parents] ? nil : self.parent_relations.where(:perspective_id => perspectives).select(:parent_node_id).uniq.collect(&:parent_node)
     parents = [self] if parents.blank?
-    reg_exp = Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspective_ids.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{parents.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}")
+    reg_exp = Regexp.new("#{KmapsEngine::TreeCache::CACHE_PREFIX}(#{perspectives.join('|')})/(#{views.join('|')})/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}(#{parents.collect(&:id).join('|')})#{KmapsEngine::TreeCache::CACHE_SUFFIX}")
     logger.error "Cache expiration: #{reg_exp}."
     ActionController::Base.new.expire_fragment(reg_exp)
-    parents.each{|c| c.expire_children_cache(views)}
+    parents.each{|c| c.expire_children_cache(views, perspectives)}
   end
       
   private

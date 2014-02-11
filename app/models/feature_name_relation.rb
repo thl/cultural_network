@@ -30,6 +30,20 @@ class FeatureNameRelation < ActiveRecord::Base
       [record.parent_node, record.child_node].each {|r| r.update_hierarchy }
       feature = record.feature
       feature.update_name_positions
+      views = feature.update_cached_feature_names
+      logger.error "Cache expiration: triggered for saving a feature name relation for #{feature.fid}."
+      feature.expire_tree_cache(:views => views) if !views.blank?
+    end
+  end
+  
+  after_destroy do |record|
+    if !record.skip_update
+      # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
+      [record.parent_node, record.child_node].each {|r| r.update_hierarchy }
+      feature = record.feature
+      views = feature.update_cached_feature_names
+      logger.error "Cache expiration: triggered for deleting a feature name relation for #{feature.fid}."
+      feature.expire_tree_cache(:views => views) if !views.blank?
     end
   end
   

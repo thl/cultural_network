@@ -33,7 +33,7 @@ class Citation < ActiveRecord::Base
   #
   
   def info_source
-    MmsIntegration::Document.find(self.info_source_id)
+    MmsIntegration::Medium.find(self.info_source_id)
   end
   
   def to_s

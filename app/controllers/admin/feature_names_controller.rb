@@ -36,7 +36,7 @@ class Admin::FeatureNamesController < AclController
       feature.update_is_name_position_overriden
       views = feature.update_cached_feature_names
       logger.error "Cache expiration: triggered for chaging positions for feature #{feature.fid}."
-      feature.expire_tree_cache(views) if !views.blank?
+      feature.expire_tree_cache(:views => views) if !views.blank?
     end
     render :nothing => true
   end
@@ -44,9 +44,7 @@ class Admin::FeatureNamesController < AclController
   # Overwrite the default destroy method so we can redirect_to(:back)
   def destroy
     name = FeatureName.find(params[:id])
-    feature = name.feature
     name.destroy
-    feature.update_cached_feature_names # took it out of the model to not choke the importer
     redirect_to(:back)
   end
   
