@@ -8,9 +8,9 @@ module KmapsEngine
     end
     
     initializer :sweepers do |config|
-      sweeper_folder = File.join(File.dirname(__FILE__), '..', '..', 'app', 'sweepers')
-      require File.join(sweeper_folder, 'feature_sweeper')
-      require File.join(sweeper_folder, 'description_sweeper')
+      sweeper_folder = File.join('..', '..', 'app', 'sweepers')
+      require_relative File.join(sweeper_folder, 'feature_sweeper')
+      require_relative File.join(sweeper_folder, 'description_sweeper')
     end
     
     initializer :loader do |config|

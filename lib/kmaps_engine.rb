@@ -14,7 +14,7 @@ require 'kmaps_engine/application_settings'
 ActiveRecord::Base.send :include, ActiveRecord::KmapsEngine::Extension
 Array.send :include, KmapsEngine::ArrayExtension
 
-I18n.load_path += Dir[File.join(File.dirname(__FILE__), '..', 'config', 'locales', '**', '*.yml')]
+I18n.load_path += Dir[File.join(__dir__, '..', 'config', 'locales', '**', '*.yml')]
 
 module KmapsEngine
 end

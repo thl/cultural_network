@@ -11,7 +11,7 @@
     <label><%= FeatureName.model_name.human.titleize.s %>:</label> <span><%= @object.name %></span>
   </div>
   <div class="row">
-    <label><%= FeatureName.human_attribute_name(:etymology).s %>:</label> <span><%= def_if_blank @object, :etymology %></span>
+    <label><%= FeatureName.human_attribute_name(:etymology).s %>:</label> <span><%= def_if_blank(@object, :etymology).html_safe %></span>
   </div>
   <div class="row">
     <label><%= FeatureNameType.model_name.human.titleize.s %>:</label> <span><%= def_if_blank @object, :class, :name %></span>

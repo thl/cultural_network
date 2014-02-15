@@ -361,18 +361,17 @@ module ApplicationHelper
     output.gsub!(/<\/p>\s*<p>/is, "<br /><br />")
     output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
     output.gsub!(/<br.*?>/, "\v")
-    if output.length < len
+    if output.size < len
       return input
     end
     
     # We need to be able to call .s on the input, but not on the extension, so we
     # have to use a modified version of truncate() instead of truncate() itself.
     # output = truncate(input, :length => len, :omission => extension)
-    l = len - extension.mb_chars.length
-    chars = input.mb_chars
+    l = len - extension.size
     # Temporarily removing .s, as it takes a while to run on long strings
     #output = (chars.length > len ? chars[0...l].s + extension : input).to_s
-    output = (chars.length > len ? chars[0...l] + extension : input).to_s
+    output = input.size > len ? input[0...l] + extension : input
     
     output.strip!
     output.gsub!(/\v/, "<br />")

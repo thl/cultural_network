@@ -3,7 +3,7 @@ namespace :kmaps_engine do
   namespace :mms do
     desc "Deploys sources to MMS documents (authenticating through MMS_USER argument) making the appropriate replacements."
     task :deploy_sources do |t|
-      require File.join(File.dirname(__FILE__), "../kmaps_engine/mms_deployer.rb")
+      require_relative '../kmaps_engine/mms_deployer.rb'
       MmsIntegration::MediaManagementResource.user = ENV['MMS_USER']
       if !MmsIntegration::MediaManagementResource.user.blank?
         puts "Password for #{MmsIntegration::MediaManagementResource.user}:"
