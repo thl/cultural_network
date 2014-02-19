@@ -404,7 +404,7 @@ module AdminHelper
     
   def note_link_list_for(object)
     if object.respond_to?(:notes) && object.notes.length > 0
-      object.notes.enum_with_index.collect{|n, i|
+      object.notes.each_with_index.collect{|n, i|
         note_title = n.title.blank? ? "Note" : n.title
         note_authors = " by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0
         link_to "Note #{i+1}", polymorphic_path([:admin, object, n]), :title => h("#{note_title}#{note_authors}")
@@ -418,7 +418,7 @@ module AdminHelper
     if object.respond_to?(:time_units)
       time_units = object.time_units_ordered_by_date
       if time_units.length > 0
-        time_units.enum_with_index.collect{|tu, i|
+        time_units.each_with_index.collect{|tu, i|
           time_unit_title = tu.to_s.blank? ? "Date" : tu.to_s
           link_to "Date #{i+1}", polymorphic_path([:admin, object, tu]), :title => h("#{time_unit_title}")
         }.join(', ').html_safe

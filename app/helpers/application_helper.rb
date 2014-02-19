@@ -358,7 +358,7 @@ module ApplicationHelper
   # Custom HTML truncate for PD descriptions, which don't always validate
   def truncate_html(input, len = 30, extension = "...")
     output = input
-    output.gsub!(/<\/p>\s*<p>/is, "<br /><br />")
+    output.gsub!(/<\/p>\s*<p>/iu, "<br /><br />")
     output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
     output.gsub!(/<br.*?>/, "\v")
     if output.size < len
