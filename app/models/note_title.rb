@@ -12,7 +12,7 @@ class NoteTitle < ActiveRecord::Base
   attr_accessible :title
   
   validates_presence_of :title
-  has_many :notes
+  has_many :notes, :dependent => :nullify
   
   def to_s
     self.title

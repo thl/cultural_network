@@ -142,10 +142,16 @@ class FeaturesController < ApplicationController
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code('roman.popular')
     if params_id.nil?
-      @features = Feature.all.sort_by{|f| f.prioritized_name(@view).name }
+      @features = Feature.where(:is_public => 1).sort_by do |f|
+        n = f.prioritized_name(@view)
+        n.nil? ? f.pid : n.name
+      end
     else
       feature = Feature.get_by_fid(params_id)
-      @features = feature.descendants.sort_by{ |f| f.prioritized_name(@view).name }
+      @features = feature.descendants.sort_by do |f|
+        n = f.prioritized_name(@view)
+        n.nil? ? f.pid : n.name
+      end
     end
     respond_to do |format|
       format.xml

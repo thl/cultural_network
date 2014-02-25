@@ -19,7 +19,7 @@ class View < SimpleProp
   # Associations
   #
   #
-  has_many :cached_feature_names
+  has_many :cached_feature_names, :dependent => :destroy
   
   include KmapsEngine::IsCitable
   extend KmapsEngine::HasTimespan
