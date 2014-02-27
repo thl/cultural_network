@@ -13,7 +13,7 @@ module AdminHelper
   # Returns the base path of the current url (removes the query params)
   #
   def resolved_collection_path
-    request.env['PATH_INFO'].dup.force_encoding(Encoding::UTF_8)
+    request.env['PATH_INFO']
   end
   
   def list_actions_for_item(item, options={})
