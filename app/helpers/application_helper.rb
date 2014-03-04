@@ -112,11 +112,11 @@ module ApplicationHelper
   #
   #
   def f_link(feature, url, html_attrs={}, options={})
-    html_attrs[:class] = "#{html_attrs[:class]} feature_name"
+    html_attrs[:class] = html_attrs[:class].blank? ? 'feature_name' : "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)
     # url = url_for iframe_feature_path(feature.id) if current_page?(hash_for_iframe_feature_path(feature.id))
     name = fname_labels(feature)
-    name = name.s if !options[:s].nil? && options[:s] == true
+    name = name.s if !options[:s].nil? && options[:s]
     link_to(name, url, html_attrs)
   end
   
