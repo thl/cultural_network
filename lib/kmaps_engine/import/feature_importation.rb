@@ -41,7 +41,7 @@ module KmapsEngine
     # .info_source.id/code, info_source.note, .info_source[.i].volume, info_source[.i].pages
 
     # Fields that accept note:
-    # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
+    # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j], i.feature_geo_codes[.j]
 
     # Note fields:
     # .note

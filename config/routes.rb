@@ -90,6 +90,8 @@ Rails.application.routes.draw do
     end
   end
   resources :features do
+    resources :captions, :only => [:index, :show]
+    resources :summaries, :only => [:index, :show]
     resources :association_notes
     resources :descriptions do
       member do
