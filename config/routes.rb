@@ -109,6 +109,7 @@ Rails.application.routes.draw do
       get :iframe
       get :list
       get :nested
+      get :fancy_nested
       get :node_tree_expanded
       get :related
       get :related_list
@@ -117,6 +118,7 @@ Rails.application.routes.draw do
       get :all
       get :characteristics_list
       get :list
+      get :fancy_nested
       get :nested
       post :search
       get :search

@@ -21,6 +21,9 @@ class FeatureSweeper < ActionController::Caching::Sweeper
       expire_page list_feature_url(feature.fid, options)
       expire_page nested_feature_url(feature.fid, options)
       expire_page nested_features_url(options)
+      expire_page fancy_nested_feature_url(feature.fid, options)
+      expire_page fancy_nested_features_url(options)
+      expire_page related_feature_url(feature.fid, options)
     end
   end
   

@@ -1,6 +1,6 @@
 class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? }
-  caches_page :all, :children, :list, :nested
+  caches_page :all, :children, :list, :nested, :fancy_nested, :related
   caches_action :node_tree_expanded, :cache_path => Proc.new {|c| cache_path}
   
   #
@@ -189,6 +189,24 @@ class FeaturesController < ApplicationController
     end
   end
   
+  def fancy_nested
+    params_id = params[:id]
+    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    @view ||= View.get_by_code('roman.popular')
+    if params_id.nil?
+      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view).sort_by{ |f| f.prioritized_name(@view).name }
+    else
+      @feature = Feature.get_by_fid(params_id)
+    end
+    respond_to do |format|
+      format.xml { render 'fancy_nested_collection' if params_id.nil? }
+      format.json do
+        hash = Hash.from_xml(render_to_string(:action => params_id.nil? ? 'fancy_nested_collection.xml.builder' : 'fancy_nested.xml.builder'))
+        render :json => hash['features']
+      end
+    end
+  end
+  
   def descendants
     @feature = Feature.find(params[:id])
     descendants = @feature.nil? ? [] : @feature.descendants.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name')
@@ -206,8 +224,13 @@ class FeaturesController < ApplicationController
       @tab_options = {:entity => @feature}
       @current_tab_id = :related
     end
+    respond_to do |format|
+      format.html
+      format.xml
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'related.xml.builder')) }
+    end
   end
-    
+  
   # The following three methods are used with the Node Tree
   def expanded
     @node = Feature.find(params[:id])
