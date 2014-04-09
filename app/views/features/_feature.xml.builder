@@ -61,7 +61,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
       picture = illustration.picture
       options = {:id => picture.id}
       if picture.instance_of?(MmsIntegration::Picture)
-        options[:url] = MmsIntegration::Medium.element_url(picture.id)
+        options[:url] = MmsIntegration::Medium.element_url(picture.id, :format => params['format'])
         options[:type] = 'mms'
       else
         options[:width] = picture.width
