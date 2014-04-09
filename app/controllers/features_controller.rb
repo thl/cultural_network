@@ -122,7 +122,12 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'paginated_show' }
       format.xml  { render :action => 'paginated_show' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')), :callback => params[:callback] }
+      format.json do
+        h = Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
+        h[:page] = params[:page] || 1
+        h[:total_pages] = @features.total_pages
+        render :json => h, :callback => params[:callback]
+      end
     end
   end
     
