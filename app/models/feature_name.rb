@@ -29,7 +29,7 @@ class FeatureName < ActiveRecord::Base
       feature = record.feature
       record.ensure_one_primary
       views = feature.update_cached_feature_names
-      logger.error "Cache expiration: triggered for changing feature #{feature.fid} name #{record.name}."
+      # logger.error "Cache expiration: triggered for changing feature #{feature.fid} name #{record.name}."
       feature.expire_tree_cache(:views => views) if !views.blank?
     end
   end #{ |record| record.update_hierarchy
@@ -47,7 +47,7 @@ class FeatureName < ActiveRecord::Base
       feature = record.feature
       feature.update_name_positions
       views = feature.update_cached_feature_names
-      logger.error "Cache expiration: triggered for creating feature #{feature.fid} name #{record.name}."
+      # logger.error "Cache expiration: triggered for creating feature #{feature.fid} name #{record.name}."
       feature.expire_tree_cache(:views => views) if !views.blank?
     end
   end
@@ -56,7 +56,7 @@ class FeatureName < ActiveRecord::Base
     if !record.skip_update
       feature = record.feature
       views = feature.update_cached_feature_names
-      logger.error "Cache expiration: triggered for deleting feature #{feature.fid} name #{record.name}."
+      # logger.error "Cache expiration: triggered for deleting feature #{feature.fid} name #{record.name}."
       feature.expire_tree_cache(:views => views) if !views.blank?
     end
   end

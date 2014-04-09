@@ -31,7 +31,7 @@ class FeatureNameRelation < ActiveRecord::Base
       feature = record.feature
       feature.update_name_positions
       views = feature.update_cached_feature_names
-      logger.error "Cache expiration: triggered for saving a feature name relation for #{feature.fid}."
+      # logger.error "Cache expiration: triggered for saving a feature name relation for #{feature.fid}."
       feature.expire_tree_cache(:views => views) if !views.blank?
     end
   end
@@ -42,7 +42,7 @@ class FeatureNameRelation < ActiveRecord::Base
       [record.parent_node, record.child_node].each {|r| r.update_hierarchy }
       feature = record.feature
       views = feature.update_cached_feature_names
-      logger.error "Cache expiration: triggered for deleting a feature name relation for #{feature.fid}."
+      # logger.error "Cache expiration: triggered for deleting a feature name relation for #{feature.fid}."
       feature.expire_tree_cache(:views => views) if !views.blank?
     end
   end

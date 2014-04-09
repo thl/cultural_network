@@ -380,7 +380,7 @@ class Feature < ActiveRecord::Base
       for v in view_ids
         for f in feature_ids
           s = "#{KmapsEngine::TreeCache::CACHE_PREFIX}#{p}/#{v}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}#{f}#{KmapsEngine::TreeCache::CACHE_SUFFIX}"
-          logger.error "Cache expiration: #{s}."
+          # logger.error "Cache expiration: #{s}."
           ActionController::Base.new.expire_fragment(s)
         end
       end

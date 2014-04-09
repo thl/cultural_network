@@ -72,7 +72,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
       xml.picture(options)
     end
   end
-  xml.associated_resources(:type => 'array') do
+  xml.associated_resources do
     xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
     xml.description_count(feature.descriptions.size.to_s, :type => 'integer')
     xml.place_count(feature.feature_count.to_s, :type => 'integer')

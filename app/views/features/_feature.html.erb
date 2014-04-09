@@ -9,7 +9,7 @@
 <%  end
     illustration = feature.illustration
     if !illustration.nil?
-	  picture = feature.illustration.picture
+	  picture = illustration.picture
 	  rendered_height = 200
 	  rendered_width = picture.width.nil? || picture.height.nil? ? nil : picture.width * rendered_height / picture.height %>
 	  <p>&nbsp;</p>
