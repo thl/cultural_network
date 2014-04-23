@@ -174,7 +174,7 @@ module ApplicationHelper
       ("<span class='has-draggable-popups note-popup-link'>(" +
         link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
         link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => h(link_title)) +
-      ")</span>" + javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")).html_safe
+      ")</span>").html_safe
     else
       ""
     end

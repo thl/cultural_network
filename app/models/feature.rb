@@ -117,7 +117,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def self.current_roots(current_perspective, current_view)
-    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", :expires_in => 1.week) do
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", :expires_in => 1.day) do
       joins(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').roots.find_all do |r|
 #      with_scope(:find => includes(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name')) do
  #       roots.find_all do |r|
@@ -130,7 +130,7 @@ class Feature < ActiveRecord::Base
   end
 
   def self.current_roots_by_perspective(current_perspective)
-    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.week) do
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.day) do
       with_scope(:find => where('features.is_blank' => false)) do
         roots.select do |r|
           # if ANY of the child relations are current, return true to nab this Feature
@@ -397,8 +397,8 @@ class Feature < ActiveRecord::Base
   end
   
   def expire_tree_cache(options = {})
-    views = options[:views] || Rails.cache.fetch("views/all", :expires_in => 1.week) { View.all.collect(&:id) }
-    perspectives = options[:perspectives] || Rails.cache.fetch("perspectives/all-public", :expires_in => 1.week) { Perspective.find_all_public.collect(&:id) }
+    views = options[:views] || Rails.cache.fetch("views/all", :expires_in => 1.day) { View.all.collect(&:id) }
+    perspectives = options[:perspectives] || Rails.cache.fetch("perspectives/all-public", :expires_in => 1.day) { Perspective.find_all_public.collect(&:id) }
     parents = !options[:include_parents].nil? && !options[:include_parents] ? nil : self.parent_relations.where(:perspective_id => perspectives).select(:parent_node_id).uniq.collect(&:parent_node)
     parents = [self] if parents.blank?
     Feature.expire_fragment(perspectives, views, parents.collect(&:id))

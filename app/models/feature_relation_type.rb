@@ -54,7 +54,7 @@ class FeatureRelationType < ActiveRecord::Base
   # This seems to be generally satisfactory for now, since a migration creates the initial
   # FeatureRelationTypes.
   def self.hierarchy_ids
-    Rails.cache.fetch('feature_relation_types/hierarchical_ids') { self.table_exists? ? self.where(:is_hierarchical => true).order(:id).collect(&:id) : nil }
+    Rails.cache.fetch('feature_relation_types/hierarchical_ids', :expires_in => 1.day) { self.table_exists? ? self.where(:is_hierarchical => true).order(:id).collect(&:id) : nil }
   end
   
   def to_s
@@ -66,7 +66,7 @@ class FeatureRelationType < ActiveRecord::Base
   end
   
   def self.get_by_code(code)
-    frt_id = Rails.cache.fetch("feature_relation_types/code/#{code}", :expires_in => 1.week) do
+    frt_id = Rails.cache.fetch("feature_relation_types/code/#{code}", :expires_in => 1.day) do
       frt = self.find_by_code(code)
       frt.nil? ? nil : frt.id
     end
@@ -74,7 +74,7 @@ class FeatureRelationType < ActiveRecord::Base
   end
   
   def self.get_by_asymmetric_code(code)
-    frt_id = Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}", :expires_in => 1.week) do
+    frt_id = Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}", :expires_in => 1.day) do
       frt = self.find_by_asymmetric_code(code)
       frt.nil? ? nil : frt.id
     end
