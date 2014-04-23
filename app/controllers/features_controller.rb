@@ -130,6 +130,53 @@ class FeaturesController < ApplicationController
       end
     end
   end
+
+  # params accepted: name, summary, caption, descriptions, view_code, callback
+  def by_fields
+    match = params[:query]
+    if match.blank?
+      @features = Feature.where('FALSE').paginate(:page => 1, :per_page => 1)
+    else
+      accepted_fields = {:name =>        {:model => :names       , :field => 'feature_names.name'}, 
+                         :summary =>     {:model => :summaries   , :field => 'summaries.content'},
+                         :caption =>     {:model => :captions    , :field => 'captions.content'},
+                         :description => {:model => :descriptions, :field => 'descriptions.content'}}
+      params[:name] ||= '1'
+      params[:id] ||= '0'
+      accepted_fields.each_key{|param| params[param] ||= '0' }
+      conditions_array = []
+      params_array = []
+      joins = []
+      if params[:id] == '1' && match.to_i.to_s == match
+        conditions_array << ['features.fid = ?']
+        params_array << [match.to_i]
+      end
+      @features = Feature.where(:is_public => 1).paginate(:page => params[:page] || 1, :per_page => params[:per_page] || 15)
+      accepted_fields.each_pair do |param, param_hash|
+        if params[param]=='1'
+          joins << param_hash[:model]
+          conditions_array << "#{param_hash[:field]} ILIKE ?"
+        end
+      end
+      if !conditions_array.empty?
+        @features = @features.select('features.*, DISTINCT feature.id').includes(joins) if !joins.empty?
+        @features = @features.where([conditions_array.join(' OR ')] + params_array + Array.new(joins.size, "%#{match}%"))
+      end
+    end
+    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    @view ||= View.get_by_code('roman.popular')
+    
+    respond_to do |format|
+      format.html { render :action => 'paginated_show' }
+      format.xml  { render :action => 'paginated_show' }
+      format.json do
+        h = Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
+        h[:page] = params[:page] || 1
+        h[:total_pages] = @features.total_pages
+        render :json => h, :callback => params[:callback]
+      end
+    end
+  end
     
   def children
     feature = Feature.get_by_fid(params[:id])

@@ -126,6 +126,7 @@ Rails.application.routes.draw do
       match 'by_old_pid/:old_pids' => 'features#by_old_pid'
       match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code'
       match 'by_name/:query.:format' => 'features#by_name', :query => /.*?/
+      match 'by_fields/:query.:format' => 'features#by_fields', :query => /.*?/
       match 'fids_by_name/:query.:format' => 'features#fids_by_name', :query => /.*?/
       match 'gis_resources/:fids.:format' => 'features#gis_resources'
       post :set_session_variables
