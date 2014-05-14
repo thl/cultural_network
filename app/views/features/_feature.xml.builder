@@ -1,5 +1,5 @@
 # The following is performed because the name expression returns nil for Feature.find(15512)
-@view = View.get_by_code('roman.popular')
+@view = View.get_by_code(default_view_code)
 name = feature.prioritized_name(@view)
 header = name.nil? ? feature.pid : name.name
 xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do

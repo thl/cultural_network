@@ -5,6 +5,10 @@ module KmapsEngine
       'pol.admin.hier'
     end
     
+    def default_view_code
+      'roman.popular'
+    end
+    
     def current_perspective
       perspective_id = session[:perspective_id]
       begin
@@ -32,13 +36,13 @@ module KmapsEngine
       view_id = session[:view_id]
       begin
         if view_id.blank?
-          @@current_view = View.get_by_code('roman.popular') if !defined?(@@current_view) || @@current_view.nil? || @@current_view.code != 'roman.popular'
+          @@current_view = View.get_by_code(default_view_code) if !defined?(@@current_view) || @@current_view.nil? || @@current_view.code != default_view_code
         else
           @@current_view = View.find(view_id) if !defined?(@@current_view) || @@current_view.nil? || @@current_view.id != view_id
         end
       rescue ActiveRecord::RecordNotFound
         session[:view_id] = nil
-        @@current_view = View.get_by_code('roman.popular')
+        @@current_view = View.get_by_code(default_view_code)
       end
       return @@current_view
     end

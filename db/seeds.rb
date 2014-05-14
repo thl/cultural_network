@@ -95,7 +95,7 @@ a = { :login => 'kmaps_admin', :password => 'kmaps2013', :password_confirmation 
 u = AuthenticatedSystem::User.find_by_login(a[:login])
 u.nil? ? p.create_user(a) : u.update_attributes(a)
 
-[ { :name => 'Popular Standard (romanization)', :code => 'roman.popular' },
+[ { :name => 'Popular Standard (romanization)', :code => default_view_code },
   { :name => 'Scholarly Standard (romanization)',       :code => 'roman.scholar' },
   { :name => 'Chinese Characters (simplified)',         :code => 'simp.chi' },
   { :name => 'Tibetan Script (secondary romanization)', :code => 'pri.tib.sec.roman' },

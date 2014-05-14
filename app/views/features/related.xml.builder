@@ -1,4 +1,4 @@
-@view = View.get_by_code('roman.popular')
+@view = View.get_by_code(default_view_code)
 parent_relation_counts = FeatureRelation.select('feature_relation_type_id, COUNT(DISTINCT id) as count').where(:child_node_id => @feature.id).group('feature_relation_type_id').order('feature_relation_type_id')
 child_relation_counts = FeatureRelation.select('feature_relation_type_id, COUNT(DISTINCT id) as count').where(:parent_node_id => @feature.id).group('feature_relation_type_id').order('feature_relation_type_id')
 xml.instruct!

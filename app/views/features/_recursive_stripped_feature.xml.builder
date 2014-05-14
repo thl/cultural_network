@@ -3,7 +3,7 @@ name = feature.prioritized_name(@view)
 header = name.nil? ? feature.pid : name.name
 view = current_view
 children = feature.children.sort_by{|f| f.prioritized_name(view).name}
-options = { :id => feature.fid, :db_id => feature.fid, :header => header }
+options = { :id => feature.fid, :db_id => feature.id, :header => header }
 if children.empty?
   xml.feature(options)
 else

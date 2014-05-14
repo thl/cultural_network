@@ -1,8 +1,12 @@
 class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? }
-  caches_page :all, :children, :list, :nested, :fancy_nested, :related
+  caches_page :related
   caches_action :node_tree_expanded, :cache_path => Proc.new {|c| cache_path}
-  
+  caches_action :all, :cache_path => Proc.new { |c| "#{c.request.path}?view_code=#{params[:view_code] || default_view_code}" }
+  caches_action :children, :cache_path => Proc.new { |c| "#{c.request.path}?perspective_code=#{params[:perspective_code] || default_perspective_code}&view_code=#{params[:view_code] || default_view_code}" }
+  caches_action :list, :cache_path => Proc.new { |c| "#{c.request.path}?view_code=#{params[:view_code] || default_view_code}" }
+  caches_action :nested, :cache_path => Proc.new { |c| "#{c.request.path}?perspective_code=#{params[:perspective_code] || default_perspective_code}&view_code=#{params[:view_code] || default_view_code}" }
+  caches_action :fancy_nested, :cache_path => Proc.new { |c| "#{c.request.path}?perspective_code=#{params[:perspective_code] || default_perspective_code}&view_code=#{params[:view_code] || default_view_code}" }
   #
   #
   def index
@@ -17,7 +21,7 @@ class FeaturesController < ApplicationController
         
     respond_to do |format|
       format.html
-      format.xml  #{ render :xml => Feature.current_roots(Perspective.get_by_code(default_perspective_code), View.get_by_code('roman.popular')).to_xml }
+      format.xml  #{ render :xml => Feature.current_roots(Perspective.get_by_code(default_perspective_code), View.get_by_code(default_view_code)).to_xml }
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
     end
   end
@@ -102,7 +106,7 @@ class FeaturesController < ApplicationController
       :match => params[:match]
     }
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code('roman.popular')
+    @view ||= View.get_by_code(default_view_code)
     joins = []
     if !params[:feature_type].blank?
       joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
@@ -164,7 +168,7 @@ class FeaturesController < ApplicationController
       end
     end
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code('roman.popular')
+    @view ||= View.get_by_code(default_view_code)
     
     respond_to do |format|
       format.html { render :action => 'paginated_show' }
@@ -181,8 +185,13 @@ class FeaturesController < ApplicationController
   def children
     feature = Feature.get_by_fid(params[:id])
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code('roman.popular')
-    @features = feature.children.sort_by{|f| f.prioritized_name(@view).name }
+    @view ||= View.get_by_code(default_view_code)
+    perspective = params[:perspective_code].nil? ? nil : Perspective.get_by_code(params[:perspective_code])
+    if perspective.nil?
+      @features = feature.children.sort_by{|f| f.prioritized_name(@view).name }
+    else
+      @features = feature.current_children(perspective, @view).sort_by{|f| f.prioritized_name(@view).name}
+    end
     respond_to do |format|
       format.xml
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'children.xml.builder')) }
@@ -192,7 +201,7 @@ class FeaturesController < ApplicationController
   def list
     params_id = params[:id]
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code('roman.popular')
+    @view ||= View.get_by_code(default_view_code)
     if params_id.nil?
       @features = Feature.where(:is_public => 1).sort_by do |f|
         n = f.prioritized_name(@view)
@@ -214,7 +223,7 @@ class FeaturesController < ApplicationController
   def all
     params_id = params[:id]
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code('roman.popular')
+    @view ||= View.get_by_code(default_view_code)
     if params_id.nil?
       @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view)
     else
@@ -229,9 +238,11 @@ class FeaturesController < ApplicationController
   def nested
     params_id = params[:id]
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code('roman.popular')
+    @view ||= View.get_by_code(default_view_code)
+    @perspective = params[:perspective_code].nil? ? nil : Perspective.get_by_code(params[:perspective_code])
+    @perspective ||= Perspective.get_by_code(default_perspective_code)
     if params_id.nil?
-      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view).sort_by{ |f| f.prioritized_name(@view).name }
+      @features = Feature.current_roots(@perspective, @view).sort_by{ |f| f.prioritized_name(@view).name }
     else
       @feature = Feature.get_by_fid(params_id)
     end
@@ -244,9 +255,11 @@ class FeaturesController < ApplicationController
   def fancy_nested
     params_id = params[:id]
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code('roman.popular')
+    @view ||= View.get_by_code(default_view_code)
+    @perspective = params[:perspective_code].nil? ? nil : Perspective.get_by_code(params[:perspective_code])
+    @perspective ||= Perspective.get_by_code(default_perspective_code)
     if params_id.nil?
-      @features = Feature.current_roots(Perspective.get_by_code(default_perspective_code), @view).sort_by{ |f| f.prioritized_name(@view).name }
+      @features = Feature.current_roots(@perspective, @view).sort_by{ |f| f.prioritized_name(@view).name }
     else
       @feature = Feature.get_by_fid(params_id)
     end

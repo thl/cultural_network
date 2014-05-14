@@ -12,7 +12,7 @@ class DescriptionSweeper < ActionController::Caching::Sweeper
   
   def expire_cache(description)
     feature = description.feature
-    options = {:skip_relative_url_root => true, :only_path => true}
+    options = {:only_path => true}
     FORMATS.each do |format|
       options[:format] = format
       expire_page feature_description_url(feature.fid, description, options)

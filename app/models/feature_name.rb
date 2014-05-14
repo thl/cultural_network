@@ -29,6 +29,7 @@ class FeatureName < ActiveRecord::Base
       feature = record.feature
       record.ensure_one_primary
       views = feature.update_cached_feature_names
+      views = (views + CachedFeatureName.where(:feature_name_id => record.id).select(:view_id).collect(&:view_id)).uniq if record.name_changed?
       # logger.error "Cache expiration: triggered for changing feature #{feature.fid} name #{record.name}."
       feature.expire_tree_cache(:views => views) if !views.blank?
     end

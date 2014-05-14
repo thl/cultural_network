@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
       self.current_view_id = View.get_by_code('simp.chi').id
     when 'en'
       session[:language] = 'en'
-      self.current_view_id = View.get_by_code('roman.popular').id
+      self.current_view_id = View.get_by_code(default_view_code).id
     end
     begin
       redirect_to :back
