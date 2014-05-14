@@ -75,6 +75,7 @@ module KmapsEngine
     # available as ActionView helper method.
     def self.included(base)
       base.send :helper_method, :default_perspective_code
+      base.send :helper_method, :default_view_code
       base.send :helper_method, :current_perspective
       base.send :helper_method, :current_view
       base.send :helper_method, :current_show_feature_details
