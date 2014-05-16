@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include KmapsEngine::SessionManager
   
   protect_from_forgery
-  before_filter :admin_authentication
+  #before_filter :admin_authentication
   layout :choose_layout
   
   protected

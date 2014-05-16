@@ -1,7 +1,11 @@
 class Admin::CaptionsController < AclController
   resource_controller
-  
   belongs_to :feature
+  
+  def initialize
+    super
+    @guest_perms = []
+  end
   
   new_action.before do
     used_languages = parent_object.captions.collect(&:language_id)

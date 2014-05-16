@@ -3,6 +3,11 @@ class Admin::FeaturesController < AclController
   
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   new_action.before { @object.fid = Feature.generate_pid }
   create.before do |r|
     @object.is_blank = false

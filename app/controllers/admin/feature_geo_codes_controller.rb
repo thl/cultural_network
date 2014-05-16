@@ -3,6 +3,11 @@ class Admin::FeatureGeoCodesController < AclController
   
   belongs_to :feature
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   protected
   
   def parent_association

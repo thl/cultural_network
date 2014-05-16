@@ -15,6 +15,11 @@ class Admin::AssociationNotesController < AclController
   update.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }
   destroy.wants.html { redirect_to polymorphic_url([:admin, object.notable]) }
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   # renders add_author.js.erb
   def add_author
     @authors = AuthenticatedSystem::Person.order('fullname')

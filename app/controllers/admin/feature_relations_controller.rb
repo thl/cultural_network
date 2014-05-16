@@ -3,6 +3,11 @@ class Admin::FeatureRelationsController < AclController
   
   belongs_to :feature
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   new_action.before {|c| c.send :setup_for_new_relation}
   #create.before :process_feature_relation_type_id_mark
   update.before :process_feature_relation_type_id_mark

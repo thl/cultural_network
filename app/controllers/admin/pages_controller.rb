@@ -3,6 +3,11 @@ class Admin::PagesController < AclController
   
   belongs_to :citation
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   create.wants.html { redirect_to polymorphic_url([:admin, object.citation.citable, object.citation]) }
   update.wants.html { redirect_to polymorphic_url([:admin, object.citation.citable, object.citation]) }
   destroy.wants.html { redirect_to polymorphic_url([:admin, object.citation.citable, object.citation]) }

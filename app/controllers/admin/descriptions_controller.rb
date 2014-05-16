@@ -5,6 +5,11 @@ class Admin::DescriptionsController < AclController
   belongs_to :feature
   before_filter :collection
 
+  def initialize
+    super
+    @guest_perms = []
+  end
+
   create.before { defaults_primary }
 
   edit.before {@authors = AuthenticatedSystem::Person.order('fullname') }

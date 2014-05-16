@@ -3,6 +3,11 @@ class Admin::IllustrationsController < AclController
   
   belongs_to :feature
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   create.before do
     if params[:picture_type]=="MmsIntegration::Picture"
       object.picture_type = 'MmsIntegration::Picture'

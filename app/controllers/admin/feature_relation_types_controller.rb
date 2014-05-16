@@ -1,6 +1,11 @@
 class Admin::FeatureRelationTypesController < AclController
   resource_controller
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   #before_filter :collection
   
   create.before { @object.asymmetric_label = @object.label if @object.is_symmetric }

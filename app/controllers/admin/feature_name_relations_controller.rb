@@ -3,6 +3,11 @@ class Admin::FeatureNameRelationsController < AclController
   
   belongs_to :feature_name
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   new_action.before {|c| c.send :setup_for_new_relation}
   
   # We need to update the child FeatureName associated with this relation

@@ -2,6 +2,11 @@ class Admin::NoteTitlesController < AclController
   resource_controller
   
   before_filter :collection
+  
+  def initialize
+    super
+    @guest_perms = []
+  end
 
   # GET /note_titles
   # GET /note_titles.xml

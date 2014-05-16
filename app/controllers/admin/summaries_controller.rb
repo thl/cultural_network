@@ -3,6 +3,11 @@ class Admin::SummariesController < AclController
   
   belongs_to :feature
   
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   new_action.before do
     used_languages = parent_object.summaries.collect(&:language_id)
     english = Language.get_by_code('eng')

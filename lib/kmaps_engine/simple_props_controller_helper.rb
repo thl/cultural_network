@@ -9,11 +9,17 @@ module KmapsEngine
       helper 'Admin'
     end
     
+    def initialize
+      super
+      @guest_perms = []
+    end
+    
     def render(*args)
       tpl = params[:action]
+      format = params[:format]
       # tpl = args.first[:action]
       # If there is no current HTTP authentication, bypass this template rendering...
-      tpl ? super("admin/simple_props/#{tpl}") : super(*args)
+      tpl && (format.nil? || format == 'html') ? super("admin/simple_props/#{tpl}") : super(*args)
     end
 
     def collection

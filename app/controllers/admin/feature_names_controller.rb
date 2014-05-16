@@ -2,10 +2,13 @@ class Admin::FeatureNamesController < AclController
   resource_controller
   
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
-  
   belongs_to :feature
-  
   before_filter :collection, :only=>:locate_for_relation
+  
+  def initialize
+    super
+    @guest_perms = []
+  end
   
   def locate_for_relation
     @locating_relation=true # flag used in template
