@@ -1,6 +1,6 @@
 class Admin::SummariesController < AclController
+  cache_sweeper :summary_sweeper, :only => [:update, :destroy]
   resource_controller
-  
   belongs_to :feature
   
   def initialize

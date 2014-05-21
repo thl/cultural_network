@@ -93,6 +93,7 @@ Rails.application.routes.draw do
     resources :captions, :only => [:index, :show]
     resources :summaries, :only => [:index, :show]
     resources :association_notes
+    resources :names, :only => [:index, :show]
     resources :descriptions do
       member do
         get :expand

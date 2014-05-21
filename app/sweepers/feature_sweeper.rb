@@ -24,6 +24,8 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         expire_page related_feature_url(feature.fid, options)
       elsif record.instance_of?(FeatureName)
         expire_page feature_url(feature.fid, options)
+        expire_page feature_names_url(feature.fid, options)
+        expire_page feature_name_url(feature.fid, record.id, options)
         expire_page related_feature_url(feature.fid, options)
         views = CachedFeatureName.where(:feature_name_id => record.id).select('view_id').collect(&:view)
         perspectives = feature.parent_relations.joins(:perspective).where('perspectives.is_public' => true).select(:perspective_id).uniq.collect(&:perspective)

@@ -1,4 +1,5 @@
 class Admin::CaptionsController < AclController
+  cache_sweeper :caption_sweeper, :only => [:update, :destroy]
   resource_controller
   belongs_to :feature
   
