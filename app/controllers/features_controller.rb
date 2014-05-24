@@ -2,11 +2,11 @@ class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? }
   caches_page :related
   caches_action :node_tree_expanded, :cache_path => Proc.new { |c| node_cache_path}
-  caches_action :all,                :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code) }
-  caches_action :children,           :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code, :view_code) }
-  caches_action :list,               :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code) }
-  caches_action :nested,             :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code, :view_code) }
-  caches_action :fancy_nested,       :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code, :view_code) }
+  caches_action :all,                :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }
+  caches_action :children,           :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
+  caches_action :list,               :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }
+  caches_action :nested,             :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
+  caches_action :fancy_nested,       :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
   #
   #
   def index
@@ -382,18 +382,18 @@ class FeaturesController < ApplicationController
   private
   
   def cache_key_by_params(c, options)
-    params = []
+    p = []
     if options[:perspective_code]
       perspective_code = params[:perspective_code]
       perspective_code = default_perspective_code if perspective_code.blank? || Perspective.get_by_code(perspective_code).nil?
-      params << "perspective_code=#{perspective_code}"
+      p << "perspective_code=#{perspective_code}"
     end
     if options[:view_code]
       view_code = params[:view_code]
       view_code = default_view_code if view_code.blank? || View.get_by_code(view_code).nil?
-      params << "view_code=#{view_code}"
+      p << "view_code=#{view_code}"
     end
-    "#{c.request.path}?#{params.join('&')}"
+    "#{c.request.path}?#{p.join('&')}"
   end
   
   def node_cache_path
