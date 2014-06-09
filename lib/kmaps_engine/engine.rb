@@ -13,6 +13,7 @@ module KmapsEngine
       require_relative File.join(sweeper_folder, 'description_sweeper')
       require_relative File.join(sweeper_folder, 'caption_sweeper')
       require_relative File.join(sweeper_folder, 'summary_sweeper')
+      require_relative File.join(sweeper_folder, 'feature_geo_code_sweeper')
     end
     
     initializer :loader do |config|

@@ -89,7 +89,7 @@ function collapse_all(){
        feature_relation_type = rc.feature_relation_type
        count = rc.count.to_i
        div_id = "list_#{feature_relation_type.id}_0" %>
-       <p><strong><%= link_to feature_relation_type.asymmetric_label.capitalize, related_list_feature_path(@feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => 0), :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %> the following <%= Feature.model_name.human(:count => count) %></strong> (<%= count %>):</p>
+       <p><strong><%= link_to feature_relation_type.asymmetric_label.capitalize, related_list_feature_path(@feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => 0), :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %></strong> (<%= count %>):</p>
        <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
 <%=    javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_click('#{div_id}')) return false; });") %>
 <%   end %>
@@ -97,7 +97,7 @@ function collapse_all(){
        feature_relation_type = rc.feature_relation_type
        count = rc.count.to_i
        div_id = "list_#{feature_relation_type.id}_1" %>
-       <p><strong><%= link_to feature_relation_type.label.capitalize, related_list_feature_path(@feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => 1), :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %> the following <%= Feature.model_name.human(:count => :many) %></strong> (<%= count %>):</p>
+       <p><strong><%= link_to feature_relation_type.label.capitalize, related_list_feature_path(@feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => 1), :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %></strong> (<%= count %>):</p>
        <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
 <%=    javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_click('#{div_id}')) return false; });") %>
 <%   end %>

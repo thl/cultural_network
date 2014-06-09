@@ -1,6 +1,6 @@
 <% add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to (FeatureGeoCode.model_name.human(:count => :many).s, admin_feature_feature_geo_codes_path(@object.feature, @parent_object))
+   add_breadcrumb_item link_to(FeatureGeoCode.model_name.human(:count => :many).s, admin_feature_feature_geo_codes_path(@object.feature, @parent_object))
    add_breadcrumb_item @object %>
 <fieldset>
   <legend>

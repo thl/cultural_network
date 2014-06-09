@@ -1,6 +1,6 @@
 class Admin::FeatureGeoCodesController < AclController
+  cache_sweeper :feature_geo_code_sweeper, :only => [:create, :update, :destroy]
   resource_controller
-  
   belongs_to :feature
   
   def initialize
