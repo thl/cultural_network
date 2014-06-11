@@ -73,6 +73,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     end
   end
   xml.associated_resources do
+    xml.etymology_count(feature.names.where(['etymology <> ?', '']).count.to_s, :type => 'integer')
     xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
     xml.description_count(feature.descriptions.size.to_s, :type => 'integer')
     xml.place_count(feature.feature_count.to_s, :type => 'integer')

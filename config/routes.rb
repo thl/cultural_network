@@ -153,7 +153,6 @@ Rails.application.routes.draw do
   resources :time_units do
     resources :notes, :citations
   end
-  resources :topics, :only => 'show'
   root :to => 'features#index'
   # match ':controller(/:action(/:id(.:format)))'
 end

@@ -1,3 +1,4 @@
+xml.instruct!
 xml.feature do
   xml.old_pid(@feature.old_pid)
   xml.fid(@feature.fid, :type => 'integer')
