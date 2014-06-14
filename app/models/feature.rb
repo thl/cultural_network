@@ -216,11 +216,7 @@ class Feature < ActiveRecord::Base
   def all_relations
     FeatureRelation.where(['child_node_id = ? OR parent_node_id = ?', id, id])
   end
-  
-  def feature_relations
-    all_relations
-  end
-    
+      
   #
   #
   #

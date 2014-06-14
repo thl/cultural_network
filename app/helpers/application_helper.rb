@@ -300,7 +300,7 @@ module ApplicationHelper
           end
         when :related
           url = related_feature_path(entity.fid)
-          count = FeatureRelation.where(['child_node_id = ? OR parent_node_id = ?', entity.id, entity.id]).size
+          count = entity.all_relations.size
         end
       else
         tab_url = tab[:url]
