@@ -14,7 +14,12 @@ class DescriptionsController < ApplicationController
   end
   
   def index
-    @descriptions = @feature.descriptions
+    if @feature.nil?
+      @descriptions = Description.all
+      @view = View.get_by_code('roman.popular')
+    else
+      @feature.descriptions
+    end
     respond_to do |format|
       format.xml
       format.html
@@ -41,6 +46,7 @@ class DescriptionsController < ApplicationController
   private
   # This is tied to features
   def find_feature
-    @feature = Feature.get_by_fid(params[:feature_id]) # Feature.find(params[:feature_id])
+    feature_id = params[:feature_id]
+    @feature = feature_id.nil? ? nil : Feature.get_by_fid(feature_id) # Feature.find(params[:feature_id])
   end
 end

@@ -6,5 +6,6 @@ xml.description do
   xml.is_primary(description.is_primary, :type => 'boolean')
   xml.created_at(description.created_at, :type => 'timestamp')
   xml.updated_at(description.updated_at, :type => 'timestamp')
+  xml << render(:partial => 'features/stripped_feature.xml.builder', :locals => { :feature => description.feature }) if @feature.nil?
   description.authors.each { |author| xml.author(:id => author.id, :fullname => author.fullname) }
 end
