@@ -17,29 +17,34 @@ class DescriptionsController < ApplicationController
     if @feature.nil?
       @descriptions = Description.all
       @view = View.get_by_code('roman.popular')
+      respond_to do |format|
+        format.html { redirect_to features_url }
+        format.xml
+        format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+      end
     else
       @feature.descriptions
-    end
-    respond_to do |format|
-      format.xml
-      format.html
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+      respond_to do |format|
+        format.xml
+        format.html
+        format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+      end
     end
   end
   
   def show
+    @description = Description.find(params[:id])
     if @feature.nil?
-      redirect_to features_url
-    else
-      set_common_variables(session)
-      @description = Description.find(params[:id])
-      @tab_options = {:entity => @feature}
-      @current_tab_id = :descriptions
-      respond_to do |format|
-        format.html
-        format.xml
-        format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
-      end
+      @feature = @description.feature
+      @view = View.get_by_code('roman.popular')
+    end
+    set_common_variables(session)
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :descriptions
+    respond_to do |format|
+      format.html
+      format.xml
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
     end
   end
 

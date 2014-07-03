@@ -134,7 +134,7 @@ Rails.application.routes.draw do
     end
     match 'by_topic/:id.:format' => 'topics#feature_descendants'
   end
-  resources :descriptions, :only => 'index' do
+  resources :descriptions, :only => ['show', 'index'] do
     resources :notes, :citations
   end
   resources :feature_geo_codes do
