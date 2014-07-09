@@ -1,0 +1,4 @@
+<%    header = ['features.fid', 'feature_names.delete']
+      1.upto(@name_count) { |i| header += ["#{i}.feature_names.name", "#{i}.languages.code", "#{i}.writing_systems.code", "#{i}.feature_names.etymology", "#{i}.feature_names.is_primary", "#{i}.feature_name_relations.parent_node", "#{i}.feature_name_relations.is_translation", "#{i}.feature_name_relations.relationship.code", "#{i}.alt_spelling_systems.code"] } %>
+<%=raw   CSV.generate_line header
+%><%= render :partial => 'index', :collection => @features, :as => :feature %>

@@ -94,7 +94,7 @@ Rails.application.routes.draw do
     resources :codes, :only => [:index]
     resources :summaries, :only => [:index, :show]
     resources :association_notes
-    resources :names, :only => [:index, :show]
+    resources :names, :only => [:index, :show], :controller => 'feature_names'
     resources :descriptions do
       member do
         get :expand
@@ -140,7 +140,7 @@ Rails.application.routes.draw do
   resources :feature_geo_codes do
     resources :notes, :citations
   end
-  resources :feature_names do
+  resources :feature_names, :only => [:index, :show] do
     resources :notes, :citations
   end
   resources :feature_name_relations do

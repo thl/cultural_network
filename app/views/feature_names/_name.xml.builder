@@ -6,9 +6,10 @@ xml.name do
   w = name.writing_system
   xml.writing_system(w.nil? ? nil : w.name)
   xml.relationship(name.pp_display_string)
-  xml.names(:type => 'array') do
-    names = name.children.order('position')
-    xml << render(:partial => 'name.xml.builder', :collection => names) if !names.empty?
+  if !@feature.nil?
+    xml.names(:type => 'array') do
+      names = name.children.order('position')
+      xml << render(:partial => 'name.xml.builder', :collection => names) if !names.empty?
+    end
   end
-  
 end
