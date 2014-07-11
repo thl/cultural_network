@@ -14,6 +14,7 @@ class FeatureNamesController < ApplicationController
   def index
     if @feature.nil?
       @name_count = FeatureName.select('feature_id, COUNT(DISTINCT id) as count').group('feature_id').order('count DESC').first.count.to_i
+      @citation_count = FeatureName.joins(:citations).select('feature_names.id, COUNT(DISTINCT citations.id) as count').group('feature_names.id').order('count DESC').first.count.to_i
       @features = FeatureName.select('feature_id').uniq.order('feature_id').includes(:feature => :names).collect(&:feature)
       @view = View.get_by_code('roman.popular')
       respond_to do |format|
