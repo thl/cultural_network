@@ -1,5 +1,15 @@
-class Importation < CsvImportation
+class Importation
   attr_accessor :spreadsheet
+  attr_accessor :fields
+  
+  def self.to_date(str)
+    response = Hash.new
+    array = str.split('/')
+    response[:day] = array.shift.to_i if array.size==3
+    response[:month] = array.shift.to_i if array.size>=2
+    response[:year] = array.shift.to_i if array.size>=1
+    response
+  end
   
   def self.to_complex_date(str, certainty_id = nil, season_id = nil)
     complex_date = nil

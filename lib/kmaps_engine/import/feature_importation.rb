@@ -57,7 +57,8 @@ module KmapsEngine
       feature_ids_with_changed_relations = Array.new
       feature_ids_with_object_types_added = Array.new
       puts "#{Time.now}: Starting importation."
-      self.do_csv_import(filename) do
+      CSV.foreach(filename, headers: true, col_sep: "\t") do |row|
+        self.fields = row.to_hash
         current+=1
         next unless self.get_feature(current)
         self.add_date('features', self.feature)

@@ -32,7 +32,8 @@ module KmapsEngine
       else
         introduction_text = "[name] Introduction"
       end
-      self.do_csv_import(source) do
+      CSV.foreach(source, headers: true, col_sep: "\t") do |row|
+        self.fields = row.to_hash
         break if limit && rows_done >= limit
         essay_id = self.fields.delete('descriptions.eid')
         fid = self.fields.delete('features.fid')
