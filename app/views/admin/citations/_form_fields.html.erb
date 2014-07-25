@@ -2,18 +2,32 @@
 <fieldset>
 	<legend><%= ts(:for, :what => Citation.model_name.human.titleize, :whom => @object.citable) %></legend>
 	<div class="row">
-		<%= f.label(:info_source_id).s %> (Document ID from MMS application)
+		<%= f.label(:info_source_id).s %> (Document or Online Resource ID from MMS application)
 		<%= f.text_field :info_source_id, :class => :text %>
 	</div>
 <%  if !@object.id.nil? %>
-	  <div class="row">
-	    <label><%= Page.model_name.human(:count => :many).titleize.s %></label>
-<%=     @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ').html_safe %>
-	  </div>
-	  <div class="row">
-<%=	    new_item_link(new_admin_citation_page_path(@object), ts('add.record', :what => t(:referenced, :what => Page.model_name.human(:count => :many)))) %>		
-	  </div>
-<%  end %>
+<%    source = @object.info_source
+      if !source.nil?
+        case source.type
+        when 'Document' %>
+	  	  <div class="row">
+	  	    <label><%= Page.model_name.human(:count => :many).titleize.s %></label>
+<%=         @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ').html_safe %>
+	  	  </div>
+	      <div class="row">
+<%=	        new_item_link(new_admin_citation_page_path(@object), ts('add.record', :what => t(:referenced, :what => Page.model_name.human(:count => :many)))) %>
+	      </div>
+<%      when 'OnlineResource' %>
+	  	  <div class="row">
+	  	    <label><%= WebPage.model_name.human(:count => :many).titleize.s %></label>
+<%=         @object.web_pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_web_page_path(@object, p)} #{delete_item_link admin_citation_web_page_path(@object, p)}"}.join(', ').html_safe %>
+	  	  </div>
+	      <div class="row">
+<%=	        new_item_link(new_admin_citation_web_page_path(@object), ts('add.record', :what => t(:referenced, :what => WebPage.model_name.human(:count => :many)))) %>
+	      </div>
+<%      end
+	  end
+    end %>
 	<div class="row">
 <%=   f.label(:notes).s %>
 	</div>

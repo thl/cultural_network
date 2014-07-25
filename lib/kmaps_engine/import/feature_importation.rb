@@ -269,80 +269,85 @@ module KmapsEngine
       1.upto(total) do |i|
         n = i-1
         name_str = self.fields.delete("#{i}.feature_names.name")
-        next if name_str.blank?
-        conditions = {:name => name_str}          
-        begin
-          language = Language.get_by_code_or_name(self.fields.delete("#{i}.languages.code"), self.fields.delete("#{i}.languages.name"))
-        rescue Exception => e
-          puts e.to_s
-        end
-        begin
-          writing_system = WritingSystem.get_by_code_or_name(self.fields.delete("#{i}.writing_systems.code"), self.fields.delete("#{i}.writing_systems.name"))
-          conditions[:writing_system_id] = writing_system.id if !writing_system.nil?
-        rescue Exception => e
-          puts e.to_s
-        end
-        begin
-          alt_spelling_system = AltSpellingSystem.get_by_code_or_name(self.fields.delete("#{i}.alt_spelling_systems.code"), self.fields.delete("#{i}.alt_spelling_systems.name"))
-        rescue Exception => e
-          puts e.to_s
-        end
-        relationship_system_code = self.fields.delete("#{i}.feature_name_relations.relationship.code")
-        if !relationship_system_code.blank?
-          relationship_system = SimpleProp.get_by_code(relationship_system_code)
-          if relationship_system.nil?
-            puts "Phonetic or orthographic system with code #{relationship_system_code} was not found for feature #{self.feature.pid}."
-          else
-            if relationship_system.instance_of? OrthographicSystem
-              orthographic_system = relationship_system
-            elsif relationship_system.instance_of? PhoneticSystem
-              phonetic_system = relationship_system
+        if name_str.blank?
+          name_str = self.fields.delete("#{i}.feature_names.existing_name")
+          next if name_str.blank?
+          name[n] = names.where(:name => name_str).first
+        else
+          conditions = {:name => name_str}          
+          begin
+            language = Language.get_by_code_or_name(self.fields.delete("#{i}.languages.code"), self.fields.delete("#{i}.languages.name"))
+          rescue Exception => e
+            puts e.to_s
+          end
+          begin
+            writing_system = WritingSystem.get_by_code_or_name(self.fields.delete("#{i}.writing_systems.code"), self.fields.delete("#{i}.writing_systems.name"))
+            conditions[:writing_system_id] = writing_system.id if !writing_system.nil?
+          rescue Exception => e
+            puts e.to_s
+          end
+          begin
+            alt_spelling_system = AltSpellingSystem.get_by_code_or_name(self.fields.delete("#{i}.alt_spelling_systems.code"), self.fields.delete("#{i}.alt_spelling_systems.name"))
+          rescue Exception => e
+            puts e.to_s
+          end
+          relationship_system_code = self.fields.delete("#{i}.feature_name_relations.relationship.code")
+          if !relationship_system_code.blank?
+            relationship_system = SimpleProp.get_by_code(relationship_system_code)
+            if relationship_system.nil?
+              puts "Phonetic or orthographic system with code #{relationship_system_code} was not found for feature #{self.feature.pid}."
             else
-              puts "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
+              if relationship_system.instance_of? OrthographicSystem
+                orthographic_system = relationship_system
+              elsif relationship_system.instance_of? PhoneticSystem
+                phonetic_system = relationship_system
+              else
+                puts "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
+              end
+            end
+          else
+            begin
+              orthographic_system = OrthographicSystem.get_by_code_or_name(self.fields.delete("#{i}.orthographic_systems.code"), self.fields.delete("#{i}.orthographic_systems.name"))
+            rescue Exception => e
+              puts e.to_s
+            end
+            begin
+              phonetic_system = PhoneticSystem.get_by_code_or_name(self.fields.delete("#{i}.phonetic_systems.code"), self.fields.delete("#{i}.phonetic_systems.name"))
+            rescue Exception => e
+              puts e.to_s
             end
           end
-        else
-          begin
-            orthographic_system = OrthographicSystem.get_by_code_or_name(self.fields.delete("#{i}.orthographic_systems.code"), self.fields.delete("#{i}.orthographic_systems.name"))
-          rescue Exception => e
-            puts e.to_s
+          # if language is not specified it may be inferred.
+          if language.nil?
+            if phonetic_system.nil?
+              language = Language.get_by_code('zho') if !writing_system.nil? && (writing_system.code == 'hant' || writing_system.code == 'hans')
+            else
+              language = Language.get_by_code('bod') if phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip'
+            end
           end
-          begin
-            phonetic_system = PhoneticSystem.get_by_code_or_name(self.fields.delete("#{i}.phonetic_systems.code"), self.fields.delete("#{i}.phonetic_systems.name"))
-          rescue Exception => e
-            puts e.to_s
+          conditions[:language_id] = language.id if !language.nil?          
+          name[n] = names.where(conditions).first
+          is_primary = self.fields.delete("#{i}.feature_names.is_primary")
+          conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
+          relation_conditions = Hash.new
+          relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
+          relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
+          relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
+          position = self.fields.delete("#{i}.feature_names.position")
+          if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.where(relation_conditions).first.nil?
+            conditions[:position] = position if !position.blank?
+            name[n] = names.create(conditions.merge({:skip_update => true}))
+            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            name_added = true if !name_added && !name[n].id.nil?
+          elsif !position.blank?
+            name[n].update_attribute(:position, position)
+            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            name_changed = true
           end
-        end
-        # if language is not specified it may be inferred.
-        if language.nil?
-          if phonetic_system.nil?
-            language = Language.get_by_code('zho') if !writing_system.nil? && (writing_system.code == 'hant' || writing_system.code == 'hans')
-          else
-            language = Language.get_by_code('bod') if phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip'
+          if name[n].id.nil?
+            puts "Name #{name_str} could not be added to feature #{self.feature.pid}."
+            next
           end
-        end
-        conditions[:language_id] = language.id if !language.nil?          
-        name[n] = names.where(conditions).first
-        is_primary = self.fields.delete("#{i}.feature_names.is_primary")
-        conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
-        relation_conditions = Hash.new
-        relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
-        relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
-        relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
-        position = self.fields.delete("#{i}.feature_names.position")
-        if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.where(relation_conditions).first.nil?
-          conditions[:position] = position if !position.blank?
-          name[n] = names.create(conditions.merge({:skip_update => true}))
-          self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
-          name_added = true if !name_added && !name[n].id.nil?
-        elsif !position.blank?
-          name[n].update_attribute(:position, position)
-          self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
-          name_changed = true
-        end
-        if name[n].id.nil?
-          puts "Name #{name_str} could not be added to feature #{self.feature.pid}."
-          next
         end
         0.upto(4) do |j|
           prefix = j==0 ? "#{i}.feature_names" : "#{i}.feature_names.#{j}"

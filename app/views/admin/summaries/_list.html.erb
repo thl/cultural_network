@@ -4,7 +4,6 @@
    <table class="listGrid">
      <tr>
        <th class="listActionsCol"></th>
-       <th><%= Feature.model_name.human.titleize.s %></th>
        <th><%= Language.model_name.human.titleize.s %></th>
      </tr>
 <%   list.each do |item| %>
@@ -14,7 +13,6 @@
          :edit_path => edit_admin_feature_summary_path(item.feature, item),
          :view_path => admin_feature_summary_path(item.feature, item)) %>
        </td>
-       <td><%= item.feature %></td>
        <td><%= item.language.name %></td>
      </tr>
 <%   end %>

@@ -23,11 +23,23 @@
 <%#    uncomment the following lines to link to the citable object %>
 <%#    object_path_method = ['admin', item.citable_type.underscore, 'path'].join('_').to_sym %>
 <%#=   link_to(item.citable, send(object_path_method, item.citable)) %>
-       <td>
 <%     info_source = item.info_source %>
-<%=    info_source.nil? ? '&nbsp;'.html_safe : info_source.prioritized_title %>
+<%     if info_source.nil? %>
+         <td>&nbsp;</td>
+         <td>&nbsp;</td>
+<%     else
+         case info_source.type
+         when 'Document' %>
+		   <td><%= info_source.prioritized_title %></td>
+		   <td><%= item.pages.collect(&:to_s).join(', ') %></td>
+<%		 when 'OnlineResource' %>
+		   <td><%= info_source.web_url %></td>
+		   <td><%= item.web_pages.collect(&:path).join(', ') %></td>
+<%		 else %>
+           &nbsp;
+<%		 end %>
+<%     end %>
        </td>
-       <td><%= item.pages.collect(&:to_s).join(', ') %></td>
        <td><%= item.notes %></td>
      </tr>
 <%   end %>

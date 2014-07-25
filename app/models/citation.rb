@@ -24,6 +24,7 @@ class Citation < ActiveRecord::Base
   # belongs_to :info_source, :class_name => 'Document'
   belongs_to :citable, :polymorphic=>true
   has_many :pages, :dependent => :destroy
+  has_many :web_pages, :dependent => :destroy
   has_many :imports, :as => 'item', :dependent => :destroy
   
   #

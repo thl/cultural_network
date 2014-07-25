@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     match 'openid_create' => 'users#create', :via => :post
     root :to => 'default#index'
     resources :citations do
-      resources :pages
+      resources :pages, :web_pages
     end
     resources :descriptions do
       resources :citations

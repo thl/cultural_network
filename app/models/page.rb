@@ -14,7 +14,7 @@
 #
 
 class Page < ActiveRecord::Base
-  attr_accessible :volume, :start_page, :start_line, :end_page, :end_line
+  attr_accessible :volume, :start_page, :start_line, :end_page, :end_line, :citation_id
   belongs_to :citation
   has_many :imports, :as => 'item', :dependent => :destroy
   
