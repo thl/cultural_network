@@ -38,7 +38,9 @@ module KmapsEngine
     # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
 
     # info_source fields:
-    # .info_source.id/code, info_source.note, .info_source[.i].volume, info_source[.i].pages
+    # .info_source.id/code, info_source.note
+    # When info source is a document: .info_source[.i].volume, info_source[.i].pages
+    # When info source is an online resource: .info_source[.i].path, .info_source[.i].name
 
     # Fields that accept note:
     # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j], i.feature_geo_codes[.j]
@@ -111,7 +113,7 @@ module KmapsEngine
             puts "Info source with code #{info_source_code} was not found." if info_source.nil?
           end
         else
-          info_source = MmsIntegration::Document.find(info_source_id)
+          info_source = MmsIntegration::Medium.find(info_source_id)
           puts "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
         end              
       rescue Exception => e
@@ -133,42 +135,57 @@ module KmapsEngine
         if citation.nil?
           puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
         else
-          pages = citation.pages
           0.upto(2) do |j|
             prefix = j==0 ? "#{field_prefix}.info_source" : "#{field_prefix}.info_source.#{j}"
-            volume_str = self.fields.delete("#{prefix}.volume")
-            pages_range = self.fields.delete("#{prefix}.pages")
-            if !volume_str.blank? || !pages_range.blank?
-              volume = nil
-              start_page = nil
-              end_page = nil
-              if !pages_range.blank?
-                page_array = pages_range.split('-')
-                start_page_str = page_array.shift
-                end_page_str = page_array.shift
-                if !start_page_str.nil?
-                  start_page_str.strip!
-                  start_page = start_page_str.to_i if !start_page_str.blank?
-                end
-                if !end_page_str.nil?
-                  end_page_str.strip!
-                  end_page = end_page_str.to_i if !end_page_str.blank?
+            case info_source.type
+            when 'OnlineResource'
+              pages = citation.web_pages
+              path = self.fields.delete("#{prefix}.path")
+              name = self.fields.delete("#{prefix}.name")
+              if !(path.blank? || name.blank?)
+                conditions = { :path => path, :title => name }
+                page = pages.where(conditions).first
+                if page.nil?
+                  page = pages.create(conditions)
+                  self.spreadsheet.imports.create(:item => page) if page.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
                 end
               end
-              if !volume_str.blank?
-                volume_str.strip!
-                volume = volume_str.to_i if !volume_str.blank?
-              end
-              conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
-              page = pages.where(conditions).first
-              if page.nil?
-                page = pages.create(conditions) 
-                self.spreadsheet.imports.create(:item => page) if page.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            when 'Document'
+              pages = citation.pages
+              volume_str = self.fields.delete("#{prefix}.volume")
+              pages_range = self.fields.delete("#{prefix}.pages")
+              if !volume_str.blank? || !pages_range.blank?
+                volume = nil
+                start_page = nil
+                end_page = nil
+                if !pages_range.blank?
+                  page_array = pages_range.split('-')
+                  start_page_str = page_array.shift
+                  end_page_str = page_array.shift
+                  if !start_page_str.nil?
+                    start_page_str.strip!
+                    start_page = start_page_str.to_i if !start_page_str.blank?
+                  end
+                  if !end_page_str.nil?
+                    end_page_str.strip!
+                    end_page = end_page_str.to_i if !end_page_str.blank?
+                  end
+                end
+                if !volume_str.blank?
+                  volume_str.strip!
+                  volume = volume_str.to_i if !volume_str.blank?
+                end
+                conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
+                page = pages.where(conditions).first
+                if page.nil?
+                  page = pages.create(conditions)
+                  self.spreadsheet.imports.create(:item => page) if page.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+                end
               end
             end
-          end        
+          end
         end
-      end  
+      end
     end
 
     def add_note(field_prefix, notable)
@@ -833,7 +850,7 @@ module KmapsEngine
       self.fields.keys.each do |key|
         next if key !~ /\A(\d+\.)?[kK]\d+\z/ # check to see if its a kmap
         value = self.fields.delete(key)
-        next if value.nil?      
+        next if value.nil?
         kmap_id = key.scan(/.*[kK](\d+)/).flatten.first.to_i
         kmap = SubjectsIntegration::Feature.find(kmap_id)
         if kmap.nil?
