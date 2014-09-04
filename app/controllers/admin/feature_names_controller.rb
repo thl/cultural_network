@@ -3,7 +3,7 @@ class Admin::FeatureNamesController < AclController
   
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   belongs_to :feature
-  before_filter :collection, :only=>:locate_for_relation
+  before_action :collection, :only=>:locate_for_relation
   
   def initialize
     super

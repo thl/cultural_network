@@ -89,7 +89,7 @@ class FeaturesController < ApplicationController
   #
   #
   def by_old_pid
-    @features = params[:old_pids].split(/\D+/).find_all{|p| p && !p.blank?}.collect{|p| Feature.find_by_old_pid("f#{p}")}.find_all{|f| f}
+    @features = params[:old_pids].split(/\D+/).find_all{|p| p && !p.blank?}.collect{|p| Feature.where(old_pid: "f#{p}").first}.find_all{|f| f}
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     respond_to do |format|
       format.html { render :action => 'staff_show' }
@@ -163,7 +163,7 @@ class FeaturesController < ApplicationController
         end
       end
       if !conditions_array.empty?
-        @features = @features.select('features.*, DISTINCT feature.id').includes(joins) if !joins.empty?
+        @features = @features.select('features.*, DISTINCT feature.id').includes(joins).references(joins) if !joins.empty?
         @features = @features.where([conditions_array.join(' OR ')] + params_array + Array.new(joins.size, "%#{match}%"))
       end
     end
@@ -274,7 +274,7 @@ class FeaturesController < ApplicationController
   
   def descendants
     @feature = Feature.find(params[:id])
-    descendants = @feature.nil? ? [] : @feature.descendants.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name')
+    descendants = @feature.nil? ? [] : @feature.descendants.includes(:cached_feature_names => :feature_name).references(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name')
     descendants = descendants.paginate(:page => params[:page] || 1, :per_page => 10)
     render :partial => 'descendants', :locals => { :descendants => descendants }
   end

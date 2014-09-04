@@ -1,7 +1,7 @@
 class SummariesController < ApplicationController
   caches_page :show, :index
   
-  before_filter :find_feature
+  before_action :find_feature
   
   def show
     @summary = Summary.find(params[:id])

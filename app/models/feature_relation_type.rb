@@ -25,7 +25,7 @@ class FeatureRelationType < ActiveRecord::Base
   end
   
   def self.update_or_create(attributes)
-    r = self.find_by_code(attributes[:code])
+    r = self.where(code: attributes[:code]).first
     r.nil? ? self.create(attributes) : r.update_attributes(attributes)
   end
   
@@ -67,7 +67,7 @@ class FeatureRelationType < ActiveRecord::Base
   
   def self.get_by_code(code)
     frt_id = Rails.cache.fetch("feature_relation_types/code/#{code}", :expires_in => 1.day) do
-      frt = self.find_by_code(code)
+      frt = self.where(code: code).first
       frt.nil? ? nil : frt.id
     end
     frt_id.nil? ? nil : FeatureRelationType.find(frt_id)
@@ -75,7 +75,7 @@ class FeatureRelationType < ActiveRecord::Base
   
   def self.get_by_asymmetric_code(code)
     frt_id = Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}", :expires_in => 1.day) do
-      frt = self.find_by_asymmetric_code(code)
+      frt = self.where(asymmetric_code: code).first
       frt.nil? ? nil : frt.id
     end
     frt_id.nil? ? nil : FeatureRelationType.find(frt_id)

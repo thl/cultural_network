@@ -4,15 +4,6 @@ module ApplicationHelper
   # Required for truncate_html
   require 'rexml/parsers/pullparser'
   
-  # overrides link_to_remote in vendor/rails/action_pack/lib/action_view/prototype_helper.rb
-  # THIS NEEDS TO BE RADICALLY FIXED!
-  #def link_to_remote(name, options = {}, html_options = {})
-  #  html_options.merge!({:href => url_for(options[:url])}) if ( html_options[:href].nil? || html_options[:href].blank? ) && !options[:url].blank?
-  #  option_html = options.delete(:html)
-  #  html_options.merge!(option_html) if !option_html.nil?
-  #  link_to_function(name, remote_function(options), html_options)
-  #end
-  
   def side_column_links
     str = "<h3 class=\"head\">#{link_to 'Place Dictionary', '#nogo', {:hreflang => 'Manages geographical features.'}}</h3>\n<ul>\n"
     str += "<li>#{link_to 'Home', root_path, {:hreflang => 'Search and navigate through places.'}}</li>\n"
@@ -114,7 +105,7 @@ module ApplicationHelper
   def f_link(feature, url, html_attrs={}, options={})
     html_attrs[:class] = html_attrs[:class].blank? ? 'feature_name' : "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)
-    # url = url_for iframe_feature_path(feature.id) if current_page?(hash_for_iframe_feature_path(feature.id))
+    # url = url_for iframe_feature_path(feature.id) if current_page?(Rails.application.routes.recognize_path iframe_feature_path(feature.id))
     name = fname_labels(feature)
     name = name.s if !options[:s].nil? && options[:s]
     link_to(name, url, html_attrs)

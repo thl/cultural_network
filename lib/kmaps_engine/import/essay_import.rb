@@ -73,7 +73,7 @@ module KmapsEngine
                 author_key = i>0 ? "#{prefix}.author.#{i}.fullname" : "#{prefix}.author.fullname"
                 author_name = self.fields.delete(author_key)
                 if !author_name.blank?
-                  author = AuthenticatedSystem::Person.find_by_fullname(author_name)
+                  author = AuthenticatedSystem::Person.where(fullname: author_name).first
                   if author.nil?
                     puts "Author #{author_name} not found!"
                   else

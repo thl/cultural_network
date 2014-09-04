@@ -34,7 +34,7 @@
       ) + "):</strong></dt><dd>#{name.etymology}</dd>").html_safe unless name.etymology.blank? %>
 <%  end %>
     </dl>
-<%= association_note_list_fieldset(FeatureName.model_name) %>
+<%= association_note_list_fieldset(FeatureName.name) %>
 </fieldset>
 <fieldset>
     <legend><%= Caption.model_name.human(:count => :many).titleize.s %></legend>
@@ -59,20 +59,20 @@
 <%= highlighted_new_item_link [@object, :feature_geo_code] %>
     <br class="clear"/>
 <%= render :partial => 'admin/feature_geo_codes/list', :locals => { :list => @object.geo_codes } %>
-<%= association_note_list_fieldset(FeatureGeoCode.model_name) %>
+<%= association_note_list_fieldset(FeatureGeoCode.name) %>
 </fieldset>
 <fieldset>
     <legend><%= FeatureRelation.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), ts('new.record', :what => FeatureRelation.model_name.human) %>
     <br class="clear"/>
 <%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.all_relations, :object => @object, :use_first => false, :use_names => true } %>
-<%= association_note_list_fieldset(FeatureRelation.model_name) %>
+<%= association_note_list_fieldset(FeatureRelation.name) %>
 </fieldset>
 <fieldset>
     <legend><%= Description.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link [@object, :description] %>
     <br class="clear"/>
 <%= render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => @object.descriptions.order('is_primary DESC, title') } %>
-<%= association_note_list_fieldset(Description.model_name) %>
+<%= association_note_list_fieldset(Description.name) %>
 </fieldset>
 </div>

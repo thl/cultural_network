@@ -1,5 +1,5 @@
 class CodesController < ApplicationController
-  before_filter :find_feature
+  before_action :find_feature
   caches_page :index
   
   def index

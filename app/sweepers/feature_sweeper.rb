@@ -91,7 +91,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   #  node_id = Rails.cache.read('tree_tmp') rescue nil
   #  unless node_id.nil?
   #    Rails.cache.delete('tree_tmp')
-  #    spawn(:method => :thread, :nice => 3) do  
+  #    Spawnling.new(:method => :thread, :nice => 3) do  
   #      KmapsEngine::TreeCache.reheat(node_id)
   #    end
   #  end

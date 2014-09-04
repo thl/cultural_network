@@ -89,10 +89,10 @@
   { :code => 'mon.to.chi.transcrip',        :name => 'Mongolian-to-Chinese Transcription' }
 ].each{|a| PhoneticSystem.update_or_create(a)}
 
-p = AuthenticatedSystem::Person.find_by_fullname('Kmaps Admin')
+p = AuthenticatedSystem::Person.where(fullname: 'Kmaps Admin').first
 p = AuthenticatedSystem::Person.create(:fullname => 'Kmaps Admin') if p.nil?
 a = { :login => 'kmaps_admin', :password => 'kmaps2013', :password_confirmation => 'kmaps2013', :email => 'root@' }
-u = AuthenticatedSystem::User.find_by_login(a[:login])
+u = AuthenticatedSystem::User.where(login: a[:login]).first
 u.nil? ? p.create_user(a) : u.update_attributes(a)
 
 [ { :name => 'Popular Standard (romanization)', :code => default_view_code },
@@ -112,4 +112,4 @@ u.nil? ? p.create_user(a) : u.update_attributes(a)
   { :name => 'Latin script',                   :code => 'latin' }
 ].each{|a| WritingSystem.update_or_create(a)}
 
-Blurb.create(:code => 'homepage.intro') if Blurb.find_by_code('homepage.intro').nil?
+Blurb.create(:code => 'homepage.intro') if Blurb.where(code: 'homepage.intro').first.nil?

@@ -11,16 +11,16 @@ module KmapsEngine
       end
 
       def get_by_code(code)
-        prop_id = Rails.cache.fetch("#{self.model_name}-code/#{code}", :expires_in => 1.day) do
-          prop = self.find_by_code(code)
+        prop_id = Rails.cache.fetch("#{self.name}-code/#{code}", :expires_in => 1.day) do
+          prop = self.where(code: code).first
           prop.nil? ? nil : prop.id
         end
         prop_id.nil? ? nil : self.find(prop_id)
       end
 
       def get_by_name(name)
-        prop_id = Rails.cache.fetch("#{self.model_name}-name/#{name}", :expires_in => 1.day) do
-          prop = self.find_by_name(name)
+        prop_id = Rails.cache.fetch("#{self.name}-name/#{name}", :expires_in => 1.day) do
+          prop = self.where(name: name).first
           prop.nil? ? nil : prop.id
         end
         prop_id.nil? ? nil : self.find(prop_id)

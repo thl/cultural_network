@@ -3,7 +3,7 @@ class Admin::DescriptionsController < AclController
   
   cache_sweeper :description_sweeper, :only => [:update, :destroy]
   belongs_to :feature
-  before_filter :collection
+  before_action :collection
 
   def initialize
     super

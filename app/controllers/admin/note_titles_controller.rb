@@ -1,7 +1,7 @@
 class Admin::NoteTitlesController < AclController
   resource_controller
   
-  before_filter :collection
+  before_action :collection
   
   def initialize
     super

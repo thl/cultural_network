@@ -1,7 +1,7 @@
 class Admin::CitationsController < AclController
   resource_controller
   belongs_to :description, :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_geo_code
-  before_filter :collection
+  before_action :collection
   
   def initialize
     super

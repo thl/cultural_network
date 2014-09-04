@@ -2,8 +2,8 @@ class Admin::AssociationNotesController < AclController
   resource_controller
   
   belongs_to :feature
-  before_filter :collection
-  before_filter :validate_association_type, :only => [:new]
+  before_action :collection
+  before_action :validate_association_type, :only => [:new]
 
   edit.before {@authors = AuthenticatedSystem::Person.order('fullname') }
   new_action.before do

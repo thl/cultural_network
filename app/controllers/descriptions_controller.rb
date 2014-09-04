@@ -1,6 +1,6 @@
 class DescriptionsController < ApplicationController
   caches_page :show, :index, :if => Proc.new { |c| c.request.format.xml? }
-  before_filter :find_feature
+  before_action :find_feature
  
   def contract
     d = Description.find(params[:id])

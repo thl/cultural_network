@@ -119,7 +119,7 @@ class Feature < ActiveRecord::Base
   def self.current_roots(current_perspective, current_view)
     feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", :expires_in => 1.day) do
       joins(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').roots.find_all do |r|
-#      with_scope(:find => includes(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name')) do
+#      self.includes(:cached_feature_names => :feature_name).references(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').scoping do
  #       roots.find_all do |r|
           # if ANY of the child relations are current, return true to nab this Feature
         r.child_relations.any? {|cr| cr.perspective==current_perspective }
@@ -131,8 +131,8 @@ class Feature < ActiveRecord::Base
 
   def self.current_roots_by_perspective(current_perspective)
     feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.day) do
-      with_scope(:find => where('features.is_blank' => false)) do
-        roots.select do |r|
+      self.where('features.is_blank' => false).scoping do
+        self.roots.select do |r|
           # if ANY of the child relations are current, return true to nab this Feature
           r.child_relations.any? {|cr| cr.perspective==current_perspective }
         end
@@ -145,7 +145,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_children(current_perspective, current_view)
-    return children.includes([{:cached_feature_names => :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
+    return children.includes([{:cached_feature_names => :feature_name}, :parent_relations]).references([{:cached_feature_names => :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -187,7 +187,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_parents(current_perspective, current_view)
-    return parents.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # parents(:include => [:names, :child_relations])
+    return parents.includes(:cached_feature_names => :feature_name).references(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # parents(:include => [:names, :child_relations])
       c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -273,13 +273,13 @@ class Feature < ActiveRecord::Base
         conditions << fid.to_i
       end
     end
-    search_results = self.where(conditions).includes([:names, :descriptions]).order('features.position')
+    search_results = self.where(conditions).includes([:names, :descriptions]).references([:names, :descriptions]).order('features.position')
     search_results = search_results.where('descriptions.content IS NOT NULL') if search_options[:has_descriptions]
     return search_results
   end
   
   def self.name_search(filter_value)
-    Feature.includes(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
+    Feature.includes(:names).references(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
   end
     
   def media_url
@@ -311,7 +311,7 @@ class Feature < ActiveRecord::Base
   
     
   def associated?
-    @@associated_models.any?{|model| model.find_by_feature_id(self.id)} || !Shape.get_by_fid(self.fid).nil?
+    @@associated_models.any?{|model| model.where(feature_id: self.id).first} || !Shape.where(fid: self.fid).first.nil?
   end
   
   def self.blank
@@ -324,7 +324,7 @@ class Feature < ActiveRecord::Base
   
   def self.get_by_fid(fid)
     feature_id = Rails.cache.fetch("features-fid/#{fid}", :expires_in => 1.day) do
-      feature = self.find_by_fid(fid)
+      feature = self.where(fid: fid).first
       feature.nil? ? nil : feature.id
     end
     feature_id.nil? ? nil : Feature.find(feature_id)

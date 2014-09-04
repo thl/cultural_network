@@ -1,100 +1,73 @@
 Rails.application.routes.draw do
+  concern :notable_citable do
+    resources :notes, :citations
+  end
   resources :languages
   resource :session do
-    match 'change_language/:id' => 'sessions#change_language', :as => :change_language
+    get 'change_language/:id', to: 'sessions#change_language', as: :change_language
   end
   namespace :admin do
+    concern :add_author do
+      get :add_author, on: :collection
+    end
+    
+    concern :citable_notable_dateable do
+      resources :notes, concerns: :add_author
+      resources :citations
+      resources :time_units do
+        get :new_form, on: :collection
+      end
+    end
+    
     resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
       :feature_types, :geo_code_types, :importation_tasks, :languages, :note_titles, :orthographic_systems, :perspectives,
       :phonetic_systems, :users, :writing_systems, :xml_documents, :views
-    match 'openid_new' => 'users#openid_new'
-    match 'openid_create' => 'users#create', :via => :post
-    root :to => 'default#index'
+    get 'openid_new', to: 'users#openid_new'
+    post 'openid_create', to: 'users#create'
+    root to: 'default#index'
     resources :citations do
       resources :pages, :web_pages
     end
-    resources :descriptions do
-      resources :citations
-      resources :notes do
-        get :add_author, :on => :collection
-      end
-      resources :time_units do
-        get :new_form, :on => :collection
-      end
+    resources :descriptions, concerns: :citable_notable_dateable
+    resources :feature_geo_codes, concerns: :citable_notable_dateable
+    resources :feature_names, concerns: :citable_notable_dateable do
+      resources :feature_name_relations
+      get :locate_for_relation, on: :member
+      post :set_priorities, on: :collection
     end
-    resources :feature_geo_codes do
-      resources :citations
-      resources :notes do
-        get :add_author, :on => :collection
-      end
-      resources :time_units do
-        get :new_form, :on => :collection
-      end
-    end
-    resources :feature_names do
-      resources :citations, :feature_name_relations
-      get :locate_for_relation, :on => :member
-      post :set_priorities, :on => :collection
-      resources :notes do
-        get :add_author, :on => :collection
-      end
-      resources :time_units do
-        get :new_form, :on => :collection
-      end
-    end
-    resources :feature_name_relations do
-      resources :citations
-      resources :notes do
-        get :add_author, :on => :collection
-      end
-    end
-    resources :feature_relations do
-      resources :citations
-      resources :notes do
-        get :add_author, :on => :collection
-      end
-      resources :time_units do
-        get :new_form, :on => :collection
-      end
-    end
+    resources :feature_name_relations, concerns: :citable_notable_dateable
+    resources :feature_relations, concerns: :citable_notable_dateable
     resources :features do
+      resources :citations
+      resources :time_units do
+        get :new_form, on: :collection
+      end
       member do
         get :set_primary_description
         get :locate_for_relation
         post :clone
       end
       collection do
-        match 'prioritize_feature_names/:id' => 'feature_names#prioritize', :as => :prioritize_feature_names
+        get 'prioritize_feature_names/:id', to: 'feature_names#prioritize', as: :prioritize_feature_names
       end
-      resources :captions, :citations, :feature_geo_codes, :feature_names, :feature_relations, :illustrations, :summaries
-      resources :association_notes do
-        get :add_author, :on => :collection
-      end
-      resources :descriptions do
-        get :add_author, :on => :collection
-      end
-      resources :time_units do
-        get :new_form, :on => :collection
-      end
+      resources :captions, :feature_geo_codes, :feature_names, :feature_relations, :illustrations, :summaries
+      resources :association_notes, concerns: :add_author
+      resources :descriptions, concerns: :add_author
     end
     resources :feature_pids do
-      get :available, :on => :collection
+      get :available, on: :collection
     end
-    resources :notes do
-      get :add_author, :on => :collection
-    end
+    resources :notes, concerns: :add_author
     resources :time_units do
-      resources :notes do
-        get :add_author, :on => :collection
-      end
+      resources :notes, concerns: :add_author
     end
   end
   resources :features do
-    resources :captions, :only => [:index, :show]
-    resources :codes, :only => [:index]
-    resources :summaries, :only => [:index, :show]
+    resources :captions, only: [:index, :show]
+    resources :codes, only: [:index]
+    resources :summaries, only: [:index, :show]
     resources :association_notes
-    resources :names, :only => [:index, :show], :controller => 'feature_names'
+    resources :names, only: [:index, :show], controller: 'feature_names'
     resources :descriptions do
       member do
         get :expand
@@ -122,37 +95,23 @@ Rails.application.routes.draw do
       get :list
       get :fancy_nested
       get :nested
-      post :search
-      get :search
-      match 'by_fid/:fids.:format' => 'features#by_fid'
-      match 'by_old_pid/:old_pids' => 'features#by_old_pid'
-      match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code'
-      match 'by_name/:query.:format' => 'features#by_name', :query => /.*?/
-      match 'by_fields/:query.:format' => 'features#by_fields', :query => /.*?/
-      match 'fids_by_name/:query.:format' => 'features#fids_by_name', :query => /.*?/
+      match :search, to: 'features#search', via: [:post, :get]
+      get 'by_fid/:fids.:format', to: 'features#by_fid'
+      get 'by_old_pid/:old_pids', to: 'features#by_old_pid'
+      get 'by_geo_code/:geo_code.:format', to: 'features#by_geo_code'
+      get 'by_name/:query.:format', to: 'features#by_name', query: /.*?/
+      get 'by_fields/:query.:format', to: 'features#by_fields', query: /.*?/
+      get 'fids_by_name/:query.:format', to: 'features#fids_by_name', query: /.*?/
       post :set_session_variables
     end
-    match 'by_topic/:id.:format' => 'topics#feature_descendants'
+    get 'by_topic/:id.:format', to: 'topics#feature_descendants'
   end
-  resources :descriptions, :only => ['show', 'index'] do
-    resources :notes, :citations
-  end
-  resources :feature_geo_codes do
-    resources :notes, :citations
-  end
-  resources :feature_names, :only => [:index, :show] do
-    resources :notes, :citations
-  end
-  resources :feature_name_relations do
-    resources :notes, :citations
-  end
-  resources :feature_relations do
-    resources :notes, :citations
-  end
-  resources :media, :only => 'show', :path => 'media_objects'
-  resources :time_units do
-    resources :notes, :citations
-  end
-  root :to => 'features#index'
-  # match ':controller(/:action(/:id(.:format)))'
+  resources :descriptions, concerns: :notable_citable, only: ['show', 'index']
+  resources :feature_geo_codes, concerns: :notable_citable
+  resources :feature_names, concerns: :notable_citable, only: [:index, :show]
+  resources :feature_name_relations, concerns: :notable_citable
+  resources :feature_relations, concerns: :notable_citable
+  resources :media, only: 'show', path: 'media_objects'
+  resources :time_units, concerns: :notable_citable
+  root to: 'features#index'
 end

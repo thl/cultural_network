@@ -48,7 +48,7 @@ class Note < ActiveRecord::Base
   end
   
   def self.search(filter_value)
-    self.where(build_like_conditions(%W(notes.content notes.custom_note_title note_titles.title), filter_value)).includes(:note_title)
+    self.where(build_like_conditions(%W(notes.content notes.custom_note_title note_titles.title), filter_value)).includes(:note_title).references(:note_title)
   end
   
   private

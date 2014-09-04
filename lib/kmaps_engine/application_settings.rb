@@ -6,7 +6,7 @@ module KmapsEngine
         str = nil if str.blank?
         str
       end
-      Blurb.find_by_code(blurb_code.blank? ? 'homepage.intro' : blurb_code)
+      Blurb.where(code: (blurb_code.blank? ? 'homepage.intro' : blurb_code)).first
     end
   end
 end

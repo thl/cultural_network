@@ -29,7 +29,7 @@ class FeatureGeoCode < ActiveRecord::Base
   def self.search(filter_value)
     # because a GeoCodeType is actualy a SimpleProp, this LIKE query should be checking simple_props (not geo_code_types)
     self.where(build_like_conditions(%W(feature_geo_codes.notes simple_props.code simple_props.name simple_props.notes), filter_value)
-    ).includes([:feature, :geo_code_type])
+    ).includes([:feature, :geo_code_type]).references([:feature, :geo_code_type])
   end
   
   def to_s

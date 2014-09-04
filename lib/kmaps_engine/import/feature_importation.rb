@@ -10,6 +10,7 @@ module KmapsEngine
 
     # Currently supported fields:
     # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
+    # i.feature_names.existing_name
     # i.feature_names.name, i.feature_names.position, i.feature_names.is_primary,
     # i.languages.code/name, i.writing_systems.code/name, i.alt_spelling_systems.code/name
     # i.phonetic_systems.code/name, i.orthographic_systems.code/name, BOTH DEPRECATED, INSTEAD USE: i.feature_name_relations.relationship.code
@@ -49,9 +50,9 @@ module KmapsEngine
     # .note
 
     def do_feature_import(filename, task_code)
-      task = ImportationTask.find_by_task_code(task_code)
+      task = ImportationTask.where(task_code: task_code).first
       task = ImportationTask.create(:task_code => task_code) if task.nil?
-      self.spreadsheet = task.spreadsheets.find_by_filename(filename)
+      self.spreadsheet = task.spreadsheets.where(filename: filename).first
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
       country_type = SubjectsIntegration::Feature.find(29)
       country_type_id = country_type.id
@@ -212,7 +213,7 @@ module KmapsEngine
           return false
         end
 
-        feature = Feature.find_by_old_pid(old_pid)
+        feature = Feature.where(old_pid: old_pid).first
         if feature.nil?
           puts "Feature with old pid #{old_pid} was not found."
           return false
@@ -553,7 +554,7 @@ module KmapsEngine
           next
         end
         geocodes = self.feature.geo_codes
-        geocode = geocodes.find_by_geo_code_type_id(geocode_type.id)
+        geocode = geocodes.where(geo_code_type_id: geocode_type.id).first
         if geocode.nil?
           conditions = {:geo_code_type_id => geocode_type.id, :geo_code_value => geocode_value}
           geocode = geocodes.where(conditions).first
@@ -690,7 +691,7 @@ module KmapsEngine
         if administrator_name.blank?
           administrator = nil
         else
-          administrator = Feature.where(['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id]).includes([:names, :feature_object_types]).first
+          administrator = Feature.where(['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id]).includes([:names, :feature_object_types]).references([:names, :feature_object_types]).first
           if administrator.nil?
             puts "Administrator country #{administrator_name} not found."
           else
@@ -701,7 +702,7 @@ module KmapsEngine
         if claimant_name.blank?
           claimant = nil
         else
-          claimant = Feature.includes([:names, :feature_object_types]).where(['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id]).first
+          claimant = Feature.includes([:names, :feature_object_types]).references([:names, :feature_object_types]).where(['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id]).first
           if claimant.nil?
             puts "Claimant country #{claimant_name} not found."
           else
@@ -731,8 +732,8 @@ module KmapsEngine
           description_content = "<p>#{description_content}</p>"
           author_name = self.fields.delete("#{prefix}.author.fullname")
           description_title = self.fields.delete("#{prefix}.title")
-          author = author_name.blank? ? nil : AuthenticatedSystem::User.find_by_fullname(author_name)
-          description = description_title.blank? ? descriptions.find_by_content(description_content) : descriptions.find_by_title(description_title) # : descriptions.find(:first, :conditions => ['LEFT(content, 200) = ?', description_content[0...200]])
+          author = author_name.blank? ? nil : AuthenticatedSystem::User.where(fullname: author_name).first
+          description = description_title.blank? ? descriptions.where(content: description_content).first : descriptions.where(title: description_title).first # : descriptions.where(['LEFT(content, 200) = ?', description_content[0...200]]).first
           attributes = {:content => description_content, :title => description_title}
           if description.nil?
             description = descriptions.create(attributes)

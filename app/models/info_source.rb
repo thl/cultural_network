@@ -30,7 +30,7 @@ class InfoSource < ActiveRecord::Base
       @cache_by_codes ||= {}
       info_source = @cache_by_codes[code]
       if info_source.nil?
-        info_source = self.find_by_code(code)
+        info_source = self.where(code: code).first
         @cache_by_codes[code] = info_source if !info_source.nil?
       end
     end

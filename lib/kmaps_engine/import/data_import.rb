@@ -10,7 +10,7 @@ module KmapsEngine
       Dir['app/models/*'].each do |n|
         next if n[-3,3]!=ext
         name = File.basename(n, ext)
-        Kernel.const_get(name.classify).find(:all).map(&:destroy)
+        Kernel.const_get(name.classify).all.map(&:destroy)
       end
 
       #Feature.find(:all).each {|f| f.destroy}

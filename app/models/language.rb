@@ -25,7 +25,7 @@ class Language < SimpleProp
   #
   
   ## Language codes should all come from ISO 639-2 available at http://www.loc.gov/standards/iso639-2/php/code_list.php
-  validates_format_of :code, :with => /^[a-z]{3}$/
+  validates_format_of :code, :with => /\A[a-z]{3}\z/
   validates_uniqueness_of :code
   
   def is_chinese?

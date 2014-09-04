@@ -80,8 +80,8 @@ function collapse_all(){
    child_relation_counts = FeatureRelation.select('feature_relation_type_id, COUNT(DISTINCT id) as count').where(:parent_node_id => @feature.id).group('feature_relation_type_id').order('feature_relation_type_id')
    if parent_relation_counts.length + child_relation_counts.length > 0 %>
      <p>
-<%=    link_to_function ts('tree.expand', :what => t('all.these')), "expand_all()", :class => "expand-all expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%=    link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all()", :class => "collapse-all expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+<%=    link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all()", :class => "expand-all expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%=    link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all()", :class => "collapse-all expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
      </p>
      <div class="related-features has-ajax-pagination has-hash-feature-links">
 	 <h3><%= fname_labels(@feature).s %></h3>
@@ -104,8 +104,8 @@ function collapse_all(){
    </div>
 <br />
 <p>
-<%= link_to_function ts('tree.expand', :what => t('all.these')), "expand_all()", :class => "expand-all expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%= link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all()", :class => "collapse-all expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+<%= link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all()", :class => "expand-all expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%= link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all()", :class => "collapse-all expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
 </p>
 <% else %>
      <p><%= ts 'snippet.feature.not.related' %></p>

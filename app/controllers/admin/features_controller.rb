@@ -16,7 +16,7 @@ class Admin::FeaturesController < AclController
     update_primary_description;
   end
   
-  before_filter :collection, :only=>:locate_for_relation
+  before_action :collection, :only=>:locate_for_relation
   
   def locate_for_relation
     @locating_relation=true

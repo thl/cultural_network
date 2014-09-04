@@ -6,7 +6,7 @@ class Admin::FeatureRelationTypesController < AclController
     @guest_perms = []
   end
   
-  #before_filter :collection
+  #before_action :collection
   
   create.before { @object.asymmetric_label = @object.label if @object.is_symmetric }
   update.before { @object.asymmetric_label = @object.label if @object.is_symmetric }

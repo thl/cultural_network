@@ -2,7 +2,7 @@ class Admin::NotesController < AclController
   resource_controller
   
   belongs_to :description, :feature_geo_code, :feature_name, :feature_name_relation, :feature_relation, :time_unit
-  before_filter :collection
+  before_action :collection
   
   def initialize
     super
