@@ -24,7 +24,7 @@ class FeatureRelation < ActiveRecord::Base
   extend IsDateable
   include KmapsEngine::IsNotable
   
-  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {:feature_relation_type_id => FeatureRelationType.hierarchy_ids}
+  acts_as_family_tree :tree, -> { where(:feature_relation_type_id => FeatureRelationType.hierarchy_ids).uniq }, :node_class => 'Feature'
   
   before_update do |record|
     if !record.skip_update

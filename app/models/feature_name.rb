@@ -21,7 +21,7 @@ class FeatureName < ActiveRecord::Base
     :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id, :position
   
   attr_accessor :skip_update
-  acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
+  acts_as_family_tree :node, nil, :tree_class=>'FeatureNameRelation'
   
   after_update do |record|
     #Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))

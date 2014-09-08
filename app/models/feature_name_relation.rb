@@ -22,7 +22,7 @@ class FeatureNameRelation < ActiveRecord::Base
     :is_alt_spelling, :alt_spelling_system_id, :parent_node_id, :child_node_id, :ancestor_ids, :skip_update
   attr_accessor :skip_update
 
-  acts_as_family_tree :tree, :node_class=>'FeatureName'
+  acts_as_family_tree :tree, nil, :node_class=>'FeatureName'
   
   after_save do |record|
     if !record.skip_update

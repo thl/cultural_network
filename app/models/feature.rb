@@ -35,7 +35,7 @@ class Feature < ActiveRecord::Base
   
   # acts_as_solr :fields=>[:pid]
   
-  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {:feature_relation_type_id => FeatureRelationType.hierarchy_ids}
+  acts_as_family_tree :node, -> { where(:feature_relation_type_id => FeatureRelationType.hierarchy_ids).uniq }, :tree_class => 'FeatureRelation'
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
   has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id', :dependent => :destroy
   has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id', :dependent => :destroy
