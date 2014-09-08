@@ -48,7 +48,7 @@ class Feature < ActiveRecord::Base
   has_many :geo_codes, :class_name => 'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
   has_many :geo_code_types, :through => :geo_codes
   has_many :illustrations, :dependent => :destroy
-  has_one  :illustration, :conditions => { :is_primary => true }
+  has_one  :illustration, -> { where(:is_primary => true) }
   has_many :imports, :as => 'item', :dependent => :destroy
   has_many :summaries, :dependent => :destroy
   has_one  :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
