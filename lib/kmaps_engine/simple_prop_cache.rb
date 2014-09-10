@@ -12,7 +12,7 @@ module KmapsEngine
 
       def get_by_code(code)
         prop_id = Rails.cache.fetch("#{self.name}-code/#{code}", :expires_in => 1.day) do
-          prop = self.where(code: code).first
+          prop = self.find_by(code: code)
           prop.nil? ? nil : prop.id
         end
         prop_id.nil? ? nil : self.find(prop_id)
@@ -20,7 +20,7 @@ module KmapsEngine
 
       def get_by_name(name)
         prop_id = Rails.cache.fetch("#{self.name}-name/#{name}", :expires_in => 1.day) do
-          prop = self.where(name: name).first
+          prop = self.find_by(name: name)
           prop.nil? ? nil : prop.id
         end
         prop_id.nil? ? nil : self.find(prop_id)

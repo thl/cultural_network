@@ -51,7 +51,7 @@ class Perspective < ActiveRecord::Base
   end
   
   def self.update_or_create(attributes)
-    r = self.where(code: attributes[:code]).first
+    r = self.find_by(code: attributes[:code])
     r.nil? ? self.create(attributes) : r.update_attributes(attributes)
   end
 end

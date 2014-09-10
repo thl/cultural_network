@@ -49,7 +49,7 @@ class Language < SimpleProp
   end
   
   def self.current
-    self.where(['code LIKE ?', "#{I18n.locale}%"]).first
+    self.find_by(['code LIKE ?', "#{I18n.locale}%"])
   end
 
   def lacks_transcription_system?

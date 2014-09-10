@@ -72,11 +72,11 @@ class Feature < ActiveRecord::Base
     
   def closest_parent_by_perspective(perspective)
     feature_id = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", :expires_in => 1.day) do
-      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
+      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
       break parent_relation.parent_node.id if !parent_relation.nil?
-      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id).select('parent_node_id').order('created_at').first
+      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id).select('parent_node_id').order('created_at').first
       break parent_relation.parent_node.id if !parent_relation.nil?
-      parent_relation = FeatureRelation.where(:child_node_id => self.id).select('parent_node_id').order('created_at').first
+      parent_relation = FeatureRelation.where(child_node_id: self.id).select('parent_node_id').order('created_at').first
       break parent_relation.parent_node.id if !parent_relation.nil?
       nil
     end
@@ -90,11 +90,11 @@ class Feature < ActiveRecord::Base
       parent_id = (root_ids & ancestor_ids).first
       break root_ids.first if parent_id.nil?
       ancestor_ids.delete(parent_id)
-      relation = FeatureRelation.where(:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).first
+      relation = FeatureRelation.find_by(perspective_id: perspective.id, parent_node_id: parent_id, child_node_id: ancestor_ids, feature_relation_type_id: FeatureRelationType.hierarchy_ids)
       while !relation.nil?
         ancestor_ids.delete(parent_id)
         parent_id = relation.child_node_id
-        relation = FeatureRelation.where(:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).first
+        relation = FeatureRelation.find_by(perspective_id: perspective.id, parent_node_id: parent_id, child_node_id: ancestor_ids, feature_relation_type_id: FeatureRelationType.hierarchy_ids)
       end
       parent_id
     end
@@ -311,7 +311,7 @@ class Feature < ActiveRecord::Base
   
     
   def associated?
-    @@associated_models.any?{|model| model.where(feature_id: self.id).first} || !Shape.where(fid: self.fid).first.nil?
+    @@associated_models.any?{|model| model.find_by(feature_id: self.id)} || !Shape.find_by(fid: self.fid).nil?
   end
   
   def self.blank
@@ -324,7 +324,7 @@ class Feature < ActiveRecord::Base
   
   def self.get_by_fid(fid)
     feature_id = Rails.cache.fetch("features-fid/#{fid}", :expires_in => 1.day) do
-      feature = self.where(fid: fid).first
+      feature = self.find_by(fid: fid)
       feature.nil? ? nil : feature.id
     end
     feature_id.nil? ? nil : Feature.find(feature_id)
@@ -363,12 +363,12 @@ class Feature < ActiveRecord::Base
   
   def summary
     current_language = Language.current
-    current_language.nil? ? nil : self.summaries.where(:language_id => current_language.id).first
+    current_language.nil? ? nil : self.summaries.find_by(language_id: current_language.id)
   end
   
   def caption
     current_language = Language.current
-    current_language.nil? ? nil : self.captions.where(:language_id => current_language.id).first
+    current_language.nil? ? nil : self.captions.find_by(language_id: current_language.id)
   end
   
   def self.expire_fragment(perspective_ids, view_ids, feature_ids)

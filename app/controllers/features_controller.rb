@@ -62,7 +62,7 @@ class FeaturesController < ApplicationController
     geo_code_type = GeoCodeType.get_by_code(geo_code_type_str)
     @feature = nil
     if !geo_code_type.nil?
-      geo_code = FeatureGeoCode.where(:geo_code_type_id => geo_code_type.id, :geo_code_value => params[:geo_code]).first
+      geo_code = FeatureGeoCode.find_by(geo_code_type_id: geo_code_type.id, geo_code_value: params[:geo_code])
       @feature = geo_code.feature if !geo_code.nil?
     end
     respond_to do |format|
@@ -89,7 +89,7 @@ class FeaturesController < ApplicationController
   #
   #
   def by_old_pid
-    @features = params[:old_pids].split(/\D+/).find_all{|p| p && !p.blank?}.collect{|p| Feature.where(old_pid: "f#{p}").first}.find_all{|f| f}
+    @features = params[:old_pids].split(/\D+/).find_all{|p| p && !p.blank?}.collect{|p| Feature.find_by(old_pid: "f#{p}")}.find_all{|f| f}
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     respond_to do |format|
       format.html { render :action => 'staff_show' }

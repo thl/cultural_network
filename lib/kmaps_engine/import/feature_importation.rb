@@ -50,9 +50,9 @@ module KmapsEngine
     # .note
 
     def do_feature_import(filename, task_code)
-      task = ImportationTask.where(task_code: task_code).first
+      task = ImportationTask.find_by(task_code: task_code)
       task = ImportationTask.create(:task_code => task_code) if task.nil?
-      self.spreadsheet = task.spreadsheets.where(filename: filename).first
+      self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
       country_type = SubjectsIntegration::Feature.find(29)
       country_type_id = country_type.id
@@ -61,7 +61,7 @@ module KmapsEngine
       feature_ids_with_object_types_added = Array.new
       puts "#{Time.now}: Starting importation."
       CSV.foreach(filename, headers: true, col_sep: "\t") do |row|
-        self.fields = row.to_hash
+        self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
         current+=1
         next unless self.get_feature(current)
         self.add_date('features', self.feature)
@@ -123,14 +123,14 @@ module KmapsEngine
       if !info_source.nil?
         notes = self.fields.delete("#{field_prefix}.info_source.note")
         citations = citable.citations
-        citation = citations.where(:info_source_id => info_source.id).first
+        citation = citations.find_by(info_source_id: info_source.id)
         if citation.nil?
           citation = citations.create(:info_source_id => info_source.id, :notes => notes)
-          self.spreadsheet.imports.create(:item => citation) if citation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         else
           if !notes.nil?
             citation.update_attribute(:notes, notes)
-            self.spreadsheet.imports.create(:item => citation) if citation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
         end
         if citation.nil?
@@ -145,10 +145,10 @@ module KmapsEngine
               name = self.fields.delete("#{prefix}.name")
               if !(path.blank? || name.blank?)
                 conditions = { :path => path, :title => name }
-                page = pages.where(conditions).first
+                page = pages.find_by(conditions)
                 if page.nil?
                   page = pages.create(conditions)
-                  self.spreadsheet.imports.create(:item => page) if page.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+                  self.spreadsheet.imports.create(:item => page) if page.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
                 end
               end
             when 'Document'
@@ -177,10 +177,10 @@ module KmapsEngine
                   volume = volume_str.to_i if !volume_str.blank?
                 end
                 conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
-                page = pages.where(conditions).first
+                page = pages.find_by(conditions)
                 if page.nil?
                   page = pages.create(conditions)
-                  self.spreadsheet.imports.create(:item => page) if page.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+                  self.spreadsheet.imports.create(item: page) if page.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
                 end
               end
             end
@@ -190,14 +190,18 @@ module KmapsEngine
     end
 
     def add_note(field_prefix, notable)
-      note_str = self.fields.delete("#{field_prefix}.note")
+      prefix = "#{field_prefix}.note"
+      author_name = self.fields.delete("#{prefix}.author.fullname")
+      author = author_name.blank? ? nil : AuthenticatedSystem::Person.find_by(fullname: author_name)
+      note_str = self.fields.delete("#{prefix}.content")
       if !note_str.blank?
         notes = notable.notes
-        note = notes.where(:content => note_str).first
+        note = notes.find_by(content: note_str)
         if note.nil?
           note = notes.create(:content => note_str)
-          self.spreadsheet.imports.create(:item => note) if note.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => note) if note.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
+        note.authors << author if !note.nil? && !author.nil? && !note.author_ids.include?(author.id)
         puts "Note #{note_str} could not be added to #{notable.class_name.titleize} #{notable.id}." if note.nil?
       end
     end
@@ -213,7 +217,7 @@ module KmapsEngine
           return false
         end
 
-        feature = Feature.where(old_pid: old_pid).first
+        feature = Feature.find_by(old_pid: old_pid)
         if feature.nil?
           puts "Feature with old pid #{old_pid} was not found."
           return false
@@ -275,10 +279,10 @@ module KmapsEngine
       0.upto(3) do |i|
         feature_names_note = self.fields.delete(i==0 ? 'feature_names.note' : "feature_names.#{i}.note")
         if !feature_names_note.blank?
-          note = association_notes.where(:association_type => 'FeatureName', :content => feature_names_note).first
+          note = association_notes.find_by(association_type: 'FeatureName', content: feature_names_note)
           if note.nil?
             note = association_notes.create(:association_type => 'FeatureName', :content => feature_names_note)
-            self.spreadsheet.imports.create(:item => note) if note.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => note) if note.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
           puts "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
         end
@@ -290,7 +294,7 @@ module KmapsEngine
         if name_str.blank?
           name_str = self.fields.delete("#{i}.feature_names.existing_name")
           next if name_str.blank?
-          name[n] = names.where(:name => name_str).first
+          name[n] = names.find_by(name: name_str)
         else
           conditions = {:name => name_str}          
           begin
@@ -344,7 +348,7 @@ module KmapsEngine
             end
           end
           conditions[:language_id] = language.id if !language.nil?          
-          name[n] = names.where(conditions).first
+          name[n] = names.find_by(conditions)
           is_primary = self.fields.delete("#{i}.feature_names.is_primary")
           conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
           relation_conditions = Hash.new
@@ -352,14 +356,14 @@ module KmapsEngine
           relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
           relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
           position = self.fields.delete("#{i}.feature_names.position")
-          if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.where(relation_conditions).first.nil?
+          if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.find_by(relation_conditions).nil?
             conditions[:position] = position if !position.blank?
             name[n] = names.create(conditions.merge({:skip_update => true}))
-            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             name_added = true if !name_added && !name[n].id.nil?
           elsif !position.blank?
             name[n].update_attribute(:position, position)
-            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             name_changed = true
           end
           if name[n].id.nil?
@@ -386,7 +390,7 @@ module KmapsEngine
             if parent_name.nil?
               puts "No tibetan name was found to associate #{phonetic_system.code} to #{name_str} for feature #{self.feature.pid}."
             else
-              name_relation = name[n].parent_relations.where(:parent_node_id => parent_name.id).first
+              name_relation = name[n].parent_relations.find_by(parent_node_id: parent_name.id)
               if name_relation.nil?
                 name_relation = name[n].parent_relations.create(:skip_update => true, :parent_node_id => parent_name.id, :phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :is_phonetic => 1, :is_translation => is_translation)
                 if name_relation.nil?
@@ -398,7 +402,7 @@ module KmapsEngine
               else
                 name_relation.update_attributes(:phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :is_phonetic => 1, :orthographic_system_id => nil, :is_orthographic => 0, :is_translation => is_translation)
               end
-              self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+              self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             end                
           end
           # now check if there is simplified chinese and make it a child of trad chinese
@@ -409,7 +413,7 @@ module KmapsEngine
               name_relation = simp_chi_name.parent_relations.first
               if name_relation.nil?
                 name_relation = name[n].child_relations.create(:skip_update => true, :is_orthographic => 1, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :is_translation => is_translation, :child_node_id => simp_chi_name.id)
-                self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+                self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
                 if name_relation.nil?
                   puts "Could not make #{name_str} a parent of simplified chinese name for feature #{self.feature.pid}"
                 else
@@ -419,13 +423,13 @@ module KmapsEngine
               elsif !phonetic_system.nil? && phonetic_system.code=='tib.to.chi.transcrip'
                 # only update if its tibetan
                 name_relation.update_attributes(:phonetic_system_id => nil, :is_phonetic => 0, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :is_orthographic => 1, :is_translation => is_translation, :parent_node_id => name[n].id)
-                self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+                self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
               end
               # pinyin should be a child of the traditional and not the simplified chinese
-              name_relation = simp_chi_name.child_relations.where(:phonetic_system_id => PhoneticSystem.get_by_code('pinyin.transcrip').id).first
+              name_relation = simp_chi_name.child_relations.find_by(phonetic_system_id: PhoneticSystem.get_by_code('pinyin.transcrip').id)
               if !name_relation.nil?
                 name_relation.update_attribute(:parent_node_id, name[n].id)
-                self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+                self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
               end
             end
           end
@@ -473,7 +477,7 @@ module KmapsEngine
         if parent_node.nil?
           puts "Parent name #{item[:parent_position]} of #{pending_relation.child_node.id} for feature #{self.feature.pid} not found."
         else
-          relation = pending_relation.child_node.parent_relations.where(:parent_node_id => parent_node.id).first
+          relation = pending_relation.child_node.parent_relations.find_by(parent_node_id: parent_node.id)
           if relation.nil?
             pending_relation.parent_node = parent_node
             relation = pending_relation.save
@@ -511,10 +515,10 @@ module KmapsEngine
           puts "Feature type #{feature_type_id} not found."
           next
         end
-        feature_object_type = feature_object_types.where(:category_id => category.id).first
+        feature_object_type = feature_object_types.find_by(category_id: category.id)
         if feature_object_type.nil?
           feature_object_type = feature_object_types.create(:category_id => category.id, :skip_update => true)
-          self.spreadsheet.imports.create(:item => feature_object_type) if feature_object_type.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => feature_object_type) if feature_object_type.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           feature_ids_with_object_types_added << self.feature.id if !feature_ids_with_object_types_added.include? self.feature.id
         end
         if feature_object_type.nil?
@@ -554,12 +558,12 @@ module KmapsEngine
           next
         end
         geocodes = self.feature.geo_codes
-        geocode = geocodes.where(geo_code_type_id: geocode_type.id).first
+        geocode = geocodes.find_by(geo_code_type_id: geocode_type.id)
         if geocode.nil?
           conditions = {:geo_code_type_id => geocode_type.id, :geo_code_value => geocode_value}
-          geocode = geocodes.where(conditions).first
+          geocode = geocodes.find_by(conditions)
           geocode = geocodes.create(conditions) if geocode.nil?
-          self.spreadsheet.imports.create(:item => geocode) if geocode.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => geocode) if geocode.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
         if geocode.nil?
           puts "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{self.feature.pid}"
@@ -641,11 +645,11 @@ module KmapsEngine
           end
         end
         conditions.merge!(:feature_relation_type_id => relation_type.id, :perspective_id => perspective.id) if !replace_relations
-        feature_relation = FeatureRelation.where(conditions).first
+        feature_relation = FeatureRelation.find_by(conditions)
         changed = false
         if feature_relation.nil?
           feature_relation = FeatureRelation.create(conditions.merge({:skip_update => true}))
-          self.spreadsheet.imports.create(:item => feature_relation) if feature_relation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => feature_relation) if feature_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           if feature_relation.nil?
             put "Failed to create feature relation between #{parent.pid} and #{self.feature.pid}"
           else
@@ -710,10 +714,10 @@ module KmapsEngine
           end
         end
         contestations = self.feature.contestations
-        contestation = contestations.where(conditions).first
+        contestation = contestations.find_by(conditions)
         if contestation.nil?
           contestation = contestations.create(:administrator_id => administrator.id, :claimant_id => claimant.id, :contested => (contested.downcase == 'yes'))
-          self.spreadsheet.imports.create(:item => contestation) if contestation.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => contestation) if contestation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
         puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{self.feature.pid}." if contestation.nil?
       end
@@ -732,15 +736,15 @@ module KmapsEngine
           description_content = "<p>#{description_content}</p>"
           author_name = self.fields.delete("#{prefix}.author.fullname")
           description_title = self.fields.delete("#{prefix}.title")
-          author = author_name.blank? ? nil : AuthenticatedSystem::User.where(fullname: author_name).first
-          description = description_title.blank? ? descriptions.where(content: description_content).first : descriptions.where(title: description_title).first # : descriptions.where(['LEFT(content, 200) = ?', description_content[0...200]]).first
+          author = author_name.blank? ? nil : AuthenticatedSystem::Person.find_by(fullname: author_name)
+          description = description_title.blank? ? descriptions.find_by(content: description_content) : descriptions.find_by(title: description_title) # : descriptions.find_by(['LEFT(content, 200) = ?', description_content[0...200]])
           attributes = {:content => description_content, :title => description_title}
           if description.nil?
             description = descriptions.create(attributes)
           else
             description.update_attributes(attributes)
           end
-          self.spreadsheet.imports.create(:item => description) if description.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => description) if description.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           description.authors << author if !author.nil? && !description.author_ids.include?(author.id)
         end
       end    
@@ -799,12 +803,12 @@ module KmapsEngine
             self.feature.shapes.each{ |s| s.update_attribute(:altitude, nil) }
             altitudes.clear
             altitude = altitudes.create(conditions)
-            self.spreadsheet.imports.create(:item => altitude) if altitude.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => altitude) if altitude.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           else
-            altitude = altitudes.where(conditions).first
+            altitude = altitudes.find_by(conditions)
             if altitude.nil?
               altitude = altitudes.create(conditions)
-              self.spreadsheet.imports.create(:item => altitude) if altitude.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+              self.spreadsheet.imports.create(:item => altitude) if altitude.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             end
           end        
         end
@@ -826,7 +830,7 @@ module KmapsEngine
           next
         end      
         conditions = { :category_id => kmap.id }
-        category_feature = category_features.where(conditions).first
+        category_feature = category_features.find_by(conditions)
         values = {}
         show_parent = self.fields.delete("#{kmap_prefix}.show_parent")
         values[:show_parent] = show_parent.downcase=='yes' if !show_parent.blank?
@@ -837,7 +841,7 @@ module KmapsEngine
         else
           category_feature.update_attributes(values)
         end
-        self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+        self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         next if category_feature.nil?
         0.upto(3) do |j|
           prefix = j==0 ? kmap_prefix : "#{kmap_prefix}.#{j}"
@@ -871,13 +875,13 @@ module KmapsEngine
         values[:show_parent] = show_parent.downcase=='yes' if !show_parent.blank?
         show_root = self.fields.delete("#{key}.show_root")
         values[:show_root] = show_root.downcase=='yes' if !show_root.blank?
-        category_feature = category_features.where(conditions).first
+        category_feature = category_features.find_by(conditions)
         if category_feature.nil?
           category_feature = category_features.create(conditions.merge(values))
         else
           category_feature.update_attributes(values)
         end
-        self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+        self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         0.upto(3) do |j|
           prefix = j==0 ? key : "#{key}.#{j}"
           self.add_date(prefix, category_feature)
@@ -897,10 +901,10 @@ module KmapsEngine
             next
           end
           conditions = { :category_id => kmap.id }
-          category_feature = category_features.where(conditions).first
+          category_feature = category_features.find_by(conditions)
           if category_feature.nil?
             category_feature = category_features.create(conditions)
-            self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
           prefix = key[0...pos-1]
           posfix = key[pos...key.size]

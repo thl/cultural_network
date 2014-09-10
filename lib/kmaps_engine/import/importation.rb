@@ -81,7 +81,7 @@ class Importation
             else
               time_unit.update_attributes(attrs)
             end
-            self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
         else
           complex_start_date = start_date.blank? ? nil : Importation.to_complex_date(start_date, start_certainty_id, season_id)
@@ -102,7 +102,7 @@ class Importation
             else
               time_unit.update_attributes(attrs)
             end
-            self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+            self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
         end
       else
@@ -118,7 +118,7 @@ class Importation
             if !rabjung_id.blank?
               complex_date = ComplexDate.create(:rabjung_id => rabjung_id)
               time_unit = time_units.create(:date_id => complex_date.id)
-              self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+              self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             end
           else
             if start_day==end_day && start_month==end_month
@@ -131,7 +131,7 @@ class Importation
               else
                 time_unit.update_attributes(attrs)
               end
-              self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+              self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             else
               complex_start_date_attributes = {:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id}
               complex_end_date_attributes = {:day => end_day, :day_certainty_id => end_certainty_id, :month => end_month, :month_certainty_id => end_certainty_id, :season_id => season_id, :season_certainty_id => end_certainty_id}
@@ -156,7 +156,7 @@ class Importation
           else
             time_unit.update_attributes(attrs)
           end
-          self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+          self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
       end
     else
@@ -175,7 +175,7 @@ class Importation
         else
           time_unit.update_attributes(attrs)
         end
-        self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.where(:spreadsheet_id => self.spreadsheet.id).first.nil?
+        self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
       end
     end
   end

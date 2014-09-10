@@ -62,7 +62,7 @@ module KmapsEngine
               source_url = "#{public_url}#{essay_prefix}#{essay_id}"
               attributes = {:content => content, :is_primary => false, :title => title}
               descriptions = feature.descriptions
-              description = descriptions.where(:source_url => source_url).first
+              description = descriptions.find_by(source_url: source_url)
               if description.nil?
                 description = descriptions.create(attributes.merge({:source_url => source_url}))
               else
@@ -73,7 +73,7 @@ module KmapsEngine
                 author_key = i>0 ? "#{prefix}.author.#{i}.fullname" : "#{prefix}.author.fullname"
                 author_name = self.fields.delete(author_key)
                 if !author_name.blank?
-                  author = AuthenticatedSystem::Person.where(fullname: author_name).first
+                  author = AuthenticatedSystem::Person.find_by(fullname: author_name)
                   if author.nil?
                     puts "Author #{author_name} not found!"
                   else

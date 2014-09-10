@@ -2,7 +2,7 @@ module FeatureExtensionForNamePositioning
   def prioritized_name(current_view)
     view = current_view
     name_id = Rails.cache.fetch("#{self.cache_key}/#{view.cache_key}/prioritized_name", :expires_in => 1.hour) do
-      cached_name = self.cached_feature_names.where(:view_id => view.id).first
+      cached_name = self.cached_feature_names.find_by(view_id: view.id)
       if cached_name.nil?
         calculated_name = self.calculate_prioritized_name(view)
         cached_name = self.cached_feature_names.create(:view_id => view.id, :feature_name_id => calculated_name.id) if !calculated_name.nil?
@@ -236,7 +236,7 @@ module FeatureExtensionForNamePositioning
     Rails.cache.delete("#{self.cache_key}/combined_name")
     View.get_all.each do |view|
       calculated_name = self.calculate_prioritized_name(view)
-      cached_name = cached_names.where(:view_id => view.id).first
+      cached_name = cached_names.find_by(view_id: view.id)
       if cached_name.nil?
         cached_names.create(:view_id => view.id, :feature_name_id => calculated_name.nil? ? nil : calculated_name.id)
         changed_views << view.id

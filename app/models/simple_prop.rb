@@ -40,7 +40,7 @@ class SimpleProp < ActiveRecord::Base
   validates_uniqueness_of :code, :scope=>:type
   
   def self.update_or_create(attributes)
-    r = self.where(code: attributes[:code]).first
+    r = self.find_by(code: attributes[:code])
     r.nil? ? self.create(attributes) : r.update_attributes(attributes)
   end
   
