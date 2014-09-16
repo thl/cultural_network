@@ -1,6 +1,6 @@
 class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? }
-  caches_page :related
+  #caches_page :related
   caches_action :node_tree_expanded, :cache_path => Proc.new { |c| node_cache_path}
   caches_action :all,                :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }
   caches_action :children,           :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
