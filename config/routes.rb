@@ -84,7 +84,7 @@ Rails.application.routes.draw do
       get :iframe
       get :list
       get :nested
-      get :fancy_nested
+      match 'fancy_nested', to: 'features#fancy_nested', via: [:post, :get]
       get :node_tree_expanded
       get :related
       get :related_list
@@ -93,7 +93,7 @@ Rails.application.routes.draw do
       get :all
       get :characteristics_list
       get :list
-      get :fancy_nested
+      match 'fancy_nested', to: 'features#fancy_nested', via: [:post, :get]
       get :nested
       match :search, to: 'features#search', via: [:post, :get]
       get 'by_fid/:fids.:format', to: 'features#by_fid'
