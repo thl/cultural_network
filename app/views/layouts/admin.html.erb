@@ -1,5 +1,5 @@
 <% header_options = {:javascript_files => ['kmaps_engine/admin'], :stylesheet_files => ['kmaps_engine/admin']}
-   header_options[:title] = "#{model_name.classify.constantize.model_name.human.titleize}: #{controller.action_name.humanize}" if defined? model_name && !model_name.blank? %>
+   header_options[:title] = "#{model_name.classify.constantize.model_name.human.titleize}: #{controller.action_name.humanize}" if defined?(model_name) && !model_name.blank? %>
 <%= header(header_options) %>
 <div class="shell-1">		
 <% if @page_title %>
