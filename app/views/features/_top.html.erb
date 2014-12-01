@@ -9,9 +9,3 @@
     node_menu_options[:show_results] = true unless session[:search].blank? %>
 	NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json.html_safe %>);
 <% end %>
-<!--<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>-->
-<div style="clear:both;"></div>
-<div id="FeatureContainer">
-	<div id="FeaturePanelContainer">
-		<%= render :partial => "features/menu" %>
-		<div id="FeaturePanel" class="secondary-universal-navigation">

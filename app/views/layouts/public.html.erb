@@ -1,7 +1,12 @@
-<%= header(:class => 'single-col', :javascript_files => ['kmaps_engine/treescroll'], :stylesheet_files => ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
-<div class="shell-1">
+<%= header(:class => 'single-col', :javascript_files => ['kmaps_engine/treescroll', 'subjects_integration/jquery.draggable.popup'], :stylesheet_files => ['subjects_integration/jquery.draggable.popup', "kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
+<%= javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');") %>
+<main class="main-wrapper container">
+  <h1 id="logo"><a href="/"><%= 'SHANTI - Sciences, Humanities, and Arts Network of Technological Initiatives' %></a></h1>
+  <div class="shell-1">
 <%= universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) do %>
 <%=   yield %>
 <%  end %>
-</div>
+    </div>
+</main>
+<%= render :partial => "public/menu" %>
 <%= footer %>

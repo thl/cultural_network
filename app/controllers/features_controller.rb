@@ -21,6 +21,7 @@ class FeaturesController < ApplicationController
         
     respond_to do |format|
       format.html
+      format.js
       format.xml  #{ render :xml => Feature.current_roots(Perspective.get_by_code(default_perspective_code), View.get_by_code(default_view_code)).to_xml }
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
     end
@@ -44,6 +45,7 @@ class FeaturesController < ApplicationController
       end
       format.xml
       format.csv
+      format.js
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
     end
   end
@@ -292,6 +294,7 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.html
       format.xml
+      format.js
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'related.xml.builder')) }
     end
   end

@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   resources :languages
   resource :session do
     get 'change_language/:id', to: 'sessions#change_language', as: :change_language
+    get 'change_perspective/:id', to: 'sessions#change_perspective', as: :change_perspective
+    get 'change_view/:id', to: 'sessions#change_view', as: :change_view
   end
   namespace :admin do
     concern :add_author do

@@ -26,7 +26,6 @@ class DescriptionsController < ApplicationController
       @descriptions = @feature.descriptions
       respond_to do |format|
         format.xml
-        format.html
         format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
       end
     end
@@ -44,6 +43,7 @@ class DescriptionsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml
+      format.js
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
     end
   end

@@ -21,15 +21,34 @@ module ApplicationHelper
   def blank_label; '-'; end
   
   def breadcrumb_separator
-    "&nbsp;<span class='arrow'>&gt;</span>&nbsp;".html_safe
+    "<i class=\"icon shanticon-arrow3-right\"></i>"
   end
-
+  
+  def page_header_title
+    if @feature.nil?
+      ts('app.short')
+    else
+      name = @feature.prioritized_name(current_view)
+      name.nil? ? @feature.pid : name.name
+    end
+  end
+  
   #
   # Creates a breadcrumb trail to the feature
   #
-  def f_breadcrumb(feature)
+  def f_breadcrumb
+    if @feature.nil?
+      content_tag :ol, "<li>#{link_to(ts('home.this'), root_path)}</li>".html_safe, class: 'breadcrumb'
+    else
+      list = @feature.closest_ancestors_by_perspective(current_perspective).collect do |r|
+        name = r.prioritized_name(current_view)
+        name = name.nil? ? r.pid : name.name
+        link_to(name, feature_path(r.fid))
+      end
+      list = [link_to("#{ts('app.short')}:", root_path)] + list[0...list.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [list.last]
+      content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
+    end
     # content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
-    content_tag :div, feature.closest_ancestors_by_perspective(current_perspective).collect{|r| f_link(r, feature_path(r.fid), {}, {:s => true})}.join(breadcrumb_separator).html_safe, :class => "breadcrumbs"
   end
   
   #
@@ -206,9 +225,9 @@ module ApplicationHelper
     link_title = "#{note_title}#{note_authors}#{note_date}"
     link_url = polymorphic_url([note.notable, note])
     link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-    ("<span class='has-draggable-popups'>
+    "<span class='has-draggable-popups'>
       #{link_to(link_title, link_url, :class => link_classes, :title => h(note_title))}
-    </span>" + javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")).html_safe
+    </span>".html_safe
   end
   
   #
@@ -255,9 +274,9 @@ module ApplicationHelper
   def custom_secondary_tabs_list
     # The :index values are necessary for this hash's elements to be sorted properly
     {
-      :place => {:index => 1, :title => Feature.model_name.human.titleize},
-      :descriptions => {:index => 2, :title => "Essays"},
-      :related => {:index => 3, :title => "Related"}
+      :place => {:index => 1, :title => Feature.model_name.human.titleize, :shanticon => 'overview'},
+      :descriptions => {:index => 2, :title => 'Essays', :shanticon => 'texts'},
+      :related => {:index => 3, :title => 'Related', :shanticon => 'places'}
     }
   end
   
@@ -298,7 +317,7 @@ module ApplicationHelper
       end
       title = count.nil? ? tab[:title] : "#{tab[:title]} (#{count})"
       
-      remove_tab ? nil : [tab_id, title, url]
+      remove_tab ? nil : [tab_id, title, url, tab[:shanticon]]
     }.reject{|t| t.nil?}
     
     tabs

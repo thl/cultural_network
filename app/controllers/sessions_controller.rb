@@ -42,4 +42,24 @@ class SessionsController < ApplicationController
       redirect_to root_path
     end
   end
+  
+  def change_perspective
+    perspective = Perspective.find(params[:id])
+    self.current_perspective_id = perspective.id if !perspective.nil?
+    begin
+      redirect_to :back
+    rescue ActionController::RedirectBackError
+      redirect_to root_path
+    end
+  end
+  
+  def change_view
+    view = View.find(params[:id])
+    self.current_view_id = view.id if !view.nil?
+    begin
+      redirect_to :back
+    rescue ActionController::RedirectBackError
+      redirect_to root_path
+    end
+  end
 end

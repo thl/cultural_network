@@ -11,19 +11,5 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require interface_utils/application
-
-jQuery(document).ready(function(){
-	// Add authentication to AJAX POSTs made by jQuery 
-	jQuery(document).ajaxSend(function(event, request, settings) {
-		if (settings.type == 'GET') return;
-		if (typeof(AUTH_TOKEN) == "undefined") return;
-		settings.data = settings.data || "";
-		if(jQuery.browser.msie){
-			settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(AUTH_TOKEN);
-		}
-	});
-})
-
-jQuery.ajaxSetup({ 
-  'beforeSend': function(xhr) {xhr.setRequestHeader("Accept", "text/javascript")}
-})
+//= require kmaps_engine/jquery.livequery
+//= require kmaps_engine/node-tree
