@@ -281,21 +281,17 @@ class Feature < ActiveRecord::Base
   def self.name_search(filter_value)
     Feature.includes(:names).references(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
   end
-    
-  def media_url
-    MmsIntegration::MediaManagementResource.get_url + kmap_path
-  end
-
+  
   def pictures_url
-    MmsIntegration::MediaManagementResource.get_url + kmap_path('pictures')
+    kmap_path('pictures')
   end
 
   def videos_url
-    MmsIntegration::MediaManagementResource.get_url + kmap_path('videos')
+    kmap_path('videos')
   end
 
   def documents_url
-    MmsIntegration::MediaManagementResource.get_url + kmap_path('documents')
+    kmap_path('documents')
   end
   
   #

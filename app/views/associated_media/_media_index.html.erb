@@ -1,0 +1,31 @@
+<% if @media.empty? %>
+     <h3 align="right"><%= ts 'media.none' %></h3>
+<% else %>
+     <h3><%= @title %></h3>
+     <table border="0" cellpadding="0px" cellspacing="5px" id="picframe">
+       <tr align="center" valign="middle">
+<%     i=0
+       for medium in @media
+         next if medium.nil?
+		 thumbnail = medium['images'].detect{|i| i['thumbnail']=='compact'}
+		 if thumbnail.nil? %>
+		   <td>&nbsp;</td>
+<%       else %>
+		   <td width="<%= thumbnail['width'] %>" height="<%= thumbnail['height'] %>">
+<%=          link_to image_tag(thumbnail['url'], :width => thumbnail['width'], :height => thumbnail['height']), associated_medium_path(medium['id']), :class => 'media-thumb', :remote => true, :method => :get %>
+		   </td>
+<%       end %>
+<%       i+=1
+         if i==8 %>
+           </tr><tr align="center" valign="middle">
+<%         i=0
+         end
+       end %>
+       </tr>
+     </table>
+<%=   javascript_on_load do %>
+        as = $('.pagination').find('a');
+		as.attr('data-remote', true);
+<%    end %>
+<%=   will_paginate @media, :class => 'normal pagination' %>
+<% end %>

@@ -13,3 +13,4 @@
 //= require interface_utils/application
 //= require kmaps_engine/jquery.livequery
 //= require kmaps_engine/node-tree
+//= require kmaps_engine/popup-ui-handler

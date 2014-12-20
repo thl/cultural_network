@@ -438,4 +438,16 @@ module ApplicationHelper
       ]
     end).html_safe
   end
+  
+  def pictures_url(feature)
+    pictures_associated_medium_path(feature.fid)
+  end
+  
+  def videos_url(feature)
+    videos_associated_medium_path(feature.fid)
+  end
+  
+  def documents_url(feature)
+    documents_associated_medium_path(feature.fid)
+  end
 end
