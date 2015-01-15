@@ -12,3 +12,7 @@
  *= require interface_utils/application
  *= require kmaps_engine/node-tree
  */
+
+.titlearea, .breadwrap ol li .icon, .ss-full-tabs.nav-tabs > li.active a, .ss-full-tabs.nav-tabs > li.active a:hover {
+    background: none repeat scroll 0 0 #dc3c47;
+}

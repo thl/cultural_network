@@ -259,22 +259,22 @@ class Feature < ActiveRecord::Base
   # options - the standard arguments sent to ActiveRecord::Base.paginate (WillPaginate gem)
   # See http://api.rubyonrails.com/classes/ActiveRecord/Base.html#M001416
   # 
-  def self.search(filter_value, search_options={})
+  def self.search(search)
     # Setup the base rules
-    if search_options[:scope] && search_options[:scope] == 'name'
-      conditions = build_like_conditions(%W(feature_names.name), filter_value, {:match => search_options[:match]})
+    if search.scope && search.scope == 'name'
+      conditions = build_like_conditions(%W(feature_names.name), search.filter, {match: search.match})
     else
-      conditions = build_like_conditions(%W(descriptions.content feature_names.name), filter_value, {:match => search_options[:match]})
+      conditions = build_like_conditions(%W(descriptions.content feature_names.name), search.filter, {match: search.match})
     end
     if !conditions.blank?
-      fid = filter_value.gsub(/[^\d]/, '')
+      fid = search.filter.gsub(/[^\d]/, '')
       if !fid.blank?
         conditions[0] << ' OR features.fid = ?'
         conditions << fid.to_i
       end
     end
     search_results = self.where(conditions).includes([:names, :descriptions]).references([:names, :descriptions]).order('features.position')
-    search_results = search_results.where('descriptions.content IS NOT NULL') if search_options[:has_descriptions]
+    search_results = search_results.where('descriptions.content IS NOT NULL') if search.has_descriptions
     return search_results
   end
   

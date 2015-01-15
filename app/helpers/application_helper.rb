@@ -270,16 +270,7 @@ module ApplicationHelper
   def highlight(string)
     ('<span class="highlight">' + string + '</span>').html_safe
   end
-  
-  def custom_secondary_tabs_list
-    # The :index values are necessary for this hash's elements to be sorted properly
-    {
-      :place => {:index => 1, :title => Feature.model_name.human.titleize, :shanticon => 'overview'},
-      :descriptions => {:index => 2, :title => 'Essays', :shanticon => 'texts'},
-      :related => {:index => 3, :title => 'Related', :shanticon => 'places'}
-    }
-  end
-  
+    
   def custom_secondary_tabs(current_tab_id=:place)
 
     @tab_options ||= {}

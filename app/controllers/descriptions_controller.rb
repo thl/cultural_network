@@ -37,7 +37,7 @@ class DescriptionsController < ApplicationController
       @feature = @description.feature
       @view = View.get_by_code('roman.popular')
     end
-    set_common_variables(session)
+    set_common_variables
     @tab_options = {:entity => @feature}
     @current_tab_id = :descriptions
     respond_to do |format|

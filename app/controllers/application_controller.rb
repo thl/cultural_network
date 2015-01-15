@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     'public'
   end
 
-  def set_common_variables(session_params)
+  def set_common_variables
     session[:interface] ||= {}
 
     # Allow for views and perspectives to be set by GET params.  It might be possible to simplify this code...
@@ -50,20 +50,7 @@ class ApplicationController < ActionController::Base
     @session = Session.new(:perspective_id => self.current_perspective.nil? ? nil : self.current_perspective.id, :view_id => self.current_view.nil? ? nil : self.current_view.id)
     @perspectives = Perspective.find_all_public
     @views = View.order('name')
-
-    search_defaults = {
-    	:filter => '',
-    	:scope => 'name',
-    	:match => 'contains',
-    	:search_scope => 'global',
-    	:has_descriptions => '0'
-    }
-
-    # These are used to show the same search results that were on the previous page.
-    @previous_search_params = session_params[:interface][:search_params] || search_defaults
-
-    # These are used to show the same search form field values that were on the previous page.
-    @search_form_params = search_defaults
+    @search_form = Search.defaults
   end
   
 end
