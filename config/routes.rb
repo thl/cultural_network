@@ -2,14 +2,6 @@ Rails.application.routes.draw do
   concern :notable_citable do
     resources :notes, :citations
   end
-  resources :associated_media, only: :show do
-    member do
-      get 'pictures'
-      get 'videos'
-      get 'documents'
-    end
-  end
-  resources :languages
   resource :session do
     get 'change_language/:id', to: 'sessions#change_language', as: :change_language
     get 'change_perspective/:id', to: 'sessions#change_perspective', as: :change_perspective

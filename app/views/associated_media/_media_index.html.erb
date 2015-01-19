@@ -7,7 +7,8 @@
 <%     i=0
        for medium in @media
          next if medium.nil?
-		 thumbnail = medium['images'].detect{|i| i['thumbnail']=='compact'}
+		 images = medium['images']
+		 thumbnail = images.nil? ? nil : images.detect{|i| i['thumbnail']=='compact'}
 		 if thumbnail.nil? %>
 		   <td>&nbsp;</td>
 <%       else %>
