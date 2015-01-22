@@ -1,0 +1,27 @@
+<ul class="menu-main">
+	<li class="menu-commons active">
+		<a href="#">Main Menu <span class="fa arrow"></span></a>
+		<ul>
+			<li><%= login_status %></li>
+			<li><a href="#">Help</a></li>
+			<li><a href="#">Contact Us</a></li>
+		</ul>
+	</li>
+	<li class="menu-collections active">
+		<a href="#">Kmaps Collections <span class="fa arrow"></span></a>
+<%=     render 'main/collections_list' %>        
+	</li>
+	<li class="menu-preferences active">
+		<a href="#">Preferences <span class="fa arrow"></span></a>
+		<ul>          
+			<!-- header -->              
+			<li class="active"><a href="#">Site Language <span class="fa plus-times"></span></a>                            
+				<ul>
+<%=               render 'main/language_list' %>
+				</ul>                     
+			</li>
+			<!-- header -->    
+			<li class="bottom-trim"></li>   
+		</ul>
+	</li>
+</ul>

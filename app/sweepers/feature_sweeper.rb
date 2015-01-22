@@ -1,4 +1,8 @@
 class FeatureSweeper < ActionController::Caching::Sweeper
+  include Rails.application.routes.url_helpers
+  include ActionController::Caching::Pages
+  include ActionController::Caching::Actions
+  
   observe Feature, FeatureName, FeatureRelation
   FORMATS = ['xml', 'json']
   
@@ -81,6 +85,13 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         end
       end
     end
+  end
+  
+  private
+  
+  # Very weird! ActionController::Caching seems to assume it is being called from controller. Adding this as hack
+  def self.perform_caching
+    Rails.configuration.action_controller.perform_caching
   end
   
   #def after_commit(record)

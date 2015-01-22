@@ -1,4 +1,7 @@
 class SummarySweeper < ActionController::Caching::Sweeper
+  include Rails.application.routes.url_helpers
+  include ActionController::Caching::Pages
+  
   observe Summary
   FORMATS = ['xml', 'json']
   

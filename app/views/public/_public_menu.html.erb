@@ -26,6 +26,9 @@
 <%= javascript_on_load("$('body').on('ifChecked', 'input.optionview', function() { window.location.pathname = '#{view_path}' + $(this).val(); });") %>
   </li>
   <li><a href="https://wiki.shanti.virginia.edu/display/KB/UVa+Mediabase" target="_blank">Help</a></li>
+<% if logged_in? %>
+     <li><%= link_to 'Admin', admin_root_path, {:hreflang => 'Manage places.'} %></li>
+<% end %>
   <li><%= login_status %></li>
 </ul></nav>
 </section><!-- END menu -->

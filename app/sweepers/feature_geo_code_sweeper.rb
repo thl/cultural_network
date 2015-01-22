@@ -1,4 +1,7 @@
 class FeatureGeoCodeSweeper < ActionController::Caching::Sweeper
+  include Rails.application.routes.url_helpers
+  include ActionController::Caching::Pages
+  
   observe FeatureGeoCode
   FORMATS = ['xml', 'json']
   

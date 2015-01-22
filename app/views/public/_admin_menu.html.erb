@@ -1,0 +1,20 @@
+<%	lang_path = change_language_session_path('a').chop %>
+<%= javascript_on_load("$('body').on('ifChecked', 'input.optionlang', function() { window.location.pathname = '#{lang_path}' + $(this).val(); });") %>
+<!-- LOAD menus -->
+<section id="menu-main" class="menu-accordion">
+<%= render 'public/admin_accordion_menu' %>
+</section>
+<section id="menu-collections" class="menu-accordion">
+<%= render 'public/admin_accordion_menu' %>
+</section>
+<section id="menu" style="display:none;">
+<nav id="menu-drill" role="navigation">                
+ <ul>
+	 <li><h3><em>Main Menu</em></h3><a class="link-blocker"></a></li>
+     <li><a href="https://wiki.shanti.virginia.edu/display/KB/UVa+Mediabase" target="_blank">Help</a></li>
+<% if logged_in? %>
+     <li><%= link_to 'Public site', root_path, {:hreflang => 'View places.'} %></li>
+<% end %>
+  <li><%= login_status %></li>
+</ul></nav>
+</section><!-- END menu -->

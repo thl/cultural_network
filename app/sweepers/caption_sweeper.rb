@@ -1,4 +1,7 @@
 class CaptionSweeper < ActionController::Caching::Sweeper
+  include Rails.application.routes.url_helpers
+  include ActionController::Caching::Pages
+  
   observe Caption
   FORMATS = ['xml', 'json']
   

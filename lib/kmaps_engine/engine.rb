@@ -17,7 +17,13 @@ module KmapsEngine
     end
     
     initializer :loader do |config|
-      require 'kmaps_engine/tree_cache'
+      require 'active_record/kmaps_engine/extension'
+      require 'kmaps_engine/array_ext'
+      require 'kmaps_engine/extensions/public_controller_dependencies'
+      
+      ActiveRecord::Base.send :include, ActiveRecord::KmapsEngine::Extension
+      Array.send :include, KmapsEngine::ArrayExtension
+      AuthenticatedSystem::SessionsController.send :include, KmapsEngine::Extensions::PublicControllerDependencies
     end
   end
 end

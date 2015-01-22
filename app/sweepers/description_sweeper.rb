@@ -1,4 +1,7 @@
 class DescriptionSweeper < ActionController::Caching::Sweeper
+  include Rails.application.routes.url_helpers
+  include ActionController::Caching::Pages
+  
   observe Description
   FORMATS = ['xml', 'json']
   

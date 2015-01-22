@@ -55,6 +55,7 @@ table th{
 	background-color:#efefef;
 }
 
+/* TO NOT BREAK HEADER
 fieldset {
 	background-color:#efefef;
 	border:solid 1px lightgray;
@@ -66,7 +67,7 @@ fieldset {
     line-height: 130%;
     float: left;
     clear: both;
-}
+}*/
 
 fieldset div {margin-top: 6px;}
 
@@ -84,7 +85,9 @@ extref:before {
     content: "{extref link: " attr(href) "} ";
 }
 
+/* TO NOT BREAK HEADER
 form fieldset {margin-bottom: 1em;}
+*/
 
 fieldset legend{  
     border:solid 1px gray;
