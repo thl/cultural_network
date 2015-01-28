@@ -101,12 +101,8 @@ class FeaturesController < ApplicationController
   end
   
   def by_name
-    params[:filter] = params[:query]
+    search = Search.new(filter: params[:query], scope: params[:scope] || 'name', match: params[:match])
     conditions = {:is_public => 1}
-    search_options = {
-      :scope => params[:scope] || 'name',
-      :match => params[:match]
-    }
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code(default_view_code)
     joins = []
@@ -123,7 +119,7 @@ class FeaturesController < ApplicationController
       conditions['features.is_public'] = 1
       conditions.delete(:is_public)
     end
-    @features = perform_global_search(search_options).where(conditions).paginate(:page => params[:page] || 1, :per_page => params[:per_page] || 15)
+    @features = perform_global_search(search).where(conditions).paginate(:page => params[:page] || 1, :per_page => params[:per_page] || 15)
     @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
     respond_to do |format|
       format.html { render :action => 'paginated_show' }
