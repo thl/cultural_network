@@ -263,6 +263,8 @@ module KmapsEngine
                 orthographic_system = relationship_system
               elsif relationship_system.instance_of? PhoneticSystem
                 phonetic_system = relationship_system
+              elsif relationship_system.instance_of? AltSpellingSystem
+                alt_spelling_system = relationship_system
               else
                 puts "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
               end

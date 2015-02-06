@@ -7,6 +7,7 @@ xml.feature do
   xml.id(feature.fid, type: 'integer')
   xml.db_id(feature.id, type: 'integer')
   xml.header(header)
-  xml.caption(feature.caption)
+  caption = feature.caption
+  xml.caption(caption.nil? ? nil : caption.content)
   xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
 end
