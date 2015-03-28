@@ -9,7 +9,7 @@ module KmapsEngine
     end
 
     # Currently supported fields:
-    # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
+    # features.fid, features.old_pid, features.position, feature_names.delete, feature_names.is_primary.delete
     # i.feature_names.existing_name
     # i.feature_names.name, i.feature_names.position, i.feature_names.is_primary,
     # i.languages.code/name, i.writing_systems.code/name, i.alt_spelling_systems.code/name
@@ -148,6 +148,8 @@ module KmapsEngine
 
     # The feature can either be specified with by its current fid ("features.fid")
     # or the pid used in THL's previous application ("features.old_pid"). One of the two is required.  
+    # Valid columns: features.fid, features.old_pid
+    
     def get_feature(current)
       fid = self.fields.delete('features.fid')
       if fid.blank?
@@ -171,6 +173,13 @@ module KmapsEngine
       end
       self.feature = Feature.find(feature.id)
       return true
+    end
+    
+    # Valid columns: features.position
+    def process_feature
+      self.add_date('features', self.feature)
+      position = self.fields.delete('features.position')
+      self.feature.update_attribute(:position, position) if !position.blank?
     end
 
     # Name is optional. If there is a name, then the required column (for i varying from

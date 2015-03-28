@@ -1,3 +1,3 @@
 <% for perspective in @perspectives %>
-     <li class="form-group"><%= label_tag("optionperspective_#{perspective.code}", radio_button(:session, :perspective_id, perspective.id, class: 'optionperspective') + perspective.name, class: 'radio-inline') %></li>
+     <li><%= link_to(perspective.name, change_perspective_session_path(perspective.id), style: perspective==current_perspective ? '' : 'font-weight: normal;') %></li>
 <% end %>

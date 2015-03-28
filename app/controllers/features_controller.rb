@@ -183,9 +183,9 @@ class FeaturesController < ApplicationController
     @view ||= View.get_by_code(default_view_code)
     perspective = params[:perspective_code].nil? ? nil : Perspective.get_by_code(params[:perspective_code])
     if perspective.nil?
-      @features = feature.children.sort_by{|f| f.prioritized_name(@view).name }
+      @features = feature.children.sort_by{|f| [f.position, f.prioritized_name(@view).name] }
     else
-      @features = feature.current_children(perspective, @view).sort_by{|f| f.prioritized_name(@view).name}
+      @features = feature.current_children(perspective, @view).sort_by{|f| [f.position, f.prioritized_name(@view).name]}
     end
     respond_to do |format|
       format.xml
@@ -200,13 +200,13 @@ class FeaturesController < ApplicationController
     if params_id.nil?
       @features = Feature.where(:is_public => 1).sort_by do |f|
         n = f.prioritized_name(@view)
-        n.nil? ? f.pid : n.name
+        [f.position, n.nil? ? f.pid : n.name]
       end
     else
       feature = Feature.get_by_fid(params_id)
       @features = feature.descendants.sort_by do |f|
         n = f.prioritized_name(@view)
-        n.nil? ? f.pid : n.name
+        [f.position, n.nil? ? f.pid : n.name]
       end
     end
     respond_to do |format|
@@ -237,7 +237,7 @@ class FeaturesController < ApplicationController
     @perspective = params[:perspective_code].nil? ? nil : Perspective.get_by_code(params[:perspective_code])
     @perspective ||= Perspective.get_by_code(default_perspective_code)
     if params_id.nil?
-      @features = Feature.current_roots(@perspective, @view).sort_by{ |f| f.prioritized_name(@view).name }
+      @features = Feature.current_roots(@perspective, @view).sort_by{ |f| [f.position, f.prioritized_name(@view).name] }
     else
       @feature = Feature.get_by_fid(params_id)
     end
@@ -254,7 +254,7 @@ class FeaturesController < ApplicationController
     @perspective = params[:perspective_code].nil? ? nil : Perspective.get_by_code(params[:perspective_code])
     @perspective ||= Perspective.get_by_code(default_perspective_code)
     if params_id.nil?
-      @features = Feature.current_roots(@perspective, @view).sort_by{ |f| f.prioritized_name(@view).name }
+      @features = Feature.current_roots(@perspective, @view).sort_by{ |f| [f.position, f.prioritized_name(@view).name] }
     else
       @feature = Feature.get_by_fid(params_id)
     end
@@ -315,7 +315,7 @@ class FeaturesController < ApplicationController
     # @ancestors_for_current = node.closest_ancestors_by_perspective(current_perspective).collect{|a| a.id}
     @ancestors_for_current = node.current_ancestors(current_perspective).collect(&:id)
     @ancestors_for_current << node.id
-    top_level_nodes = Feature.current_roots(current_perspective, view).sort_by{ |f| f.prioritized_name(view).name }
+    top_level_nodes = Feature.current_roots(current_perspective, view).sort_by{ |f| [f.position, f.prioritized_name(view).name] }
     render :partial => 'node_tree', :locals => { :children => top_level_nodes }, :layout => false
   end
       

@@ -1,4 +1,4 @@
 <%= CSV.generate_line ['features.fid', '1.feature_names.name'] %>
 <%= render :partial => 'feature', :object => @feature %>
 <%  view = current_view %>
-<%= render :partial => 'feature', :collection => @feature.current_children(current_perspective, view).sort_by{|f| f.prioritized_name(view).name} %>
+<%= render :partial => 'feature', :collection => @feature.current_children(current_perspective, view).sort_by{|f| [f.position, f.prioritized_name(view).name] } %>

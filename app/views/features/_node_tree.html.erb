@@ -1,6 +1,6 @@
 <ul>
 <% view = current_view
-   nodes = (defined? children) ? children : node.current_children(current_perspective, view).sort_by{|f| f.prioritized_name(view).name}
+   nodes = (defined? children) ? children : node.current_children(current_perspective, view).sort_by{|f| [f.position, f.prioritized_name(view).name]}
    for child in nodes %>
      <li id="<%= "node_#{child.id}_div" %>">
 <%   if @ancestors_for_current.nil? || @ancestors_for_current.empty? || (index = @ancestors_for_current.index(child.id)).nil? %>

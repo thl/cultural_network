@@ -294,7 +294,7 @@ module FeatureExtensionForNamePositioning
     end
         
     def reset_positions(view = View.get_by_code(default_view_code))
-      # self.all.reject { |f| f.prioritized_name(view).blank? }.sort_by{|f| f.prioritized_name(view).name }.each_with_index{|f, i| f.update_attribute(:position,i+1)}
+      # self.all.reject { |f| f.prioritized_name(view).blank? }.sort_by{|f| [f.position, f.prioritized_name(view).name] }.each_with_index{|f, i| f.update_attribute(:position,i+1)}
       puts "#{Time.now}: Getting prioritized names..."
       temp = self.all.collect{ |f| [f.prioritized_name(view), f] }.reject{|a| a[0].nil?}
       temp.each{|a| a[0] = a[0].name}
