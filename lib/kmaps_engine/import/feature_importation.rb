@@ -620,5 +620,110 @@ module KmapsEngine
         end
       end    
     end
+    
+    # [i.]captions:
+    # content, author.fullname  
+    def process_captions(n)
+      captions = self.feature.captions
+      delete_captions = self.fields.delete('captions.delete')
+      captions.clear if !delete_captions.blank? && delete_captions.downcase == 'yes'
+      0.upto(n) do |i|
+        prefix = i>0 ? "#{i}.captions" : 'captions'
+        caption_content = self.fields.delete("#{prefix}.content")
+        if !caption_content.blank?
+          caption_content = "<p>#{caption_content}</p>"
+          author_name = self.fields.delete("#{prefix}.author.fullname")
+          language_str = self.fields.delete("#{prefix}.languages.code")
+          if language_str.blank?
+            puts "Language required in #{feature.fid} for caption #{caption_content}."
+            next
+          else
+            language = Language.get_by_code(language_str)
+            if language.nil?
+              puts "Language #{language_str} not found in #{feature.fid} for caption #{caption_content}."
+              next
+            end
+          end
+          if author_name.blank?
+            puts "Author required in #{feature.fid} for caption #{caption_content}."
+            next
+          else
+            author = AuthenticatedSystem::Person.find_by(fullname: author_name)
+            if author.nil?
+              puts "Author #{author_name} not found in #{feature.fid} for caption #{caption_content}."
+              next
+            end
+          end
+          conditions = {language_id: language.id, author_id: author.id}
+          attributes = {:content => caption_content}
+          caption = captions.find_by(conditions)
+          if caption.nil?
+            caption = captions.create(conditions.merge(attributes))
+          else
+            caption.update_attributes(attributes)
+          end
+          if caption.id.nil?
+            puts "Caption #{caption_content} not saved for #{feature.fid}."
+            next
+          end
+          self.spreadsheet.imports.create(:item => caption) if caption.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+        end
+      end
+    end
+    
+    # [i.]summaries:
+    # content, author.fullname  
+    def process_summaries(n)
+      summaries = self.feature.summaries
+      delete_summaries = self.fields.delete('summaries.delete')
+      summaries.clear if !delete_summaries.blank? && delete_summaries.downcase == 'yes'
+      0.upto(n) do |i|
+        prefix = i>0 ? "#{i}.summaries" : 'summaries'
+        summary_content = self.fields.delete("#{prefix}.content")
+        if !summary_content.blank?
+          summary_content = "<p>#{summary_content}</p>"
+          author_name = self.fields.delete("#{prefix}.author.fullname")
+          language_str = self.fields.delete("#{prefix}.languages.code")
+          if language_str.blank?
+            puts "Language required in #{feature.fid} for summary #{summary_content}."
+            next
+          else
+            language = Language.get_by_code(language_str)
+            if language.nil?
+              puts "Language #{language_str} not found in #{feature.fid} for summary #{summary_content}."
+              next
+            end
+          end
+          if author_name.blank?
+            puts "Author required in #{feature.fid} for summary #{summary_content}."
+            next
+          else
+            author = AuthenticatedSystem::Person.find_by(fullname: author_name)
+            if author.nil?
+              puts "Author #{author_name} not found in #{feature.fid} for summary #{summary_content}."
+              next
+            end
+          end
+          conditions = {language_id: language.id, author_id: author.id}
+          attributes = {:content => summary_content}
+          summary = summaries.find_by(conditions)
+          if summary.nil?
+            summary = summaries.create(conditions.merge(attributes))
+          else
+            summary.update_attributes(attributes)
+          end
+          if summary.id.nil?
+            puts "Summary #{summary_content} not saved for #{feature.fid}."
+            next
+          end
+          begin
+            self.spreadsheet.imports.create(:item => summary) if summary.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+          rescue
+            debugger
+          end
+        end
+      end
+    end
+    
   end
 end
