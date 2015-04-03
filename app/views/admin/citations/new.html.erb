@@ -3,6 +3,38 @@
 <%= form_for [:admin, @object] do |f| %>
 <%=   f.hidden_field :citable_id %>
 <%=   f.hidden_field :citable_type %>
+<fieldset>
+	<legend><%= ts(:for, :what => Citation.model_name.human.titleize, :whom => @object.citable) %></legend>
+	<div class="row">
+<%=   label :info_source_type, InfoSource.human_attribute_name(:info_source_type).s %>
+<%=   select_tag(:info_source_type, options_for_select([['Document or Online Resource ID from MMS application','MmsIntegration::Medium'],['Oral source', 'OralSource']], 'MmsIntegration::Medium')) %>
+	</div>
+	<div class="row mms">
+<%=   f.label(:info_source_id).s %>
+<%=   f.text_field :info_source_id, :class => :text %>
+	</div>
+	<div class="row oral">
+<%=   f.label(:info_source_id).s %>
+<%=   f.collection_select :info_source_id, OralSource.all.order(:name), :id, :name, :include_blank=> false %>
+	</div>
 <%=   render :partial => 'form_fields', :locals => {:f => f, :object => @object} %>
 <%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this' %>
+<%  end %>
+</fieldset>
+<%= javascript_on_load do %>
+  	  $(".oral").hide();
+  	  $(".oral > select")[0].disabled = true;
+      $("#info_source_type").change(function() { 
+	    if ($("#info_source_type").val()=="MmsIntegration::Medium") {
+  	      $(".oral").hide();
+  	      $(".oral > select")[0].disabled = true;
+	      $(".mms > input")[0].disabled = false;
+	      $(".mms").show();
+	    } else {
+	      $(".mms").hide();
+	      $(".oral > select")[0].disabled = false;
+	      $(".mms > input")[0].disabled = true;
+	      $(".oral").show();
+		}
+      });
 <%  end %>

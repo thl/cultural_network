@@ -1,4 +1,5 @@
-<%= tagged_tinymce_script %>
+<%= tinymce_assets %>
+<%= tinymce %>
 <%= error_messages_for model_name %>
 <fieldset>
   <legend><%= Perspective.model_name.human.titleize.s %></legend>
@@ -14,7 +15,7 @@
 <%= f.label(:description).s %>
   </div>
   <div class="row">
-<%= f.text_area :description, :rows=>4, :class => 'mceEditor' %>
+<%= f.text_area :description, :rows=>4, :class => 'tinymce' %>
   </div>
   <div class="row">
 <%= f.label(:is_public).s %>

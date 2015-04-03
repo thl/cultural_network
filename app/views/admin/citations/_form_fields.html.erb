@@ -1,10 +1,5 @@
-<%= tagged_tinymce_script %>
-<fieldset>
-	<legend><%= ts(:for, :what => Citation.model_name.human.titleize, :whom => @object.citable) %></legend>
-	<div class="row">
-		<%= f.label(:info_source_id).s %> (Document or Online Resource ID from MMS application)
-		<%= f.text_field :info_source_id, :class => :text %>
-	</div>
+<%= tinymce_assets %>
+<%= tinymce %>
 <%  if !@object.id.nil? %>
 <%    source = @object.info_source
       if !source.nil?
@@ -32,6 +27,5 @@
 <%=   f.label(:notes).s %>
 	</div>
 	<div class="row">
-<%=   f.text_area :notes, :rows=>4, :class => 'mceEditor' %>
+<%=   f.text_area :notes, :rows=>4, :class => 'tinymce' %>
 	</div>
-</fieldset>

@@ -21,7 +21,7 @@ class Citation < ActiveRecord::Base
   # Associations
   #
   #
-  # belongs_to :info_source, :class_name => 'Document'
+  belongs_to :info_source, :polymorphic => true
   belongs_to :citable, :polymorphic=>true
   has_many :pages, :dependent => :destroy
   has_many :web_pages, :dependent => :destroy
@@ -33,8 +33,9 @@ class Citation < ActiveRecord::Base
   #
   #
   
+  alias :_info_source info_source
   def info_source
-    MmsIntegration::Medium.find(self.info_source_id)
+    self.info_source_type.start_with?('MmsIntegration') ? self.info_source_type.constantize.find(self.info_source_id) : _info_source
   end
   
   def to_s

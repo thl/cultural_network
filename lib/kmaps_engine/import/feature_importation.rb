@@ -36,6 +36,7 @@ module KmapsEngine
     # .info_source.id/code, info_source.note
     # When info source is a document: .info_source[.i].volume, info_source[.i].pages
     # When info source is an online resource: .info_source[.i].path, .info_source[.i].name
+    # When info source is a oral source: .info_source.oral.fullname
 
     # Fields that accept note:
     # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j], i.feature_geo_codes[.j]
@@ -49,12 +50,21 @@ module KmapsEngine
         info_source_id = self.fields.delete("#{field_prefix}.info_source.id")
         if info_source_id.blank?
           info_source_code = self.fields.delete("#{field_prefix}.info_source.code")
-          if !info_source_code.blank?
+          if info_source_code.blank?
+            source_name = self.fields.delete("#{field_prefix}.info_source.oral.fullname")
+            if !source_name.blank?
+              info_source = OralSource.find_by_name(source_name)
+              info_source_type = 'OralSource'
+              puts "Oral source with name #{source_name} was not found." if info_source.nil?
+            end
+          else
             info_source = MmsIntegration::Document.find_by_original_medium_id(info_source_code)
+            info_source_type = 'MmsIntegration::Medium'
             puts "Info source with code #{info_source_code} was not found." if info_source.nil?
           end
         else
           info_source = MmsIntegration::Medium.find(info_source_id)
+          info_source_type = 'MmsIntegration::Medium'
           puts "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
         end              
       rescue Exception => e
@@ -63,9 +73,10 @@ module KmapsEngine
       if !info_source.nil?
         notes = self.fields.delete("#{field_prefix}.info_source.note")
         citations = citable.citations
-        citation = citations.find_by(info_source_id: info_source.id)
+        conditions = {info_source_id: info_source.id, info_source_type: info_source_type}
+        citation = citations.find_by(conditions)
         if citation.nil?
-          citation = citations.create(:info_source_id => info_source.id, :notes => notes)
+          citation = citations.create(conditions.merge(notes: notes))
           self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         else
           if !notes.nil?
@@ -75,7 +86,7 @@ module KmapsEngine
         end
         if citation.nil?
           puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
-        else
+        elsif info_source_type.start_with?('MmsIntegration')
           0.upto(2) do |j|
             prefix = j==0 ? "#{field_prefix}.info_source" : "#{field_prefix}.info_source.#{j}"
             case info_source.type

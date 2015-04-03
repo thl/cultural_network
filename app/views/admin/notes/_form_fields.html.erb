@@ -1,5 +1,6 @@
 <% @object.is_public = true if @object.new_record? %>
-<%= tagged_tinymce_script %>
+<%= tinymce_assets %>
+<%= tinymce %>
 <fieldset>
   <legend><%= ts(:for, :what => Note.model_name.human.titleize, :whom => @object.notable) %></legend>
   <div class="row">
@@ -14,7 +15,7 @@
 <%= f.label :content, Note.model_name.human.titleize.s %>
   </div>
   <div class="row">
-<%= f.text_area :content, :rows=>4, :class => 'mceEditor' %>
+<%= f.text_area :content, :rows=>4, :class => 'tinymce' %>
   </div>
   <div class="row">
 <%= f.label(:is_public).s %>

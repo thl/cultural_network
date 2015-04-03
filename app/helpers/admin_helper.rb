@@ -49,6 +49,7 @@ module AdminHelper
     resources[Language.model_name.human(:count => :many).titleize.s] = admin_languages_path if authorized? admin_languages_path
     resources[Note.model_name.human(:count => :many).titleize.s] = admin_notes_path if authorized? admin_notes_path
     resources[NoteTitle.model_name.human(:count => :many).titleize.s] = admin_note_titles_path if authorized? admin_note_titles_path
+    resources[OralSource.model_name.human(:count => :many).titleize.s] = admin_oral_sources_path if authorized? admin_oral_sources_path
     resources[OrthographicSystem.model_name.human(:count => :many).titleize.s] = admin_orthographic_systems_path if authorized? admin_orthographic_systems_path
     resources[AuthenticatedSystem::Person.model_name.human(:count => :many).titleize.s] = authenticated_system_people_path if authorized? authenticated_system_people_path
     resources[Perspective.model_name.human(:count => :many).titleize.s] = admin_perspectives_path if authorized? admin_perspectives_path

@@ -1,4 +1,5 @@
-<%= tagged_tinymce_script %>
+<%= tinymce_assets %>
+<%= tinymce %>
 <%= error_messages_for :feature_name %>
 <fieldset>
   <legend><%= ts('information.general') %></legend>
@@ -22,7 +23,7 @@
 <%= f.label(:etymology).s %>
   </div>
   <div class="row">
-<%= f.text_area :etymology, :rows=>4, :class => 'mceEditor' %>
+<%= f.text_area :etymology, :rows=>4, :class => 'tinymce' %>
   </div>
   <div class="row">
 <%= f.label(:is_primary_for_romanization).s %>

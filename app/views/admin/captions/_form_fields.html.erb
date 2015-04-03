@@ -1,4 +1,5 @@
-<%= tagged_tinymce_script %>
+<%= tinymce_assets %>
+<%= tinymce %>
 <% if object.errors.any? %>
   <div id="error_explanation">
     <h2><%= pluralize(object.errors.count, "error") %> prohibited this caption from being saved:</h2>
@@ -16,7 +17,7 @@
 </p>
 <p><b><%= f.label(:content, Caption.model_name.human.titleize.s) %></b><br/>
   <div class="row">
-<%= f.text_area :content, :rows => 3, :cols => 50, :class => 'mceEditor' %>
+<%= f.text_area :content, :rows => 3, :cols => 50, :class => 'tinymce' %>
   </div>
 </p>
 <p><b><%= f.label :author_id, ts(:author, :count => 1).titleize %></b><br/>

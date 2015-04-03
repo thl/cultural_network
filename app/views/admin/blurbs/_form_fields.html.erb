@@ -1,4 +1,5 @@
-<%= tagged_tinymce_script %>
+<%= tinymce_assets %>
+<%= tinymce %>
 <%= error_messages_for 'blurb' %>
 <fieldset>
 	<legend><%= Blurb.model_name.human.titleize.s %></legend>
@@ -14,6 +15,6 @@
 <%=   f.label(:content).s %>
 	</div>
 	<div class="row">
-<%=   f.text_area :content, :rows=>4, :class => 'mceEditor' %>
+<%=   f.text_area :content, :rows=>4, :class => 'tinymce' %>
 	</div>
 </fieldset>

@@ -11,6 +11,7 @@ class Admin::CitationsController < AclController
   create.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }
   update.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }
   destroy.wants.html { redirect_to polymorphic_url([:admin, object.citable]) }
+  create.before { object.info_source_type = params[:info_source_type] }
   
   protected
   

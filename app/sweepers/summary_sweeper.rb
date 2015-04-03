@@ -1,6 +1,7 @@
 class SummarySweeper < ActionController::Caching::Sweeper
   include Rails.application.routes.url_helpers
   include ActionController::Caching::Pages
+  include InterfaceUtils::Extensions::Sweeper
   
   observe Summary
   FORMATS = ['xml', 'json']
@@ -22,12 +23,5 @@ class SummarySweeper < ActionController::Caching::Sweeper
       expire_page summary_url(summary, options)
       expire_page summaries_url(options)
     end
-  end
-  
-  private
-  
-  # Very weird! ActionController::Caching seems to assume it is being called from controller. Adding this as hack
-  def self.perform_caching
-    Rails.configuration.action_controller.perform_caching
   end
 end

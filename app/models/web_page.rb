@@ -17,7 +17,7 @@ class WebPage < ActiveRecord::Base
   
   def web_url
     source = self.citation.info_source
-    return '' if source.nil?
+    return '' if source.nil? || !self.citation.info_source_type.start_with?('MmsIntegration')
     source.web_url
   end
   

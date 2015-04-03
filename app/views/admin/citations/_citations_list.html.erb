@@ -28,17 +28,22 @@
          <td>&nbsp;</td>
          <td>&nbsp;</td>
 <%     else
-         case info_source.type
-         when 'Document' %>
-		   <td><%= info_source.prioritized_title %></td>
-		   <td><%= item.pages.collect(&:to_s).join(', ') %></td>
-<%		 when 'OnlineResource' %>
-		   <td><%= info_source.web_url %></td>
-		   <td><%= item.web_pages.collect(&:path).join(', ') %></td>
-<%		 else %>
-           &nbsp;
-<%		 end %>
-<%     end %>
+         if item.info_source_type.start_with?('MmsIntegration')
+           case info_source.type
+	       when 'Document' %>
+		     <td><%= info_source.prioritized_title %></td>
+			 <td><%= item.pages.collect(&:to_s).join(', ') %></td>
+	<%	   when 'OnlineResource' %>
+		     <td><%= info_source.web_url %></td>
+		     <td><%= item.web_pages.collect(&:path).join(', ') %></td>
+	<%	   else %>
+	         &nbsp;
+	<%	   end
+		 else %>
+	       <td><%= info_source.name %></td>
+		   <td>&nbsp;</td>
+<%		 end
+       end %>
        </td>
        <td><%= item.notes %></td>
      </tr>

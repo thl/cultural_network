@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     end
     
     resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
-      :feature_types, :geo_code_types, :importation_tasks, :languages, :note_titles, :orthographic_systems, :perspectives,
+      :feature_types, :geo_code_types, :importation_tasks, :languages, :note_titles, :orthographic_systems, :oral_sources, :perspectives,
       :phonetic_systems, :users, :writing_systems, :xml_documents, :views
     get 'openid_new', to: 'users#openid_new'
     post 'openid_create', to: 'users#create'

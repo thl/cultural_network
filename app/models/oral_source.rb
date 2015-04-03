@@ -1,0 +1,2 @@
+class OralSource < SimpleProp
+end
