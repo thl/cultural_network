@@ -73,15 +73,13 @@ class FeatureSweeper < ActionController::Caching::Sweeper
             expire_action "#{all_feature_url(f.fid, options)}#{params}"
             expire_action "#{list_feature_url(f.fid, options)}#{params}"
           end
-          for perspective in perspectives
-            params = "?perspective_code=#{perspective.code}&view_code=#{view.code}"
-            expire_action "#{fancy_nested_features_path(options)}#{params}"
-            expire_action "#{nested_features_path(options)}#{params}"
-            expire_action "#{children_feature_url(feature.fid, options)}#{params}"
-            for f in ancestors_and_self
-              expire_action "#{fancy_nested_feature_path(f.fid, options)}#{params}"
-              expire_action "#{nested_feature_path(f.fid, options)}#{params}"
-            end
+          params = "?perspective_code=#{perspective.code}&view_code=#{view.code}"
+          expire_action "#{fancy_nested_features_path(options)}#{params}"
+          expire_action "#{nested_features_path(options)}#{params}"
+          expire_action "#{children_feature_url(feature.fid, options)}#{params}"
+          for f in ancestors_and_self
+            expire_action "#{fancy_nested_feature_path(f.fid, options)}#{params}"
+            expire_action "#{nested_feature_path(f.fid, options)}#{params}"
           end
         end
       end

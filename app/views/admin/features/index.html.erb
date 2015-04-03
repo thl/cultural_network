@@ -34,10 +34,15 @@ end %>
           </form>
 <%      else %>
 <%=       list_actions_for_item(item, :hide_edit => true) %>
-<%      end %>
+<%      end
+        perspective = current_perspective
+        parent = item.closest_parent_by_perspective(perspective) %>
         </td>
         <td style="width:60%;">
 <%=     f_label(item) %>
+<%      if !parent.nil? %>
+          (<%= f_label(item.parent) %>)
+<%      end %>
         </td>
       </tr>
 <%    end %>
