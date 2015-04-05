@@ -20,6 +20,8 @@ module KmapsEngine
     # feature_relations.delete, [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code,
     # [i.]perspectives.code/name, feature_relations.replace
     # descriptions.delete, [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname
+    # [i.]captions:
+    # content, author.fullname  
 
 
     # Fields that accept time_units:
@@ -76,7 +78,9 @@ module KmapsEngine
         conditions = {info_source_id: info_source.id, info_source_type: info_source_type}
         citation = citations.find_by(conditions)
         if citation.nil?
-          citation = citations.create(conditions.merge(notes: notes))
+          citation = citations.new(conditions.merge(notes: notes))
+          citation.info_source_type = info_source_type
+          citation.save
           self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         else
           if !notes.nil?
@@ -727,12 +731,9 @@ module KmapsEngine
             puts "Summary #{summary_content} not saved for #{feature.fid}."
             next
           end
-          begin
-            self.spreadsheet.imports.create(:item => summary) if summary.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
-          rescue
-            debugger
-          end
+          self.spreadsheet.imports.create(:item => summary) if summary.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
+        self.add_info_source(prefix, summary)
       end
     end
     
