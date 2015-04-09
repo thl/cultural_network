@@ -20,8 +20,8 @@ class CaptionSweeper < ActionController::Caching::Sweeper
     FORMATS.each do |format|
       options[:format] = format
       expire_page feature_url(feature.fid, options)
-      expire_page caption_url(caption, options)
-      expire_page captions_url(options)
+      expire_page feature_caption_url(feature.fid, caption, options)
+      expire_page feature_captions_url(feature.fid, options)
     end
   end
 end

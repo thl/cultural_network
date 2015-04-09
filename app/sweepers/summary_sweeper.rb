@@ -20,8 +20,8 @@ class SummarySweeper < ActionController::Caching::Sweeper
     FORMATS.each do |format|
       options[:format] = format
       expire_page feature_url(feature.fid, options)
-      expire_page summary_url(summary, options)
-      expire_page summaries_url(options)
+      expire_page feature_summary_url(feature.fid, summary, options)
+      expire_page feature_summaries_url(feature.fid, options)
     end
   end
 end
