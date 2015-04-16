@@ -105,7 +105,6 @@ Rails.application.routes.draw do
       get 'fids_by_name/:query.:format', to: 'features#fids_by_name', query: /.*?/
       post :set_session_variables
     end
-    get 'by_topic/:id.:format', to: 'topics#feature_descendants'
   end
   resources :descriptions, concerns: :notable_citable, only: ['show', 'index']
   resources :feature_geo_codes, concerns: :notable_citable

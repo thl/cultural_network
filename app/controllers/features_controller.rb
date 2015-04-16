@@ -268,10 +268,20 @@ class FeaturesController < ApplicationController
   end
   
   def descendants
-    @feature = Feature.find(params[:id])
-    descendants = @feature.nil? ? [] : @feature.descendants.includes(:cached_feature_names => :feature_name).references(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name')
-    descendants = descendants.paginate(:page => params[:page] || 1, :per_page => 10)
-    render :partial => 'descendants', :locals => { :descendants => descendants }
+    feature = Feature.get_by_fid(params[:id])
+    @features_with_parents = feature.descendants_with_parent
+    view_codes_str = params[:view_code]
+    view_codes = view_codes_str.blank? ? nil : view_codes_str.split(',')
+    if view_codes.empty?
+      @view = current_view
+    elsif view_codes.size == 1
+      @view = View.get_by_code(view_codes.first)
+    else
+      @view = view_codes.collect{ |v| View.get_by_code(v) }
+    end
+    respond_to do |format|
+      format.txt
+    end
   end
   
   def related

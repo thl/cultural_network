@@ -176,6 +176,24 @@ class Feature < ActiveRecord::Base
     Feature.descendants_by_perspective_with_parent([self.fid], perspective)
   end
   
+  def descendants_with_parent
+    pending = [self]
+    des = pending.collect{|f| [f, nil]}
+    des_ids = pending.collect(&:id)
+    while !pending.empty?
+      e = pending.pop
+      FeatureRelation.where(:parent_node_id => e.id).each do |r|
+        c = r.child_node
+        if !des_ids.include? c.id
+          des_ids << c.id
+          des << [c, e]
+          pending.push(c)
+        end
+      end
+    end
+    des
+  end
+  
   #
   #
   #
