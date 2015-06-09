@@ -9,10 +9,28 @@ class Admin::DescriptionsController < AclController
     super
     @guest_perms = []
   end
-
-  create.before { defaults_primary }
-
-  edit.before {@authors = AuthenticatedSystem::Person.order('fullname') }
+  
+  new_action.before do
+    used_languages = parent_object.captions.collect(&:language_id)
+    english = Language.get_by_code('eng')
+    query = Language.order('name')
+    @languages = used_languages.empty? ? query : query.where(['id NOT IN (?)', used_languages])
+    object.language = english if !used_languages.include? english.id
+  end
+  
+  edit.before do
+    @languages = Language.order('name')
+    @authors = AuthenticatedSystem::Person.order('fullname')
+  end
+  
+  create.before do
+    @languages = Language.order('name')
+    defaults_primary
+  end
+  
+  update.before do
+    @languages = Language.order('name')
+  end
   
   # renders add_author.js.erb
   def add_author

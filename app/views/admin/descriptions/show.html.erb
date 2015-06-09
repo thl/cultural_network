@@ -27,6 +27,9 @@
      <label><%= Description.human_attribute_name(:content).s %>:</label><br/><span><%= def_if_blank(@object, :content).html_safe %></span>
    </div>
    <div class="row">
+     <label><%= Language.model_name.human.s %>:</label> <span><%= def_if_blank(@object.language, :name).html_safe %></span>
+   </div>
+   <div class="row">
      <label><%= Description.human_attribute_name(:is_primary).s %></label> <span><%= yes_no @object.is_primary %></span>
    </div>
    <div class="row">

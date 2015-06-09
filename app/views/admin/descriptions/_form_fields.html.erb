@@ -24,6 +24,12 @@ input[type=text] {
   <div class="row">
 <%= f.text_area :content, :rows => 16, :cols => 65, :class => 'tinymce' %>
   </div>
+</p>
+<p><b><%= f.label :language_id, Language.model_name.human.titleize.s %></b><br/>
+  <div class="row">
+	<%= f.collection_select :language_id, @languages, :id, :to_s, :include_blank=> false %>
+  </div>
+</p>  
 <p><%= link_to ts('add.record', :what => t('new.record', :what => t(:author, :count => 1))), add_author_admin_feature_descriptions_path(@object.feature), :remote => true %></p>
 <div id="authors_div">
 <% for author in @object.authors %>
