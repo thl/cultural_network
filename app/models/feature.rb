@@ -414,7 +414,11 @@ class Feature < ActiveRecord::Base
     Feature.expire_fragment(perspectives, views, parents.collect(&:id))
     parents.each{|c| c.expire_children_cache(views, perspectives)}
   end
-      
+  
+  def update_solr
+    Flare.index!(document_for_rsolr)
+  end
+  
   private
   
   def self.name_search_options(filter_value, options = {})

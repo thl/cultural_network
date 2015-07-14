@@ -1,8 +1,8 @@
 class FeatureSweeper < ActionController::Caching::Sweeper
+  include InterfaceUtils::Extensions::Sweeper
   include Rails.application.routes.url_helpers
   include ActionController::Caching::Pages
   include ActionController::Caching::Actions
-  include InterfaceUtils::Extensions::Sweeper
   
   observe Feature, FeatureName, FeatureRelation
   FORMATS = ['xml', 'json']
@@ -25,13 +25,13 @@ class FeatureSweeper < ActionController::Caching::Sweeper
     FORMATS.each do |format|
       options[:format] = format
       if record.instance_of?(Feature)
-        expire_page feature_url(feature.fid, options)
-        expire_page related_feature_url(feature.fid, options)
+        expire_full_path_page feature_url(feature.fid, options)
+        expire_full_path_page related_feature_url(feature.fid, options)
       elsif record.instance_of?(FeatureName)
-        expire_page feature_url(feature.fid, options)
-        expire_page feature_names_url(feature.fid, options)
-        expire_page feature_name_url(feature.fid, record.id, options)
-        expire_page related_feature_url(feature.fid, options)
+        expire_full_path_page feature_url(feature.fid, options)
+        expire_full_path_page feature_names_url(feature.fid, options)
+        expire_full_path_page feature_name_url(feature.fid, record.id, options)
+        expire_full_path_page related_feature_url(feature.fid, options)
         views = CachedFeatureName.where(:feature_name_id => record.id).select('view_id').collect(&:view)
         perspectives = feature.parent_relations.joins(:perspective).where('perspectives.is_public' => true).select(:perspective_id).uniq.collect(&:perspective)
         for view in views
@@ -58,8 +58,8 @@ class FeatureSweeper < ActionController::Caching::Sweeper
           end
         end
       elsif record.instance_of?(FeatureRelation)
-        expire_page feature_url(record.parent_node.fid, options)
-        expire_page related_feature_url(record.child_node.fid, options)
+        expire_full_path_page feature_url(record.parent_node.fid, options)
+        expire_full_path_page related_feature_url(record.child_node.fid, options)
         perspective = record.perspective
         views = View.all
         params = "?perspective_code=#{perspective.code}"

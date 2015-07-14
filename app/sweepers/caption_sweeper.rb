@@ -1,7 +1,7 @@
 class CaptionSweeper < ActionController::Caching::Sweeper
+  include InterfaceUtils::Extensions::Sweeper
   include Rails.application.routes.url_helpers
   include ActionController::Caching::Pages
-  include InterfaceUtils::Extensions::Sweeper
   
   observe Caption
   FORMATS = ['xml', 'json']
@@ -19,9 +19,9 @@ class CaptionSweeper < ActionController::Caching::Sweeper
     options = {:only_path => true}
     FORMATS.each do |format|
       options[:format] = format
-      expire_page feature_url(feature.fid, options)
-      expire_page feature_caption_url(feature.fid, caption, options)
-      expire_page feature_captions_url(feature.fid, options)
+      expire_full_path_page feature_url(feature.fid, options)
+      expire_full_path_page feature_caption_url(feature.fid, caption, options)
+      expire_full_path_page feature_captions_url(feature.fid, options)
     end
   end
 end

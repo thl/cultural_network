@@ -9,6 +9,7 @@ require 'kmaps_engine/session_manager'
 require 'kmaps_engine/simple_props_controller_helper'
 require 'kmaps_engine/application_settings'
 require 'kmaps_engine/tree_cache'
+require 'flare'
 
 I18n.load_path += Dir[File.join(__dir__, '..', 'config', 'locales', '**', '*.yml')]
 
