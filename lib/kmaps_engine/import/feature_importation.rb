@@ -19,7 +19,7 @@ module KmapsEngine
     # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
     # feature_relations.delete, [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code,
     # [i.]perspectives.code/name, feature_relations.replace
-    # descriptions.delete, [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname
+    # descriptions.delete, [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname, [i.]descriptions.language.code/name
     # [i.]captions:
     # content, author.fullname  
 
@@ -610,7 +610,7 @@ module KmapsEngine
     end
 
     # [i.]descriptions:
-    # content, author.fullname  
+    # content, author.fullname, language.code/name
     def process_descriptions(n)
       descriptions = self.feature.descriptions
       delete_descriptions = self.fields.delete('descriptions.delete')
@@ -624,14 +624,23 @@ module KmapsEngine
           description_title = self.fields.delete("#{prefix}.title")
           author = author_name.blank? ? nil : AuthenticatedSystem::Person.find_by(fullname: author_name)
           description = description_title.blank? ? descriptions.find_by(content: description_content) : descriptions.find_by(title: description_title) # : descriptions.find_by(['LEFT(content, 200) = ?', description_content[0...200]])
+          language = Language.get_by_code_or_name(self.fields.delete("#{prefix}.languages.code"), self.fields.delete("#{prefix}.languages.name"))
           attributes = {:content => description_content, :title => description_title}
+          attributes[:language_id] = language.id if !language.nil?
           if description.nil?
-            description = descriptions.create(attributes)
+            if language.nil?
+              puts "Language needed to create description for feature #{self.feature.pid}."
+              description = nil
+            else
+              description = descriptions.create(attributes)
+            end
           else
             description.update_attributes(attributes)
           end
-          self.spreadsheet.imports.create(:item => description) if description.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
-          description.authors << author if !author.nil? && !description.author_ids.include?(author.id)
+          if !description.nil?
+            self.spreadsheet.imports.create(:item => description) if description.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+            description.authors << author if !author.nil? && !description.author_ids.include?(author.id)
+          end
         end
       end    
     end
