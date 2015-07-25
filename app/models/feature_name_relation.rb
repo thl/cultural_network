@@ -78,6 +78,14 @@ class FeatureNameRelation < ActiveRecord::Base
     "Unknown Relation"
   end
   
+  def relationship
+    return phonetic_system unless phonetic_system.blank?
+    return orthographic_system unless orthographic_system.blank?
+    return alt_spelling_system unless alt_spelling_system.blank?
+    return "translation" unless is_translation.blank?
+    "unknown"
+  end
+  
   def pp_display_string
     return "Transcription-#{phonetic_system.name}" unless phonetic_system.blank?
     return "Transliteration-#{orthographic_system.name}" unless orthographic_system.blank?

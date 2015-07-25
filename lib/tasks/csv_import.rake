@@ -10,7 +10,7 @@ namespace :db do
       options = {}
       options[:dry_run] = ENV['DRY_RUN'] || false
       options[:prefix] = ENV['PREFIX'] || ""
-      options[:reader_url] = ENV['READER_URL'] || "#{InterfaceUtils::Server.get_url}/global/php/book_reader.php?url="
+      options[:reader_url] = ENV['READER_URL'] || "#{InterfaceUtils::Server.get_thl_url}/global/php/book_reader.php?url="
       options[:public_url] = ENV['PUBLIC_URL'] || "" # Example: /places/monasteries/publications/chosphel-book.php#book=
       options[:full_url] = ENV['FULL_URL'] || nil
       options[:limit] = ENV['LIMIT'] || nil

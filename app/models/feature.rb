@@ -415,6 +415,10 @@ class Feature < ActiveRecord::Base
     parents.each{|c| c.expire_children_cache(views, perspectives)}
   end
   
+  def delete_from_solr
+    Flare.remove_by_id(self.solr_id)
+  end
+  
   def update_solr
     Flare.index!(document_for_rsolr)
   end

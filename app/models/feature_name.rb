@@ -101,6 +101,13 @@ class FeatureName < ActiveRecord::Base
     "#{self.name} (#{self.name_details})"
   end
   
+  def relationship_code
+    r = parent_relations.first
+    r = r.relationship if !r.nil?
+    return r if r.nil? || r.instance_of?(String)
+    r.code
+  end
+  
   def display_string
     return 'Original' if is_original?
     parent_relations.first.display_string
