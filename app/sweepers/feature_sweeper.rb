@@ -84,6 +84,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         end
       end
     end
+    feature.update_solr
   end
   
   #def after_commit(record)

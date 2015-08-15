@@ -416,11 +416,23 @@ class Feature < ActiveRecord::Base
   end
   
   def delete_from_solr
-    Flare.remove_by_id(self.solr_id)
+    begin
+      Flare.remove_by_id(self.solr_id)
+    rescue => e
+      logger.error "Solr index could not be deleted for feature #{self.fid}"
+      logger.error e.to_s
+      logger.error e.backtrace.join("\n")
+    end
   end
   
   def update_solr
-    Flare.index!(document_for_rsolr)
+    begin
+      Flare.index!(document_for_rsolr)
+    rescue => e
+      logger.error "Solr index could not be updated for feature #{self.fid}"
+      logger.error e.to_s
+      logger.error e.backtrace.join("\n")
+    end
   end
   
   private

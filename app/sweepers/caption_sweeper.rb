@@ -23,5 +23,6 @@ class CaptionSweeper < ActionController::Caching::Sweeper
       expire_full_path_page feature_caption_url(feature.fid, caption, options)
       expire_full_path_page feature_captions_url(feature.fid, options)
     end
+    feature.update_solr
   end
 end

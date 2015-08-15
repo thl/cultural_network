@@ -23,5 +23,6 @@ class SummarySweeper < ActionController::Caching::Sweeper
       expire_full_path_page feature_summary_url(feature.fid, summary, options)
       expire_full_path_page feature_summaries_url(feature.fid, options)
     end
+    feature.update_solr
   end
 end
