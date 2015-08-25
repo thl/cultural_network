@@ -186,7 +186,7 @@ class Feature < ActiveRecord::Base
         c = r.child_node
         if !des_ids.include? c.id
           des_ids << c.id
-          des << [c, e]
+          des << [c, e, r]
           pending.push(c)
         end
       end

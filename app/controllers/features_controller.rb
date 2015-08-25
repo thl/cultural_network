@@ -44,7 +44,9 @@ class FeaturesController < ApplicationController
         end
       end
       format.xml
-      format.csv
+      format.csv do
+        @features_with_parents = @feature.descendants_with_parent
+      end
       format.js
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
     end
@@ -271,7 +273,7 @@ class FeaturesController < ApplicationController
     feature = Feature.get_by_fid(params[:id])
     @features_with_parents = feature.descendants_with_parent
     view_codes_str = params[:view_code]
-    view_codes = view_codes_str.blank? ? nil : view_codes_str.split(',')
+    view_codes = view_codes_str.blank? ? [] : view_codes_str.split(',')
     if view_codes.empty?
       @view = current_view
     elsif view_codes.size == 1

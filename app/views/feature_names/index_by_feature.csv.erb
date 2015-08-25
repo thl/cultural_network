@@ -9,4 +9,4 @@
 	  rows = [header]
 	  rows << names_row(@feature, citation_count)
 	  names_matrix_cleanup(rows) %>
-<%=	  rows.collect{ |row| CSV.generate_line(row) }.join %>
+<%=	  rows.collect{ |row| CSV.generate_line(row, col_sep: "\t") }.join %>
