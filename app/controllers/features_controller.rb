@@ -1,5 +1,5 @@
 class FeaturesController < ApplicationController
-  caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? }
+  caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? || c.request.format.csv? }
   #caches_page :related
   caches_action :node_tree_expanded, :cache_path => Proc.new { |c| node_cache_path}
   caches_action :all,                :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }

@@ -84,6 +84,11 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         end
       end
     end
+    options[:format] = 'csv'
+    ancestors_and_self = feature.ancestors + [feature]
+    for f in ancestors_and_self
+      expire_full_path_page feature_url(f.fid, options)
+    end
     feature.update_solr
   end
   
