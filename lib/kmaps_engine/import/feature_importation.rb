@@ -47,7 +47,7 @@ module KmapsEngine
     # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j], i.feature_geo_codes[.j]
 
     # Note fields:
-    # .note
+    # .note, .title
 
     def add_info_source(field_prefix, citable)
       info_source = nil
@@ -147,17 +147,29 @@ module KmapsEngine
       end
     end
 
+    # Valid columns: .note, .title
     def add_note(field_prefix, notable)
       prefix = "#{field_prefix}.note"
       author_name = self.fields.delete("#{prefix}.author.fullname")
       author = author_name.blank? ? nil : AuthenticatedSystem::Person.find_by(fullname: author_name)
       note_str = self.fields.delete("#{prefix}.content")
       if !note_str.blank?
+        note_title = self.fields.delete("#{prefix}.title")
         notes = notable.notes
-        note = notes.find_by(content: note_str)
+        if !note_title.blank?
+          note = notes.find_by(custom_note_title: note_title)
+          if note.nil?
+            note = notes.find_by(content: note_str)
+            note.update_attribute(:custom_note_title, note_title) if !note.nil?
+          else
+            note.update_attribute(:content, note_str)
+          end
+        else
+          note = notes.find_by(content: note_str)
+        end
         if note.nil?
-          note = notes.create(:content => note_str)
-          self.spreadsheet.imports.create(:item => note) if note.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+          note = notes.create(content: note_str, custom_note_title: note_title)
+          self.spreadsheet.imports.create(item: note) if note.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
         note.authors << author if !note.nil? && !author.nil? && !note.author_ids.include?(author.id)
         puts "Note #{note_str} could not be added to #{notable.class_name.titleize} #{notable.id}." if note.nil?
@@ -234,7 +246,6 @@ module KmapsEngine
       name_positions_with_changed_relations = Array.new
       relations_pending_save = Array.new
       name_changed = false
-
       delete_is_primary = self.fields.delete('feature_names.is_primary.delete')
       if !delete_is_primary.blank? && delete_is_primary.downcase == 'yes'
         names.where(:is_primary_for_romanization => true).each do |name|
@@ -262,7 +273,9 @@ module KmapsEngine
           name_str = self.fields.delete("#{i}.feature_names.existing_name")
           next if name_str.blank?
           name[n] = names.find_by(name: name_str)
+          existing = true
         else
+          existing = false
           conditions = {:name => name_str}          
           begin
             language = Language.get_by_code_or_name(self.fields.delete("#{i}.languages.code"), self.fields.delete("#{i}.languages.name"))
@@ -280,34 +293,6 @@ module KmapsEngine
           rescue Exception => e
             puts e.to_s
           end
-          relationship_system_code = self.fields.delete("#{i}.feature_name_relations.relationship.code")
-          if !relationship_system_code.blank?
-            relationship_system = SimpleProp.get_by_code(relationship_system_code)
-            if relationship_system.nil?
-              puts "Phonetic or orthographic system with code #{relationship_system_code} was not found for feature #{self.feature.pid}."
-            else
-              if relationship_system.instance_of? OrthographicSystem
-                orthographic_system = relationship_system
-              elsif relationship_system.instance_of? PhoneticSystem
-                phonetic_system = relationship_system
-              elsif relationship_system.instance_of? AltSpellingSystem
-                alt_spelling_system = relationship_system
-              else
-                puts "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
-              end
-            end
-          else
-            begin
-              orthographic_system = OrthographicSystem.get_by_code_or_name(self.fields.delete("#{i}.orthographic_systems.code"), self.fields.delete("#{i}.orthographic_systems.name"))
-            rescue Exception => e
-              puts e.to_s
-            end
-            begin
-              phonetic_system = PhoneticSystem.get_by_code_or_name(self.fields.delete("#{i}.phonetic_systems.code"), self.fields.delete("#{i}.phonetic_systems.name"))
-            rescue Exception => e
-              puts e.to_s
-            end
-          end
           # if language is not specified it may be inferred.
           if language.nil?
             if phonetic_system.nil?
@@ -320,6 +305,36 @@ module KmapsEngine
           name[n] = names.find_by(conditions)
           is_primary = self.fields.delete("#{i}.feature_names.is_primary")
           conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
+        end
+        relationship_system_code = self.fields.delete("#{i}.feature_name_relations.relationship.code")
+        if !relationship_system_code.blank?
+          relationship_system = SimpleProp.get_by_code(relationship_system_code)
+          if relationship_system.nil?
+            puts "Phonetic or orthographic system with code #{relationship_system_code} was not found for feature #{self.feature.pid}."
+          else
+            if relationship_system.instance_of? OrthographicSystem
+              orthographic_system = relationship_system
+            elsif relationship_system.instance_of? PhoneticSystem
+              phonetic_system = relationship_system
+            elsif relationship_system.instance_of? AltSpellingSystem
+              alt_spelling_system = relationship_system
+            else
+              puts "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
+            end
+          end
+        else
+          begin
+            orthographic_system = OrthographicSystem.get_by_code_or_name(self.fields.delete("#{i}.orthographic_systems.code"), self.fields.delete("#{i}.orthographic_systems.name"))
+          rescue Exception => e
+            puts e.to_s
+          end
+          begin
+            phonetic_system = PhoneticSystem.get_by_code_or_name(self.fields.delete("#{i}.phonetic_systems.code"), self.fields.delete("#{i}.phonetic_systems.name"))
+          rescue Exception => e
+            puts e.to_s
+          end
+        end
+        if !existing
           relation_conditions = Hash.new
           relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
           relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
