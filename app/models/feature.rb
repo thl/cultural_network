@@ -453,19 +453,19 @@ class Feature < ActiveRecord::Base
     end
     doc.add_field('created_at', self.created_at.utc.iso8601)
     doc.add_field('updated_at', self.updated_at.utc.iso8601)
-    #name_ids = []
-    self.names.each do |name|
-    #View.all.each do |v|
-      #name = self.prioritized_name(v)
-      #if !(name.nil? || name_ids.include?(name.id))
-        #name_ids << name.id
+    name_ids = [] # comment for selected names
+    #self.names.each do |name|
+    View.all.each do |v| # comment for selected names
+      name = self.prioritized_name(v) # comment for selected names
+      if !(name.nil? || name_ids.include?(name.id)) # comment for selected names
+        name_ids << name.id # comment for selected names
         key_arr = ['name', name.language.code]
         rel_code = name.relationship_code
         key_arr << rel_code if !rel_code.nil?
         ws = name.writing_system
         key_arr << ws.code if !ws.nil?
         doc.add_field(key_arr.join('_'), name.name)
-        #end
+      end # comment for selected names
     end
     doc
   end
