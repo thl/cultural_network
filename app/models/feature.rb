@@ -428,10 +428,12 @@ class Feature < ActiveRecord::Base
   def update_solr
     begin
       Flare.index!(document_for_rsolr)
+      return true
     rescue => e
       logger.error "Solr index could not be updated for feature #{self.fid}"
       logger.error e.to_s
       logger.error e.backtrace.join("\n")
+      return false
     end
   end
   
