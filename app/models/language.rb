@@ -18,6 +18,10 @@ class Language < SimpleProp
   # Associations
   #
   #
+  has_many :captions
+  has_many :descriptions
+  has_many :feature_names
+  has_many :summaries
   
   #
   # Validation

@@ -18,6 +18,7 @@ class WritingSystem < SimpleProp
   # Associations
   #
   #
+  has_many :feature_names
   
   #
   #
