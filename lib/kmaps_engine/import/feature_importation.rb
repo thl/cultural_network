@@ -27,15 +27,15 @@ module KmapsEngine
 
 
     # Fields that accept time_units:
-    # features, i.feature_names[.j], [i.]feature_types[.j], i.kmaps[.j], [i.]kXXX[.j], i.feature_geo_codes[.j], [i.]feature_relations[.j], [i.]shapes[.j]
+    # features, i.feature_names[.j], i.feature_geo_codes[.j], [i.]feature_relations[.j]
 
     # time_units fields supported:
     # .time_units.[start.|end.]date, .time_units.[start.|end.]certainty_id, .time_units.season_id,
     # .time_units.calendar_id, .time_units.frequency_id
 
     # Fields that accept info_source:
-    # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j],
-    # [i.]feature_relations[.j], [i.]shapes[.j], [i.]summaries[.j]
+    # [i.]feature_names[.j], i.feature_geo_codes[.j]
+    # [i.]feature_relations[.j], [i.]summaries[.j]
 
     # info_source fields:
     # .info_source.id/code, info_source.note
@@ -44,7 +44,7 @@ module KmapsEngine
     # When info source is a oral source: .info_source.oral.fullname
 
     # Fields that accept note:
-    # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j], i.feature_geo_codes[.j]
+    # [i.]feature_names[.j], [i.]feature_relations[.j], i.feature_geo_codes[.j]
 
     # Note fields:
     # .note, .title
