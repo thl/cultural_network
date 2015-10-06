@@ -6,8 +6,11 @@ namespace :kmaps_engine do
       from = ENV['FROM']
       features = features.where(['fid >= ?', from.to_i]) if !from.blank?
       features.each do |f|
-        puts "#{Time.now}: Reindexing #{f.fid}."
-        f.update_solr
+        if f.update_solr
+          puts "#{Time.now}: Reindexed #{f.fid}."
+        else
+          puts "#{Time.now}: #{f.fid} failed."
+        end
       end
     end
   end
