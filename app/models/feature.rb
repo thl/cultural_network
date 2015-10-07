@@ -447,8 +447,9 @@ class Feature < ActiveRecord::Base
     doc.add_field('id', solr_id)
     name = self.prioritized_name(View.get_by_code('roman.popular'))
     doc.add_field('header', name.nil? ? self.pid : name.name)
-    self.captions.each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
-    self.summaries.each{|s| doc.add_field("summary_#{s.language.code}", s.content)}
+    unsupported_lang = Language.get_by_code('zho').id
+    self.captions.where.not(language_id: unsupported_lang).each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
+    self.summaries.where.not(language_id: unsupported_lang).each{|s| doc.add_field("summary_#{s.language.code}", s.content)}
     self.illustrations.each do |i|
       p = illustration.picture
       doc.add_field("illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url", p.url)
