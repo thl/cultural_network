@@ -42,7 +42,7 @@ module FeatureExtensionForNamePositioning
   
   def tibetan_prioritized_name(all_names = prioritized_names)
     # If a writing system =tibt or writing system =Dzongkha name is available, show it
-    HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('tibt').id) || HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('dzongkha').id)    
+    HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('tibt').id)
   end
   
   # Notice that this only includes the rules that are different from the popular view.  
