@@ -465,30 +465,27 @@ class Feature < ActiveRecord::Base
     doc.add_field('id', solr_id)
     name = self.prioritized_name(View.get_by_code('roman.popular'))
     doc.add_field('header', name.nil? ? self.pid : name.name)
-    unsupported_lang = Language.get_by_code('zho').id
-    self.captions.where.not(language_id: unsupported_lang).each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
-    self.summaries.where.not(language_id: unsupported_lang).each{|s| doc.add_field("summary_#{s.language.code}", s.content)}
-    # self.captions.each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
-    # self.summaries.each{|s| doc.add_field("summary_#{s.language.code}", s.content)}
+    self.captions.each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
+    self.summaries.each{|s| doc.add_field("summary_#{s.language.code}", s.content)}
     self.illustrations.each do |i|
       p = illustration.picture
       doc.add_field("illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url", p.url)
     end
     doc.add_field('created_at', self.created_at.utc.iso8601)
     doc.add_field('updated_at', self.updated_at.utc.iso8601)
-    name_ids = [] # comment for selected names
-    #self.names.each do |name|
-    View.all.each do |v| # comment for selected names
-      name = self.prioritized_name(v) # comment for selected names
-      if !(name.nil? || name_ids.include?(name.id)) # comment for selected names
-        name_ids << name.id # comment for selected names
+    #name_ids = []
+    self.names.each do |name|
+    #View.all.each do |v|
+      #name = self.prioritized_name(v)
+      #if !(name.nil? || name_ids.include?(name.id))
+        #name_ids << name.id
         key_arr = ['name', name.language.code]
         rel_code = name.relationship_code
         key_arr << rel_code if !rel_code.nil?
         ws = name.writing_system
         key_arr << ws.code if !ws.nil?
         doc.add_field(key_arr.join('_'), name.name)
-      end # comment for selected names
+        #end
     end
     doc
   end
