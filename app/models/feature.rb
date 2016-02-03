@@ -194,6 +194,24 @@ class Feature < ActiveRecord::Base
     des
   end
   
+  def all_descendants
+    pending = [self]
+    des = []
+    des_ids = []
+    while !pending.empty?
+      e = pending.pop
+      FeatureRelation.select('child_node_id').where(parent_node_id: e.id).each do |r|
+        c = r.child_node
+        if !des_ids.include? c.id
+          des_ids << c.id
+          des << c
+          pending.push(c)
+        end
+      end
+    end
+    des
+  end
+  
   #
   #
   #
