@@ -355,7 +355,7 @@ class Feature < ActiveRecord::Base
     names = self.names
     names_to_clones = Hash.new
     names.each do |name|
-      cloned = name.clone
+      cloned = name.dup
       cloned.feature = new_feature
       cloned.skip_update = true
       cloned.save
@@ -364,7 +364,7 @@ class Feature < ActiveRecord::Base
     relations = Array.new
     names.each { |name| name.relations.each { |relation| relations << relation if !relations.include? relation } }
     relations.each do |relation|
-      new_relation = relation.clone
+      new_relation = relation.dup
       new_relation.child_node = names_to_clones[new_relation.child_node.id]
       new_relation.parent_node = names_to_clones[new_relation.parent_node.id]
       new_relation.skip_update = true
