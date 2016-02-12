@@ -276,35 +276,6 @@ module KmapsEngine
           existing = true
         else
           existing = false
-          conditions = {:name => name_str}          
-          begin
-            language = Language.get_by_code_or_name(self.fields.delete("#{i}.languages.code"), self.fields.delete("#{i}.languages.name"))
-          rescue Exception => e
-            puts e.to_s
-          end
-          begin
-            writing_system = WritingSystem.get_by_code_or_name(self.fields.delete("#{i}.writing_systems.code"), self.fields.delete("#{i}.writing_systems.name"))
-            conditions[:writing_system_id] = writing_system.id if !writing_system.nil?
-          rescue Exception => e
-            puts e.to_s
-          end
-          begin
-            alt_spelling_system = AltSpellingSystem.get_by_code_or_name(self.fields.delete("#{i}.alt_spelling_systems.code"), self.fields.delete("#{i}.alt_spelling_systems.name"))
-          rescue Exception => e
-            puts e.to_s
-          end
-          # if language is not specified it may be inferred.
-          if language.nil?
-            if phonetic_system.nil?
-              language = Language.get_by_code('zho') if !writing_system.nil? && (writing_system.code == 'hant' || writing_system.code == 'hans')
-            else
-              language = Language.get_by_code('bod') if phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip'
-            end
-          end
-          conditions[:language_id] = language.id if !language.nil?          
-          name[n] = names.find_by(conditions)
-          is_primary = self.fields.delete("#{i}.feature_names.is_primary")
-          conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
         end
         relationship_system_code = self.fields.delete("#{i}.feature_name_relations.relationship.code")
         if !relationship_system_code.blank?
@@ -335,6 +306,37 @@ module KmapsEngine
           end
         end
         if !existing
+          conditions = {:name => name_str}
+          begin
+            language = Language.get_by_code_or_name(self.fields.delete("#{i}.languages.code"), self.fields.delete("#{i}.languages.name"))
+          rescue Exception => e
+            puts e.to_s
+          end
+          begin
+            writing_system = WritingSystem.get_by_code_or_name(self.fields.delete("#{i}.writing_systems.code"), self.fields.delete("#{i}.writing_systems.name"))
+            conditions[:writing_system_id] = writing_system.id if !writing_system.nil?
+          rescue Exception => e
+            puts e.to_s
+          end
+          begin
+            alt_spelling_system = AltSpellingSystem.get_by_code_or_name(self.fields.delete("#{i}.alt_spelling_systems.code"), self.fields.delete("#{i}.alt_spelling_systems.name"))
+          rescue Exception => e
+            puts e.to_s
+          end
+          # if language is not specified it may be inferred.
+          if language.nil?
+            if phonetic_system.nil?
+              language = Language.get_by_code('zho') if !writing_system.nil? && (writing_system.code == 'hant' || writing_system.code == 'hans')
+            else
+              language = Language.get_by_code('bod') if phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip'
+            end
+          end
+          conditions[:language_id] = language.id if !language.nil?
+          name[n] = names.find_by(conditions)
+          is_primary = self.fields.delete("#{i}.feature_names.is_primary")
+          conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
+          
+          # now deal with relationships
           relation_conditions = Hash.new
           relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
           relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
@@ -343,8 +345,10 @@ module KmapsEngine
           if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.find_by(relation_conditions).nil?
             conditions[:position] = position if !position.blank?
             name[n] = names.create(conditions.merge({:skip_update => true}))
-            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
-            name_added = true if !name_added && !name[n].id.nil?
+            if !name[n].id.nil?
+              self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+              name_added = true if !name_added
+            end
           elsif !position.blank?
             name[n].update_attribute(:position, position)
             self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
