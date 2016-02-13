@@ -763,8 +763,11 @@ module KmapsEngine
             next
           end
           self.spreadsheet.imports.create(:item => summary) if summary.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+          0.upto(4) do |j|
+            subpref = j==0 ? prefix : "#{prefix}.#{j}"
+            self.add_info_source(subpref, summary)
+          end
         end
-        self.add_info_source(prefix, summary)
       end
     end
     
