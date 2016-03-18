@@ -1,27 +1,17 @@
-<ul class="menu-main">
-	<li class="menu-commons active">
-		<a href="#">Main Menu <span class="fa arrow"></span></a>
-		<ul>
-			<li><%= login_status %></li>
-			<li><a href="#">Help</a></li>
-			<li><a href="#">Contact Us</a></li>
-		</ul>
-	</li>
-	<li class="menu-collections active">
-		<a href="#">Kmaps Collections <span class="fa arrow"></span></a>
-<%=     render 'main/collections_list' %>        
-	</li>
-	<li class="menu-preferences active">
+<ul>
+	<li><h3>Main Menu</h3><a class="link-blocker"></a></li>
+    <li><%= link_to 'Public site', root_path, {:hreflang => 'View places.'} %></li>
+	<li>
 		<a href="#">Preferences <span class="fa arrow"></span></a>
-		<ul>          
-			<!-- header -->              
-			<li class="active"><a href="#">Site Language <span class="fa plus-times"></span></a>                            
+		<ul>
+			<!-- header -->
+			<li><h3>Preferences</h3></li>
+			<li><a href="#">Site Language <span class="fa plus-times"></span></a>
 				<ul>
-<%=               render 'main/language_list' %>
-				</ul>                     
+<%=               render 'public/language_list' %>
+				</ul>
 			</li>
-			<!-- header -->    
-			<li class="bottom-trim"></li>   
 		</ul>
 	</li>
+   <li><%= login_status %></li>
 </ul>

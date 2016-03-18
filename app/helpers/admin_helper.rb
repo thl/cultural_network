@@ -30,7 +30,7 @@ module AdminHelper
     ('<span class="listActions">'+items.join(' | ')+'</span>').html_safe
   end
   
-  def resource_nav
+  def admin_resources
     resources = {'Admin Home' => admin_root_path}
     # resources['Admin Home'] = admin_root_path if authorized? admin_root_path
     resources[AltSpellingSystem.model_name.human(:count => :many).titleize.s] = admin_alt_spelling_systems_path if authorized? admin_alt_spelling_systems_path
@@ -57,9 +57,13 @@ module AdminHelper
     resources[AuthenticatedSystem::Role.model_name.human(:count => :many).titleize.s] = authenticated_system_roles_path if authorized? authenticated_system_roles_path
     resources[View.model_name.human(:count => :many).titleize.s] = admin_views_path if authorized? admin_views_path
     resources[WritingSystem.model_name.human(:count => :many).titleize.s] = admin_writing_systems_path if authorized? admin_writing_systems_path
+    resources
+  end
+  
+  def resource_nav
     path = "#{ActionController::Base.relative_url_root}/#{params[:controller]}"
     path = authenticated_system_people_path if path =~ /\/authenticated_system\/users/
-    select_tag :resources, options_for_select(resources.sort, path), :id=>:SelectNav
+    select_tag :resources, options_for_select(admin_resources.sort, path), :id=>:SelectNav
   end
   
   def resource_search_form(extra_hidden_fields={})

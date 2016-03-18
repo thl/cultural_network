@@ -20,6 +20,7 @@ module KmapsEngine
       require 'active_record/kmaps_engine/extension'
       require 'kmaps_engine/array_ext'
       require 'kmaps_engine/extensions/public_controller_dependencies'
+      require 'kmaps_engine/import/importation.rb'
       
       ActiveRecord::Base.send :include, ActiveRecord::KmapsEngine::Extension
       Array.send :include, KmapsEngine::ArrayExtension

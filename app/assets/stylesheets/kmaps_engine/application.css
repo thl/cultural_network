@@ -11,4 +11,5 @@
  *= require_self
  *= require interface_utils/application
  *= require kmaps_engine/node-tree
+ *= require kmaps_engine/main
  */

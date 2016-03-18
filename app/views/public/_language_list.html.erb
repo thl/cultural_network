@@ -1,0 +1,7 @@
+<% current_language = I18n.locale
+   language_metadata = LANGUAGES[current_language]
+   languages = I18n.available_locales
+   for language in languages
+     language_metadata = LANGUAGES[language] %>
+     <li><%= link_to(language_metadata.nil? ? language.to_s : ts(language_metadata[:title], :locale => language), change_language_session_path(language), style: language==current_language ? '' : 'font-weight: normal;') %></li>
+<% end %>

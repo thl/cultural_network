@@ -21,7 +21,7 @@ module ApplicationHelper
   def blank_label; '-'; end
   
   def breadcrumb_separator
-    "<i class=\"icon shanticon-arrow3-right\"></i>"
+    "<span class=\"icon shanticon-arrow3-right\"></span>"
   end
   
   def page_header_title
@@ -306,7 +306,7 @@ module ApplicationHelper
       else
         tab_url = tab[:url]
       end
-      title = count.nil? ? tab[:title] : "#{tab[:title]} (#{count})"
+      title = count.nil? ? tab[:title] : "#{tab[:title]} <span class=\"badge\">#{count}</span>"
       
       remove_tab ? nil : [tab_id, title, url, tab[:shanticon]]
     }.reject{|t| t.nil?}

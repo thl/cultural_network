@@ -1,3 +1,4 @@
+<li><h3><%= View.model_name.human.titleize.s %></h3></li>
 <% for view in @views %>
-     <li class="form-group"><%= label_tag("optionview_#{view.code}", radio_button(:session, :view_id, view.id, class: 'optionview') + view.name, class: 'radio-inline') %></li>
+     <li><%= link_to(view.name, change_view_session_path(view.id), style: view==current_view ? '' : 'font-weight: normal;') %></li>
 <% end %>

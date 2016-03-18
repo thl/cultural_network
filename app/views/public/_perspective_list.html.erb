@@ -1,3 +1,4 @@
+<li><h3><%= Perspective.model_name.human.titleize.s %></h3></li>
 <% for perspective in @perspectives %>
      <li><%= link_to(perspective.name, change_perspective_session_path(perspective.id), style: perspective==current_perspective ? '' : 'font-weight: normal;') %></li>
 <% end %>
