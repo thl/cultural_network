@@ -27,15 +27,15 @@ The following themes provide a look and feel for the app:
 1. interface_utils/application
 
    Adds common CSS such as:
-  
+
    * authenticated_system[http://github.com/thl/authenticated_system]
-   
+
      Styling associated with logging in, etc.
-	
+
    * complex_scripts[http://github.com/thl/complex_scripts]
-   
+
      Styling to handle Asian scripts such as Tibetan and Chinese.
-	
+
    * Rails' scaffolds
    * Bootstrap
    * Editing icons
