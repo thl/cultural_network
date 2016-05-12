@@ -8,9 +8,11 @@ we call a knowledge map.
 The apps that are fully developed based on the kmaps_engine are:
 
 1. The {Knowledge Map of Subjects}[http://github.com/shanti-uva/subjects]
+
    Code that extends the kmaps_engine specific for subjects is located at subjects_engine[http://github.com/shanti-uva/subjects_engine]
 
 2. The {Knowledge Map of Places}[http://github.com/shanti-uva/places]
+
    Code that extends the kmaps_engine specific for places is located at places_engine[http://github.com/thl/places_engine]
 
 ==Themes
@@ -26,10 +28,12 @@ The following themes provide a look and feel for the app:
 
    Adds common CSS such as:
   
-   * authenticated_system[http://github.com/thl/authenticated_system] 
+   * authenticated_system[http://github.com/thl/authenticated_system]
+   
      Styling associated with logging in, etc.
 	
    * complex_scripts[http://github.com/thl/complex_scripts]
+   
      Styling to handle Asian scripts such as Tibetan and Chinese.
 	
    * Rails' scaffolds
@@ -37,7 +41,9 @@ The following themes provide a look and feel for the app:
    * Editing icons
 
 2. kmaps_engine/node-tree
+
    CSS to handle current right-hand side navigation.
   
 3. kmaps_engine/main
+
    Based on drupal_shanti_sarvaka_kmaps[http://github.com/shanti-uva/drupal_shanti_sarvaka_kmaps]'s css/shanti-main-kmaps.css
