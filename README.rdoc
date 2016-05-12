@@ -46,4 +46,4 @@ The following themes provide a look and feel for the app:
   
 3. kmaps_engine/main
 
-   Based on drupal_shanti_sarvaka_kmaps[http://github.com/shanti-uva/drupal_shanti_sarvaka_kmaps]'s css/shanti-main-kmaps.css
+   Based on css/shanti-main-kmaps.css on drupal_shanti_sarvaka_kmaps[http://github.com/shanti-uva/drupal_shanti_sarvaka_kmaps].
