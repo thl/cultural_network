@@ -8,9 +8,11 @@ we call a knowledge map.
 The apps that are fully developed based on the kmaps_engine are:
 
 1. The {Knowledge Map of Subjects}[http://github.com/shanti-uva/subjects]
-Code that extends the kmaps_engine specific for subjects is located at subjects_engine[http://github.com/shanti-uva/subjects_engine]
 
+Code that extends the kmaps_engine specific for subjects is located at subjects_engine[http://github.com/shanti-uva/subjects_engine]
+	 
 2. The {Knowledge Map of Places}[http://github.com/shanti-uva/places]
+
 Code that extends the kmaps_engine specific for places is located at places_engine[http://github.com/thl/places_engine]
 
 ==Themes
