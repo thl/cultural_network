@@ -60,7 +60,7 @@
         </figure>
       </div>
 <%  end %>
-<aside id="accordion" class="panel-group" style="margin-top:1em; clear:both;">
+<div id="accordion" class="panel-group">
   <section class="panel panel-default">
     <div class="panel-heading">
       <h6><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapseOne" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(:count => feature.names.size).titleize.s %></a></h6>
@@ -100,4 +100,4 @@
       </div>
     </div>
   </section>
-</aside>
+</div>

@@ -13,3 +13,5 @@
  *= require kmaps_engine/node-tree
  *= require kmaps_engine/main
  */
+
+div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; }
