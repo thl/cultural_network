@@ -16,4 +16,7 @@ class AssociationNotesController < ResourceController::Base
       render :partial => 'association_notes/show'
     end
   end
+  
+  private
+  
 end

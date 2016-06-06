@@ -36,6 +36,7 @@ module AdminHelper
     resources[AltSpellingSystem.model_name.human(:count => :many).titleize.s] = admin_alt_spelling_systems_path if authorized? admin_alt_spelling_systems_path
     resources[Blurb.model_name.human(:count => :many).titleize.s] = admin_blurbs_path if authorized? admin_blurbs_path
     resources[Citation.model_name.human(:count => :many).titleize.s] = admin_citations_path if authorized? admin_citations_path
+    resources[Collection.model_name.human(:count => :many).titleize.s] = admin_collections_path if authorized? admin_collections_path
     resources[Feature.model_name.human(:count => :many).titleize.s] = admin_features_path if authorized? admin_features_path
     resources[FeatureGeoCode.model_name.human(:count => :many).titleize.s] = admin_feature_geo_codes_path if authorized? admin_feature_geo_codes_path
     resources["#{Feature.human_attribute_name(:pid).s} Generator"] = admin_feature_pids_path if authorized? admin_feature_pids_path

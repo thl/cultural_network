@@ -3,6 +3,9 @@ bo:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
         models:
+            affiliation:
+                one: 'affiliation'
+                other: 'affiliation'
             alt_spelling_system:
                 one: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན།'
                 other: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན་དག'
@@ -18,6 +21,9 @@ bo:
             citation:
                 one: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
                 other: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
+            collection:
+                one: 'collection'
+                other: 'collections'
             description:
                 one: 'རྩོམ་ཡིག'
                 other: 'རྩོམ་ཡིག'
@@ -62,6 +68,8 @@ bo:
                 other: 'འབྲི་བའི་རྒྱུད་ཁོངས་ཁག'
         # Attribute names will be titleized.
         attributes:
+            affiliation:
+                descendants: 'Include descendants?'
             blurp:
                 code: 'ཚབ་ཨང་།'
                 content: 'ནང་དོན།'

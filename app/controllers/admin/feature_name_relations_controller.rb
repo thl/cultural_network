@@ -1,4 +1,5 @@
 class Admin::FeatureNameRelationsController < AclController
+  include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   
   belongs_to :feature_name

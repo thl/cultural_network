@@ -2,7 +2,7 @@
 <%= tinymce %>
 <%= error_messages_for :feature_name %>
 <fieldset>
-  <legend><%= ts('information.general') %></legend>
+  <legend><%= ts(:for, what: t('information.general'), whom: FeatureName.model_name.human.titleize) %></legend>
   <div class="row">
 <%= f.label :name, Feature.model_name.human.titleize.s %>
 <%= f.text_field :name, :class => :text %>

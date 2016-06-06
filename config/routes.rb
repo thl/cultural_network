@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       end
     end
     
-    resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
+    resources :alt_spelling_systems, :association_notes, :blurbs, :collections, :feature_name_types, :feature_relation_types,
       :feature_types, :geo_code_types, :importation_tasks, :languages, :note_titles, :orthographic_systems, :oral_sources, :perspectives,
       :phonetic_systems, :users, :writing_systems, :xml_documents, :views
     get 'openid_new', to: 'users#openid_new'
@@ -39,6 +39,7 @@ Rails.application.routes.draw do
     resources :feature_name_relations, concerns: :citable_notable_dateable
     resources :feature_relations, concerns: :citable_notable_dateable
     resources :features do
+      resources :affiliations
       resources :citations
       resources :time_units do
         get :new_form, on: :collection

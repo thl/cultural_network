@@ -1,6 +1,8 @@
 class Admin::SummariesController < AclController
-  cache_sweeper :summary_sweeper, :only => [:update, :destroy]
+  include KmapsEngine::ResourceObjectAuthentication
   resource_controller
+  
+  cache_sweeper :summary_sweeper, :only => [:update, :destroy]
   belongs_to :feature
   
   def initialize

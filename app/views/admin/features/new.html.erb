@@ -1,5 +1,23 @@
 <%  add_breadcrumb_items features_link, ts('new.this') %>
 <%= form_for @object, :url=>collection_path do |f| %>
-<%=   render :partial=>'form_fields', :locals=>{:f=>f} %>
+<%=   render partial: 'form_fields', locals: {f: f} %>
+<%=   fields_for @name do |name_fields| %>
+<%=     render partial: 'admin/feature_names/form_fields', locals: {f: name_fields} %>
+<%    end %>
+<%=   fields_for @relation do |relation_fields| %>
+      <fieldset>
+        <legend><%= ts(:for, :what => t('relat.ion.this.one').titleize, :whom => fname_labels(@parent)) %></legend>
+<%=     relation_fields.hidden_field :parent_node_id %>
+        <div class="row">
+<%=       relation_fields.label :feature_relation_type_id, FeatureRelationType.model_name.human.titleize.s %>
+<%=       relation_fields.select :feature_relation_type_id, FeatureRelationType.order(:asymmetric_label).collect { |t| [ t.is_symmetric? ? t.label : t.asymmetric_label, t.id ] } %>
+<%=       fname_labels(@parent) %>
+        </div>
+        <div class="row">
+<%=       relation_fields.label :perspective_id, Perspective.model_name.human.titleize.s %>
+<%=       relation_fields.collection_select :perspective_id, Perspective.all, :id, :name %>
+        </div>
+      </fieldset>
+<%    end %>
 <%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this', :class=>'submit' %>
 <%  end %>

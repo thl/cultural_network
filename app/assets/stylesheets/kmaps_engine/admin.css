@@ -162,16 +162,6 @@ ID BASE STYLES
 	padding-left: 5px;
 }
 
-/* The Rails flash message (after an update for example...) */
-#flash{
-	background-color:#ffeeaa;
-	padding:.5em;
-	color:darkred;
-	border:solid 1px gray;
-	margin-bottom:.5em;
-	font-weight:bold;
-}
-
 /* For admin/features/show */ 
 #featureShow fieldset {
 	clear:both;

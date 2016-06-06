@@ -3,6 +3,9 @@ en:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
         models:
+            affiliation:
+                one: 'affiliation'
+                other: 'affiliation'
             alt_spelling_system:
                 one: 'alternative spelling system'
                 other: 'alternative spelling systems'
@@ -18,6 +21,9 @@ en:
             citation:
                 one: 'citation'
                 other: 'citations'
+            collection:
+                one: 'collection'
+                other: 'collections'
             description:
                 one: 'essay'
                 other: 'essays'
@@ -62,6 +68,8 @@ en:
                 other: 'writing systems'
         # Attribute names will be titleized.
         attributes:
+            affiliation:
+                descendants: 'Include descendants?'
             blurp:
                 code: 'Code'
                 content: 'Content'

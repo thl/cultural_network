@@ -1,4 +1,5 @@
 class Admin::FeatureNamesController < AclController
+  include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]

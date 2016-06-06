@@ -1,0 +1,24 @@
+<% add_breadcrumb_item(link_to(Collection.model_name.human(:count => :many).s, collection_path))
+   add_breadcrumb_item object %>
+<fieldset>
+  <legend>
+<%= Collection.model_name.human.titleize.s %>
+<%= edit_item_link object %>
+  </legend>
+  <div class="row">
+    <label><%= SimpleProp.human_attribute_name(:name).s %></label>
+    <span><%= def_if_blank(object, :name) %></span>
+  </div>
+  <div class="row">
+    <label><%= SimpleProp.human_attribute_name(:code).s %></label>
+    <span><%= def_if_blank object, :code %></span>
+  </div>
+  <div class="row">
+    <label><%= SimpleProp.human_attribute_name(:description).s %></label>
+    <span><%= def_if_blank(object, :description).html_safe %></span>
+  </div>
+  <div class="row">
+    <label><%= ts('associate.d.record', :what => AuthenticatedSystem::User.model_name.human(:count => :many)) %></label>
+    <span><%= object.users.collect(&:screen_name).join(', ') %></span>
+  </div>
+</fieldset>

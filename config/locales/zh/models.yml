@@ -3,6 +3,9 @@ zh:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
         models:
+            affiliation:
+                one: 'affiliation'
+                other: 'affiliation'
             alt_spelling_system:
                 one: '其它拼写方式'
                 other: '其它拼写方式'
@@ -18,6 +21,9 @@ zh:
             citation:
                 one: '引用'
                 other: '引用'
+            collection:
+                one: 'collection'
+                other: 'collections'
             description:
                 one: '文章'
                 other: '文章'
@@ -62,6 +68,8 @@ zh:
                 other: '书写系统'
         # Attribute names will be titleized.
         attributes:
+            affiliation:
+                descendants: 'Include descendants?'
             blurp:
                 code: '代码'
                 content: '内容'

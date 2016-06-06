@@ -1,6 +1,8 @@
 class Admin::CaptionsController < AclController
-  cache_sweeper :caption_sweeper, :only => [:update, :destroy]
+  include KmapsEngine::ResourceObjectAuthentication
   resource_controller
+  
+  cache_sweeper :caption_sweeper, :only => [:update, :destroy]
   belongs_to :feature
   
   def initialize

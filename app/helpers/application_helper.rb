@@ -441,4 +441,8 @@ module ApplicationHelper
   def documents_url(feature)
     documents_associated_medium_path(feature.fid)
   end
+  
+  def object_authorized?(o)
+    current_user.object_authorized?(o)
+  end
 end

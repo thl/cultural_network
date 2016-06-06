@@ -1,4 +1,4 @@
-<% header_options = {class: 'html not-front logged-in no-sidebars page-subjects kmaps', javascript_files: ['kmaps_engine/admin'], stylesheet_files: ['kmaps_engine/admin']}
+<% header_options = {class: 'html not-front logged-in no-sidebars page-subjects kmaps rails', javascript_files: ['kmaps_engine/admin'], stylesheet_files: ['kmaps_engine/admin']}
    header_options[:title] = "#{model_name.classify.constantize.model_name.human.titleize}: #{controller.action_name.humanize}" if defined?(model_name) && !model_name.blank? %>
 <%= header(header_options) %>
 <!-- Banner Region -->
@@ -23,14 +23,12 @@
             <div class="right"><%= resource_nav %></div>
 			<!-- Begin Page Content -->
 			<section class="content-section">
-				<button type="button" class="btn btn-default view-resources" data-toggle="offcanvas" style="display:none;">
-					<span class="icon"></span>
-				</button>
 	          	<!-- Message Area -->
 	          	<!-- Main Content -->
 				<div class="region region-content">
 					<div id="block-system-main" class="block block-system">
 						<div class="content">
+<%=                       render 'public/flash' %>
 <%=                       yield %>
 						</div>
 					</div>

@@ -23,7 +23,7 @@ class Feature < ActiveRecord::Base
   
   validates_presence_of :fid
   validates_uniqueness_of :fid
-  validates_numericality_of :position, :allow_nil=>true
+  validates_numericality_of :position, allow_nil: true
   
   after_destroy do |record|
     if !record.skip_update
@@ -33,29 +33,30 @@ class Feature < ActiveRecord::Base
   
   @@associated_models = [FeatureName, FeatureGeoCode, XmlDocument]
   
-  # acts_as_solr :fields=>[:pid]
+  # acts_as_solr fields: [:pid]
   
-  acts_as_family_tree :node, -> { where(:feature_relation_type_id => FeatureRelationType.hierarchy_ids).uniq }, :tree_class => 'FeatureRelation'
+  acts_as_family_tree :node, -> { where(feature_relation_type_id: FeatureRelationType.hierarchy_ids).uniq }, tree_class: 'FeatureRelation'
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
-  has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id', :dependent => :destroy
-  has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id', :dependent => :destroy
-  has_many :association_notes, :foreign_key => "notable_id", :dependent => :destroy
-  has_many :cached_feature_names, :dependent => :destroy
-  has_many :cached_feature_relation_categories, :dependent => :destroy
-  has_many :captions, :dependent => :destroy
-  has_many :citations, :as => :citable, :dependent => :destroy
-  has_many :descriptions, :dependent => :destroy
-  has_many :geo_codes, :class_name => 'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
-  has_many :geo_code_types, :through => :geo_codes
-  has_many :illustrations, :dependent => :destroy
-  has_one  :illustration, -> { where(:is_primary => true) }
-  has_many :imports, :as => 'item', :dependent => :destroy
-  has_many :summaries, :dependent => :destroy
-  has_one  :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
+  has_many :affiliations, dependent: :destroy
+  has_many :all_child_relations, class_name: 'FeatureRelation', foreign_key: 'parent_node_id', dependent: :destroy
+  has_many :all_parent_relations, class_name: 'FeatureRelation', foreign_key: 'child_node_id', dependent: :destroy
+  has_many :association_notes, foreign_key: "notable_id", dependent: :destroy
+  has_many :cached_feature_names, dependent: :destroy
+  has_many :captions, dependent: :destroy
+  has_many :collections, through: :affiliations
+  has_many :citations, as: :citable, dependent: :destroy
+  has_many :descriptions, dependent: :destroy
+  has_many :geo_codes, class_name: 'FeatureGeoCode', dependent: :destroy # naming inconsistency here (see feature_object_types association) ?
+  has_many :geo_code_types, through: :geo_codes
+  has_many :illustrations, dependent: :destroy
+  has_one  :illustration, -> { where(is_primary: true) }
+  has_many :imports, as: 'item', dependent: :destroy
+  has_many :summaries, dependent: :destroy
+  has_one  :xml_document, class_name: 'XmlDocument', dependent: :destroy
   
   # This fetches root *FeatureNames* (names that don't have parents),
   # within the scope of the current feature
-  has_many :names, :class_name=>'FeatureName', :dependent => :destroy do
+  has_many :names, class_name: 'FeatureName', dependent: :destroy do
     #
     #
     #
@@ -66,12 +67,18 @@ class Feature < ActiveRecord::Base
     end
   end
   
+  attr_accessible :names_attributes
+  attr_accessible :all_parent_relations_attributes
+  
+  accepts_nested_attributes_for :names
+  accepts_nested_attributes_for :all_parent_relations
+  
   def self.associated_models
     @@associated_models
   end
     
   def closest_parent_by_perspective(perspective)
-    feature_id = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", :expires_in => 1.day) do
+    feature_id = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
       parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
       break parent_relation.parent_node.id if !parent_relation.nil?
       parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id).select('parent_node_id').order('created_at').first
@@ -84,7 +91,7 @@ class Feature < ActiveRecord::Base
   end
   
   def closest_hierarchical_feature_id_by_perspective(perspective)
-    Rails.cache.fetch("features/#{self.fid}/closest_hierarchical_feature_by_perspective/#{perspective.id}", :expires_in => 1.day) do
+    Rails.cache.fetch("features/#{self.fid}/closest_hierarchical_feature_by_perspective/#{perspective.id}", expires_in: 1.day) do
       ancestor_ids = self.closest_ancestors_by_perspective(perspective).collect(&:id)
       root_ids = Feature.current_roots_by_perspective(perspective).collect(&:id)
       parent_id = (root_ids & ancestor_ids).first
@@ -101,7 +108,7 @@ class Feature < ActiveRecord::Base
   end
   
   def closest_ancestors_by_perspective(perspective)
-    feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_ancestors_by_perspective/#{perspective.id}", :expires_in => 1.day) do
+    feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_ancestors_by_perspective/#{perspective.id}", expires_in: 1.day) do
       current = self
       stack = []
       begin
@@ -117,9 +124,9 @@ class Feature < ActiveRecord::Base
   #
   #
   def self.current_roots(current_perspective, current_view)
-    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", :expires_in => 1.day) do
-      joins(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').roots.find_all do |r|
-#      self.includes(:cached_feature_names => :feature_name).references(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').scoping do
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", expires_in: 1.day) do
+      joins(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').roots.find_all do |r|
+#      self.includes(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').scoping do
  #       roots.find_all do |r|
           # if ANY of the child relations are current, return true to nab this Feature
         r.child_relations.any? {|cr| cr.perspective==current_perspective }
@@ -130,7 +137,7 @@ class Feature < ActiveRecord::Base
   end
 
   def self.current_roots_by_perspective(current_perspective)
-    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.day) do
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", expires_in: 1.day) do
       self.where('features.is_blank' => false).scoping do
         self.roots.select do |r|
           # if ANY of the child relations are current, return true to nab this Feature
@@ -145,7 +152,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_children(current_perspective, current_view)
-    return children.includes([{:cached_feature_names => :feature_name}, :parent_relations]).references([{:cached_feature_names => :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
+    return children.includes([{cached_feature_names: :feature_name}, :parent_relations]).references([{cached_feature_names: :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(include: [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -155,7 +162,7 @@ class Feature < ActiveRecord::Base
     pending = fids.collect{|fid| Feature.get_by_fid(fid)}
     des = pending.collect{|f| [f, nil]}
     des_ids = pending.collect(&:id)
-    conditions = {:perspective_id => perspective.id}
+    conditions = {perspective_id: perspective.id}
     conditions[:feature_relation_type_id] = FeatureRelationType.hierarchy_ids if options[:only_hierarchical]
     while !pending.empty?
       e = pending.pop
@@ -182,7 +189,7 @@ class Feature < ActiveRecord::Base
     des_ids = pending.collect(&:id)
     while !pending.empty?
       e = pending.pop
-      FeatureRelation.where(:parent_node_id => e.id).each do |r|
+      FeatureRelation.where(parent_node_id: e.id).each do |r|
         c = r.child_node
         if !des_ids.include? c.id
           des_ids << c.id
@@ -223,7 +230,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_parents(current_perspective, current_view)
-    return parents.includes(:cached_feature_names => :feature_name).references(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # parents(:include => [:names, :child_relations])
+    return parents.includes(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # parents(include: [:names, :child_relations])
       c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -355,7 +362,7 @@ class Feature < ActiveRecord::Base
   end
   
   def self.get_by_fid(fid)
-    feature_id = Rails.cache.fetch("features-fid/#{fid}", :expires_in => 1.day) do
+    feature_id = Rails.cache.fetch("features-fid/#{fid}", expires_in: 1.day) do
       feature = self.find_by(fid: fid)
       feature.nil? ? nil : feature.id
     end
@@ -363,13 +370,13 @@ class Feature < ActiveRecord::Base
   end
     
   def association_notes_for(association_type, options={})
-    conditions = {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type, :is_public => true}
+    conditions = {notable_type: self.class.name, notable_id: self.id, association_type: association_type, is_public: true}
     conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
     AssociationNote.where(conditions)
   end
     
   def clone_with_names
-    new_feature = Feature.create(:fid => Feature.generate_pid, :is_blank => false, :is_public => true, :skip_update => true)
+    new_feature = Feature.create(fid: Feature.generate_pid, is_blank: false, is_public: true, skip_update: true)
     names = self.names
     names_to_clones = Hash.new
     names.each do |name|
@@ -418,16 +425,16 @@ class Feature < ActiveRecord::Base
   def expire_children_cache(views, perspectives)
     # Avoiding "regular expression too big" error by slicing node up
     return if views.blank? || perspectives.blank?
-    children = self.child_relations.where(:perspective_id => perspectives).select(:child_node_id).uniq.collect(&:child_node)
+    children = self.child_relations.where(perspective_id: perspectives).select(:child_node_id).uniq.collect(&:child_node)
     return if children.empty?
     Feature.expire_fragment(perspectives, views, children.collect(&:id))
     children.each{|c| c.expire_children_cache(views, perspectives)}
   end
   
   def expire_tree_cache(options = {})
-    views = options[:views] || Rails.cache.fetch("views/all", :expires_in => 1.day) { View.all.collect(&:id) }
-    perspectives = options[:perspectives] || Rails.cache.fetch("perspectives/all-public", :expires_in => 1.day) { Perspective.find_all_public.collect(&:id) }
-    parents = !options[:include_parents].nil? && !options[:include_parents] ? nil : self.parent_relations.where(:perspective_id => perspectives).select(:parent_node_id).uniq.collect(&:parent_node)
+    views = options[:views] || Rails.cache.fetch("views/all", expires_in: 1.day) { View.all.collect(&:id) }
+    perspectives = options[:perspectives] || Rails.cache.fetch("perspectives/all-public", expires_in: 1.day) { Perspective.find_all_public.collect(&:id) }
+    parents = !options[:include_parents].nil? && !options[:include_parents] ? nil : self.parent_relations.where(perspective_id: perspectives).select(:parent_node_id).uniq.collect(&:parent_node)
     parents = [self] if parents.blank?
     Feature.expire_fragment(perspectives, views, parents.collect(&:id))
     parents.each{|c| c.expire_children_cache(views, perspectives)}
@@ -453,6 +460,18 @@ class Feature < ActiveRecord::Base
       logger.error e.backtrace.join("\n")
       return false
     end
+  end
+  
+  def affiliations_by_user(user, options = {})
+    Affiliation.where(options.merge(feature_id: self.id, collection_id: user.collections.collect(&:id)))
+  end
+  
+  def authorized?(user, options = {})
+    !affiliations_by_user(user, options).empty?
+  end
+  
+  def authorized_for_descendants?(user)
+    !affiliations_by_user(user, descendants: true).empty?
   end
   
   private

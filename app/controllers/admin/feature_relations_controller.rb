@@ -1,4 +1,5 @@
 class Admin::FeatureRelationsController < AclController
+  include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   
   belongs_to :feature
@@ -31,6 +32,8 @@ class Admin::FeatureRelationsController < AclController
       end
     end
   end
+  
+  new_action.wants.html { redirect_if_unauthorized }
   
   private
   

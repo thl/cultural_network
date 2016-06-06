@@ -1,6 +1,8 @@
 class Admin::FeatureGeoCodesController < AclController
-  cache_sweeper :feature_geo_code_sweeper, :only => [:create, :update, :destroy]
+  include KmapsEngine::ResourceObjectAuthentication
   resource_controller
+
+  cache_sweeper :feature_geo_code_sweeper, :only => [:create, :update, :destroy]
   belongs_to :feature
   
   def initialize
