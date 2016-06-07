@@ -9,9 +9,20 @@ class Admin::FeatureRelationsController < AclController
     @guest_perms = []
   end
   
-  new_action.before {|c| c.send :setup_for_new_relation}
+  new_action.before do |c|
+    c.send :setup_for_new_relation
+    get_perspectives
+  end
+  
+  edit.before do
+    get_perspectives
+  end
+  
   #create.before :process_feature_relation_type_id_mark
-  update.before :process_feature_relation_type_id_mark
+  update.before do
+    process_feature_relation_type_id_mark
+    get_perspectives
+  end
 
   #
   # The create.before wasn't being called (couldn't figure out why not; update.before works
@@ -27,6 +38,7 @@ class Admin::FeatureRelationsController < AclController
         format.html { redirect_to(polymorphic_url [:admin, parent_object, object]) }
         format.xml  { render :xml => @object, :status => :created, :location => @object }
       else
+        get_perspectives
         format.html { render :action => "new" }
         format.xml  { render :xml => @object.errors, :status => :unprocessable_entity }
       end
@@ -74,4 +86,8 @@ class Admin::FeatureRelationsController < AclController
     params[:feature_relation][:feature_relation_type_id] = params[:feature_relation][:feature_relation_type_id].gsub(/^_/, '')
   end
   
+  def get_perspectives
+    @perspectives = parent_object.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
+    @perspectives = Perspective.order(:name) if current_user.admin? || @perspectives.include?(nil)
+  end
 end
