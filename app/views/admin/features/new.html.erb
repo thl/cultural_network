@@ -15,7 +15,7 @@
         </div>
         <div class="row">
 <%=       relation_fields.label :perspective_id, Perspective.model_name.human.titleize.s %>
-<%=       relation_fields.collection_select :perspective_id, Perspective.all, :id, :name %>
+<%=       relation_fields.collection_select :perspective_id, @perspectives, :id, :name %>
         </div>
       </fieldset>
 <%    end %>
