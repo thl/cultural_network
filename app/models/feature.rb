@@ -440,28 +440,6 @@ class Feature < ActiveRecord::Base
     parents.each{|c| c.expire_children_cache(views, perspectives)}
   end
   
-  def delete_from_solr
-    begin
-      Flare.remove_by_id(self.solr_id)
-    rescue => e
-      logger.error "Solr index could not be deleted for feature #{self.fid}"
-      logger.error e.to_s
-      logger.error e.backtrace.join("\n")
-    end
-  end
-  
-  def update_solr
-    begin
-      Flare.index!(document_for_rsolr)
-      return true
-    rescue => e
-      logger.error "Solr index could not be updated for feature #{self.fid}"
-      logger.error e.to_s
-      logger.error e.backtrace.join("\n")
-      return false
-    end
-  end
-  
   def affiliations_by_user(user, options = {})
     Affiliation.where(options.merge(feature_id: self.id, collection_id: user.collections.collect(&:id)))
   end
@@ -472,6 +450,39 @@ class Feature < ActiveRecord::Base
   
   def authorized_for_descendants?(user)
     !affiliations_by_user(user, descendants: true).empty?
+  end
+  
+  def delete_from_solr
+    begin
+      Flare.delete(self.solr_id)
+    rescue => e
+      logger.error "Solr index could not be deleted for feature #{self.fid}"
+      logger.error e.to_s
+      logger.error e.backtrace.join("\n")
+    end
+  end
+  
+  def delete_from_solr!
+    delete_from_solr
+    Flare.commit
+  end
+  
+  def update_solr
+    begin
+      Flare.index(document_for_rsolr)
+      return true
+    rescue => e
+      logger.error "Solr index could not be updated for feature #{self.fid}"
+      logger.error e.to_s
+      logger.error e.backtrace.join("\n")
+      return false
+    end
+  end
+  
+  def update_solr!
+    resp = update_solr
+    Flare.commit if resp
+    resp
   end
   
   private
