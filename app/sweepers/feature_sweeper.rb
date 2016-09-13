@@ -18,7 +18,9 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   def expire_cache(record)
     if record.instance_of? Feature
       feature = record
-    elsif record.instance_of? FeatureName
+    elsif record.instance_of?(FeatureRelation)
+      feature = record.child_node
+    else #if record.instance_of? FeatureName
       feature = record.feature
     end
     options = {:only_path => true}
@@ -89,7 +91,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
     for f in ancestors_and_self
       expire_full_path_page feature_url(f.fid, options)
     end
-    feature.update_solr
+    feature.update_solr!
   end
   
   #def after_commit(record)
