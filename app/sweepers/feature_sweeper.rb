@@ -18,6 +18,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   def expire_cache(record)
     if record.instance_of? Feature
       feature = record
+      return if feature.ancestor_ids_changed?
     elsif record.instance_of?(FeatureRelation)
       feature = record.child_node
     else #if record.instance_of? FeatureName
@@ -61,10 +62,12 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         end
       elsif record.instance_of?(FeatureRelation)
         expire_full_path_page feature_url(record.parent_node.fid, options)
-        expire_full_path_page related_feature_url(record.child_node.fid, options)
+        child_node = record.child_node
+        expire_full_path_page related_feature_url(child_node.fid, options)
         perspective = record.perspective
         views = View.all
         params = "?perspective_code=#{perspective.code}"
+        child_node.update_solr
         feature = record.parent_node
         for view in views
           params1 = "?view_code=#{view.code}"

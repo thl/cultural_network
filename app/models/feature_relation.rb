@@ -28,15 +28,17 @@ class FeatureRelation < ActiveRecord::Base
   
   before_update do |record|
     if !record.skip_update
-      perspective_ids = record.perspective_id_changed? ? [record.perspective_id, record.perspective_id_was] : [record.perspective_id]
-      perspective_ids = perspective_ids.collect{|p_id| Perspective.find(p_id)}.select(&:is_public?).collect(&:id)
-      if record.parent_node_id_changed?
-        [record.parent_node_id, record.parent_node_id_was].each do |f_id|
-          f = Feature.find(f_id)
-          f.expire_tree_cache(:perspectives => perspective_ids, :include_parents => false)
+      Spawnling.new do
+        perspective_ids = record.perspective_id_changed? ? [record.perspective_id, record.perspective_id_was] : [record.perspective_id]
+        perspective_ids = perspective_ids.collect{|p_id| Perspective.find(p_id)}.select(&:is_public?).collect(&:id)
+        if record.parent_node_id_changed?
+          [record.parent_node_id, record.parent_node_id_was].each do |f_id|
+            f = Feature.find(f_id)
+            f.expire_tree_cache(:perspectives => perspective_ids, :include_parents => false)
+          end
+        elsif record.child_node_id_changed? || record.perspective_id_changed? || record.feature_relation_type_id?
+          record.parent_node.expire_tree_cache(:perspectives => perspective_ids, :include_parents => false)
         end
-      elsif record.child_node_id_changed? || record.perspective_id_changed? || record.feature_relation_type_id?
-        record.parent_node.expire_tree_cache(:perspectives => perspective_ids, :include_parents => false)
       end
     end
   end

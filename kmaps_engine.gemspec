@@ -37,10 +37,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'will_paginate' #, '~> 3.0'
 
   s.add_dependency 'memcache-client'
-  s.add_dependency 'newrelic_rpm'
   s.add_dependency 'exception_notification'
   s.add_dependency 'annotate'
   #gem 'system_timer'
   #gem 'cached_resource'
-  s.add_dependency 'spawnling'
 end
