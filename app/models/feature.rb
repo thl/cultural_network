@@ -76,6 +76,14 @@ class Feature < ActiveRecord::Base
   def self.associated_models
     @@associated_models
   end
+  
+  def parent_by_perspective(perspective)
+    feature_id = Rails.cache.fetch("features/#{self.fid}/parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
+      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
+      parent_relation.nil? ? nil : parent_relation.parent_node.id
+    end
+    feature_id.nil? ? nil : Feature.find(feature_id)
+  end
     
   def closest_parent_by_perspective(perspective)
     feature_id = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
@@ -105,6 +113,21 @@ class Feature < ActiveRecord::Base
       end
       parent_id
     end
+  end
+
+  def ancestors_by_perspective(perspective)
+    feature_ids = Rails.cache.fetch("features/#{self.fid}/ancestors_by_perspective/#{perspective.id}", expires_in: 1.day) do
+      current = self
+      stack = []
+      roots = Feature.current_roots_by_perspective(perspective)
+      begin
+        stack.push(current)
+        current = current.parent_by_perspective(perspective)
+      end while !current.nil? && !stack.include?(current)
+      ids = stack.reverse.collect(&:id)
+      roots.collect(&:id).include?(ids.first) ? ids : []
+    end
+    feature_ids.collect{|fid| Feature.find(fid)}
   end
   
   def closest_ancestors_by_perspective(perspective)
@@ -425,6 +448,7 @@ class Feature < ActiveRecord::Base
   def expire_children_cache(views, perspectives)
     # Avoiding "regular expression too big" error by slicing node up
     return if views.blank? || perspectives.blank?
+    self.update_solr
     children = self.child_relations.where(perspective_id: perspectives).select(:child_node_id).uniq.collect(&:child_node)
     return if children.empty?
     Feature.expire_fragment(perspectives, views, children.collect(&:id))
@@ -438,6 +462,7 @@ class Feature < ActiveRecord::Base
     parents = [self] if parents.blank?
     Feature.expire_fragment(perspectives, views, parents.collect(&:id))
     parents.each{|c| c.expire_children_cache(views, perspectives)}
+    Flare.commit
   end
   
   def affiliations_by_user(user, options = {})

@@ -67,7 +67,6 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         perspective = record.perspective
         views = View.all
         params = "?perspective_code=#{perspective.code}"
-        child_node.update_solr
         feature = record.parent_node
         for view in views
           params1 = "?view_code=#{view.code}"
@@ -94,7 +93,6 @@ class FeatureSweeper < ActionController::Caching::Sweeper
     for f in ancestors_and_self
       expire_full_path_page feature_url(f.fid, options)
     end
-    feature.update_solr!
   end
   
   #def after_commit(record)
