@@ -11,4 +11,5 @@ xml.description do
     authors = description.authors
     xml << render(:partial => 'authenticated_system/people/show.xml.builder', :collection => authors, :as => 'person') if !authors.empty?
   end
+  xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: description.time_units})
 end

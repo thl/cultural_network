@@ -9,6 +9,7 @@ xml.name do
   else
     xml.writing_system(name: w.name, code: w.code)
   end
+  xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: name.time_units})
   parent_relation = name.parent_relations.first
   if parent_relation.nil?
     xml.relationship(name: 'Original', code: nil, type: nil)

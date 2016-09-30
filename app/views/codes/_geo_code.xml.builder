@@ -9,4 +9,5 @@ xml.feature_geo_code do
     xml.name(code_type.name)
     xml.code(code_type.code)
   end if !code_type.nil?
+  xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: geo_code.time_units})
 end
