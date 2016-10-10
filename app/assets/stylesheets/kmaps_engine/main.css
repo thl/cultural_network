@@ -1,15 +1,15 @@
 /**
-* version 1.x - Mandala KMAPS Places-Subjects Development
+* Mandala KMAPS Places-Subjects - Development
 * 
-* shanti-main-kmaps.css
-* -------------------------------------------------------------------
-* University of Virginia / SHANTI MANDALA / Audio-Video
-* -------------------------------------------------------------------
+* version 1.x - shanti-main-kmaps.css
+* -------------------------------------------------
+* University of Virginia / SHANTI MANDALA / KMAPS
+* -------------------------------------------------
 * 
 */
 
 /**
-* PLACES Subtheme Colors 
+* BEGIN (Places) colors 
 */
 .page-places .titlearea,
 .page-places .carousel-control,
@@ -53,33 +53,47 @@
   color: #418ed7 !important;
 }
 
+.page-places .kmaps-tt-menu .kmaps-tt-suggestion:hover::before{ 
+    border-color: #418ed7 !important; /* set subtheme color */
+    background: #418ed7 !important;
+}
+
 .page-places #sidebar-first .nav-pills li.active {
   border-color: #418ed7 !important;
 }
 
-.page-places .view-section .nav-tabs>li.active,
+.page-places .view-section .nav-tabs>li.active>a,
 .page-places .nav-tabs.nav-justified>li.active{
-  border-top-color: #4ca6fb !important;
+  /*border-top-color: #4ca6fb !important;*/
+  border-top-color: #418ed7 !important;
 }
 
-.page-places ::-moz-selection {
-  background: #fb8c4c !important;
+.page-places .kmaps-tt-menu .kmaps-tt-suggestion:hover::before,
+.page-places .kmaps-tt-menu .kmaps-tt-suggestion.kmaps-tt-cursor::before{
+    border-color: #418ed7;
+    background-color: #418ed7;
 }
 
-.page-places ::selection{
-  background: #fb8c4c !important;
+.page-places .texts-list li:hover::before{
+  background: #418ed7 !important;
 }
 
 @media screen and (min-width: 768px) {
 
   .nav-tabs.nav-justified>li.active::before{  
-    color: #4ca6fb !important;
+    /*color: #4ca6fb !important;*/
+    color: #418ed7 !important;
   }
 }
 
+.page-places ::-moz-selection {background: #fb8c4c !important;}
+.page-places ::selection{background: #fb8c4c !important;}
+
+
+
 
 /**
-* SUBJECTS Subtheme Colors 
+* BEGIN (Subjects) colors 
 */
 .page-subjects .titlearea,
 .page-subjects .carousel-control,
@@ -124,22 +138,16 @@
   border-color: #dc3c47 !important;
 }
 
-.page-subjects .view-section .nav-tabs>li.active,
+.page-subjects .view-section .nav-tabs>li.active>a, 
+/*.page-subjects .view-section .nav-tabs>li.active>a:hover, 
+.page-subjects .view-section .nav-tabs>li.active>a:active,
+.page-places .view-section .nav-tabs>li.active,*/
 .page-subjects .nav-tabs.nav-justified>li.active{
   border-top-color: #dc3c47 !important;
 }
 
-.page-subjects ::-moz-selection {
-  background: #47dc3c!important;
-}
-
-.page-subjects ::selection {
-  background: #47dc3c !important;
-}
-
-.page-places .navbar-brand:active .site-slogan,
-.page-subjects .navbar-brand:active .site-slogan {
-  color: #444 !important;
+.page-subjects .texts-list li:hover::before{
+  background: #dc3c47 !important;
 }
 
 @media screen and (min-width: 768px) {
@@ -148,24 +156,58 @@
     color: #dc3c47 !important;
   }
 }
-/* ------------------
-* END colors 
-*/
+
+.page-subjects ::-moz-selection { background: #47dc3c!important;}
+.page-subjects ::selection { background: #47dc3c !important;}
+
+.page-places .navbar-brand:active .site-slogan,
+.page-subjects .navbar-brand:active .site-slogan {
+  color: #444 !important;
+}
+
+/** 
+  * ------------------
+  * END colors 
+  * ------------------
+  */
 
 
 
 
-/* this rmeoves the 2nd breadcrumb  (Earth) */
+/* hide mobile button on homepage */
+.front .btn.btn-default.view-offcanvas-sidebar{ display:none !important; }
+
+/* this removes the 2nd breadcrumb  (text: Earth) */
 .kmaps.page-places .breadcrumb li:nth-of-type(2){ display:none !important;}
 
-.breadcrumb li:last-child{ 
-  top: -0.05rem;
-  font-size: 1.25em;
-}
+/* space between Map and accordions on Overview section */
+.panel-group{ margin: 20px 0 150px; }
+
+.tab-content.container-fluid,
+.no-sidebars article.main-col{ padding-bottom:0; }
+
+
+
 /*
-.thumbnail{
-  padding:0;
-  border-radius:0;
-  border:none;
+* gallery images
+*/
+.og-details .tab-pane {
+  padding: 1rem 0 0;
 }
+.og-details h3{
+  margin: 0.5em 0;
+}
+.og-details #info li,
+.og-details #download li{
+   margin: 1rem 0 0;
+}
+
+article table.pagerer:last-child{
+  margin: 2rem 0 7rem;
+}
+
+/**
+* 
+* END - KMAPS/css/shanti-main-kmaps.css
+*
 */
