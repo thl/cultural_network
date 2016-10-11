@@ -25,3 +25,8 @@ div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; 
 	margin-bottom:.5em;
 	font-weight:bold;
 }
+
+/* Fix the Drag handle in the searchbox to fit inside the gray box */
+.page-places .input-section .toggle-link.advanced-link {
+    padding: 0px 0px 10px 0px;
+}
