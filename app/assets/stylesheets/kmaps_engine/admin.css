@@ -10,7 +10,7 @@
  *
  *= require kmaps_engine/yui
  *= require complex_dates/application
- *= require kmaps_engine/admin
+ *= require kmaps_engine/admin-edit-forms
  *= require_self
  */
 
@@ -441,7 +441,7 @@ fieldset .highlight .item-icon-new{
 .errorExplanation h2{
 	color:darkred;
 }
-.text {
+.text :not(.bootstrap-select.btn-group .dropdown-menu>li>a span.text) {
 	border:solid 1px gray;
 	display: inline-block;
 	padding:5px; 
@@ -457,4 +457,15 @@ fieldset .highlight .item-icon-new{
 #content .shell-1 {
 	margin-top: 5px;
 	padding-top: 5px;
+}
+
+/* styling for new dropdown of resources_nav */
+[data-id='SelectNav'] + .dropdown-menu {
+    left: inherit;
+    right: 0;
+}
+
+/* style for note_titles ruby */
+input#note_title_title {
+    width: 400px;
 }

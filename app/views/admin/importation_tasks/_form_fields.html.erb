@@ -3,6 +3,6 @@
   <legend><%= ImportationTask.model_name.human.titleize.s %></legend>
   <div class="row">
 <%= ImportationTask.human_attribute_name(:task_code).s %>
-<%= f.text_field :task_code, :class => :text %>
+<%= f.text_field :task_code, class: [:text, 'text-full form-text'] %>
   </div>
 </fieldset>

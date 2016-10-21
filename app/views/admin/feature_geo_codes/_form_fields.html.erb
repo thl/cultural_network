@@ -22,10 +22,10 @@ input[type=text] {
   </div>
   <div class="row">
 <%= f.label :geo_code_type, GeoCodeType.model_name.human.titleize.s %>
-<%= f.collection_select(:geo_code_type_id, GeoCodeType.all, :id, :to_s, :include_blank=>true) %>
+<%= f.collection_select(:geo_code_type_id, GeoCodeType.all, :id, :to_s, {include_blank: true}, class: 'form-control form-select ss-select selectpicker') %>
   </div>
   <div class="row">
 <%= f.label(:value).s %>
-<%= f.text_field :geo_code_value, :class => :text %>
+<%= f.text_field :geo_code_value, class: [:text, 'text-full form-control form-text'] %>
   </div>
 </fieldset>

@@ -7,21 +7,21 @@
   </legend>
   <div class="row">
 <%= f.label(:name).s %>
-<%= f.text_field :name, :class => :text %>
+<%= f.text_field :name, class: [:text, 'text-full form-control form-text'] %>
   </div>
   <div class="row">
 <%= f.label(:code).s %>
-<%= f.text_field :code, :class => :text %>
+<%= f.text_field :code, class: [:text, 'text-full form-control form-text'] %>
   </div>
   <div class="row">
 <%= f.label(:description).s %>
   </div>
   <div class="row">
-<%= f.text_area :description, :rows=>4, :class => 'tinymce' %>
+<%= f.text_area :description, rows: 4, class: 'tinymce' %>
   </div>
-<%=  render :partial => 'shared/double_select', :locals => { :available_options_title => "#{t(:available, :what => AuthenticatedSystem::User.model_name.human(:count => :many))}:",
-     :associated_options_title => t('associate.d.record', :what => AuthenticatedSystem::User.model_name.human(:count => :many)),
-     :associated_options => object.users.collect { |u| [u.screen_name, u.id]},
+<%=  render partial: 'shared/double_select', locals: { available_options_title: "#{t(:available, what: AuthenticatedSystem::User.model_name.human(count: :many))}:",
+     associated_options_title: t('associate.d.record', what: AuthenticatedSystem::User.model_name.human(count: :many)),
+     associated_options: object.users.collect { |u| [u.screen_name, u.id]},
 	 associated_options_tag: 'collection[user_ids]',
-     :all_options => @users.collect { |u| [u.screen_name, u.id]} } %>
+     all_options: @users.collect { |u| [u.screen_name, u.id]} } %>
 </fieldset>

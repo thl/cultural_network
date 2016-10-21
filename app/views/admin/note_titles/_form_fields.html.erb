@@ -5,6 +5,6 @@
   </legend>
   <div class="row">
 <%= f.label :title, NoteTitle.model_name.human.titleize.s %>
-<%= f.text_field :title, :class => :text %>
+<%= f.text_field :title, class: [:text, 'text-full form-control form-text'] %>
   </div>
 </fieldset>

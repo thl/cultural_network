@@ -64,20 +64,20 @@ module AdminHelper
   def resource_nav
     path = "#{ActionController::Base.relative_url_root}/#{params[:controller]}"
     path = authenticated_system_people_path if path =~ /\/authenticated_system\/users/
-    select_tag :resources, options_for_select(admin_resources.sort, path), :id=>:SelectNav
+    select_tag :resources, options_for_select(admin_resources.sort, path), id: :SelectNav, class: 'form-control form-select ss-select selectpicker'
   end
   
   def resource_search_form(extra_hidden_fields={})
     #extra_hidden_fields[:page] = params[:page] # keep the current page when clearing?
     html = "<div>"
     html += form_tag '', :method=>:get
-    html += text_field_tag :filter, h(params[:filter]), :class => :text
+    html += text_field_tag :filter, h(params[:filter]), class: [:text, 'text-full form-text']
     extra_hidden_fields.each do |k,v|
       html += hidden_field_tag k, h(v)
     end
-    html += submit_tag 'Search'
+    html += submit_tag 'Search', class: 'btn btn-primary form-submit'
     html += ' '
-    html += link_to('clear', resolved_collection_path, extra_hidden_fields) if params[:filter]
+    html += link_to('clear', resolved_collection_path, extra_hidden_fields.merge({class: 'btn btn-primary form-submit', id: 'edit-cancel'})) if params[:filter] 
     html += '</form></div>'
     html.html_safe
   end
@@ -194,7 +194,9 @@ module AdminHelper
   #
   def render_breadcrumbs
     #@breadcrumbs.unshift link_to_unless_current('features', admin_features_path)
-    @breadcrumbs.to_a.join(' > ').html_safe
+    #@breadcrumbs.to_a.join(' > ').html_safe
+    list = [link_to("#{ts('app.short')}:", admin_features_path)]+@breadcrumbs[0...@breadcrumbs.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [@breadcrumbs.last]
+    content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
   end
   
   def add_breadcrumb_item(item)

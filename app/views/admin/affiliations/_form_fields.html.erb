@@ -13,12 +13,12 @@
 <fieldset>
   <div class="row">
 <%= f.label(:collection_id).s %>
-<%= f.collection_select :collection_id, @collections, :id, :to_s, :include_blank=> false %>
+<%= f.collection_select :collection_id, @collections, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
   </div>
   <div class="row">
 <%= f.label(:descendants).s %>
-<%= f.radio_button(:descendants, :true ) %><b><%= ts(:affirmation) %></b>&nbsp;&nbsp;
-<%= f.radio_button(:descendants, :false ) %><b><%= ts(:negation) %></b>
+<%= f.radio_button(:descendants, :true, class: 'form-radio' ) %><b><%= ts(:affirmation) %></b>&nbsp;&nbsp;
+<%= f.radio_button(:descendants, :false, class: 'form-radio' ) %><b><%= ts(:negation) %></b>
   </div>
 <%= javascript_on_load do %>
       $("input[name='affiliation[descendants]']:radio").change(function() { 
@@ -32,6 +32,6 @@
 <%  end %>
   <div class="row" id="perspectives"<%= ' style="display:none;"'.html_safe if !@object.descendants? %>>
 <%= f.label(:perspective_id, "For #{Perspective.model_name.human}").s %>
-<%= f.collection_select :perspective_id, @perspectives, :id, :to_s, :include_blank=> 'All' %>
+<%= f.collection_select :perspective_id, @perspectives, :id, :to_s, {include_blank: 'All'}, class: 'form-control form-select ss-select selectpicker' %>
   </div>  
 </fieldset>

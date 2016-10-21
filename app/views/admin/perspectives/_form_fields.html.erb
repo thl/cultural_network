@@ -5,11 +5,11 @@
   <legend><%= Perspective.model_name.human.titleize.s %></legend>
   <div class="row">
 <%= f.label(:name).s %>
-<%= f.text_field :name, :class => :text %>
+<%= f.text_field :name, class: [:text, 'text-full form-control form-text'] %>
   </div>
   <div class="row">
 <%= f.label(:code).s %>
-<%= f.text_field :code, :class => :text %>
+<%= f.text_field :code, class: [:text, 'text-full form-control form-text'] %>
   </div>
   <div class="row">
 <%= f.label(:description).s %>

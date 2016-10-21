@@ -5,16 +5,16 @@
 	<legend><%= Blurb.model_name.human.titleize.s %></legend>
 	<div class="row">
 <%=   f.label(:title).s %>
-<%=   f.text_field :title, :class => :text %>
+<%=   f.text_field :title, class: [:text, 'text-full form-control form-text'] %>
 	</div>
 	<div class="row">
 <%=   f.label(:code).s %>
-<%=   f.text_field :code, :class => :text %>
+<%=   f.text_field :code, class: [:text, 'text-full form-control form-text'] %>
 	</div>
 	<div class="row">
 <%=   f.label(:content).s %>
 	</div>
 	<div class="row">
-<%=   f.text_area :content, :rows=>4, :class => 'tinymce' %>
+<%=   f.text_area :content, rows: 4, class: 'tinymce' %>
 	</div>
 </fieldset>
