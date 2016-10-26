@@ -1,4 +1,12 @@
-<li><h3><%= View.model_name.human.titleize.s %></h3></li>
+	<li class="drop-hdr"><em><%= ts('Select Place Name Language')%></em></li>
+<%= form_for @session, url: change_view_session_path(@session.view_id) do |f| %>
 <% for view in @views %>
-     <li><%= link_to(view.name, change_view_session_path(view.id), style: view==current_view ? '' : 'font-weight: normal;') %></li>
-<% end %>
+	      <li class='form-group'><label class='radio-inline'><%= f.radio_button :view_id, view.id, class: 'radio_view_pref' %><%= ts(view.name)%></label></li>
+<%    end
+    end
+    view_path = change_view_session_path('a').chop %>
+<%=	javascript_on_load do %>
+      jQuery('.radio_view_pref').click(function (){
+        window.location.pathname = '<%= view_path %>' + this.value;
+      });
+<%  end %>

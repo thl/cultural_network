@@ -8,6 +8,6 @@
   	lang_path = change_language_session_path('a').chop %>
 <%=	javascript_on_load do %>
       jQuery('.radio_language_pref').click(function (){
-        window.location = '<%= lang_path %>' + this.value;
+        window.location.pathname = '<%= lang_path %>' + this.value;
       });
 <%  end %>

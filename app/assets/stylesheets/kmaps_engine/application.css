@@ -30,3 +30,8 @@ div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; 
 .page-places .input-section .toggle-link.advanced-link {
     padding: 0px 0px 10px 0px;
 }
+
+.menu-main .user-prefs li:hover, .menu-main .user-prefs li:active {
+    background: #fafafa;
+    color: #555;
+}
