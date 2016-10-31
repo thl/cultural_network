@@ -2,13 +2,14 @@
 #
 # Table name: citations
 #
-#  id             :integer          not null, primary key
-#  info_source_id :integer
-#  citable_type   :string(255)
-#  citable_id     :integer
-#  notes          :text
-#  created_at     :datetime
-#  updated_at     :datetime
+#  id               :integer          not null, primary key
+#  info_source_id   :integer
+#  citable_type     :string(255)
+#  citable_id       :integer
+#  notes            :text
+#  created_at       :datetime
+#  updated_at       :datetime
+#  info_source_type :string(255)      not null
 #
 
 class Citation < ActiveRecord::Base

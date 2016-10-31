@@ -21,7 +21,7 @@ class FeatureName < ActiveRecord::Base
     :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id, :position
   
   attr_accessor :skip_update
-  acts_as_family_tree :node, nil, :tree_class=>'FeatureNameRelation'
+  acts_as_family_tree :node, nil, tree_class: 'FeatureNameRelation'
   
   after_update do |record|
     #Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))
@@ -29,9 +29,11 @@ class FeatureName < ActiveRecord::Base
       feature = record.feature
       record.ensure_one_primary
       views = feature.update_cached_feature_names
-      views = (views + CachedFeatureName.where(:feature_name_id => record.id).select(:view_id).collect(&:view_id)).uniq if record.name_changed?
+      views = (views + CachedFeatureName.where(feature_name_id: record.id).select(:view_id).collect(&:view_id)).uniq if record.name_changed?
       # logger.error "Cache expiration: triggered for changing feature #{feature.fid} name #{record.name}."
-      feature.expire_tree_cache(:views => views) if !views.blank?
+      Spawnling.new do
+        feature.expire_tree_cache(views: views) if !views.blank?
+      end
     end
   end #{ |record| record.update_hierarchy
   
@@ -49,7 +51,9 @@ class FeatureName < ActiveRecord::Base
       feature.update_name_positions
       views = feature.update_cached_feature_names
       # logger.error "Cache expiration: triggered for creating feature #{feature.fid} name #{record.name}."
-      feature.expire_tree_cache(:views => views) if !views.blank?
+      Spawnling.new do
+        feature.expire_tree_cache(views: views) if !views.blank?
+      end
     end
   end
   
@@ -58,7 +62,9 @@ class FeatureName < ActiveRecord::Base
       feature = record.feature
       views = feature.update_cached_feature_names
       # logger.error "Cache expiration: triggered for deleting feature #{feature.fid} name #{record.name}."
-      feature.expire_tree_cache(:views => views) if !views.blank?
+      Spawnling.new do
+        feature.expire_tree_cache(views: views) if !views.blank?
+      end
     end
   end
   
@@ -76,10 +82,10 @@ class FeatureName < ActiveRecord::Base
   belongs_to :feature
   belongs_to :language
   belongs_to :writing_system
-  belongs_to :type, :class_name=>'FeatureNameType', :foreign_key=>:feature_name_type_id
+  belongs_to :type, class_name: 'FeatureNameType', foreign_key: :feature_name_type_id
   # belongs_to :info_source, :class_name => 'Document'
-  has_many :cached_feature_names, :dependent => :destroy
-  has_many :imports, :as => 'item', :dependent => :destroy
+  has_many :cached_feature_names, dependent: :destroy
+  has_many :imports, as: 'item', dependent: :destroy
   
   #
   #
@@ -147,13 +153,13 @@ class FeatureName < ActiveRecord::Base
   
   def ensure_one_primary
     parent = self.feature
-    primary_names = parent.names.where(:is_primary_for_romanization => true)
+    primary_names = parent.names.where(is_primary_for_romanization: true)
     case primary_names.count
     when 0
     when 1
     else
       keep = self.is_primary_for_romanization? ? self : primary_names.order('updated_at DESC').first
-      primary_names.where(['id <> ?', keep.id]).update_all(:is_primary_for_romanization => false) if !keep.nil?
+      primary_names.where(['id <> ?', keep.id]).update_all(is_primary_for_romanization: false) if !keep.nil?
     end
   end
 end

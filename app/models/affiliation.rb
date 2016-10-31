@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: affiliations
+#
+#  id             :integer          not null, primary key
+#  collection_id  :integer          not null
+#  feature_id     :integer          not null
+#  perspective_id :integer
+#  descendants    :boolean          default(TRUE), not null
+#  created_at     :datetime
+#  updated_at     :datetime
+#
+
 class Affiliation < ActiveRecord::Base
   attr_accessible :collection_id, :feature_id, :perspective_id, :descendants, :skip_update
   attr_accessor :skip_update

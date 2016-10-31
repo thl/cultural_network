@@ -2,14 +2,15 @@
 #
 # Table name: descriptions
 #
-#  id         :integer          not null, primary key
-#  feature_id :integer          not null
-#  content    :text             not null
-#  is_primary :boolean          default(FALSE), not null
-#  created_at :datetime
-#  updated_at :datetime
-#  title      :string(255)
-#  source_url :string(255)
+#  id          :integer          not null, primary key
+#  feature_id  :integer          not null
+#  content     :text             not null
+#  is_primary  :boolean          default(FALSE), not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#  title       :string(255)
+#  source_url  :string(255)
+#  language_id :integer          not null
 #
 
 class Description < ActiveRecord::Base
