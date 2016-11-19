@@ -47,8 +47,9 @@
 	position:inherit;
 }
 .tab-pane#info, .tab-pane#desc {
-    overflow: scroll;
+    overflow-y: scroll;
 	max-height: 405px;
+    margin-right: -27px;
 }
 .og-details p, .og-details #info ul{
 	min-height: initial;

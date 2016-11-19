@@ -9,7 +9,7 @@ li.viewall {
 }
 
 li.viewall a {
-	background-image: url(/global/images/btn-dot-sm.gif) !important;
+	background-image: image-url('kmaps_engine/btn-dot-sm.gif') !important;
 	padding-left: 18px !important;
 }
 
@@ -176,7 +176,7 @@ li.viewall a {
 #biblio h2.h1 {font-size: 180%;}
 
 .tocDisplay {width: 90%;}
-.tocDisplay p {display: block; background:url(/global/images/list-sep-dot.jpg) repeat-x center;}
+.tocDisplay p {display: block; background: image-url('kmaps_engine/list-sep-dot.jpg') repeat-x center;}
 .tocDisplay p .toctitle {background:#FFF;padding: 0 4px 0 0;}
 .tocDisplay p .tocpg {float:right !important;background:#FFF !important; font-size: 80%; width: 45px; text-align: center;}
 
