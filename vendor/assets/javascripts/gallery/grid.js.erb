@@ -306,9 +306,10 @@ var Grid = (function($) {
 	Preview.prototype = {
 		create : function() {			
 			// create Preview structure:
-			this.$details = $( '<div class="og-details"></div>' );
+
 			
 			this.$loading = $( '<div class="og-loading"></div>' );
+			this.$details = $( '<div class="og-details"></div>' ).append(this.$loading);
 			this.$fullimage = $( '<div class="og-fullimg"></div>' ).append( this.$loading );
 			this.$closePreview = $( '<span class="og-close"></span>' );
 			
@@ -325,7 +326,7 @@ var Grid = (function($) {
 			}
 		},
 		update : function( $item ) {
-			
+     	    $('.og-details').html('<div class="og-loading"></div>');
 			if( $item ) {
 				this.$item = $item;
 			}

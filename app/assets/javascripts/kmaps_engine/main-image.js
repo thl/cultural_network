@@ -67,7 +67,7 @@
 				 
 				if (detheight < cnthgt - 30) {
 				 	var tmarg = ((cnthgt - detheight) / 2);
-				 	$('.og-details').css('margin-top', tmarg + 'px');
+				 	// $('.og-details').css('margin-top', tmarg + 'px');
 				}
 
 			// }
