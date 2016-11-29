@@ -354,7 +354,7 @@ var Grid = (function($) {
 				};
 
 			$.ajax({
-				url: "<%= MmsIntegration::Medium.get_url('a').chop %>"+eldata.media_id+"/external",
+				url: "<%= MmsIntegration::Medium.get_url('a').chop %>"+eldata.media_id+"/external.html",
 				format: 'html',
 				success: function(result){
 				    $('.og-details').html(result);
