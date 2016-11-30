@@ -44,21 +44,20 @@
 		  caption_plain << " (#{location_plain})"
 	    end
       end %>
-	  <div class="main-overview-image">
-	    <figure class="cap-bot">
+	  <div class="resource-overview-image">
 <%      html_options = { class: 'img-responsive img-thumbnail' }
         html_options[:alt] = caption_plain if !caption_plain.nil?
+  	    rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width
+		html_options[:width] = rendered_width
         if picture.instance_of?(MmsIntegration::Picture) %>
-<%=       image_tag(picture.url, html_options) #link_to , MmsIntegration::Medium.element_url(picture.id, format: 'html')
-%>
+<%=     link_to image_tag(picture.url, html_options), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
 <%      else %>
 <%=       link_to image_tag(picture.url, html_options), picture.url %>
 <%      end
         if !caption_plain.nil? %>
-          <figcaption><div class="center-caption"><%= caption_plain %></div></figcaption>
+        <p class = "view-on-map"><%= caption_plain %></p>
 <%      end %>
-        </figure>
-      </div>
+      </div> <!-- END resource-overview-image -->
 <%  end %>
 <div id="accordion" class="panel-group">
   <section class="panel panel-default">
