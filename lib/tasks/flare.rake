@@ -7,14 +7,14 @@ namespace :kmaps_engine do
       features = features.where(['fid >= ?', from.to_i]) if !from.blank?
       count = 0
       features.each do |f|
-        if f.update_solr
+        if f.index
           puts "#{Time.now}: Reindexed #{f.fid}."
-          Flare.commit if (count+=1) % 1000 == 0 # Do commit every 1000 updates
+          Feature.commit if (count+=1) % 1000 == 0 # Do commit every 1000 updates
         else
           puts "#{Time.now}: #{f.fid} failed."
         end
       end
-      Flare.commit
+      Feature.commit
     end
   end
 end

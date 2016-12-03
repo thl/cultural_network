@@ -448,7 +448,7 @@ class Feature < ActiveRecord::Base
   def expire_children_cache(views, perspectives)
     # Avoiding "regular expression too big" error by slicing node up
     return if views.blank? || perspectives.blank?
-    self.update_solr
+    self.index
     children = self.child_relations.where(perspective_id: perspectives).select(:child_node_id).uniq.collect(&:child_node)
     return if children.empty?
     Feature.expire_fragment(perspectives, views, children.collect(&:id))
@@ -462,7 +462,7 @@ class Feature < ActiveRecord::Base
     parents = [self] if parents.blank?
     Feature.expire_fragment(perspectives, views, parents.collect(&:id))
     parents.each{|c| c.expire_children_cache(views, perspectives)}
-    Flare.commit
+    Feature.commit
   end
   
   def affiliations_by_user(user, options = {})
@@ -477,37 +477,9 @@ class Feature < ActiveRecord::Base
     !affiliations_by_user(user, descendants: true).empty?
   end
   
-  def delete_from_solr
-    begin
-      Flare.delete(self.solr_id)
-    rescue => e
-      logger.error "Solr index could not be deleted for feature #{self.fid}"
-      logger.error e.to_s
-      logger.error e.backtrace.join("\n")
-    end
-  end
-  
-  def delete_from_solr!
-    delete_from_solr
-    Flare.commit
-  end
-  
-  def update_solr
-    begin
-      Flare.index(document_for_rsolr)
-      return true
-    rescue => e
-      logger.error "Solr index could not be updated for feature #{self.fid}"
-      logger.error e.to_s
-      logger.error e.backtrace.join("\n")
-      return false
-    end
-  end
-  
-  def update_solr!
-    resp = update_solr
-    Flare.commit if resp
-    resp
+  # Override uid to use fid instead of id
+  def uid
+    "#{Feature.uid_prefix}-#{self.fid}"
   end
   
   private
@@ -517,7 +489,7 @@ class Feature < ActiveRecord::Base
   
   def document_for_rsolr
     doc = defined?(super) ? super : RSolr::Xml::Document.new
-    doc.add_field('id', solr_id)
+    doc.add_field('id', uid)
     name = self.prioritized_name(View.get_by_code('roman.popular'))
     doc.add_field('header', name.nil? ? self.pid : name.name)
     self.captions.each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
