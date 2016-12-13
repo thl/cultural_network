@@ -1,20 +1,15 @@
-<%       images = medium['images']
-		 thumbnail = images.nil? ? nil : images.detect{|i| i['thumbnail']=='essay'}
-		 hugeimage = images.detect{|i| i['thumbnail']=='huge'}
-		 largeimage = images.detect{|i| i['thumbnail']=='large'}
-		 alt = medium['titles'].first || medium['captions'].first
-         title = alt.blank? ? 'N/A' : alt['title']
+<%       title = medium['caption'].blank? ? 'N/A' : medium['caption']
 
-		 if thumbnail.nil? %>
+		 if medium['url_essay'].blank? %>
            <div class="item"></div> <!-- END item -->
 <%       else %>
            <div class="item">
 <%         media_data = {
-            	hugesrc: "#{hugeimage['url']}?::#{hugeimage['width']}::#{hugeimage['height']}",
-            	largesrc: largeimage['url'],
+                hugesrc: "#{medium['url_huge']}?::#{medium['url_huge_width']}::#{medium['url_huge_height']}",
+                largesrc: medium['url_huge'],
             	title: title,
 				media_id: medium['id'],
           } %>
-<%=          link_to image_tag(thumbnail['url'], height: 180, alt: title), "#{associated_medium_path(medium['id'])}", class: 'media-thumb', data: media_data  %>
+<%=          link_to image_tag(medium['url_essay'], height: 180, alt: title), "#{associated_medium_path(medium['id'])}", class: 'media-thumb', data: media_data  %>
 		    </div> <!-- END item -->
 <%       end %>

@@ -59,10 +59,9 @@
     </div>
 </div>
 <!-- END Photoswipe -->
-
 <%= stylesheet_link_tag 'kmaps_engine/gallery' %>
 <%= javascript_include_tag 'kmaps_engine/main-image' %>
-<%=   will_paginate @media, :class => 'normal pagination apple_pagination' %>
+<%= will_paginate @media, :class => 'normal pagination apple_pagination' %>
 <%=   javascript_on_load do %>
         as = $('.pagination').find('a');
 		as.attr('data-remote', true);
