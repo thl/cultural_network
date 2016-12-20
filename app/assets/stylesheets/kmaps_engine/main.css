@@ -206,6 +206,15 @@ article table.pagerer:last-child{
   margin: 2rem 0 7rem;
 }
 
+/*
+* associated media no image
+*/
+.item.item-no-img {
+    display: list-item !important;
+    clear: both;
+    list-style: square inside none;
+}
+
 /**
 * 
 * END - KMAPS/css/shanti-main-kmaps.css

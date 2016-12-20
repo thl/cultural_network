@@ -107,6 +107,13 @@ Rails.application.routes.draw do
       post :set_session_variables
     end
   end
+  resources :associated_media, only: :show do
+    member do
+      get 'pictures'
+      get 'videos'
+      get 'documents'
+    end
+  end
   resources :descriptions, concerns: :notable_citable, only: ['show', 'index']
   resources :feature_geo_codes, concerns: :notable_citable
   resources :feature_names, concerns: :notable_citable, only: [:index, :show]

@@ -1,7 +1,15 @@
-<%       title = medium['caption'].blank? ? 'N/A' : medium['caption']
-
-		 if medium['url_essay'].blank? %>
-           <div class="item"></div> <!-- END item -->
+<%       # url_essay points to the image size essay
+		 if medium['url_essay'].blank? 
+		   if medium['title'].nil?
+			   if medium['caption'].nil?
+				   title = medium['id']
+			   else
+				   title = medium['caption']
+			   end
+		   else
+			   title = medium['title'].first
+		   end %>
+           <div class="item item-no-img"><%= link_to title,MmsIntegration::Medium.get_url(medium['id']) %></div> <!-- END item -->
 <%       else %>
            <div class="item">
 <%         media_data = {
@@ -10,6 +18,6 @@
             	title: title,
 				media_id: medium['id'],
           } %>
-<%=          link_to image_tag(medium['url_essay'], height: 180, alt: title), "#{associated_medium_path(medium['id'])}", class: 'media-thumb', data: media_data  %>
+<%=          link_to image_tag(medium['url_essay'], height: 180, alt: title), associated_medium_path(medium['id']), class: 'media-thumb', data: media_data  %>
 		    </div> <!-- END item -->
 <%       end %>
