@@ -209,10 +209,11 @@ article table.pagerer:last-child{
 /*
 * associated media no image
 */
-.item.item-no-img {
+.item-no-img {
     display: list-item !important;
     clear: both;
     list-style: square inside none;
+	text-align:left;
 }
 
 /**
