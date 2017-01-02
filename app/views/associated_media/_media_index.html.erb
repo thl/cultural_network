@@ -4,7 +4,20 @@
 <!-- Image grid -->
      <h3><%= @title %></h3>
       <div id='og-grid' class='og-grid clearfix'>
-<%     for medium in @media
+<%     media_with_thumb = []
+       media_without_thumb = []
+       @media.each do |m|
+         if m['url_essay'].blank?
+           media_without_thumb << m
+         else
+          media_with_thumb << m
+         end
+       end
+       for medium in media_with_thumb
+         next if medium.nil? %>
+<%=      render partial: 'associated_media/media_item', locals: {medium: medium} %>
+<%     end %>
+<%     for medium in media_without_thumb
          next if medium.nil? %>
 <%=      render partial: 'associated_media/media_item', locals: {medium: medium} %>
 <%     end %>
