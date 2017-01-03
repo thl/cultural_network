@@ -7,18 +7,17 @@
 <%     media_with_thumb = []
        media_without_thumb = []
        @media.each do |m|
+         next if m.nil?
          if m['url_essay'].blank?
            media_without_thumb << m
          else
           media_with_thumb << m
          end
        end
-       for medium in media_with_thumb
-         next if medium.nil? %>
+       for medium in media_with_thumb %>
 <%=      render partial: 'associated_media/media_item', locals: {medium: medium} %>
-<%     end %>
-<%     for medium in media_without_thumb
-         next if medium.nil? %>
+<%     end
+       for medium in media_without_thumb %>
 <%=      render partial: 'associated_media/media_item', locals: {medium: medium} %>
 <%     end %>
 	  </div> <!-- END og-grid -->
