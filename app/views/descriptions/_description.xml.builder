@@ -12,4 +12,6 @@ xml.description do
     xml << render(:partial => 'authenticated_system/people/show.xml.builder', :collection => authors, :as => 'person') if !authors.empty?
   end
   xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: description.time_units})
+  xml << render(partial: 'citations/index.xml.builder', locals: {citations: description.citations})
+  xml << render(partial: 'notes/index.xml.builder', locals: {notes: description.notes})
 end

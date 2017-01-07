@@ -40,11 +40,12 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   end
   summaries = feature.summaries
   xml.summaries(:type => 'array') do
-    summaries.each do |c|
+    summaries.each do |s|
       xml.summary do
-        xml.id(c.id, :type => 'integer')
-        xml.language(c.language.code)
-        xml.content(c.content)
+        xml.id(s.id, :type => 'integer')
+        xml.language(s.language.code)
+        xml.content(s.content)
+        xml << render(partial: 'citations/index.xml.builder', locals: {citations: s.citations})
       end
     end
   end
@@ -83,6 +84,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     xml.document_count(feature.media_count(:type => 'Document').to_s, :type => 'integer')
   end
   xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: feature.time_units})
+  xml << render(partial: 'citations/index.xml.builder', locals: {citations: feature.citations})
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')
 end
