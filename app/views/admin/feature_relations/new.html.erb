@@ -4,6 +4,6 @@
     add_breadcrumb_item ts('new.record', what: t('relat.ion.ship.to', what: feature_label(@object.parent_node))) %>
 <%= form_for @object, url: admin_feature_feature_relations_path(@object.child_node) do |f| %>
 <%=   render partial: 'form_fields', locals: {f: f, object: @object} %>
-<%=   link_to(ts('cancel.this'), @parent_object.nil? ? admin_feature_relation_path(@object) : admin_feature_feature_relations_path(@parent_object)), class: 'btn btn-primary form-submit', id: 'edit-cancel' %> |
+<%=   link_to(ts('cancel.this'), @parent_object.nil? ? admin_feature_relation_path(@object) : admin_feature_feature_relations_path(@parent_object), class: 'btn btn-primary form-submit', id: 'edit-cancel') %> |
 <%=   globalized_submit_tag 'creat.e.this', class: 'btn btn-primary form-submit' %>
 <%  end %>
