@@ -10,8 +10,6 @@ class FeaturesController < ApplicationController
   #
   #
   def index
-    set_common_variables
-    
     @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
     @tab_options = {:entity => @feature}
     @current_tab_id = :home
@@ -37,7 +35,6 @@ class FeaturesController < ApplicationController
         if @feature.nil?
           redirect_to features_url
         else
-          set_common_variables
           session[:interface][:context_id] = @feature.id unless @feature.nil?
           @tab_options = {:entity => @feature}
           @current_tab_id = :place
@@ -61,7 +58,6 @@ class FeaturesController < ApplicationController
   end
   
   def by_geo_code
-    set_common_variables
     geo_code_type_str = params[:geo_code_type]
     geo_code_type = GeoCodeType.get_by_code(geo_code_type_str)
     @feature = nil
@@ -291,7 +287,6 @@ class FeaturesController < ApplicationController
     if @feature.nil?
       redirect_to features_url
     else
-      set_common_variables
       session[:interface][:context_id] = @feature.id unless @feature.nil?
       @tab_options = {:entity => @feature}
       @current_tab_id = :related
@@ -320,7 +315,6 @@ class FeaturesController < ApplicationController
   end
   
   def node_tree_expanded
-    set_common_variables if params[:view_id] || params[:perspective_id]
     view = current_view
     
     node = Feature.find(params[:id])
@@ -405,7 +399,6 @@ class FeaturesController < ApplicationController
   end
   
   def node_cache_path
-    set_common_variables if params[:view_id] || params[:perspective_id]
     "#{KmapsEngine::TreeCache::CACHE_PREFIX}#{current_perspective.id}/#{current_view.id}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}#{params[:id]}#{KmapsEngine::TreeCache::CACHE_SUFFIX}"
   end
 end

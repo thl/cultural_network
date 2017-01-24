@@ -469,3 +469,7 @@ fieldset .highlight .item-icon-new{
 input#note_title_title {
     width: 400px;
 }
+/* style for form input in admin section*/
+input.text-full {
+    width: 43em;
+}

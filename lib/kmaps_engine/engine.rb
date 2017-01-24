@@ -20,14 +20,12 @@ module KmapsEngine
     initializer :loader do |config|
       require 'active_record/kmaps_engine/extension'
       require 'kmaps_engine/array_ext'
-      require 'kmaps_engine/extensions/public_controller_dependencies'
       require 'kmaps_engine/import/importation.rb'
       require 'kmaps_engine/extensions/user_model.rb'
       require 'kmaps_engine/resource_object_authentication.rb'
       
       ActiveRecord::Base.send :include, ActiveRecord::KmapsEngine::Extension
       Array.send :include, KmapsEngine::ArrayExtension
-      AuthenticatedSystem::SessionsController.send :include, KmapsEngine::Extensions::PublicControllerDependencies
       AuthenticatedSystem::User.send :include, KmapsEngine::Extension::UserModel
       
     end

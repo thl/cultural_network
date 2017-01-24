@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   
   protect_from_forgery
   #before_action :admin_authentication
+  before_action :set_common_variables, if: -> { request.format.html? }
   layout :choose_layout
   
   protected
