@@ -12,8 +12,8 @@ class Admin::FeaturesController < AclController
   before_action :collection, only: :locate_for_relation
   
   new_action.before do
-    @object.fid = Feature.generate_pid
-    @object.is_public = true
+    object.fid = Feature.generate_pid
+    object.is_public = true
     parent_id = params.require(:parent_id)
     @parent = parent_id.blank? ? nil : Feature.find(parent_id)
     if !@parent.nil?
@@ -25,14 +25,14 @@ class Admin::FeaturesController < AclController
   end
   
   create.after do |r|
-    if !@object.id.nil?
-      @object.names.create(params[:feature_name])
-      relation = @object.all_parent_relations.create(params[:feature_relation])
-      affiliations = @object.affiliations
+    if !object.id.nil?
+      object.names.create(params[:feature_name])
+      relation = object.all_parent_relations.create(params[:feature_relation])
+      affiliations = object.affiliations
       relation.parent_node.affiliations.where(descendants: true).each { |a| affiliations.create(perspective_id: a.perspective.nil? ? nil : a.perspective.id, collection_id: a.collection.id, descendants: true) }
     else
-      @object.fid = Feature.generate_pid
-      @object.is_public = true
+      object.fid = Feature.generate_pid
+      object.is_public = true
       parent_id = params[:feature_relation][:parent_node_id]
       @parent = parent_id.blank? ? nil : Feature.find(parent_id)
       if !@parent.nil?

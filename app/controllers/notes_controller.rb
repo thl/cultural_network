@@ -4,7 +4,6 @@ class NotesController < ResourceController::Base
   def index
     unless parent_object.nil?
       @notes = parent_object.public_notes
-      @parent_object = parent_object
       render :partial => '/notes/list'
     end
   end

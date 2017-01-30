@@ -36,7 +36,6 @@ class Admin::CaptionsController < AclController
   end
   
   def parent_association
-    @parent_object ||= parent_object
-    @parent_object.captions
+    parent_object.captions
   end
 end

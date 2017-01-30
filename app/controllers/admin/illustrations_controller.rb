@@ -41,7 +41,6 @@ class Admin::IllustrationsController < AclController
   protected
   
   def parent_association
-    @parent_object ||= parent_object
-    @parent_object.illustrations
+    parent_object.illustrations
   end
 end

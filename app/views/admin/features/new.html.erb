@@ -1,5 +1,5 @@
 <%  add_breadcrumb_items features_link, ts('new.this') %>
-<%= form_for @object, url: collection_path do |f| %>
+<%= form_for object, url: collection_path do |f| %>
 <%=   render partial: 'form_fields', locals: {f: f} %>
 <%=   fields_for @name do |name_fields| %>
 <%=     render partial: 'admin/feature_names/form_fields', locals: {f: name_fields} %>

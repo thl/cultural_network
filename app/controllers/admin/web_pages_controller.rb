@@ -15,12 +15,10 @@ class Admin::WebPagesController < AclController
   protected
   
   def parent_association
-    @parent_object ||= parent_object
-    @parent_object.web_pages # ResourceController needs this for the parent association
+    parent_object.web_pages # ResourceController needs this for the parent association
   end
   
   def collection
-    @parent_object ||= parent_object
-    @collection = WebPage.where(:citation_id => @parent_object.id).page(params[:page])
+    @collection = WebPage.where(:citation_id => parent_object.id).page(params[:page])
   end
 end

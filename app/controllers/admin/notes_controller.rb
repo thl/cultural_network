@@ -23,14 +23,12 @@ class Admin::NotesController < AclController
   protected
   
   def parent_association
-    @parent_object ||= parent_object
     parent_object.notes # ResourceController needs this for the parent association
   end
   
   def collection
-    @parent_object ||= parent_object
     search_results = Note.search(params[:filter])
-    search_results = search_results.where(['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s]) if parent?
+    search_results = search_results.where(['notable_id = ? AND notable_type = ?', parent_object.id, parent_object.class.to_s]) if parent?
     @collection = search_results.page(params[:page])
   end
 end

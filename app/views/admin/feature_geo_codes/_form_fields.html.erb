@@ -18,7 +18,7 @@ input[type=text] {
   </legend>	
   <div class="row">
 <%= f.label :feature, Feature.model_name.human.titleize.s %>
-    <span><%= f_label(@object.feature) %></span>
+    <span><%= f_label(object.feature) %></span>
   </div>
   <div class="row">
 <%= f.label :geo_code_type, GeoCodeType.model_name.human.titleize.s %>

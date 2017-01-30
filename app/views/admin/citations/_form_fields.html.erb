@@ -1,24 +1,24 @@
 <%= tinymce_assets %>
 <%= tinymce %>
-<%  if !@object.id.nil? %>
-<%    source = @object.info_source
+<%  if !object.id.nil? %>
+<%    source = object.info_source
       if !source.nil?
         case source.type
         when 'Document' %>
 	  	  <div class="row">
 	  	    <label><%= Page.model_name.human(count: :many).titleize.s %></label>
-<%=         @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ').html_safe %>
+<%=         object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(object, p)} #{delete_item_link admin_citation_page_path(object, p)}"}.join(', ').html_safe %>
 	  	  </div>
 	      <div class="row">
-<%=	        new_item_link(new_admin_citation_page_path(@object), ts('add.record', what: t(:referenced, what: Page.model_name.human(count: :many)))) %>
+<%=	        new_item_link(new_admin_citation_page_path(object), ts('add.record', what: t(:referenced, what: Page.model_name.human(count: :many)))) %>
 	      </div>
 <%      when 'OnlineResource' %>
 	  	  <div class="row">
 	  	    <label><%= WebPage.model_name.human(count: :many).titleize.s %></label>
-<%=         @object.web_pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_web_page_path(@object, p)} #{delete_item_link admin_citation_web_page_path(@object, p)}"}.join(', ').html_safe %>
+<%=         object.web_pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_web_page_path(object, p)} #{delete_item_link admin_citation_web_page_path(object, p)}"}.join(', ').html_safe %>
 	  	  </div>
 	      <div class="row">
-<%=	        new_item_link(new_admin_citation_web_page_path(@object), ts('add.record', what: t(:referenced, what: WebPage.model_name.human(count: :many)))) %>
+<%=	        new_item_link(new_admin_citation_web_page_path(object), ts('add.record', what: t(:referenced, what: WebPage.model_name.human(count: :many)))) %>
 	      </div>
 <%      end
 	  end

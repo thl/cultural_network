@@ -36,7 +36,6 @@ class Admin::SummariesController < AclController
   end
   
   def parent_association
-    @parent_object ||= parent_object
-    @parent_object.summaries
+    parent_object.summaries
   end
 end

@@ -8,8 +8,8 @@ class Admin::AssociationNotesController < AclController
 
   edit.before {@authors = AuthenticatedSystem::Person.order('fullname') }
   new_action.before do
-    @object.association_type = params[:association_type]
-    @object.notable_type = @parent_object.class.name
+    object.association_type = params[:association_type]
+    object.notable_type = parent_object.class.name
   end
 
   create.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }
@@ -29,20 +29,18 @@ class Admin::AssociationNotesController < AclController
   protected
   
   def parent_association
-    @parent_object ||= parent_object
     parent_object.association_notes # ResourceController needs this for the parent association
   end
   
   def collection
-    @parent_object ||= parent_object
     search_results = AssociationNote.search(params[:filter])
-    search_results = search_results.where(['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s]) if parent?
+    search_results = search_results.where(['notable_id = ? AND notable_type = ?', parent_object.id, parent_object.class.to_s]) if parent?
     @collection = search_results.page(params[:page])
   end
   
   def validate_association_type
     render :text => "Sorry, an association type hasn't been specified." and return if (
-      (@object.nil? && params[:association_type].blank?) ||
-      (!@object.nil? && @object.association_type.blank?))
+      (object.nil? && params[:association_type].blank?) ||
+      (!object.nil? && object.association_type.blank?))
   end
 end

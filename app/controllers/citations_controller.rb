@@ -4,7 +4,6 @@ class CitationsController < ResourceController::Base
   def index
     unless parent_object.nil?
       @citations = parent_object.citations
-      @parent_object = parent_object
       render :partial => '/citations/list'
     end
   end

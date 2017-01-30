@@ -13,7 +13,7 @@
 <%= f.label(:label).s %>
 <%= f.text_field :label, class: [:text, 'text-full form-control form-text'] %>
   </div>
-  <div class="row" id="asymmetric_label" <%= 'style="display:none;"' if @object.is_symmetric %>>
+  <div class="row" id="asymmetric_label" <%= 'style="display:none;"' if object.is_symmetric %>>
 <%= f.label(:asymmetric_label).s %>
 <%= f.text_field :asymmetric_label, class: [:text, 'text-full form-control form-text'] %>
   </div>

@@ -1,39 +1,39 @@
 <% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to(Illustration.model_name.human(:count => :many).s, admin_feature_illustrations_path(@parent_object))
-   add_breadcrumb_item @object %>
+   add_breadcrumb_item feature_link(object.feature)
+   add_breadcrumb_item link_to(Illustration.model_name.human(:count => :many).s, admin_feature_illustrations_path(parent_object))
+   add_breadcrumb_item object %>
 <fieldset>
   <legend>
 <%= Illustration.model_name.human.titleize.s %>
-<%= edit_item_link @object %>
+<%= edit_item_link object %>
   </legend>
   <div class="row">
     <label><%= Feature.model_name.human.titleize.s %></label>
-    <span><%= def_if_blank(@object, :feature, :name) %></span>
+    <span><%= def_if_blank(object, :feature, :name) %></span>
   </div>
   <div class="row">
-<%= image_tag(@object.picture.url) %>
+<%= image_tag(object.picture.url) %>
   </div>
-<% if @object.picture.instance_of?(MmsIntegration::Picture) %>
+<% if object.picture.instance_of?(MmsIntegration::Picture) %>
      <div class="row">
        <label><%= MmsIntegration::Picture.human_name.titleize.s %></label>
-       <span><%= @object.picture.id %></span>
+       <span><%= object.picture.id %></span>
      </div>
 <% end %>
   <div class="row">
     <label><%= ExternalPicture.human_attribute_name(:url).s %></label>
-    <span><%= @object.picture.url %></span>
+    <span><%= object.picture.url %></span>
   </div>
   <div class="row">
     <label><%= ExternalPicture.human_attribute_name(:caption).s %></label>
-    <span><%= @object.picture.caption %></span>
+    <span><%= object.picture.caption %></span>
   </div>	
   <div class="row">
     <label><%= ExternalPicture.human_attribute_name(:place_id).s %></label>
-    <span><%= @object.picture.place_id %></span>
+    <span><%= object.picture.place_id %></span>
   </div>	
   <div class="row">
     <label><%= Illustration.human_attribute_name(:is_primary).s %></label>
-    <span><%= yes_no @object.is_primary %></span>
+    <span><%= yes_no object.is_primary %></span>
   </div>	
 </fieldset>

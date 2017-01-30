@@ -13,8 +13,6 @@ class Admin::FeatureNamesController < AclController
   
   def locate_for_relation
     @locating_relation=true # flag used in template
-    @object = object
-    @parent_object = parent_object
     # Remove the Feature that is currently looking for a relation
     # (shouldn't relate to itself)
     @collection = @collection.where(['id <> ?', object.id])
@@ -59,8 +57,6 @@ class Admin::FeatureNamesController < AclController
   # to get the correct name of the parent association
   #
   def parent_association
-    # needed for the show view
-    @parent_object = parent_object
     parent_object.names
   end
   
@@ -68,9 +64,6 @@ class Admin::FeatureNamesController < AclController
   # Override ResourceController collection method
   #
   def collection
-    # needed for the list view
-    @parent_object = parent_object if parent?
-    
     feature_id=nil
     if params[:feature_id]
       feature_id = params[:feature_id]

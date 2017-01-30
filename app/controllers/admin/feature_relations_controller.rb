@@ -50,7 +50,6 @@ class Admin::FeatureRelationsController < AclController
   private
   
   def collection
-    @parent_object = parent_object # ResourceController normally sets this
     feature_id = params[:feature_id]
     search_results = FeatureRelation.search(params[:filter])
     search_results = search_results.where(['parent_node_id = ? OR child_node_id = ?', feature_id, feature_id]) if feature_id
@@ -63,7 +62,6 @@ class Admin::FeatureRelationsController < AclController
   # Reminder: This is a subclass of ResourceController::Base
   #
   def parent_association
-    @parent_object=parent_object # ResourceController normally sets this
     if params[:id].nil?
       return parent_object.all_parent_relations 
     end

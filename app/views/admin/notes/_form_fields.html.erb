@@ -1,8 +1,8 @@
-<% @object.is_public = true if @object.new_record? %>
+<% object.is_public = true if object.new_record? %>
 <%= tinymce_assets %>
 <%= tinymce %>
 <fieldset>
-  <legend><%= ts(:for, what: Note.model_name.human.titleize, whom: @object.notable) %></legend>
+  <legend><%= ts(:for, what: Note.model_name.human.titleize, whom: object.notable) %></legend>
   <div class="row">
 <%= f.label :custom_note_title, ts('type.in', what: Note.human_attribute_name(:custom_note_title)) %>
 <%= f.text_field :custom_note_title, class: [:text, 'text-full form-control form-text'] %>
@@ -21,9 +21,9 @@
 <%= f.label(:is_public).s %>
 <%= f.check_box :is_public %>
   </div>
-<%= link_to t('add.record', what: t('new.record', what: t(:author, count: 1))).capitalize.s, polymorphic_path([:admin, @object.notable, @object.class.name.tableize], action: 'add_author'), remote: true %>
+<%= link_to t('add.record', what: t('new.record', what: t(:author, count: 1))).capitalize.s, polymorphic_path([:admin, object.notable, object.class.name.tableize], action: 'add_author'), remote: true %>
   <div id="authors_div">
-<%  for author in @object.authors %>
+<%  for author in object.authors %>
 <%=   render partial: 'authors_selector', locals: {selected: author.id} %>
 <%  end %>
   </div>

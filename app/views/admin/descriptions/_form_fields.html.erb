@@ -30,9 +30,9 @@ input[type=text] {
 	<%= f.collection_select :language_id, @languages, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
   </div>
 </p>  
-<p><%= link_to ts('add.record', what: t('new.record', what: t(:author, count: 1))), add_author_admin_feature_descriptions_path(@object.feature), remote: true %></p>
+<p><%= link_to ts('add.record', what: t('new.record', what: t(:author, count: 1))), add_author_admin_feature_descriptions_path(object.feature), remote: true %></p>
 <div id="authors_div">
-<% for author in @object.authors %>
+<% for author in object.authors %>
 <%=  render partial: 'authors_selector', locals: {selected: author.id} %>
 <% end %>
 </div>    

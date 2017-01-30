@@ -1,39 +1,39 @@
 <%= render :partial => 'breadcrumbs' %>
-<%  add_breadcrumb_item @object.id %>
+<%  add_breadcrumb_item object.id %>
 <fieldset>	
-  <legend><%= ts :for, :what => Citation.model_name.human.titleize.s, :whom => @object.citable_type.titleize %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
+  <legend><%= ts :for, :what => Citation.model_name.human.titleize.s, :whom => object.citable_type.titleize %> <%= edit_item_link object %> <%= delete_item_link object %></legend>
   <div class="row">
     <label><%= Citation.human_attribute_name(:info_source_id).s %></label>
-<% if @object.info_source_type.start_with?('MmsIntegration') %>	
-     <span><%= def_if_blank @object, :info_source, :prioritized_title %></span>
+<% if object.info_source_type.start_with?('MmsIntegration') %>
+     <span><%= def_if_blank object, :info_source, :prioritized_title %></span>
   </div>
-<%   source = @object.info_source
+<%   source = object.info_source
      if !source.nil?
        case source.type
        when 'Document' %>
          <div class="row">
            <label><%= Page.model_name.human(:count => :many).titleize.s %></label>
-           <span><%= @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ').html_safe %></span>
+           <span><%= object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(object, p)} #{delete_item_link admin_citation_page_path(object, p)}"}.join(', ').html_safe %></span>
          </div>
          <div class="row">
-<%=	       new_item_link(new_admin_citation_page_path(@object), ts('add.record', :what => t(:referenced, :what => Page.model_name.human(:count => :many)))) %>
+<%=	       new_item_link(new_admin_citation_page_path(object), ts('add.record', :what => t(:referenced, :what => Page.model_name.human(:count => :many)))) %>
          </div>
 <%     when 'OnlineResource' %>
          <div class="row">
            <label><%= WebPage.model_name.human(:count => :many).titleize.s %></label>
-           <span><%= @object.web_pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_web_page_path(@object, p)} #{delete_item_link admin_citation_web_page_path(@object, p)}"}.join(', ').html_safe %></span>
+           <span><%= object.web_pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_web_page_path(object, p)} #{delete_item_link admin_citation_web_page_path(object, p)}"}.join(', ').html_safe %></span>
          </div>
          <div class="row">
-<%=	       new_item_link(new_admin_citation_web_page_path(@object), ts('add.record', :what => t(:referenced, :what => WebPage.model_name.human(:count => :many)))) %>
+<%=	       new_item_link(new_admin_citation_web_page_path(object), ts('add.record', :what => t(:referenced, :what => WebPage.model_name.human(:count => :many)))) %>
          </div>
 <%     end
      end %>
 <% else %>
-     <span><%= def_if_blank @object, :info_source, :name %></span>
+     <span><%= def_if_blank object, :info_source, :name %></span>
   </div>
 <% end %>
   <div class="row">
     <label><%= Note.model_name.human(:count => :many).titleize.s %></label>
-    <span><%= def_if_blank(@object, :notes).html_safe %></span>
+    <span><%= def_if_blank(object, :notes).html_safe %></span>
   </div>
 </fieldset>

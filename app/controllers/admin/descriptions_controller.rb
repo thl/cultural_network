@@ -66,7 +66,6 @@ class Admin::DescriptionsController < AclController
   #
   def collection
     # needed for the list view
-    @parent_object = parent_object if parent?
     
     feature_id=nil
     if params[:feature_id]
