@@ -1,6 +1,6 @@
 <%  add_breadcrumb_items features_link, feature_link(object), ts('edit.this') %>
-<%= form_for object, url: admin_feature_path(object), method: :put do |f| %>
+<%= form_for object, url: admin_feature_path(object.fid), method: :put do |f| %>
 <%=   render partial: 'form_fields', locals: {f: f} %>
-<%=   link_to ts('cancel.this'), admin_feature_path(object), class: 'btn btn-primary form-submit', id: 'edit-cancel' %>
+<%=   link_to ts('cancel.this'), admin_feature_path(object.fid), class: 'btn btn-primary form-submit', id: 'edit-cancel' %>
 | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %>
 <%  end %>

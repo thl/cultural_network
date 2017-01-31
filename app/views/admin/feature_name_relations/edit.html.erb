@@ -1,5 +1,5 @@
 <%  add_breadcrumb_item features_link
-    add_breadcrumb_item link_to(object.feature.pid, admin_feature_path(object.feature))
+    add_breadcrumb_item link_to(object.feature.pid, admin_feature_path(object.feature.fid))
     add_breadcrumb_item link_to(FeatureName.model_name.human(count: :many).s, admin_feature_feature_names_path(object.feature))
     add_breadcrumb_item link_to(object.child_node.name, admin_feature_name_path(object.child_node))
     add_breadcrumb_item link_to(FeatureNameRelation.model_name.human(count: :many).s, admin_feature_name_feature_name_relations_path(object.child_node))

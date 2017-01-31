@@ -285,7 +285,7 @@ module AdminHelper
   #
   #
   def feature_link(feature, *args)
-    link_to(fname_labels(feature), admin_feature_path(feature, *args), {:class=>:featureLabel, :title=>h(feature.name)})
+    link_to(fname_labels(feature), admin_feature_path(feature.fid, *args), {:class=>:featureLabel, :title=>h(feature.name)})
   end
   
   def feature_names_sorted(feature_names)
@@ -348,7 +348,7 @@ module AdminHelper
       items=[]
       if options[:use_first]
         items << (options[:link_first] ? 
-          (options[:use_names] ? f_link(feature, admin_feature_path(feature)) : feature_link(feature)) : 
+          (options[:use_names] ? f_link(feature, admin_feature_path(feature.fid)) : feature_link(feature)) :
           feature_label(feature))
       end
       if options[:use_relation]
@@ -357,7 +357,7 @@ module AdminHelper
       end
       if options[:use_second]
         items << (options[:link_second] ? 
-          (options[:use_names] ? f_link(other, admin_feature_path(other)) : feature_link(other)) : 
+          (options[:use_names] ? f_link(other, admin_feature_path(other.fid)) : feature_link(other)) :
           feature_label(other))
       end
       items.join(" ").html_safe

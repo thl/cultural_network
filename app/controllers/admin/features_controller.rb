@@ -15,7 +15,7 @@ class Admin::FeaturesController < AclController
     object.fid = Feature.generate_pid
     object.is_public = true
     parent_id = params.require(:parent_id)
-    @parent = parent_id.blank? ? nil : Feature.find(parent_id)
+    @parent = parent_id.blank? ? nil : Feature.get_by_fid(parent_id) 
     if !@parent.nil?
       @perspectives = @parent.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
       @perspectives = Perspective.order(:name) if @perspectives.include? nil
@@ -46,7 +46,7 @@ class Admin::FeaturesController < AclController
   
   update.before { |r| update_primary_description }
 
-  create.wants.html {redirect_to admin_feature_url(object) }
+  create.wants.html {redirect_to admin_feature_url(object.fid) }
   
   def locate_for_relation
     @locating_relation=true
@@ -57,15 +57,18 @@ class Admin::FeaturesController < AclController
   end
   
   def set_primary_description
-    @feature = Feature.find(params[:id])
+    @feature = Feature.get_by_fid(params[:id])
     #render :action => 'primary_description_set'
   end
   
   def clone
-    redirect_to admin_feature_url(Feature.find(params[:id]).clone_with_names)
+    redirect_to admin_feature_url(Feature.get_by_fid(params[:id]).clone_with_names.fid)
   end
   
   private
+  def object
+    @object = Feature.get_by_fid(params[:id])
+  end
   
   def collection
     filter = params[:filter]
