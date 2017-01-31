@@ -158,10 +158,16 @@ var NodeTree = {
 	},
 	
 	// Loads the entire node tree, expanded to the specified node 
-	loadExpandedTree: function(id){
+	loadExpandedTree: function(id, isAdmin){
+		if(typeof isAdmin == "undefined"){
+			isAdmin = false;
+		}
 		this.list_div.load(this.controller+id+"/node_tree_expanded", function(){
 			NodeTree.selectNode(id);
 			NodeTree.scrollToNode(id);
+			if (isAdmin) {
+				jQuery("#NodeTreeList a:not([class='node-plus'],[class='node-minus'])").attr('href', function (i, attr) { return attr.replace(/\/features/, '/admin/features'); });
+			}
 		});
 	},
 	
