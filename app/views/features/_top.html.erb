@@ -1,6 +1,0 @@
-<%= stylesheet_link_tag 'kmaps_engine/xml-books' %>
-<%= javascript_include_tag 'kmaps_engine/top' %>
-<%= javascript_on_load do %>
-	jQuery(window).unbind("scroll");
-	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
-<% end %>

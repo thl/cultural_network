@@ -1,4 +1,3 @@
-<%= render 'top' %>
 <%= render 'related' %>
 <%= javascript_on_load "document.title = '#{ts 'app.short'} - #{feature_name_header(@feature)} - #{ts 'relat.ed.record', :what => Feature.model_name.human.titleize}'" %>
 <%= render 'bottom' %>

@@ -441,13 +441,6 @@ fieldset .highlight .item-icon-new{
 .errorExplanation h2{
 	color:darkred;
 }
-.text :not(.bootstrap-select.btn-group .dropdown-menu>li>a span.text) {
-	border:solid 1px gray;
-	display: inline-block;
-	padding:5px; 
-	font:normal normal normal 18px/18px verdana, arial, sans-serif;
-}
-
 /* styling for descriptions */
 .title { font-size: 1.32em; color:black;}
 .by { font-size: 1.32em;}

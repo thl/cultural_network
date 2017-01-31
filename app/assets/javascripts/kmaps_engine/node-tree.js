@@ -52,7 +52,6 @@ var NodeTree = {
 		this.controller = controller;
 		this.div = jQuery("#"+this.div_id);
 		this.list_div = jQuery("#"+this.list_div_id);
-		
 	},
 	
 	// This should be modified to perform whatever action is needed to display the information of a node when it is clicked
