@@ -358,13 +358,10 @@ module ApplicationHelper
   
   # Custom HTML truncate for PD descriptions, which don't always validate
   def truncate_html(input, len = 30, extension = "...")
-    output = input
-    output.gsub!(/<\/p>\s*<p>/iu, "<br /><br />")
-    output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
-    output.gsub!(/<br.*?>/, "\v")
-    if output.size < len
-      return input
-    end
+    #output = input
+    #output.gsub!(/<\/p>\s*<p>/iu, "<br /><br />")
+    #output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
+    #output.gsub!(/<br.*?>/, "\v")
     
     # We need to be able to call .s on the input, but not on the extension, so we
     # have to use a modified version of truncate() instead of truncate() itself.
@@ -372,11 +369,11 @@ module ApplicationHelper
     l = len - extension.size
     # Temporarily removing .s, as it takes a while to run on long strings
     #output = (chars.length > len ? chars[0...l].s + extension : input).to_s
-    output = input.size > len ? input[0...l] + extension : input
+    #output = input.size > len ? input[0...l] + extension : input
     
-    output.strip!
-    output.gsub!(/\v/, "<br />")
-    output.html_safe
+    output = strip_tags(input).strip!
+    #output.gsub!(/\v/, "<br />")
+    return (output.size < len ?  output : (output[0...l] + extension)).html_safe
   end
   
   # HTML truncate for valid HTML, requires REXML::Parsers::PullParser
