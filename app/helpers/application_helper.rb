@@ -371,7 +371,8 @@ module ApplicationHelper
     #output = (chars.length > len ? chars[0...l].s + extension : input).to_s
     #output = input.size > len ? input[0...l] + extension : input
     
-    output = strip_tags(input).strip!
+    output = strip_tags(input)
+    output.strip!
     #output.gsub!(/\v/, "<br />")
     return (output.size < len ?  output : (output[0...l] + extension)).html_safe
   end
