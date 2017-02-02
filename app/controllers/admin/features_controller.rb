@@ -67,7 +67,7 @@ class Admin::FeaturesController < AclController
   
   private
   def object
-    @object = Feature.get_by_fid(params[:id])
+    @object ||= Feature.get_by_fid(params[:id])
   end
   
   def collection
