@@ -70,7 +70,7 @@ bo:
         attributes:
             affiliation:
                 descendants: 'Include descendants?'
-            blurp:
+            blurb:
                 code: 'ཚབ་ཨང་།'
                 content: 'ནང་དོན།'
                 title: 'གདོང་འཛར།'

@@ -31,33 +31,31 @@ module AdminHelper
   end
   
   def admin_resources
-    resources = {'Admin Home' => admin_root_path}
+    resources = {}
     # resources['Admin Home'] = admin_root_path if authorized? admin_root_path
-    resources[AltSpellingSystem.model_name.human(:count => :many).titleize.s] = admin_alt_spelling_systems_path if authorized? admin_alt_spelling_systems_path
-    resources[Blurb.model_name.human(:count => :many).titleize.s] = admin_blurbs_path if authorized? admin_blurbs_path
-    resources[Citation.model_name.human(:count => :many).titleize.s] = admin_citations_path if authorized? admin_citations_path
-    resources[Collection.model_name.human(:count => :many).titleize.s] = admin_collections_path if authorized? admin_collections_path
-    resources[Feature.model_name.human(:count => :many).titleize.s] = admin_features_path if authorized? admin_features_path
-    resources[FeatureGeoCode.model_name.human(:count => :many).titleize.s] = admin_feature_geo_codes_path if authorized? admin_feature_geo_codes_path
-    resources["#{Feature.human_attribute_name(:pid).s} Generator"] = admin_feature_pids_path if authorized? admin_feature_pids_path
-    resources[FeatureName.model_name.human(:count => :many).titleize.s] = admin_feature_names_path if authorized? admin_feature_names_path
-    resources[FeatureNameRelation.model_name.human(:count => :many).titleize.s] = admin_feature_name_relations_path if authorized? admin_feature_name_relations_path
-    resources[FeatureNameType.model_name.human(:count => :many).titleize.s] = admin_feature_name_types_path if authorized? admin_feature_name_types_path
-    resources[FeatureRelation.model_name.human(:count => :many).titleize.s] = admin_feature_relations_path if authorized? admin_feature_relations_path
-    resources[FeatureRelationType.model_name.human(:count => :many).titleize.s] = admin_feature_relation_types_path if authorized? admin_feature_relation_types_path
-    resources[GeoCodeType.model_name.human(:count => :many).titleize.s] = admin_geo_code_types_path if authorized? admin_geo_code_types_path
-    resources[ImportationTask.model_name.human(:count => :many).titleize.s] = admin_importation_tasks_path if authorized? admin_importation_tasks_path
-    resources[Language.model_name.human(:count => :many).titleize.s] = admin_languages_path if authorized? admin_languages_path
-    resources[Note.model_name.human(:count => :many).titleize.s] = admin_notes_path if authorized? admin_notes_path
-    resources[NoteTitle.model_name.human(:count => :many).titleize.s] = admin_note_titles_path if authorized? admin_note_titles_path
-    resources[OralSource.model_name.human(:count => :many).titleize.s] = admin_oral_sources_path if authorized? admin_oral_sources_path
-    resources[OrthographicSystem.model_name.human(:count => :many).titleize.s] = admin_orthographic_systems_path if authorized? admin_orthographic_systems_path
-    resources[AuthenticatedSystem::Person.model_name.human(:count => :many).titleize.s] = authenticated_system_people_path if authorized? authenticated_system_people_path
-    resources[Perspective.model_name.human(:count => :many).titleize.s] = admin_perspectives_path if authorized? admin_perspectives_path
-    resources[PhoneticSystem.model_name.human(:count => :many).titleize.s] = admin_phonetic_systems_path if authorized? admin_phonetic_systems_path
-    resources[AuthenticatedSystem::Role.model_name.human(:count => :many).titleize.s] = authenticated_system_roles_path if authorized? authenticated_system_roles_path
-    resources[View.model_name.human(:count => :many).titleize.s] = admin_views_path if authorized? admin_views_path
-    resources[WritingSystem.model_name.human(:count => :many).titleize.s] = admin_writing_systems_path if authorized? admin_writing_systems_path
+    menu = resources['Name admin'] = {}
+    menu[AltSpellingSystem.model_name.human(:count => :many).titleize.s] = admin_alt_spelling_systems_path if authorized? admin_alt_spelling_systems_path
+    menu[Language.model_name.human(:count => :many).titleize.s] = admin_languages_path if authorized? admin_languages_path
+    menu[OrthographicSystem.model_name.human(:count => :many).titleize.s] = admin_orthographic_systems_path if authorized? admin_orthographic_systems_path
+    menu[PhoneticSystem.model_name.human(:count => :many).titleize.s] = admin_phonetic_systems_path if authorized? admin_phonetic_systems_path
+    menu[WritingSystem.model_name.human(:count => :many).titleize.s] = admin_writing_systems_path if authorized? admin_writing_systems_path
+
+    menu = resources['User admin'] = {}
+    menu[Collection.model_name.human(:count => :many).titleize.s] = admin_collections_path if authorized? admin_collections_path
+    menu[AuthenticatedSystem::Person.model_name.human(:count => :many).titleize.s] = authenticated_system_people_path if authorized? authenticated_system_people_path
+    menu[AuthenticatedSystem::Role.model_name.human(:count => :many).titleize.s] = authenticated_system_roles_path if authorized? authenticated_system_roles_path
+
+    menu = resources['Data admin'] = {}
+    menu[GeoCodeType.model_name.human(:count => :many).titleize.s] = admin_geo_code_types_path if authorized? admin_geo_code_types_path
+    menu[Perspective.model_name.human(:count => :many).titleize.s] = admin_perspectives_path if authorized? admin_perspectives_path
+    menu[View.model_name.human(:count => :many).titleize.s] = admin_views_path if authorized? admin_views_path
+    menu[OralSource.model_name.human(:count => :many).titleize.s] = admin_oral_sources_path if authorized? admin_oral_sources_path
+    menu[NoteTitle.model_name.human(:count => :many).titleize.s] = admin_note_titles_path if authorized? admin_note_titles_path
+    
+    menu = resources['Admin tasks'] = {}
+    menu[Blurb.model_name.human(:count => :many).titleize.s] = admin_blurbs_path if authorized? admin_blurbs_path
+    menu["#{Feature.human_attribute_name(:pid).s} Generator"] = admin_feature_pids_path if authorized? admin_feature_pids_path
+    menu[ImportationTask.model_name.human(:count => :many).titleize.s] = admin_importation_tasks_path if authorized? admin_importation_tasks_path
     resources
   end
   
@@ -456,24 +454,5 @@ module AdminHelper
     
   def fn_relationship(feature_name)
     feature_name.display_string
-  end
-  
-  def contextual_feature
-    return @feature if defined?(@feature) && !@feature.nil?
-    return object if object.instance_of? Feature
-    feature = case parent_type
-    when :feature then parent_object
-    when :description, :feature_name, :feature_geo_code then parent_object.feature
-    when :feature_relation then parent_object.child_node
-    when :feature_name_relation then parent_object.child_node.feature
-    else nil
-    end
-    if feature.nil?
-      context_id = session[:interface][:context_id]
-      feature = Feature.find(context_id) if !context_id.blank?
-    else
-      session[:interface][:context_id] = feature.id
-    end
-    feature
   end
 end
