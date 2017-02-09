@@ -70,7 +70,7 @@ zh:
         attributes:
             affiliation:
                 descendants: 'Include descendants?'
-            blurp:
+            blurb:
                 code: '代码'
                 content: '内容'
                 title: '标签'

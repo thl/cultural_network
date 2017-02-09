@@ -13,8 +13,8 @@ en:
                 one: 'general note'
                 other: 'general notes'
             blurb:
-                one: 'blurp'
-                other: 'blurps'
+                one: 'blurb'
+                other: 'blurbs'
             category_feature:
                 one: 'subject'
                 other: 'subjects'
@@ -70,7 +70,7 @@ en:
         attributes:
             affiliation:
                 descendants: 'Include descendants?'
-            blurp:
+            blurb:
                 code: 'Code'
                 content: 'Content'
                 title: 'Title'

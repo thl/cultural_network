@@ -1,5 +1,19 @@
 <ul>
 	<li><h3>Main Menu</h3><a class="link-blocker"></a></li>
-    <li><%= link_to 'Public site', root_path, {:hreflang => 'View places.'} %></li>
-   <li><%= login_status %></li>
+  <li><%= link_to 'Public site', root_path, {:hreflang => 'View places.'} %></li>
+<% admin_resources.each_pair do |key, value|
+     if value.instance_of? Hash
+	     if !value.empty? %>
+	       <li><a href="#"><%= key %> <span class="fa arrow"></span></a>
+		       <ul>
+             <li><h3><%= key %></h3></li>
+<%=          value.to_a.collect{ |m| "<li>#{link_to m[0], m[1]}</li>" }.join("\n").html_safe %>
+           </ul>
+         </li>
+<%     end
+     else %>
+       <li><%= link_to key, value %></li>
+<%   end %>
+<% end %>
+  <li><%= login_status %></li>
 </ul>
