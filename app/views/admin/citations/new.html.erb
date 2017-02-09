@@ -2,9 +2,9 @@
 <%  add_breadcrumb_item ts('new.this') %>
 <%= form_for [:admin, object] do |f| %>
 <%=   f.hidden_field :citable_id %>
-<%=   f.hidden_field :citable_type %>
+<%=   hidden_field_tag 'citation[citable_type]', parent_object.type %>
 <fieldset>
-	<legend><%= ts(:for, what: Citation.model_name.human.titleize, whom: object.citable) %></legend>
+	<legend><%= ts(:for, what: Citation.model_name.human.titleize, whom: parent_object) %></legend>
 	<div class="row">
 <%=   label :info_source_type, InfoSource.human_attribute_name(:info_source_type).s %>
 <%=   select_tag(:info_source_type, options_for_select([['Document or Online Resource ID from MMS application','MmsIntegration::Medium'],['Oral source', 'OralSource']], 'MmsIntegration::Medium')) %>
