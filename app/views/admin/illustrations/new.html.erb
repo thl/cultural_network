@@ -2,6 +2,11 @@
     add_breadcrumb_item feature_link(object.feature)
     add_breadcrumb_item link_to(Illustration.model_name.human(count: :many).s, collection_path)
     add_breadcrumb_item ts('new.this') %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Illustration.model_name.human.titleize.s %></h6>	
+  </div>
+  <div class="panel-body">
 <%= form_for [:admin, object.feature, object] do |f| %>
 <%=   error_messages_for model_name %>
       <fieldset>
@@ -49,3 +54,5 @@
 		}
       });
 <%  end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

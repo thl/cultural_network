@@ -52,6 +52,21 @@ var NodeTree = {
 		this.controller = controller;
 		this.div = jQuery("#"+this.div_id);
 		this.list_div = jQuery("#"+this.list_div_id);
+
+    this.list_div.height = this.div_id.height;
+    var container_height = jQuery('#search-flyout .ext_wrapper').height();
+    var search_height = jQuery('#search-flyout .input-section').outerHeight();
+    var tabs_height = jQuery('#search-flyout .nav.nav-tabs').outerHeight();
+    console.debug("Conatiner:"+container_height+":search:"+search_height+":tabs:"+tabs_height);
+    console.debug("Veamos:"+this.list_div);
+    var tree_height = 400;
+    var tree_margin = 33; //just for astetics
+    if (search_height+tabs_height+tree_height < container_height ){
+      tree_height = tree_height + (container_height - (search_height+tabs_height+tree_height));
+    }
+    console.debug("new height:"+tree_height);
+    jQuery("#"+this.list_div_id).height(tree_height-tree_margin);
+
 	},
 	
 	// This should be modified to perform whatever action is needed to display the information of a node when it is clicked

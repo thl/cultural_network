@@ -12,4 +12,11 @@
   </div>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Caption.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= render :partial => 'list', :locals => { :list => @collection } %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

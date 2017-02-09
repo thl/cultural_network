@@ -6,9 +6,16 @@
       add_breadcrumb_item link_to(ts('relation.this', count: :many).s, admin_feature_name_feature_name_relations_path(object.child_node))
       add_breadcrumb_item ts('new.this')
     end %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureName.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= form_for object, url: admin_feature_name_feature_name_relations_path(object.child_node) do |f| %>
 <%=   f.hidden_field :child_node_id, value: params[:feature_name_id] %>
 <%=   f.hidden_field :parent_node_id, value: params[:target_id] %>
 <%=   render partial: 'form_fields', locals: {f: f} %>
 <%=   link_to ts('cancel.this'), admin_feature_name_feature_name_relations_path(object.child_node), class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'creat.e.this', class: 'btn btn-primary form-submit' %>
 <%  end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

@@ -4,8 +4,12 @@
    add_breadcrumb_item object.id %>
 <p id="notice"><%= notice %></p>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= "#{Summary.model_name.human.titleize.s} #{edit_item_link object}".html_safe %></h6>
+  </div>
+  <div class="panel-body">
 <fieldset>
-  <legend><%= "#{Summary.model_name.human.titleize.s} #{edit_item_link object}".html_safe %></legend>
   <span class='by'><%= ' by ' %></span>
   <span class='content_by'><%= object.author.fullname %></span>
   <div class="row">
@@ -16,3 +20,5 @@
     <span><%= def_if_blank(object, :language, :name) %></span>
   </div>
 </fieldset>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

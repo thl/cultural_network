@@ -18,14 +18,19 @@ end %>
       <%#= context_search_message(@context_feature) %>
     </div>
     <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureName.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
     <table class="listGrid">
-<%= pagination_row :colspan=>3 %>  
+<%= pagination_row :colspan=>3 %>
       <tr>
         <th class="listActionsCol"></th>
         <th class="leftText"><%= FeatureName.model_name.human(:count => :many).titleize.s %></th>
       </tr>
 <%    @collection.each do |item| %>
-      <tr class="<%= @context_feature==item ? 'selected' : '' %>">  
+      <tr class="<%= @context_feature==item ? 'selected' : '' %>">
         <td class="listActionsCol">
 <%      if @locating_relation %>
 <%=       form_tag new_admin_feature_feature_relation_path(object), {:method=>:get} %>
@@ -47,6 +52,8 @@ end %>
       </tr>
 <%    end %>
     </table>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->
   </div>
   <br class="clear"/>
 </div>

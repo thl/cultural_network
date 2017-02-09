@@ -1,5 +1,10 @@
 <% add_breadcrumb_item(link_to(SimpleProp.model_name.human(:count => :many).s, collection_path))
    add_breadcrumb_item object %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= SimpleProp.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <fieldset>
   <legend>
 <%= SimpleProp.model_name.human.titleize.s %>
@@ -18,3 +23,5 @@
     <span><%= def_if_blank(object, :description).html_safe %></span>
   </div>
 </fieldset>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

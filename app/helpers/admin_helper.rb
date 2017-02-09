@@ -453,21 +453,22 @@ module AdminHelper
       ""
     end
   end
-    
+  
   def fn_relationship(feature_name)
     feature_name.display_string
   end
   
   def contextual_feature
-    return @feature if defined?(@feature) && !@feature.nil?
-    return object if object.instance_of? Feature
+    feature = nil
+    feature = @feature if defined?(@feature) && !@feature.nil?
+    feature = object if feature.nil? && defined?(object) && object.instance_of?(Feature)
     feature = case parent_type
-    when :feature then parent_object
+    when :feature                                       then parent_object
     when :description, :feature_name, :feature_geo_code then parent_object.feature
-    when :feature_relation then parent_object.child_node
-    when :feature_name_relation then parent_object.child_node.feature
+    when :feature_relation                              then parent_object.child_node
+    when :feature_name_relation                         then parent_object.child_node.feature
     else nil
-    end
+    end if feature.nil? && defined?(parent_type)
     if feature.nil?
       context_id = session[:interface][:context_id]
       feature = Feature.find(context_id) if !context_id.blank?

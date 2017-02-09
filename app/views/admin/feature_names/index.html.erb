@@ -31,4 +31,11 @@ end %>
 </div>
 <br class="clear"/>
 <% end %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureName.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= render :partial => 'names_list', :locals => { :list => @collection } %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

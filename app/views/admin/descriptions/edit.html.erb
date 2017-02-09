@@ -7,7 +7,14 @@
 <h1><%= ts 'edit.ing.record', what: "#{Description.model_name.human.titleize} #{object.id}" %></h1>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Description.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= form_for object, url: admin_feature_description_path(parent_object,object), method: :put do |f| %>
 <%=  render partial: 'form_fields', locals: { f: f} %>
      <p><%=  link_to ts('cancel.this'), admin_feature_description_path(parent_object,object), class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %></p>
 <% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

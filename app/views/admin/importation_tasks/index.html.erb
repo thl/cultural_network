@@ -3,6 +3,11 @@
     <div class="left"><%= resource_search_form %></div>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ImportationTask.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <% if @collection.empty? %>
  <%= empty_collection_message %>
 <% else %>
@@ -22,3 +27,5 @@
 <%   end %>
    </table>
 <% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

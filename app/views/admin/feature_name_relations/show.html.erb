@@ -4,6 +4,18 @@
    add_breadcrumb_item feature_name_link(object.child_node)
    add_breadcrumb_item link_to(ts('relation.this', :count => :many), admin_feature_name_feature_name_relations_path(object.child_node))
    add_breadcrumb_item object %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Collection.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
+  <div id="accordion" class="panel-group">
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= ts 'information.general' %></a></h6>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
 <fieldset>
   <legend><%= ts 'information.general' %> <%= edit_item_link object %></legend>
   <div class="inlineRow">
@@ -30,5 +42,29 @@
   </div>
   <br/>
 </fieldset>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseOne -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Citations' %></a></h6>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= citation_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseTwo -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Notes' %></a></h6>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= note_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseOne -->
+</section> <!-- END panel -->
+  </div> <!-- END accordion -->
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

@@ -3,9 +3,14 @@
   <div class="left">
 <%= resource_search_form %>
   </div>
-<%= highlighted_new_item_link [controller_name], nil, :align => 'right' %>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Collection.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
+<%= highlighted_new_item_link [controller_name], nil, :align => 'right' %>
 <% if @collection.empty? %>
 <%=  empty_collection_message %>
 <% else %>
@@ -25,3 +30,5 @@
 <%   end %>
    </table>
 <% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

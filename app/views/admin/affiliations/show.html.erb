@@ -4,8 +4,12 @@
    add_breadcrumb_item object.id %>
 <p id="notice"><%= notice %></p>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Affiliation.model_name.human.titleize.s %><%= edit_item_link @blurb %></h6>
+  </div>
+  <div class="panel-body">
 <fieldset>
-  <legend><%= "#{Collection.model_name.human.titleize.s} #{edit_item_link object}".html_safe %></legend>
   <div class="row">
     <span><%= def_if_blank(object, :collection, :name).html_safe %></span>
   </div>
@@ -14,3 +18,5 @@
     <span><%= object.descendants? ? 'Yes' : 'No' %></span>
   </div>
 </fieldset>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

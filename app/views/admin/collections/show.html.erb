@@ -1,10 +1,11 @@
 <% add_breadcrumb_item(link_to(Collection.model_name.human(:count => :many).s, collection_path))
    add_breadcrumb_item object %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Collection.model_name.human.titleize.s %><%= edit_item_link object %></h6>
+  </div>
+  <div class="panel-body">
 <fieldset>
-  <legend>
-<%= Collection.model_name.human.titleize.s %>
-<%= edit_item_link object %>
-  </legend>
   <div class="row">
     <label><%= SimpleProp.human_attribute_name(:name).s %></label>
     <span><%= def_if_blank(object, :name) %></span>
@@ -22,3 +23,5 @@
     <span><%= object.users.collect(&:screen_name).join(', ') %></span>
   </div>
 </fieldset>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

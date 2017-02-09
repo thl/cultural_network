@@ -4,6 +4,11 @@
 <%= highlighted_new_item_link [:perspective], nil, :align => 'right' %>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Perspective.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <% if @collection.empty? %>
  <%= empty_collection_message %>
 <% else %>
@@ -25,3 +30,5 @@
 <%   end %>
    </table>
 <% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

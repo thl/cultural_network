@@ -1,5 +1,10 @@
 <%= render :partial => 'breadcrumbs' %>
 <%  add_breadcrumb_item object.to_s %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Note.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <fieldset>
   <legend>Note for <%= object.notable_type_name.titleize %> <%= edit_item_link object %> <%= delete_item_link object %></legend>
   <div class="row">
@@ -19,3 +24,5 @@
     <td><span><%= object.authors.blank? ? '-' : object.authors.collect(&:fullname).join('<br />') %></span></td></tr>
   </table></div>
 </fieldset>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

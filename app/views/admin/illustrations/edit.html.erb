@@ -3,10 +3,14 @@
    add_breadcrumb_item link_to(Illustration.model_name.human(count: :many).s, admin_feature_illustrations_path(object.feature))
    add_breadcrumb_item link_to(object.id, object_path)
    add_breadcrumb_item ts('edit.this') %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+      <h6><%= Illustration.model_name.human.titleize.s %></h6>	
+  </div>
+  <div class="panel-body">
 <%= form_for [:admin, object.feature, object] do |f| %>
 <%=   error_messages_for model_name %>
       <fieldset>
-      <legend><%= Illustration.model_name.human.titleize.s %></legend>	
       <div class="row">
 <%=     f.label :feature, Feature.model_name.human.titleize.s %>
         <span><%= f_label(object.feature) %></span>
@@ -40,3 +44,5 @@
 	  </div>
 <%=   link_to ts('cancel.this'), collection_path, class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %>
 <%  end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

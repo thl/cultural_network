@@ -3,8 +3,12 @@
 <%= form_for [:admin, object] do |f| %>
 <%=   f.hidden_field :citable_id %>
 <%=   f.hidden_field :citable_type %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ts(:for, what: Citation.model_name.human.titleize, whom: object.citable) %></h6>
+  </div>
+  <div class="panel-body">
 <fieldset>
-	<legend><%= ts(:for, what: Citation.model_name.human.titleize, whom: object.citable) %></legend>
 	<div class="row">
 <%=   label :info_source_type, InfoSource.human_attribute_name(:info_source_type).s %>
 <%=   select_tag(:info_source_type, options_for_select([['Document or Online Resource ID from MMS application','MmsIntegration::Medium'],['Oral source', 'OralSource']], 'MmsIntegration::Medium')) %>
@@ -38,3 +42,5 @@
 		}
       });
 <%  end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

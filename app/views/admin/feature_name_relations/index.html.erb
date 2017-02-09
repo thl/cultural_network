@@ -5,6 +5,11 @@
      add_breadcrumb_item link_to(parent_object.name, admin_feature_name_path(parent_object))
    end
    add_breadcrumb_item ts('relation.this', :count => :many) %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureNameRelation.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <div>
   <div class="left">
 <%= resource_search_form %>
@@ -19,3 +24,5 @@
 </div>
 <br class="clear"/>
 <%= render :partial => 'relations_list', :locals => { :list => @collection } %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

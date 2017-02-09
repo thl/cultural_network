@@ -1,4 +1,8 @@
-<h1><%= ts 'creat.e.record', what: t('feature.range') %></h1>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ts 'creat.e.record', what: t('feature.range') %></h6>
+  </div>
+  <div class="panel-body">
 <%= form_for(:feature_pid, url: admin_feature_pids_path) do |f| %>
    <p><b><%= ts 'feature.numbers_to_generate' %></b><br />
 <%=  f.text_field :count, class: [:text, 'text-full form-control form-text']  %>
@@ -10,3 +14,5 @@
 <%= link_to ts('cancel.record', what: t('new.this')), admin_feature_pids_path %> |
 <%= link_to ts('back.to', what: t(:admin)), admin_root_path %>
 </p>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

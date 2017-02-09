@@ -3,7 +3,14 @@
     add_breadcrumb_items feature_relations_link(parent_object)
     add_breadcrumb_items feature_relation_role_label(parent_object, object, use_first: false)
     add_breadcrumb_items ts('edit.this') %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureRelation.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= form_for object, url: admin_feature_feature_relation_path(parent_object, object), method: :put do |f| %>
 <%=   render partial: 'form_fields', locals: {f: f} %>
 <%=   link_to ts('cancel.this'), admin_feature_path(parent_object.fid), class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %>
 <%  end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->
