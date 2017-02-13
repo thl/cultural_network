@@ -455,7 +455,7 @@ module ApplicationHelper
     when :feature_name_relation then parent_object.child_node.feature
     else nil
     end if feature.nil? && defined?(parent_type)
-    if feature.nil?
+    if feature.nil? || feature.id.nil?
       context_id = session[:interface][:context_id]
       feature = Feature.find(context_id) if !context_id.blank?
     else
