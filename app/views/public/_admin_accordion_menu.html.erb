@@ -1,6 +1,7 @@
 <ul>
 	<li><h3>Main Menu</h3><a class="link-blocker"></a></li>
-  <li><%= link_to 'Public site', root_path, {:hreflang => 'View places.'} %></li>
+<% feature = contextual_feature %>
+  <li><%= link_to 'View mode', feature.nil? ? root_path : feature_path(feature), {:hreflang => 'View places.'} %></li>
 <% admin_resources.each_pair do |key, value|
      if value.instance_of? Hash
 	     if !value.empty? %>

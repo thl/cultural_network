@@ -1,3 +1,8 @@
 <div id="featureContextTreeAndList">
-  <br class="clear"/>
+<% if @intro_blurb.nil? %>
+     <br class="clear"/>
+<% else %>
+     <h2><%= @intro_blurb.title  %></h2>
+<%=  @intro_blurb.content.html_safe if !@intro_blurb.content.nil? %>
+<% end %>
 </div>

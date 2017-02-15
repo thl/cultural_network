@@ -14,7 +14,7 @@ module ApplicationHelper
     str += "</ul>"
     return str.html_safe
   end
-    
+  
   #
   #
   #
@@ -445,6 +445,7 @@ module ApplicationHelper
   end
   
   def contextual_feature
+    return @contextual_feature if !@contextual_feature.nil?
     feature = nil
     feature = @feature if defined?(@feature) && !@feature.nil?
     feature = object if feature.nil? && defined?(object) && object.instance_of?(Feature)
@@ -461,6 +462,6 @@ module ApplicationHelper
     else
       session[:interface][:context_id] = feature.id
     end
-    feature
+    @contextual_feature = feature
   end
 end

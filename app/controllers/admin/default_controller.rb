@@ -5,6 +5,7 @@ class Admin::DefaultController < ApplicationController
   end
 
   def index
+    @intro_blurb = Blurb.find_by(code: (current_user.admin? ? 'homepage.admin' : 'homepage.edit'))
   end
 
   def help

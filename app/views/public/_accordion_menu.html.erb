@@ -1,5 +1,9 @@
 <ul>
 	<li><h3>Main Menu</h3><a class="link-blocker"></a></li>
+<% if logged_in?
+     feature = contextual_feature %>
+     <li><%= link_to 'Edit mode', (feature.nil? || !logged_in? || !object_authorized?(feature)) ? admin_root_path : admin_feature_path(feature), {:hreflang => 'Manage controlled lists.'} %></li>
+<% end %>
 	<li>
 		<a href="#">Preferences <span class="fa arrow"></span></a>
 		<ul>
@@ -27,8 +31,5 @@
 			</li>
 		</ul>
 	</li>
-<%  if logged_in? %>
-	  <li><%= link_to 'Admin', admin_root_path, {:hreflang => 'Manage controlled lists.'} %></li>
-<%  end %>
 	<li><%= login_status %></li>
 </ul>

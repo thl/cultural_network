@@ -33,29 +33,37 @@ module AdminHelper
   def admin_resources
     resources = {}
     # resources['Admin Home'] = admin_root_path if authorized? admin_root_path
-    menu = resources['Name admin'] = {}
-    menu[AltSpellingSystem.model_name.human(:count => :many).titleize.s] = admin_alt_spelling_systems_path if authorized? admin_alt_spelling_systems_path
-    menu[Language.model_name.human(:count => :many).titleize.s] = admin_languages_path if authorized? admin_languages_path
-    menu[OrthographicSystem.model_name.human(:count => :many).titleize.s] = admin_orthographic_systems_path if authorized? admin_orthographic_systems_path
-    menu[PhoneticSystem.model_name.human(:count => :many).titleize.s] = admin_phonetic_systems_path if authorized? admin_phonetic_systems_path
-    menu[WritingSystem.model_name.human(:count => :many).titleize.s] = admin_writing_systems_path if authorized? admin_writing_systems_path
-
-    menu = resources['User admin'] = {}
-    menu[Collection.model_name.human(:count => :many).titleize.s] = admin_collections_path if authorized? admin_collections_path
-    menu[AuthenticatedSystem::Person.model_name.human(:count => :many).titleize.s] = authenticated_system_people_path if authorized? authenticated_system_people_path
-    menu[AuthenticatedSystem::Role.model_name.human(:count => :many).titleize.s] = authenticated_system_roles_path if authorized? authenticated_system_roles_path
-
-    menu = resources['Data admin'] = {}
-    menu[GeoCodeType.model_name.human(:count => :many).titleize.s] = admin_geo_code_types_path if authorized? admin_geo_code_types_path
-    menu[Perspective.model_name.human(:count => :many).titleize.s] = admin_perspectives_path if authorized? admin_perspectives_path
-    menu[View.model_name.human(:count => :many).titleize.s] = admin_views_path if authorized? admin_views_path
-    menu[OralSource.model_name.human(:count => :many).titleize.s] = admin_oral_sources_path if authorized? admin_oral_sources_path
-    menu[NoteTitle.model_name.human(:count => :many).titleize.s] = admin_note_titles_path if authorized? admin_note_titles_path
+    if authorized?(admin_alt_spelling_systems_path) || authorized?(admin_languages_path) || authorized?(admin_orthographic_systems_path) || authorized?(admin_phonetic_systems_path) || authorized?(admin_writing_systems_path)
+      menu = resources['Name preferences'] = {}
+      menu[AltSpellingSystem.model_name.human(:count => :many).titleize.s] = admin_alt_spelling_systems_path if authorized? admin_alt_spelling_systems_path
+      menu[Language.model_name.human(:count => :many).titleize.s] = admin_languages_path if authorized? admin_languages_path
+      menu[OrthographicSystem.model_name.human(:count => :many).titleize.s] = admin_orthographic_systems_path if authorized? admin_orthographic_systems_path
+      menu[PhoneticSystem.model_name.human(:count => :many).titleize.s] = admin_phonetic_systems_path if authorized? admin_phonetic_systems_path
+      menu[WritingSystem.model_name.human(:count => :many).titleize.s] = admin_writing_systems_path if authorized? admin_writing_systems_path
+    end
     
-    menu = resources['Admin tasks'] = {}
-    menu[Blurb.model_name.human(:count => :many).titleize.s] = admin_blurbs_path if authorized? admin_blurbs_path
-    menu["#{Feature.human_attribute_name(:pid).s} Generator"] = admin_feature_pids_path if authorized? admin_feature_pids_path
-    menu[ImportationTask.model_name.human(:count => :many).titleize.s] = admin_importation_tasks_path if authorized? admin_importation_tasks_path
+    if authorized?(admin_collections_path) || authorized?(authenticated_system_people_path) || authorized?(authenticated_system_roles_path)
+      menu = resources['User admin'] = {}
+      menu[Collection.model_name.human(:count => :many).titleize.s] = admin_collections_path if authorized? admin_collections_path
+      menu[AuthenticatedSystem::Person.model_name.human(:count => :many).titleize.s] = authenticated_system_people_path if authorized? authenticated_system_people_path
+      menu[AuthenticatedSystem::Role.model_name.human(:count => :many).titleize.s] = authenticated_system_roles_path if authorized? authenticated_system_roles_path
+    end
+    
+    if authorized?(admin_geo_code_types_path) || authorized?(admin_perspectives_path) || authorized?(admin_views_path) || authorized?(admin_oral_sources_path) || authorized?(admin_note_titles_path)
+      menu = resources['Data management'] = {}
+      menu[GeoCodeType.model_name.human(:count => :many).titleize.s] = admin_geo_code_types_path if authorized? admin_geo_code_types_path
+      menu[Perspective.model_name.human(:count => :many).titleize.s] = admin_perspectives_path if authorized? admin_perspectives_path
+      menu[View.model_name.human(:count => :many).titleize.s] = admin_views_path if authorized? admin_views_path
+      menu[OralSource.model_name.human(:count => :many).titleize.s] = admin_oral_sources_path if authorized? admin_oral_sources_path
+      menu[NoteTitle.model_name.human(:count => :many).titleize.s] = admin_note_titles_path if authorized? admin_note_titles_path
+    end
+    
+    if authorized?(admin_blurbs_path) || authorized?(admin_feature_pids_path) || authorized?(admin_importation_tasks_path)
+      menu = resources['Admin tasks'] = {}
+      menu[Blurb.model_name.human(:count => :many).titleize.s] = admin_blurbs_path if authorized? admin_blurbs_path
+      menu["#{Feature.human_attribute_name(:pid).s} Generator"] = admin_feature_pids_path if authorized? admin_feature_pids_path
+      menu[ImportationTask.model_name.human(:count => :many).titleize.s] = admin_importation_tasks_path if authorized? admin_importation_tasks_path
+    end
     resources
   end
   
@@ -194,7 +202,7 @@ module AdminHelper
     #@breadcrumbs.unshift link_to_unless_current('features', admin_features_path)
     #@breadcrumbs.to_a.join(' > ').html_safe
     @breadcrumbs ||= []
-    list = [link_to("#{ts('app.short')}:", admin_features_path)]+@breadcrumbs[0...@breadcrumbs.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [@breadcrumbs.last]
+    list = [link_to("#{ts('home.this')}:", admin_root_path)]+@breadcrumbs[0...@breadcrumbs.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [@breadcrumbs.last]
     content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
   end
   
