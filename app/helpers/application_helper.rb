@@ -457,7 +457,7 @@ module ApplicationHelper
     else nil
     end if feature.nil? && defined?(parent_type)
     if feature.nil? || feature.id.nil?
-      context_id = session[:interface][:context_id]
+      context_id = session[:interface].blank? ? nil : session[:interface][:context_id]
       feature = Feature.find(context_id) if !context_id.blank?
     else
       session[:interface][:context_id] = feature.id

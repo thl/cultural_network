@@ -10,7 +10,7 @@ class FeaturesController < ApplicationController
   #
   #
   def index
-    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
+    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface].blank? || session[:interface][:context_id].blank?
     @tab_options = {:entity => @feature}
     @current_tab_id = :home
     

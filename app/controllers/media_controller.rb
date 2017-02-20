@@ -10,7 +10,7 @@ class MediaController < ApplicationController
       @object_type = "Media"
       @object_title = "Medium #{@medium.id}"
       @object_url = MmsIntegration::Medium.element_url(@medium.id, :format => 'html')
-      @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
+      @feature = Feature.find(session[:interface][:context_id]) unless session[:interface].blank? || session[:interface][:context_id].blank?
       respond_to do |format|
         format.html { render :template => 'features/list' } # show.html.erb
         format.js   { render :template => 'features/paginated_list' }
