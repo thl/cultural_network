@@ -488,18 +488,30 @@ class Feature < ActiveRecord::Base
   end
   
   def document_for_rsolr
-    doc = defined?(super) ? super : RSolr::Xml::Document.new
-    doc.add_field('id', uid)
+    doc = defined?(super) ? super : {}
+    doc[:id] = uid
     name = self.prioritized_name(View.get_by_code('roman.popular'))
-    doc.add_field('header', name.nil? ? self.pid : name.name)
-    self.captions.each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
-    self.summaries.each{|s| doc.add_field("summary_#{s.language.code}", s.content)}
+    doc[:header] = name.nil? ? self.pid : name.name
+    self.captions.each do |c|
+      if doc["caption_#{c.language.code}"].blank?
+        doc["caption_#{c.language.code}"] = [c.content]
+      else
+        doc["caption_#{c.language.code}"] << c.content
+      end
+    end
+    self.summaries.each do |s|
+      if doc["summary_#{s.language.code}"].blank?
+        doc["summary_#{s.language.code}"] =  [s.content]
+      else
+        doc["summary_#{s.language.code}"] << s.content
+      end
+    end
     self.illustrations.each do |i|
       p = illustration.picture
-      doc.add_field("illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url", p.url)
+      doc["illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url"] = p.url
     end
-    doc.add_field('created_at', self.created_at.utc.iso8601)
-    doc.add_field('updated_at', self.updated_at.utc.iso8601)
+    doc[:created_at] = self.created_at.utc.iso8601
+    doc[:updated_at] = self.updated_at.utc.iso8601
     #name_ids = []
     self.names.each do |name|
     #View.all.each do |v|
@@ -511,7 +523,7 @@ class Feature < ActiveRecord::Base
         key_arr << rel_code if !rel_code.nil?
         ws = name.writing_system
         key_arr << ws.code if !ws.nil?
-        doc.add_field(key_arr.join('_'), name.name)
+        doc[key_arr.join('_')] = name.name
         #end
     end
     doc
