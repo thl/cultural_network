@@ -18,7 +18,7 @@ class Admin::FeaturesController < AclController
     @parent = parent_id.blank? ? nil : Feature.get_by_fid(parent_id) 
     if !@parent.nil?
       @perspectives = @parent.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
-      @perspectives = Perspective.order(:name) if @perspectives.include? nil
+      @perspectives = Perspective.order(:name) if @perspectives.include?(nil) || current_user.admin?
       @name = FeatureName.new(language_id: Language.get_by_code('eng').id, writing_system_id: WritingSystem.get_by_code('latin').id, is_primary_for_romanization: true)
       @relation = FeatureRelation.new(parent_node_id: @parent.id)
     end
