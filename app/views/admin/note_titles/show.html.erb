@@ -1,5 +1,5 @@
 <% add_breadcrumb_item link_to(NoteTitle.model_name.human(:count => :many).s, collection_path)
-   add_breadcrumb_item object %>
+   add_breadcrumb_item object.id %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= NoteTitle.model_name.human.titleize.s %> <%= edit_item_link object %></h6> 

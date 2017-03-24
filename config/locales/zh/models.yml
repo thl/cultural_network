@@ -5,7 +5,7 @@ zh:
         models:
             affiliation:
                 one: 'affiliation'
-                other: 'affiliation'
+                other: 'affiliations'
             alt_spelling_system:
                 one: '其它拼写方式'
                 other: '其它拼写方式'
@@ -15,6 +15,9 @@ zh:
             blurb:
                 one: '简介'
                 other: '简介'
+            caption:
+                one: 'caption'
+                other: 'captions'
             category_feature:
                 one: '主题或特点'
                 other: '主题和特点'
@@ -60,6 +63,9 @@ zh:
             phonetic_system:
                 one: '语音系统'
                 other: '语音系统'
+            summary:
+                one: 'summary'
+                other: 'summaries'
             user:
                 one: '用户'
                 other: '用户'

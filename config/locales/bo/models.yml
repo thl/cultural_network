@@ -5,7 +5,7 @@ bo:
         models:
             affiliation:
                 one: 'affiliation'
-                other: 'affiliation'
+                other: 'affiliations'
             alt_spelling_system:
                 one: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན།'
                 other: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན་དག'
@@ -15,6 +15,9 @@ bo:
             blurb:
                 one: 'མཚམས་སྦྱོར་རགས་བསྡུས།'
                 other: 'མཚམས་སྦྱོར་རགས་བསྡུས་རྣམས། '
+            caption:
+                one: 'caption'
+                other: 'captions'
             category_feature:
                 one: 'བརྗོད་བྱ་གཙོ་བ།'
                 other: 'བརྗོད་བྱ་གཙོ་བ།'
@@ -60,6 +63,9 @@ bo:
             phonetic_system:
                 one: 'སྒྲ་སྐད་གྱི་རྒྱུད་ཁོངས།'
                 other: 'སྒྲ་སྐད་གྱི་རྒྱུད་ཁོངས།'
+            summary:
+                one: 'summary'
+                other: 'summaries'
             user:
                 one: 'བེད་སྤྱོད་གཏོང་མཁན།'
                 other: 'བེད་སྤྱོད་གཏོང་མཁན་རྣམས། '

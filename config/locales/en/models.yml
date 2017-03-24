@@ -5,7 +5,7 @@ en:
         models:
             affiliation:
                 one: 'affiliation'
-                other: 'affiliation'
+                other: 'affiliations'
             alt_spelling_system:
                 one: 'alternative spelling system'
                 other: 'alternative spelling systems'
@@ -15,6 +15,9 @@ en:
             blurb:
                 one: 'blurb'
                 other: 'blurbs'
+            caption:
+                one: 'caption'
+                other: 'captions'
             category_feature:
                 one: 'subject'
                 other: 'subjects'
@@ -60,6 +63,9 @@ en:
             phonetic_system:
                 one: 'phonetic system'
                 other: 'phonetic systems'
+            summary:
+                one: 'summary'
+                other: 'summaries'
             user:
                 one: 'user'
                 other: 'users'

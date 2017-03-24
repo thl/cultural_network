@@ -23,4 +23,5 @@ class Admin::AffiliationsController < AclController
     @collections = Collection.order('name')
     @perspectives = Perspective.order('name')
   end
+
 end

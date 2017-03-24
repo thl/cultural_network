@@ -1,6 +1,6 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(object.feature)
-   add_breadcrumb_item object.name %>
+<% add_breadcrumb_item feature_link(object.feature)
+   add_breadcrumb_item feature_names_link(object.feature)
+   add_breadcrumb_item object.id %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= FeatureName.model_name.human.titleize.s %></h6>

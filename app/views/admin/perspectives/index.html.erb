@@ -16,14 +16,14 @@
 <%=  pagination_row :colspan=>3 %>
      <tr>
        <th class="listActionCol"></th>
-       <th><%= Perspective.human_attribute_name(:is_public).s %></th>    
+       <th><%= Perspective.human_attribute_name(:is_public).s %></th>
        <th><%= Perspective.human_attribute_name(:name).s %></th>
        <th><%= Perspective.human_attribute_name(:code).s %></th>
      </tr>
 <%   @collection.each do |item| %>
      <tr>
        <td class="listActionsCol"><%= list_actions_for_item(item) %></td>
-       <td><%= item.is_public ? ts(:affirmation) : ts(:negation) %></td>    
+       <td><%= item.is_public ? ts(:affirmation) : ts(:negation) %></td>
        <td><%= item.name %></td>
        <td><%= item.code %></td>
      </tr>

@@ -60,6 +60,7 @@
       </div> <!-- END resource-overview-image -->
 <%  end %>
 <div id="accordion" class="panel-group">
+    <div class='accordion-options'><a href='#' class='accordion-expand-all'>Expand all</a> | <a href='#' class='accordion-collapse-all'>Collapse all</a></div>
   <section class="panel panel-default">
     <div class="panel-heading">
       <h6><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapseOne" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(count: feature.names.size).titleize.s %></a></h6>

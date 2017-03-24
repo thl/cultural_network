@@ -1,5 +1,5 @@
 <% add_breadcrumb_item link_to(FeatureRelationType.model_name.human(:count => :many).s, admin_feature_relation_types_path)
-   add_breadcrumb_item object.to_s %>
+   add_breadcrumb_item object.id %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= FeatureRelationType.model_name.human.titleize.s %><%= edit_item_link object %></h6> 

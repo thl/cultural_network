@@ -1,5 +1,5 @@
 <%  add_breadcrumb_item link_to(Blurb.model_name.human(count: :many).s, collection_path)
-    add_breadcrumb_item link_to(@blurb.code, object_path(@blurb))
+    add_breadcrumb_item link_to(@blurb.id, object_path(@blurb))
     add_breadcrumb_item ts('edit.this') %>
 <section class="panel panel-content">
   <div class="panel-heading">

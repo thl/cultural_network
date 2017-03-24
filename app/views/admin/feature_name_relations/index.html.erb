@@ -1,10 +1,9 @@
 <% if parent?
-     add_breadcrumb_item features_link
      add_breadcrumb_item feature_link(parent_object.feature)
      add_breadcrumb_item link_to(FeatureName.model_name.human(:count => :many).s, admin_feature_feature_names_path(parent_object.feature))
-     add_breadcrumb_item link_to(parent_object.name, admin_feature_name_path(parent_object))
+     add_breadcrumb_item link_to(parent_object.id, admin_feature_name_path(parent_object))
    end
-   add_breadcrumb_item ts('relation.this', :count => :many) %>
+   add_breadcrumb_item FeatureNameRelation.model_name.human.pluralize.s %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= FeatureNameRelation.model_name.human.pluralize.s %></h6>

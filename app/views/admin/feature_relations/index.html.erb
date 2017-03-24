@@ -1,5 +1,4 @@
 <% if parent?
-     add_breadcrumb_item features_link
      add_breadcrumb_item(feature_link(parent_object)) if parent?
    end
    add_breadcrumb_item FeatureRelation.model_name.human(:count => :many).s %>

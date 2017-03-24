@@ -24,5 +24,29 @@ jQuery(document).ready(function(){
 	
 	jQuery("#flash").fadeIn(500, function(){
 		//setTimeout(function(){jQuery("#flash").fadeOut(2500)}, 500);
-	})
+	});
+  jQuery('.accordion-expand-all').click(function (){
+    console.debug("Expanding");
+    var panels = jQuery(this).parent('.accordion-options')
+      .parent('.panel-group').children('.panel');
+    var elements_links = panels.find('.accordion-toggle');
+    var elements = panels.find('.panel-collapse');
+    /*
+    elements_links.attr('aria-expanded','true');
+    elements.attr('aria-expanded','true');
+    elements.addClass('in');
+    elements.css({height:'auto'});
+    elements_links.removeAttr('data-parent');
+    */
+    elements.collapse('show');
+    /*
+    jQuery('#accordion .accordion-toggle').attr('data-parent',false);
+    jQuery('#accordion .panel-collapse:not(.in) ').collapse("show");
+    */
+  });
+  jQuery('.accordion-collapse-all').click(function (){
+    var elements = jQuery(this).parent('.accordion-options')
+      .parent('.panel-group').children('.panel')
+      .children('.panel-collapse').collapse('hide');
+  });
 })

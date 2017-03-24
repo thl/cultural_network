@@ -3,7 +3,7 @@ module KmapsEngine
     extend ActiveSupport::Concern
     
     included do
-      before_action :redirect_if_unauthorized
+      before_action :redirect_if_unauthorized, only: [:show, :index, :update, :create, :new, :edit]
     end
     
     private

@@ -1,9 +1,10 @@
+<% add_breadcrumb_item ts('feature.unused_ids') %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= ts 'feature.unused_ids' %></h6>
   </div>
   <div class="panel-body">
-<p><%= 
+<p><%=
   # @feature_count
   @features.collect(&:fid).sort.join('<br/>').html_safe
 %></p>

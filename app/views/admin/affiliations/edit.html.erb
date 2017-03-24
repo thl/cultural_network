@@ -1,6 +1,5 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(object.feature)
-   add_breadcrumb_item link_to(Affiliation.model_name.human(count: :many).s, admin_feature_captions_path(object.feature))
+<% add_breadcrumb_item feature_link(object.feature)
+   add_breadcrumb_item link_to(Affiliation.model_name.human(count: :many).s, admin_feature_affiliations_path(object.feature))
    add_breadcrumb_item link_to(object.id, object_path)
    add_breadcrumb_item ts('edit.this') %>
 <br class="clear"/>

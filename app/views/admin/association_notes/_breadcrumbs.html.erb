@@ -1,7 +1,4 @@
 <%
-if parent_type.to_s =~ /feature/
-	add_breadcrumb_item features_link
-end
 case parent_type
 when :feature
 	add_breadcrumb_item feature_link(object.notable)

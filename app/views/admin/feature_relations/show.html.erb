@@ -1,5 +1,5 @@
-<% add_breadcrumb_items(features_link, feature_link(parent_object), feature_relations_link(parent_object),
-     feature_relation_role_label(parent_object, object, :use_first=>false, :link_relation=>false, :link_second=>true)) %>
+<% add_breadcrumb_items( feature_link(parent_object), feature_relations_link(parent_object),
+     object.id) %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= FeatureRelation.model_name.human.pluralize.s %></h6>

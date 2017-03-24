@@ -1,5 +1,4 @@
-<% add_breadcrumb_item features_link
-   if parent_object
+<% if parent_object
      add_breadcrumb_item feature_link(parent_object)
      add_breadcrumb_item feature_descriptions_link(object.feature)
      add_breadcrumb_item ts('new.this')

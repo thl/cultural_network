@@ -1,6 +1,5 @@
 <% # if we're showing the descriptions of a particular Feature
    if @feature
-     add_breadcrumb_item features_link
      add_breadcrumb_item feature_link(@feature)
      add_breadcrumb_item feature_descriptions_link(@feature)
      add_breadcrumb_item ts(:set, :what => t('primary.record', :what => Description.model_name.human.titleize.s))

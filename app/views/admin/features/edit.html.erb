@@ -1,4 +1,4 @@
-<%  add_breadcrumb_items features_link, feature_link(object), ts('edit.this') %>
+<%  add_breadcrumb_items feature_link(object), ts('edit.this') %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= "#{Feature.model_name.human.titleize.s}: #{object.name}" %></h6>

@@ -52,6 +52,7 @@ module AdminHelper
     if authorized?(admin_geo_code_types_path) || authorized?(admin_perspectives_path) || authorized?(admin_views_path) || authorized?(admin_oral_sources_path) || authorized?(admin_note_titles_path)
       menu = resources['Data management'] = {}
       menu[GeoCodeType.model_name.human(:count => :many).titleize.s] = admin_geo_code_types_path if authorized? admin_geo_code_types_path
+      menu[FeatureRelationType.model_name.human(:count => :many).titleize.s] = admin_feature_relation_types_path if authorized? admin_feature_relation_types_path
       menu[Perspective.model_name.human(:count => :many).titleize.s] = admin_perspectives_path if authorized? admin_perspectives_path
       menu[View.model_name.human(:count => :many).titleize.s] = admin_views_path if authorized? admin_views_path
       menu[OralSource.model_name.human(:count => :many).titleize.s] = admin_oral_sources_path if authorized? admin_oral_sources_path
@@ -353,7 +354,7 @@ module AdminHelper
     relation.role_of?(feature) do |other,sentence|
       items=[]
       if options[:use_first]
-        items << (options[:link_first] ? 
+        items << (options[:link_first] ?
           (options[:use_names] ? f_link(feature, admin_feature_path(feature.fid)) : feature_link(feature)) :
           feature_label(feature))
       end

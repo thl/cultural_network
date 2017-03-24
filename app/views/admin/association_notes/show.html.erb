@@ -1,5 +1,5 @@
 <%= render :partial => "breadcrumbs" %>
-<% add_breadcrumb_item object.to_s %>
+<% add_breadcrumb_item object.id %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= AssociationNote.model_name.human.titleize.s %></h6>
