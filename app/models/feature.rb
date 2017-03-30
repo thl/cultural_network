@@ -523,8 +523,12 @@ class Feature < ActiveRecord::Base
         key_arr << rel_code if !rel_code.nil?
         ws = name.writing_system
         key_arr << ws.code if !ws.nil?
-        doc[key_arr.join('_')] = name.name
-        #end
+        key_str = key_arr.join('_')
+        if doc[key_str].blank?
+          doc[key_str] = [name.name]
+        else
+          doc[key_str] << name.name
+        end
     end
     doc
   end
