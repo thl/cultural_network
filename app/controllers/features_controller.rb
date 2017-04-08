@@ -316,7 +316,6 @@ class FeaturesController < ApplicationController
   
   def node_tree_expanded
     view = current_view
-    
     node = Feature.find(params[:id])
     # @ancestors_for_current = node.closest_ancestors_by_perspective(current_perspective).collect{|a| a.id}
     @ancestors_for_current = node.current_ancestors(current_perspective).collect(&:id)

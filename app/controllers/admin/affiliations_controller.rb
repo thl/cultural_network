@@ -9,9 +9,9 @@ class Admin::AffiliationsController < AclController
     @guest_perms = []
   end
   
-  create.wants.html { redirect_to admin_feature_url(object.feature.fid) }
-  update.wants.html { redirect_to admin_feature_url(object.feature.fid) }
-  destroy.wants.html { redirect_to admin_feature_url(object.feature.fid) }
+  create.wants.html { redirect_to admin_feature_url(parent_object.fid) }
+  update.wants.html { redirect_to admin_feature_url(parent_object.fid) }
+  destroy.wants.html { redirect_to admin_feature_url(parent_object.fid) }
 
   new_action.before { get_collections }
   edit.before { get_collections }
