@@ -22,7 +22,7 @@
        # then we want to come back to the features' relations
        # if we're viewing the relations without a feature context (/feature_relations)
        # we want to come back to that just the relations view
-       parent = parent_object.nil? ? item.parent_node : parent_object
+       parent = object.instance_of?(Feature) ? object : (!parent_object.nil? && parent_object.instance_of?(Feature) ? parent_object : item.parent_node)
        parent_path = admin_feature_feature_relation_path(parent, item)
        path = admin_feature_relation_path(item) %>
 <%=    list_actions_for_item item, :view_path => parent_path, :delete_path => parent_path,

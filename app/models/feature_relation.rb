@@ -45,20 +45,35 @@ class FeatureRelation < ActiveRecord::Base
   
   after_create do |record|
     if !record.skip_update && record.perspective.is_public?
-      record.parent_node.expire_tree_cache(:perspectives => [record.perspective_id], :include_parents => false)
+      Spawnling.new do
+        record.parent_node.expire_tree_cache(:perspectives => [record.perspective_id], :include_parents => false)
+      end
     end    
   end
   
   after_save do |record|
     if !record.skip_update
-      # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
-      [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
+      Spawnling.new do
+        # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
+        [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
+      end
     end
   end
   
   after_destroy do |record|
     if !record.skip_update && record.perspective.is_public?
-      record.parent_node.expire_tree_cache(:perspectives => [record.perspective_id], :include_parents => false)
+      Spawnling.new do
+        is_root = false
+        [record.parent_node, record.child_node].each do |r|
+          if !r.nil?
+            r.update_hierarchy
+            is_root = true if r.is_public==1 && r.ancestors.blank?
+          end
+        end
+        Rails.cache.delete_matched("features/current_roots/#{record.perspective_id}/*") if is_root
+        record.child_node.expire_tree_cache(:perspectives => [record.perspective_id], :include_parents => false)
+        record.parent_node.expire_tree_cache(:perspectives => [record.perspective_id], :include_parents => false)
+      end
     end
   end
   

@@ -23,7 +23,9 @@ class Admin::FeatureRelationsController < AclController
     process_feature_relation_type_id_mark
     get_perspectives
   end
-
+  
+  destroy.wants.html { redirect_to admin_feature_url(parent_object.fid) }
+  
   #
   # The create.before wasn't being called (couldn't figure out why not; update.before works
   # fine), so create is done manually for now. This should be fixed.  
