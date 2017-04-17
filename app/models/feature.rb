@@ -271,7 +271,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_ancestors(current_perspective)
-    return ancestors.select do |c|
+    return ancestors.reverse.select do |c|
       c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end

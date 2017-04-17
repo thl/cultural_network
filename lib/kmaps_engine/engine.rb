@@ -5,7 +5,7 @@ module KmapsEngine
       Rails.application.config.assets.precompile.concat(['kmaps_engine/admin.js', 'kmaps_engine/treescroll.js',
         'kmaps_engine/iframe.js', 'kmaps_engine/jquery.ajax.sortable.js',
         'kmaps_engine/admin.css', 'kmaps_engine/public.css', 'kmaps_engine/xml-books.css',
-        'kmaps_engine/scholar.css', 'kmaps_engine/popular.css', 'kmaps_engine/main-image.js', 'kmaps_engine/gallery.css', 'gallery/default-skin.png','gallery/default-skin.svg'])
+        'kmaps_engine/scholar.css', 'kmaps_engine/popular.css', 'kmaps_engine/main-image.js', 'kmaps_engine/gallery.css', 'gallery/default-skin.png','gallery/default-skin.svg','kmaps_tree/jquery.fancytree-all.min.js', 'kmaps_tree/kmapstree.css','kmaps_tree/icons.gif'])
     end
     
     initializer :sweepers do |config|

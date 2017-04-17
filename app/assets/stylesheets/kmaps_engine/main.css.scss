@@ -217,7 +217,14 @@ article table.pagerer:last-child{
 }
 
 /**
-* 
+*
 * END - KMAPS/css/shanti-main-kmaps.css
 *
 */
+#tab-content-loading {
+  width:auto;
+  height:100px;
+  background-image: image-url("loading.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
