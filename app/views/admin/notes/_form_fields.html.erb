@@ -1,6 +1,16 @@
 <% object.is_public = true if object.new_record? %>
 <%= tinymce_assets %>
 <%= tinymce %>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this note from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
   <legend><%= ts(:for, what: Note.model_name.human.titleize, whom: object.notable) %></legend>
   <div class="row">

@@ -12,6 +12,11 @@
 <%=     label :info_source_id, 'Document or Online Resource ID from MMS application' %>
 <%=     f.text_field :info_source_id, class: [:text, ' form-control form-text'] %>
 	  </div>
+<%    elsif object.info_source_type == 'ShantiIntegration::Source' %>
+	  <div class="row">
+<%=     label :info_source_id, 'Source ID from Shanti Sources' %>
+<%=     f.text_field :info_source_id, class: [:text, ' form-control form-text'] %>
+	  </div>
 <%    else %>
 	  <div class="row">
 <%=     label :info_source_id, OralSource.model_name.human.titleize.s %>

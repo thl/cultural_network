@@ -1,6 +1,15 @@
 <%= tinymce_assets %>
 <%= tinymce %>
-<%= error_messages_for model_name %>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this perspective from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
   <div class="row">
 <%= f.label(:name).s %>

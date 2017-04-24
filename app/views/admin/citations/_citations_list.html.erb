@@ -30,19 +30,22 @@
 <%     else
          if item.info_source_type.start_with?('MmsIntegration')
            case info_source.type
-	       when 'Document' %>
-		     <td><%= info_source.prioritized_title %></td>
-			 <td><%= item.pages.collect(&:to_s).join(', ') %></td>
-	<%	   when 'OnlineResource' %>
-		     <td><%= info_source.web_url %></td>
-		     <td><%= item.web_pages.collect(&:path).join(', ') %></td>
-	<%	   else %>
-	         &nbsp;
-	<%	   end
-		 else %>
-	       <td><%= info_source.name %></td>
-		   <td>&nbsp;</td>
-<%		 end
+	         when 'Document' %>
+		         <td><%= info_source.prioritized_title %></td>
+		         <td><%= item.pages.collect(&:to_s).join(', ') %></td>
+	<%	     when 'OnlineResource' %>
+		         <td><%= info_source.web_url %></td>
+		         <td><%= item.web_pages.collect(&:path).join(', ') %></td>
+	<%	     else %>
+	           &nbsp;
+	<%	     end
+		     elsif item.info_source_type=='ShantiIntegration::Source' %>
+	         <td><%= info_source.title.first %></td>
+		       <td>&nbsp;</td>
+<%	     else %>
+	         <td><%= info_source.name %></td>
+		       <td>&nbsp;</td>
+<%		   end
        end %>
        </td>
        <td><%= item.notes %></td>

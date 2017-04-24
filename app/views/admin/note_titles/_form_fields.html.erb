@@ -1,4 +1,13 @@
-<%= error_messages_for model_name %>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this note title from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
   <div class="row">
 <%= f.label :title, NoteTitle.model_name.human.titleize.s %>

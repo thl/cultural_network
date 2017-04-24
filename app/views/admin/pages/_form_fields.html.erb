@@ -1,3 +1,13 @@
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this page from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>	
   <legend><%= ts(:for, :what => Page.model_name.human(:count => :many), :whom => t('citation.of', :what => object.citation.citable.id)) %></legend>
   <div class="row">
