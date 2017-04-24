@@ -2,22 +2,32 @@
 <%  add_breadcrumb_item ts('new.this') %>
 <%= form_for [:admin, object] do |f| %>
 <%=   f.hidden_field :citable_id %>
-<%=   hidden_field_tag 'citation[citable_type]', parent_type %>
+<%=   hidden_field_tag 'citation[citable_type]', object.citable_type %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= ts(:for, what: Citation.model_name.human.titleize, whom: parent_object) %></h6>
   </div>
   <div class="panel-body">
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this citation from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
 	<div class="row">
 <%=   label :info_source_type, InfoSource.human_attribute_name(:info_source_type).s %>
-<%=   select_tag(:info_source_type, options_for_select([['Document or Online Resource ID from MMS application','MmsIntegration::Medium'],['Oral source', 'OralSource']], 'MmsIntegration::Medium')) %>
+<%=   select_tag(:info_source_type, options_for_select([['Source ID from Shanti Sources','ShantiIntegration::Source'], ['Oral source', 'OralSource'], ['Document or Online Resource ID from MMS application','MmsIntegration::Medium']], 'ShantiIntegration::Source')) %>
 	</div>
-	<div class="row mms">
+	<div class="row text">
 <%=   f.label(:info_source_id).s %>
 <%=   f.text_field :info_source_id, :class => :text %>
 	</div>
-	<div class="row oral">
+	<div class="row collection">
 <%=   f.label(:info_source_id).s %>
 <%=   f.collection_select :info_source_id, OralSource.all.order(:name), :id, :name, :include_blank=> false %>
 	</div>
@@ -27,19 +37,20 @@
 <%  end %>
 </fieldset>
 <%= javascript_on_load do %>
-  	  $(".oral").hide();
-  	  $(".oral > select")[0].disabled = true;
-      $("#info_source_type").change(function() { 
-	    if ($("#info_source_type").val()=="MmsIntegration::Medium") {
-  	      $(".oral").hide();
-  	      $(".oral > select")[0].disabled = true;
-	      $(".mms > input")[0].disabled = false;
-	      $(".mms").show();
+  	  $(".row .collection").hide();
+  	  $(".row .collection > select")[0].disabled = true;
+      $("#info_source_type").change(function() {
+		  type = $("#info_source_type").val()
+	    if (type=="MmsIntegration::Medium" || type=="ShantiIntegration::Source") {
+	      $(".row .collection").hide();
+	      $(".row .collection > select")[0].disabled = true;
+	      $(".row .text > input")[0].disabled = false;
+	      $(".row .text").show();
 	    } else {
-	      $(".mms").hide();
-	      $(".oral > select")[0].disabled = false;
-	      $(".mms > input")[0].disabled = true;
-	      $(".oral").show();
+	      $(".row .text").hide();
+	      $(".row .collection > select")[0].disabled = false;
+	      $(".row .text > input")[0].disabled = true;
+	      $(".row .collection").show();
 		}
       });
 <%  end %>

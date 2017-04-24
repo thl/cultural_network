@@ -1,4 +1,13 @@
-<%= error_messages_for :feature %>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this <%= Feature.model_name.human %> from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
 <%= f.hidden_field :fid %>
 <%  unless object.new_record? %>

@@ -13,7 +13,17 @@ input[type=text] {
 	border:1px solid #CCCCCC;
 }
 </style>
-<%= error_messages_for :description %>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this description from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+<fieldset>
 <p><b><%= f.label(:title).s %></b><br/>
   <em><%= ts 'snippet.title' %></em>
   <div class="row">
@@ -41,3 +51,4 @@ input[type=text] {
 <%= f.label(:is_primary).s %></p>
 </div>
 <div id="update_div"/>
+</fieldset>

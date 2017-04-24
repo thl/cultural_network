@@ -1,4 +1,3 @@
-<%= error_messages_for :feature_name_relation %>
 <script type="text/javascript">
 function toggle_yes_radio(select_element, radio_prefix){
 	if($(select_element).val() != ""){
@@ -15,6 +14,16 @@ function toggle_yes_radio(select_element, radio_prefix){
 <%= content_tag(:h1, ts('edit.ing.record', what: t('relat.ion.ship.between', this: object.parent_node.name, that: object.child_node.name))) %>
 </div>
 <br class="clear"/>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this name relation from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
   <legend><%= ts('information.general') %></legend>
   <div class="inlineRow">

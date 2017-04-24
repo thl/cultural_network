@@ -21,6 +21,21 @@ class Illustration < ActiveRecord::Base
   
   before_destroy {|record| record.picture.destroy if record.picture.instance_of?(ExternalPicture)}
   
+  #
+  #
+  # Validation
+  #
+  #
+  validates :picture_id, presence: true
+  validate :presence_of_external_picture
+  
+  def presence_of_external_picture
+    if self.picture_type.start_with?('MmsIntegration')
+      picture = self.picture_type.constantize.find(self.picture_id)
+      errors.add(:base, 'MMS record could not be found!') if picture.nil?
+    end
+  end
+  
   alias :_picture picture
   def picture
     self.picture_type == 'MmsIntegration::Picture' ? MmsIntegration::Picture.find(picture_id) : _picture

@@ -1,5 +1,6 @@
-<% add_breadcrumb_items( feature_link(parent_object), feature_relations_link(parent_object),
-     object.id) %>
+<% parent = parent_object
+   parent = object.parent_node if parent.nil?
+   add_breadcrumb_items( feature_link(parent), feature_relations_link(parent), object.id) %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= FeatureRelation.model_name.human.pluralize.s %></h6>
@@ -16,7 +17,7 @@
   <legend><%= FeatureRelation.model_name.human.titleize.s %> <%= edit_item_link object %></legend>
   <div class="row">
     <label><%= ts 'relat.ion.ship.this' %></label>:
-    <span><%= feature_relation_role_label parent_object, object, :link_relation=>false %></span>
+    <span><%= feature_relation_role_label parent, object, :link_relation=>false %></span>
   </div>
   <div class="row">
     <label><%= Perspective.model_name.human.titleize.s %></label>:
