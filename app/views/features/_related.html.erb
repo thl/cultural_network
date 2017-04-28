@@ -192,7 +192,7 @@ $(document).ready(function(){
         },
         lazyLoad: function(event, data){
           var node = data.node;
-          data.result = { url: "/features/"+node.key+"/fancy_children.json" };
+          data.result = { url: "<%= features_path %>/"+node.key+"/fancy_children.json" };
         }
       });
 <% end %>

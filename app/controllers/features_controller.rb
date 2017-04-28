@@ -266,10 +266,9 @@ class FeaturesController < ApplicationController
   end
 
   def fancy_children
-    params_id = params[:id]
+    @feature = Feature.get_by_fid(params[:id])
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     @view ||= View.get_by_code(default_view_code)
-    @feature = Feature.get_by_fid(params_id)
     respond_to do |format|
       format.json
     end

@@ -1,5 +1,5 @@
 json.array! @feature.all_child_relations do |c|
-  json.title "<strong>#{c.child_node.prioritized_name(@view).name}</strong> (from #{c.perspective.name})"
+  json.title "<strong>#{c.child_node.prioritized_name(@view).name}</strong> (from #{c.perspective.name}; #{c.feature_relation_type.asymmetric_label})"
   json.href feature_path(c.child_node.fid)
   json.lazy true
   json.key c.child_node.fid
