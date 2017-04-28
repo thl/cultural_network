@@ -16,10 +16,14 @@
        end
        for medium in media_with_thumb %>
 <%=      render partial: 'associated_media/media_item', locals: {medium: medium} %>
-<%     end
-       for medium in media_without_thumb %>
+<%     end %>
+      <div class='kmaps-list-columns'>
+        <ul>
+<%     for medium in media_without_thumb %>
 <%=      render partial: 'associated_media/media_item', locals: {medium: medium} %>
 <%     end %>
+        </ul>
+      </div><!-- kmaps-list-columns -->
 	  </div> <!-- END og-grid -->
 
 <!-- Photoswipe -->

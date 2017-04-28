@@ -87,6 +87,7 @@ Rails.application.routes.draw do
       get :list
       get :nested
       match 'fancy_nested', to: 'features#fancy_nested', via: [:post, :get]
+      match 'fancy_children', to: 'features#fancy_children', via: [:post, :get]
       get :node_tree_expanded
       get :related
       get :related_list
@@ -96,6 +97,7 @@ Rails.application.routes.draw do
       get :characteristics_list
       get :list
       match 'fancy_nested', to: 'features#fancy_nested', via: [:post, :get]
+      match 'fancy_children', to: 'features#fancy_children', via: [:post, :get]
       get :nested
       match :search, to: 'features#search', via: [:post, :get]
       get 'by_fid/:fids.:format', to: 'features#by_fid'

@@ -9,7 +9,7 @@
 		   else
 			   title = medium['title'].first
 		   end %>
-           <div class="item-no-img"><%= link_to title,MmsIntegration::Medium.get_url(medium['id']) %></div> <!-- END item -->
+           <li  class="item-no-img"><%= link_to title,MmsIntegration::Medium.get_url(medium['id']) %></li> <!-- END item -->
 <%       else %>
            <div class="item">
 <%         media_data = {
