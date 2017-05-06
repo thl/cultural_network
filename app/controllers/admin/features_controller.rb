@@ -46,7 +46,8 @@ class Admin::FeaturesController < AclController
   
   update.before { |r| update_primary_description }
 
-  create.wants.html {redirect_to admin_feature_url(object.fid) }
+  create.wants.html { redirect_to admin_feature_url(object.fid) }
+  update.wants.html { redirect_to admin_feature_url(object.fid) }
   
   def locate_for_relation
     @locating_relation=true

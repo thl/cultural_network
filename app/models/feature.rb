@@ -399,7 +399,7 @@ class Feature < ActiveRecord::Base
   end
     
   def clone_with_names
-    new_feature = Feature.create(fid: Feature.generate_pid, is_blank: false, is_public: true, skip_update: true)
+    new_feature = Feature.create(fid: Feature.generate_pid, is_blank: false, is_public: false, skip_update: true)
     names = self.names
     names_to_clones = Hash.new
     names.each do |name|
