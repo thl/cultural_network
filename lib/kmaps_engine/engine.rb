@@ -2,6 +2,9 @@ module KmapsEngine
   class Engine < ::Rails::Engine
     initializer :assets do |config|
       Rails.application.config.assets.paths << root.join('vendor', 'assets', 'images').to_s
+      Rails.application.config.assets.paths << root.join('vendor', 'assets', 'javascripts').to_s
+      Rails.application.config.assets.precompile.concat(['sarvaka_kmaps/*'])
+      Rails.application.config.assets.precompile.concat(['typeahead/*','kmaps_typeahead/*'])
       Rails.application.config.assets.precompile.concat(['kmaps_engine/admin.js', 'kmaps_engine/treescroll.js',
         'kmaps_engine/iframe.js', 'kmaps_engine/jquery.ajax.sortable.js',
         'kmaps_engine/admin.css', 'kmaps_engine/public.css', 'kmaps_engine/xml-books.css',

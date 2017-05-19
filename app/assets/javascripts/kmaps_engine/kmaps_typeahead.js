@@ -10,9 +10,7 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require interface_utils/application
-//= require kmaps_engine/jquery.livequery
-//= require kmaps_engine/node-tree
-//= require kmaps_engine/popup-ui-handler
-//= require kmaps_engine/top
-//= require kmaps_engine/kmaps_typeahead
+//= require typeahead/bloodhound.min
+//= require typeahead/typeahead.jquery.min
+//= require kmaps_typeahead/jquery.kmaps-typeahead
+//= require kmaps_typeahead/kmaps-util
