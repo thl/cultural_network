@@ -32,7 +32,7 @@ div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; 
 /* Fix the Drag handle in the searchbox to fit inside the gray box */
 .page-places .input-section .toggle-link.advanced-link {
   display:block
-  padding: 0px 0px 10px 0px;
+  padding-right: 10px;
 }
 
 .menu-main .user-prefs li:hover, .menu-main .user-prefs li:active {
