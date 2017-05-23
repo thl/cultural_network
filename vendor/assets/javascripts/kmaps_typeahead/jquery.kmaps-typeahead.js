@@ -29,7 +29,8 @@
       filters: '',
       menu: '',
       no_results_msg: '',
-      match_criterion: 'contains' //{contains, begins, exactly}
+      match_criterion: 'contains', //{contains, begins, exactly}
+      case_sensitive: false
     };
 
   function Plugin(element, options) {
@@ -108,16 +109,18 @@
             var val = input.val();
             switch(settings.match_criterion){
               case 'begins':
-                val = "/"+val+".*/";
+                val = ""+val+"*";
                 break;
               case 'exactly':
                 val = "\""+val+"\"";
                 break;
               case 'contains': //do nothing
+                val = "*"+val+"*";
             }
+						val = settings.case_sensitive ? val : val.toLowerCase();
             if (val) {
               extras = {
-                'q': settings.autocomplete_field + ':' + val.toLowerCase().replace(/[\s\u0f0b\u0f0d]+/g, '\\ '),
+                'q': settings.autocomplete_field + ':' + val.replace(/[\s\u0f0b\u0f0d]+/g, '\\ '),
                 'rows': settings.max_terms,
                 'sort': settings.sort,
                 'start': plugin.start,
@@ -277,6 +280,7 @@
               return remote;
             },
             filter: function (json) {
+              if(json.facet_counts === undefined) return [];
               var raw = json.facet_counts.facet_fields[prefetch_field] ? json.facet_counts.facet_fields[prefetch_field] : json.facet_counts.facet_fields[refacet_field];
               var facets = [];
               for (var i = 0; i < raw.length; i += 2) {
@@ -695,6 +699,9 @@
     },
     setMatchCriterion: function(criterion){
       this.settings.match_criterion = criterion;
+    },
+    setCaseSensitive: function(case_sensitive){
+      this.settings.case_sensitive = case_sensitive ? true : false;
     },
 
   });

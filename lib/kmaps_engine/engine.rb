@@ -31,6 +31,7 @@ module KmapsEngine
       Array.send :include, KmapsEngine::ArrayExtension
       AuthenticatedSystem::User.send :include, KmapsEngine::Extension::UserModel
       
+      Sprockets::Context.send :include, Rails.application.routes.url_helpers
     end
   end
 end

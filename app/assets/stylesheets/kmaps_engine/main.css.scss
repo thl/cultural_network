@@ -40,4 +40,13 @@ article table.pagerer:last-child{
 	text-align:left;
 }
 
-
+/* search flyout */
+#search-note p {
+  font-size: x-small;
+  font-style: italic;
+}
+#goto-fid.input-group{
+  display: table;
+  float:none;
+}
+/* END - search flyout */
