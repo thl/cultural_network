@@ -13,8 +13,8 @@
  *= require kmaps_engine/node-tree
  *= require kmaps_engine/main
  *= require kmaps_engine/kmaps_typeahead
- *= require kmaps_engine/kmaps-explorer-block
  *= require kmaps_engine/shanti_kmaps_typeahead
+ *= require kmaps_engine/kmaps-explorer
  */
 
 div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; }
