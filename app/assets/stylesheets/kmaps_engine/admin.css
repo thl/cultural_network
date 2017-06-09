@@ -468,3 +468,8 @@ input.text-full {
 }
 /* this removes the 2nd breadcrumb  (text: Earth) */
 .kmaps.page-places .breadcrumb li:nth-of-type(2){ display:inherit !important;}
+
+/* remove width spec for flyout inputs overwriting yui.css*/
+#search-flyout input[type=text]{
+  width: inherit;
+}

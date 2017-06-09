@@ -16,3 +16,4 @@
 //= require kmaps_engine/popup-ui-handler
 //= require kmaps_engine/top
 //= require kmaps_engine/kmaps_typeahead
+//= require kmaps_engine/flyout-kmaps-typeahead
