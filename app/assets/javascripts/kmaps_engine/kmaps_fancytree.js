@@ -23,8 +23,8 @@
 	// Create the defaults once
 	var pluginName = 'kmapsFancytree',
 		defaults = {
-      hostname: "https://ss558499-us-east-1-aws.measuredsearch.com",
-      termIndex: "/solr/kmterms_dev",
+      hostname: "localhost",
+      termIndex: "/solr/kmterms_predev",
       assetIndex: "/solr/kmassets_dev",
       tree: "places",
       featuresPath: "/features/",
@@ -155,8 +155,10 @@
       var url =
         plugin.options.hostname +
         plugin.options.termIndex + "/select?" +
-        "&q=" + "id:" + plugin.options.domain + "-" + featureId + "_*" +
-        "&fq=related_kmaps_node_type:" + "child" +
+        //"&q=" + "id:" + plugin.options.domain + "-" + featureId + "_*" +
+        //"&fq=related_kmaps_node_type:" + "child" +
+        "&q=" + "{!child of=block_type:parent}id:" + plugin.options.domain + "-" + featureId +
+        "&fq=" + "{!collapse field=related_places_id_s}" +
         //"&q=" + encodeURI("ancestor_id_path:*/"+featureId+"/* OR ancestor_id_path:"+featureId+"/*") +
         "&wt=json" +
         "&limit=" + SOLR_ROW_LIMIT +
