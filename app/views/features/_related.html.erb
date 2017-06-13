@@ -159,7 +159,7 @@ function getNotInTree(){
 </script>
 <%= javascript_on_load do %>
   // Functionality for columnizer
-  $('.kmaps-list-columns:not(.subjects-in-places)').columnize({
+  $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
     width: 330,
     lastNeverTallest : true
   });
@@ -168,7 +168,7 @@ function getNotInTree(){
   // dontend = don't end column with headers
   $('.places-in-places').find('.column > h6, .column > ul > li').addClass("dontend");
 
-  / End - Functionality for columnizer
+  // End - Functionality for columnizer
   <% unless frt.empty? %>
       $('#relation_tree_container').fancytree({
         extensions: ["glyph"],
