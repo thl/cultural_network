@@ -24,13 +24,17 @@
 	var pluginName = 'kmapsFancytree',
 		defaults = {
       hostname: "localhost",
-      termIndex: "/solr/kmterms_predev",
+      termIndex: "/solr/kmterms_dev",
       assetIndex: "/solr/kmassets_dev",
       tree: "places",
       featuresPath: "/features/",
       domain: "places",
       featureId: 1,
       perspective: "pol.admin.hier",
+      seedTree: {
+        descendants: false,
+        directAncestors: true,
+      },
 		};
 
 	// The actual plugin constructor
@@ -57,7 +61,7 @@
       // e.g., this.element and this.options
       $(plugin.element).fancytree({
 				extensions: ["glyph"],
-        source: plugin.getAncestorTree(),
+        source: plugin.getAncestorTree(plugin.options.seedTree),
 				glyph: {
 					map: {
 						doc: "",
@@ -86,7 +90,60 @@
         },
 			});
     },
-    getAncestorTree: function(){
+    getAncestorPath: function() {
+      const plugin = this;
+      const dfd = $.Deferred();
+      var url =
+        plugin.options.hostname +
+        plugin.options.termIndex + "/select?" +
+        "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId +
+        //"&fl=ancestor*" + "cult.reg" + "*" +
+        "&fl=*level*,ancestor*" + plugin.options.perspective + "*" +
+        "&fq=tree:" + plugin.options.tree +
+        "&indent=true" +
+        "&wt=json" +
+        "&json.wrf=?" +
+        "&rows=" + SOLR_ROW_LIMIT +
+        "&limit=" + SOLR_ROW_LIMIT;
+      ;;;console.log(url);
+      $.ajax({
+        url: url,
+        dataType: 'jsonp',
+        jsonp: 'json.wrf'
+      }).done(function(data){
+        ;;;console.log(JSON.stringify(data));
+        const response = data.response;
+        if(response.numFound < 1) {
+          dfd.resolve([]);
+        } else {
+         const path = response.docs[0]["ancestor_id_"+plugin.options.perspective+"_path"];
+         const level = response.docs[0]["level_"+plugin.options.perspective+"_i"];
+          ;;;console.log(level);
+          var url =
+            plugin.options.hostname +
+            plugin.options.termIndex + "/select?" +
+            "&q=" + "ancestor_id_" + plugin.options.perspective + "_path:" + path +
+            //"&fl=ancestor*" + "cult.reg" + "*" +
+            //"&fl=ancestor*" + plugin.options.perspective + "*" +
+            "&fl=*" +
+            "&fq=tree:" + plugin.options.tree +
+            "&indent=true" +
+            "&wt=json" +
+            "&json.wrf=?" +
+            "&rows=" + SOLR_ROW_LIMIT +
+            "&fq=level_i:[" + 1 + "+TO+" + ( level + 1) + "]" +
+            "&limit=" + SOLR_ROW_LIMIT;
+          ;;;console.log("URL:");
+          ;;;console.log(url);
+          dfd.resolve([data]);
+        }
+      }).fail(function(data){
+          dfd.resolve([]);
+      });
+      return dfd.promise();
+    },
+    getAncestorTree: function({descendants = false, directAncestors = true}){
+      const loadDescendants = descendants, loadOnlyDirectAncestors = directAncestors;
       const dfd = $.Deferred();
       const plugin = this;
       const fieldList = [
@@ -97,45 +154,61 @@
       ].join(",");
       var url =
         plugin.options.hostname +
-        plugin.options.termIndex + "/select?" +
-        "df=ancestor_id_path" +
-        "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId +
-        "&wt=json" +
-        "&indent=true" +
-        "&limit=" + SOLR_ROW_LIMIT +
-        "&fl=" + fieldList +
-        "&indent=true" +
+        plugin.options.termIndex + "/select?";
+      if(loadOnlyDirectAncestors) {
+        ;;;console.log("Load Only Direct Ancestors");
+        url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
+      } else {
+        ;;;console.log("Load All Ancestors");
+        url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
+        ;;;console.log(plugin.getAncestorPath());
+      }
+      url += "&fl=" + fieldList +
         "&fq=tree:" + plugin.options.tree +
+        "&indent=true" +
         "&wt=json" +
         "&json.wrf=?" +
-        "&rows=" + SOLR_ROW_LIMIT;
+        "&rows=" + SOLR_ROW_LIMIT +
+        "&limit=" + SOLR_ROW_LIMIT;
       $.ajax({
         url: url,
         dataType: 'jsonp',
         jsonp: 'json.wrf'
       }).done(function(data){
         const response = data.response;
-        if(response.numFound > 0){
-          const doc = response.docs[0];
-					var ancestor_ids_key = "ancestor_ids_"+plugin.options.perspective;
-					var ancestors_key = "ancestors_"+plugin.options.perspective;
-          //javaScript is weird with the undefined variable
-          //http://www.codereadability.com/how-to-check-for-undefined-in-javascript/
-					if(doc[ancestor_ids_key] === undefined){
-						ancestor_ids_key = "ancestor_ids_closest_"+plugin.options.perspective;
-						ancestors_key = "ancestors_closest_"+plugin.options.perspective;
-					}
-          const result = doc[ancestor_ids_key].reduceRight(function(acc,val,index){
-            return {
+        const buildTree = function buildTree(doc,children) {
+          const result = doc[ancestor_ids_key] === undefined ? [] : doc[ancestor_ids_key].reduceRight(function(acc,val,index){
+            const node = {
               title: doc[ancestors_key][index],
               key: val,
               expanded: true,
               href: plugin.options.featuresPath+val,
               lazy: true,
-              children: acc === undefined ? null : [acc]
+              //[].concat to handle the instance when the children are sent as an argument
+              children: acc === undefined ? null : [].concat(acc)
             };
-          }, undefined);
+            if( Number(val) === Number(plugin.options.featureId)) {
+              node.active = true;
+              node.backColor= '#eaeaea';
+            }
+            return node;
+          }, children);
           dfd.resolve([result]);
+        }
+        if(response.numFound > 0){
+          const doc = response.docs[0];
+					var ancestor_ids_key = "ancestor_ids_"+plugin.options.perspective;
+					var ancestors_key = "ancestors_"+plugin.options.perspective;
+					if(doc[ancestor_ids_key] === undefined){
+						ancestor_ids_key = "ancestor_ids_closest_"+plugin.options.perspective;
+						ancestors_key = "ancestors_closest_"+plugin.options.perspective;
+					}
+          if (loadDescendants) {
+            const featureChildren = plugin.getDescendantTree(plugin.options.featureId);
+            featureChildren.then(function(value){ buildTree(doc, value)});
+          } else {
+            buildTree(doc);
+          }
         } else {
           dfd.resolve([]);
         }
@@ -151,18 +224,36 @@
         "ancestor*",
         "caption_eng",
         "related_places_feature_type_s",
+        "related_places_relation_label_s",
       ].join(",");
       var url =
         plugin.options.hostname +
         plugin.options.termIndex + "/select?" +
+        //V0
+        //"&q=" + encodeURI("ancestor_id_path:*/"+featureId+"/* OR ancestor_id_path:"+featureId+"/*") +
+        //"&fl=*," + fieldList +
+        //V1 of the query
         //"&q=" + "id:" + plugin.options.domain + "-" + featureId + "_*" +
         //"&fq=related_kmaps_node_type:" + "child" +
+        //"&fl=*," + fieldList +
+        //V2 without counts
+        //"&q=" + "{!child of=block_type:parent}id:" + plugin.options.domain + "-" + featureId +
+        //"&fq=" + "{!collapse field=related_places_id_s}" +
+        //"&fq=related_kmaps_node_type:" + "child" +
+        //"&fl=*," + fieldList +
+        //V3 child count
         "&q=" + "{!child of=block_type:parent}id:" + plugin.options.domain + "-" + featureId +
-        "&fq=" + "{!collapse field=related_places_id_s}" +
-        //"&q=" + encodeURI("ancestor_id_path:*/"+featureId+"/* OR ancestor_id_path:"+featureId+"/*") +
+        "&fl=child_count:[subquery],uid,related_places_id_s,related_places_header_s" +","+ fieldList +
+        "&expand=true" +
+        "&child_count.fq=related_kmaps_node_type:child" +
+        "&child_count.fl=uid" +
+        "&child_count.rows=" + "0" +
+        "&child_count.q={!child of='block_type:parent'}{!term f=uid v=$row.related_places_id_s}" +
+        "&fq=related_kmaps_node_type:" + "child" +
+        "&fq="+"{!collapse field=related_places_id_s}" +
+        //end of V3
         "&wt=json" +
         "&limit=" + SOLR_ROW_LIMIT +
-        "&fl=*," + fieldList +
         "&indent=true" +
         "&wt=json" +
         "&json.wrf=?" +
@@ -189,6 +280,11 @@
               lazy: true,
               href: plugin.options.featuresPath+key,
             };
+            if(currentNode["child_count"] !== undefined) {
+              if(currentNode["child_count"]["numFound"] === 0) {
+                child.lazy = false;
+              }
+            }
             return acc !== undefined ? acc.concat([child]): [child];
           }, []);
           dfd.resolve(result);
