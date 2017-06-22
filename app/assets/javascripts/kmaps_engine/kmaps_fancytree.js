@@ -177,9 +177,17 @@
       }).done(function(data){
         const response = data.response;
         const buildTree = function buildTree(doc,children) {
-          const result = doc[ancestor_ids_key] === undefined ? [] : doc[ancestor_ids_key].reduceRight(function(acc,val,index){
+          ;;;console.log("AnCESTORS");
+          ;;;console.log("ancestor_id_closest_" + plugin.options.perspective + "_path");
+          var ancestorsKey  = "ancestor_ids_" + plugin.options.perspective;
+          var ancestorsNameKey  = "ancestors_" + plugin.options.perspective;
+          if( doc[ancestorsKey] === undefined ) {
+            ancestorsKey  = "ancestor_ids_closest_" + plugin.options.perspective;
+            ancestorsNameKey  = "ancestors_closest_" + plugin.options.perspective;
+          }
+          const result = doc[ancestorsKey] === undefined ? [] : doc[ancestorsKey].reduceRight(function(acc,val,index){
             const node = {
-              title: doc[ancestors_key][index],
+              title: doc[ancestorsNameKey][index],
               key: val,
               expanded: true,
               href: plugin.options.featuresPath+val,
