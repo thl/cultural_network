@@ -47,3 +47,25 @@ The following themes provide a look and feel for the app:
 3. kmaps_engine/main
 
    Based on css/shanti-main-kmaps.css on drupal_shanti_sarvaka_kmaps[http://github.com/shanti-uva/drupal_shanti_sarvaka_kmaps].
+
+4. vendor CSS from Drupal Shanti
+
+  The project bases its CSS on the themes maintained by the {Drupal SHANTI team}[https://github.com/shanti-uva] you will find specific CSS separated by modules in the vendor section of the code, just specific files from each module are being used not the whole CSS bundle. The following modules are currently in use by this project and maintained by {Drupal Shanti team}[https://github.com/shanti-uva]:
+    * kmaps_explorer
+    * kmaps_tree
+    * kmaps_typeahead
+    * sarvaka_kmaps
+    * shanti_kmaps_admin
+
+The CSS on these files have been modified to be able to take advantage of Rails asset pipeline.
+
+==JS
+
+External JavaScript is located inside the vendor directory(kmaps_engine/vendor/assets/javascripts). The structure serves to have an easier time when upgrading independent libraries, if we need to extend or modify them we just add them to the project's asets JavaScript.
+
+The following vendor libraries and plugins are currently being Mantained by the {Drupal Shanti team}[https://github.com/shanti-uva]:
+
+  * kmaps_tree
+  * kmaps_typeahead
+
+To view all the vendor libraries/plugins visit the code inside (kmaps_engine/vendor/assets).
