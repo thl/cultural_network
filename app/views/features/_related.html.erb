@@ -94,8 +94,8 @@ function collapse_all(){
         <%=    link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all()", :class => "expand-all expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
         <%=    link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all()", :class => "collapse-all expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
         </p>
-        <div class="related-features has-ajax-pagination has-hash-feature-links">
-          <h3><%= fname_labels(@feature).s %></h3>
+        <div class="subjects-in-subjects kmaps-list-columns related-features has-ajax-pagination has-hash-feature-links">
+          <h6><%= fname_labels(@feature).s %></h6>
           <%   parent_relation_counts.each do |rc|
             feature_relation_type = rc.feature_relation_type
             count = rc.count.to_i
@@ -158,14 +158,25 @@ function getNotInTree(){
   var tree = <%= fnit.to_json.html_safe %>;
   return tree;
 }
-$(document).ready(function(){
+</script>
+<%= javascript_on_load do %>
   $("#relation_tree_container2").kmapsFancytree({
     hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
     featureId: "<%= @feature.fid %>",
     termIndex: "<%= Flare.session.config.path %>",
     tree: "subjects",
     domain: "subjects",
+  // Functionality for columnizer
+  $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
+    width: 330,
+    lastNeverTallest : true
   });
+  // dontsplit = don't break these headers
+  $('.places-in-places').find('.column > h6, .column > ul > li, .column ul').addClass("dontsplit");
+  // dontend = don't end column with headers
+  $('.places-in-places').find('.column > h6, .column > ul > li').addClass("dontend");
+
+  // End - Functionality for columnizer
   <% unless frt.empty? %>
       $('#relation_tree_container').fancytree({
         extensions: ["glyph"],
@@ -231,5 +242,4 @@ $("#nit_relation_tree_container").fancytree("getRootNode").visit(function(node){
   node.setExpanded(true);
 });
 <% end %>
-});
-</script>
+<% end %>

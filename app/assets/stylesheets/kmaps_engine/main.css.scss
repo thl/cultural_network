@@ -1,192 +1,16 @@
-/**
-* Mandala KMAPS Places-Subjects - Development
-* 
-* version 1.x - shanti-main-kmaps.css
-* -------------------------------------------------
-* University of Virginia / SHANTI MANDALA / KMAPS
-* -------------------------------------------------
-* 
-*/
-
-/**
-* BEGIN (Places) colors 
-*/
-.page-places .titlearea,
-.page-places .carousel-control,
-.page-places .breadcrumb .icon,
-.page-places .fixed-action-button a,
-.page-places .bx-controls-direction a,
-.page-places .nav-tabs.nav-justified>li.active>a,
-.page-places .nav-tabs.nav-justified>li.active>a:focus,
-.page-places .nav-tabs.nav-justified>li.active>a:hover {
-  background: #4ca6fb !important;
-}
-
-.page-places .navbar-brand:hover .site-slogan,
-.page-places .view-section .fancytree-container .glyphicon,
-.page-places .view-section .fancytree-container .fancytree-node:hover > .glyphicon,
-.page-places .view-section .fancytree-container .fancytree-node:active > .glyphicon,
-.page-places .view-section .fancytree-node.fancytree-active > .glyphicon,
-.page-places .view-section .fancytree-node.fancytree-selected > .glyphicon,
-.page-places .carousel-feature-slides li.active div a::before,
-.page-places .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a .check-mark,
-.page-places .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a:active .check-mark {
-  color: #4ca6fb !important;
-}
-
-.page-places .carousel-feature-slides li div a:hover,
-.page-places .carousel-feature-slides li div a:active,
-.page-places .carousel-feature-slides li.active div a,
-.page-places #tab-main .each-photo a.thumbnail:hover,
-.page-places #tab-main .each-text a.thumbnail:hover {
-  border-color: #479beb !important;
-}
-
-.page-places .input-section .toggle-link,
-.page-places .input-section .toggle-link:hover,
-.page-places .input-section .toggle-link .icon::before,
-.page-places .input-section .toggle-link:hover .icon::before,
-.page-places .input-section .selectpicker .caret::before,
-.page-places .view-section .nav-tabs>li.active>a, 
-.page-places .view-section .nav-tabs>li.active>a:hover, 
-.page-places .view-section .nav-tabs>li.active>a:active {
-  color: #418ed7 !important;
-}
-
-.page-places .kmaps-tt-menu .kmaps-tt-suggestion:hover::before{ 
-    border-color: #418ed7 !important; /* set subtheme color */
-    background: #418ed7 !important;
-}
-
-.page-places #sidebar-first .nav-pills li.active {
-  border-color: #418ed7 !important;
-}
-
-.page-places .view-section .nav-tabs>li.active>a,
-.page-places .nav-tabs.nav-justified>li.active{
-  /*border-top-color: #4ca6fb !important;*/
-  border-top-color: #418ed7 !important;
-}
-
-.page-places .kmaps-tt-menu .kmaps-tt-suggestion:hover::before,
-.page-places .kmaps-tt-menu .kmaps-tt-suggestion.kmaps-tt-cursor::before{
-    border-color: #418ed7;
-    background-color: #418ed7;
-}
-
-.page-places .texts-list li:hover::before{
-  background: #418ed7 !important;
-}
-
-@media screen and (min-width: 768px) {
-
-  .nav-tabs.nav-justified>li.active::before{  
-    /*color: #4ca6fb !important;*/
-    color: #418ed7 !important;
-  }
-}
-
-.page-places ::-moz-selection {background: #fb8c4c !important;}
-.page-places ::selection{background: #fb8c4c !important;}
-
-
-
-
-/**
-* BEGIN (Subjects) colors 
-*/
-.page-subjects .titlearea,
-.page-subjects .carousel-control,
-.page-subjects .breadcrumb .icon,
-.page-subjects .fixed-action-button a,
-.page-subjects .bx-controls-direction a,
-.page-subjects .nav-tabs.nav-justified>li.active>a,
-.page-subjects .nav-tabs.nav-justified>li.active>a:focus,
-.page-subjects .nav-tabs.nav-justified>li.active>a:hover {
-  background: #dc3c47 !important;
-}
-
-.page-subjects .navbar-brand:hover .site-slogan,
-.page-subjects .view-section .fancytree-container .glyphicon,
-.page-subjects .view-section .fancytree-container .fancytree-node:hover > .glyphicon,
-.page-subjects .view-section .fancytree-container .fancytree-node:active > .glyphicon,
-.page-subjects .view-section .fancytree-node.fancytree-active > .glyphicon,
-.page-subjects .view-section .fancytree-node.fancytree-selected > .glyphicon,
-.page-subjects .carousel-feature-slides li.active div a::before,
-.page-subjects .input-section a.toggle-link,
-.page-subjects .input-section a.toggle-link:hover,
-.page-subjects .input-section .toggle-link .icon::before,
-.page-subjects .input-section .toggle-link:hover .icon::before,
-.page-subjects .input-section .selectpicker .caret::before,
-.page-subjects .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a .check-mark,
-.page-subjects .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a:active .check-mark,
-.page-subjects .view-section .nav-tabs>li.active>a, 
-.page-subjects .view-section .nav-tabs>li.active>a:hover, 
-.page-subjects .view-section .nav-tabs>li.active>a:active {
-  color: #dc3c47 !important;
-}
-
-.page-subjects .carousel-feature-slides li div a:hover,
-.page-subjects .carousel-feature-slides li div a:active,
-.page-subjects .carousel-feature-slides li.active div a,
-.page-subjects #tab-main .each-photo a.thumbnail:hover,
-.page-subjects #tab-main .each-text a.thumbnail:hover {
-  border-color: #dc3c47 !important;
-}
-
-.page-subjects #sidebar-first .nav-pills li.active {
-  border-color: #dc3c47 !important;
-}
-
-.page-subjects .view-section .nav-tabs>li.active>a, 
-/*.page-subjects .view-section .nav-tabs>li.active>a:hover, 
-.page-subjects .view-section .nav-tabs>li.active>a:active,
-.page-places .view-section .nav-tabs>li.active,*/
-.page-subjects .nav-tabs.nav-justified>li.active{
-  border-top-color: #dc3c47 !important;
-}
-
-.page-subjects .texts-list li:hover::before{
-  background: #dc3c47 !important;
-}
-
-@media screen and (min-width: 768px) {
-
-  .nav-tabs.nav-justified>li.active::before{  
-    color: #dc3c47 !important;
-  }
-}
-
-.page-subjects ::-moz-selection { background: #47dc3c!important;}
-.page-subjects ::selection { background: #47dc3c !important;}
-
-.page-places .navbar-brand:active .site-slogan,
-.page-subjects .navbar-brand:active .site-slogan {
-  color: #444 !important;
-}
-
-/** 
-  * ------------------
-  * END colors 
-  * ------------------
-  */
-
-
-
-
-/* hide mobile button on homepage */
-.front .btn.btn-default.view-offcanvas-sidebar{ display:none !important; }
-
-/* this removes the 2nd breadcrumb  (text: Earth) */
-.kmaps.page-places .breadcrumb li:nth-of-type(2){ display:none ;}
-
-/* space between Map and accordions on Overview section */
-.panel-group{ margin: 20px 0 150px; }
-
-.tab-content.container-fluid,
-.no-sidebars article.main-col{ padding-bottom:0; }
-
-
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require sarvaka_kmaps/shanti-main-kmaps
+ *= require_self
+ */
 
 /*
 * gallery images
@@ -216,15 +40,13 @@ article table.pagerer:last-child{
 	text-align:left;
 }
 
-/**
-*
-* END - KMAPS/css/shanti-main-kmaps.css
-*
-*/
-#tab-content-loading {
-  width:auto;
-  height:100px;
-  background-image: image-url("loading.gif");
-  background-repeat: no-repeat;
-  background-position: center;
+/* search flyout */
+#search-note p {
+  font-size: x-small;
+  font-style: italic;
 }
+#goto-fid.input-group{
+  display: table;
+  float:none;
+}
+/* END - search flyout */

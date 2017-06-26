@@ -1,0 +1,188 @@
+/**
+* Mandala KMAPS Places-Subjects - Development
+*
+* version 1.x - shanti-main-kmaps.css
+* -------------------------------------------------
+* University of Virginia / SHANTI MANDALA / KMAPS
+* -------------------------------------------------
+*
+*/
+
+/* BEGIN (Places) colors */
+.page-places .titlearea,
+.page-places .breadcrumb .icon,
+.page-places .fixed-action-button a,
+.page-places .bx-controls-direction a,
+.page-places .nav-tabs.nav-justified>li.active>a,
+.page-places .nav-tabs.nav-justified>li.active>a:focus,
+.page-places .nav-tabs.nav-justified>li.active>a:hover,
+.page-places .shanti-thumbnail-image .icon,
+.page-places .ui-resizable-handle.ui-resizable-nw.active,
+.page-places .ui-resizable-handle.ui-resizable-nw:active {
+  background: #4ca6fb !important;
+}
+
+.page-places .navbar-brand:hover .site-slogan,
+.page-places .view-section .fancytree-container .glyphicon,
+.page-places .view-section .fancytree-container .fancytree-node:hover > .glyphicon,
+.page-places .view-section .fancytree-container .fancytree-node:active > .glyphicon,
+.page-places .view-section .fancytree-node.fancytree-active > .glyphicon,
+.page-places .view-section .fancytree-node.fancytree-selected > .glyphicon,
+.page-places .carousel-feature-slides li.active div a::before,
+.page-places .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a .check-mark,
+.page-places .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a:active .check-mark {
+  color: #4ca6fb !important;
+}
+
+.page-places .carousel-feature-slides li div a:hover,
+.page-places .carousel-feature-slides li div a:active,
+.page-places .carousel-feature-slides li.active div a,
+.page-places #tab-main .each-photo a.thumbnail:hover,
+.page-places #tab-main .each-text a.thumbnail:hover {
+  border-color: #479beb !important;
+}
+
+.page-places .input-section .toggle-link,
+.page-places .input-section .toggle-link:hover,
+.page-places .input-section .toggle-link .icon::before,
+.page-places .input-section .toggle-link:hover .icon::before,
+.page-places .input-section .selectpicker .caret::before,
+.page-places .view-section .nav-tabs>li.active>a,
+.page-places .view-section .nav-tabs>li.active>a:hover,
+.page-places .view-section .nav-tabs>li.active>a:active {
+  color: #4ca6fb !important;
+}
+
+.page-places .kmaps-tt-menu .kmaps-tt-suggestion:hover::before,
+.page-places .kmaps-tt-menu .kmaps-tt-suggestion.kmaps-tt-cursor::before,
+.page-places .carousel-indicators li:hover, 
+.page-places .carousel-indicators li.active,
+.page-places .kmaps-tt-menu .kmaps-tt-suggestion:hover::before{
+    border-color: #4ca6fb !important; /* set subtheme color */
+    background: #4ca6fb !important;
+}
+
+.page-places #sidebar-first .nav-pills li.active {
+  border-color: #4ca6fb !important;
+}
+
+.page-places .view-section .nav-tabs>li.active>a,
+.page-places .nav-tabs.nav-justified>li.active{
+  /*border-top-color: #4ca6fb !important;*/
+  border-top-color: #4ca6fb !important;
+}
+
+.page-places .texts-list li:hover::before{
+  /*background: #4ca6fb !important;*/
+}
+
+.page-places .ui-resizable-handle.ui-resizable-w,
+.page-places .ui-resizable-handle.ui-resizable-w:hover,
+.page-places .ui-resizable-handle.ui-resizable-w:active { border-color: #4ca6fb transparent transparent transparent; }
+
+@media screen and (min-width: 768px) {
+
+  .nav-tabs.nav-justified>li.active::before{
+    /*color: #4ca6fb !important;*/
+    color: #4ca6fb !important;
+  }
+}
+
+.page-places ::-moz-selection {background: #FFB13F !important;}
+.page-places ::selection{background: #FFB13F !important;}
+
+
+
+
+/**
+* BEGIN (Subjects) colors
+*/
+.page-subjects .titlearea,
+.page-subjects .carousel-control,
+.page-subjects .breadcrumb .icon,
+.page-subjects .fixed-action-button a,
+.page-subjects .bx-controls-direction a,
+.page-subjects .nav-tabs.nav-justified>li.active>a,
+.page-subjects .nav-tabs.nav-justified>li.active>a:focus,
+.page-subjects .nav-tabs.nav-justified>li.active>a:hover,
+.page-subjects .shanti-thumbnail-image .icon,
+.page-subjects .ui-resizable-handle.ui-resizable-nw.active,
+.page-subjects .ui-resizable-handle.ui-resizable-nw:active {
+  background: #cc4c39 !important;
+}
+
+.page-subjects .navbar-brand:hover .site-slogan,
+.page-subjects .view-section .fancytree-container .glyphicon,
+.page-subjects .view-section .fancytree-container .fancytree-node:hover > .glyphicon,
+.page-subjects .view-section .fancytree-container .fancytree-node:active > .glyphicon,
+.page-subjects .view-section .fancytree-node.fancytree-active > .glyphicon,
+.page-subjects .view-section .fancytree-node.fancytree-selected > .glyphicon,
+.page-subjects .carousel-feature-slides li.active div a::before,
+.page-subjects .input-section a.toggle-link,
+.page-subjects .input-section a.toggle-link:hover,
+.page-subjects .input-section .toggle-link .icon::before,
+.page-subjects .input-section .toggle-link:hover .icon::before,
+.page-subjects .input-section .selectpicker .caret::before,
+.page-subjects .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a .check-mark,
+.page-subjects .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a:active .check-mark,
+.page-subjects .view-section .nav-tabs>li.active>a,
+.page-subjects .view-section .nav-tabs>li.active>a:hover,
+.page-subjects .view-section .nav-tabs>li.active>a:active {
+  color: #cc4c39 !important;
+}
+
+.page-subjects .carousel-feature-slides li div a:hover,
+.page-subjects .carousel-feature-slides li div a:active,
+.page-subjects .carousel-feature-slides li.active div a,
+.page-subjects #tab-main .each-photo a.thumbnail:hover,
+.page-subjects #tab-main .each-text a.thumbnail:hover {
+  border-color: #cc4c39 !important;
+}
+
+.page-subjects .kmaps-tt-menu .kmaps-tt-suggestion:hover::before,
+.page-subjects .kmaps-tt-menu .kmaps-tt-suggestion.kmaps-tt-cursor::before,
+.page-subjects .carousel-indicators li:hover, 
+.page-subjects .carousel-indicators li.active,
+.page-subjects .kmaps-tt-menu .kmaps-tt-suggestion:hover::before{
+    border-color: #cc4c39 !important; /* set subtheme color */
+    background: #cc4c39 !important;
+}
+
+.page-subjects #sidebar-first .nav-pills li.active {
+  border-color: #cc4c39 !important;
+}
+
+.page-subjects .view-section .nav-tabs>li.active>a,
+.page-subjects .nav-tabs.nav-justified>li.active{
+  border-top-color: #cc4c39 !important;
+}
+
+.page-subjects .texts-list li:hover::before{
+  /*background: #cc4c39 !important;*/
+}
+
+.page-subjects .ui-resizable-handle.ui-resizable-w,
+.page-subjects .ui-resizable-handle.ui-resizable-w:hover,
+.page-subjects .ui-resizable-handle.ui-resizable-w:active { border-color: #cc4c39 transparent transparent transparent; }
+
+@media screen and (min-width: 768px) {
+
+  .nav-tabs.nav-justified>li.active::before{
+    color: #cc4c39 !important;
+  }
+}
+
+.page-subjects ::-moz-selection { background: #2A974B !important;}
+.page-subjects ::selection { background: #2A974B !important;}
+
+
+
+/* BEGIN Mandala Homepage colors */
+.front.home-carousel .ui-resizable-handle.ui-resizable-nw:active { background-color: #4d59ca !important; }
+
+
+/**
+*
+* END - KMAPS/css/shanti-main-kmaps.css
+*
+*/

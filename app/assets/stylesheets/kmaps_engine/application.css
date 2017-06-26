@@ -13,6 +13,9 @@
  *= require kmaps_engine/node-tree
  *= require kmaps_engine/main
  *= require kmaps_tree/kmapstree
+ *= require kmaps_engine/kmaps_typeahead
+ *= require kmaps_engine/shanti_kmaps_typeahead
+ *= require kmaps_engine/kmaps-explorer
  */
 
 div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; }
@@ -29,7 +32,8 @@ div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; 
 
 /* Fix the Drag handle in the searchbox to fit inside the gray box */
 .page-places .input-section .toggle-link.advanced-link {
-    padding: 0px 0px 10px 0px;
+  display:block;
+  padding: 0px 0px 10px 0px;
 }
 
 .menu-main .user-prefs li:hover, .menu-main .user-prefs li:active {

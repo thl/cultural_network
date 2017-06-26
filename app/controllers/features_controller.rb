@@ -134,7 +134,7 @@ class FeaturesController < ApplicationController
     if match.blank?
       @features = Feature.where('FALSE').paginate(:page => 1, :per_page => 1)
     else
-      accepted_fields = {:name =>        {:model => :names       , :field => 'feature_names.name'}, 
+      accepted_fields = {:name =>        {:model => :names       , :field => 'feature_names.name'},
                          :summary =>     {:model => :summaries   , :field => 'summaries.content'},
                          :caption =>     {:model => :captions    , :field => 'captions.content'},
                          :description => {:model => :descriptions, :field => 'descriptions.content'}}
