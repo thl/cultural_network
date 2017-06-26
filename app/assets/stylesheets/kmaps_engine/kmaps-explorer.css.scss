@@ -10,5 +10,9 @@
  *
  *= require kmaps_explorer/kmaps-explorer
  *= require kmaps_explorer/kmaps-explorer-block
+ *= require_self
  */
 
+span.fancytree-title {
+  cursor: pointer;
+}

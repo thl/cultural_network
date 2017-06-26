@@ -195,7 +195,7 @@
                       var base = $(this).attr('id');
                       var argument = $(this).attr('argument');
                       /*
-                       * TODO: 
+                       * TODO:
                        * fix this for agnostic purposes, currently just setting a window location
                       var url = location.origin + location.pathname.substring(0, location.pathname.indexOf(plugin.settings.type)) + plugin.settings.type + '/' + data.node.key + '/overview/nojs';
                             Drupal.ajax[base] = new Drupal.ajax(base, this, {

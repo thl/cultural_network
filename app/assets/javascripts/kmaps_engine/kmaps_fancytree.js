@@ -11,18 +11,18 @@
 
   var SOLR_ROW_LIMIT = 2000;
 
-	// undefined is used here as the undefined global variable in ECMAScript 3 is
-	// mutable (ie. it can be changed by someone else). undefined isn't really being
-	// passed in so we can ensure the value of it is truly undefined. In ES5, undefined
-	// can no longer be modified.
+  // undefined is used here as the undefined global variable in ECMAScript 3 is
+  // mutable (ie. it can be changed by someone else). undefined isn't really being
+  // passed in so we can ensure the value of it is truly undefined. In ES5, undefined
+  // can no longer be modified.
 
-	// window is passed through as local variable rather than global
-	// as this (slightly) quickens the resolution process and can be more efficiently
-	// minified (especially when both are regularly referenced in your plugin).
+  // window is passed through as local variable rather than global
+  // as this (slightly) quickens the resolution process and can be more efficiently
+  // minified (especially when both are regularly referenced in your plugin).
 
-	// Create the defaults once
-	var pluginName = 'kmapsFancytree',
-		defaults = {
+  // Create the defaults once
+  var pluginName = 'kmapsFancytree',
+    defaults = {
       hostname: "localhost",
       termIndex: "/solr/kmterms_dev",
       assetIndex: "/solr/kmassets_dev",
@@ -33,25 +33,25 @@
       perspective: "pol.admin.hier",
       seedTree: {
         descendants: false,
-        directAncestors: true,
-      },
-		};
+        directAncestors: true
+      }
+    };
 
-	// The actual plugin constructor
-	function Plugin( element, options ) {
-		this.element = element;
+  // The actual plugin constructor
+  function Plugin( element, options ) {
+    this.element = element;
 
-		// jQuery has an extend method which merges the contents of two or
-		// more objects, storing the result in the first object. The first object
-		// is generally empty as we don't want to alter the default options for
-		// future instances of the plugin
-		this.options = $.extend( {}, defaults, options) ;
+    // jQuery has an extend method which merges the contents of two or
+    // more objects, storing the result in the first object. The first object
+    // is generally empty as we don't want to alter the default options for
+    // future instances of the plugin
+    this.options = $.extend( {}, defaults, options) ;
 
-		this._defaults = defaults;
-		this._name = pluginName;
+    this._defaults = defaults;
+    this._name = pluginName;
 
-		this.init();
-	}
+    this.init();
+  }
 
   Plugin.prototype = {
     init: function () {
@@ -60,23 +60,23 @@
       // You already have access to the DOM element and the options via the instance,
       // e.g., this.element and this.options
       $(plugin.element).fancytree({
-				extensions: ["glyph"],
+        extensions: ["glyph"],
         source: plugin.getAncestorTree(plugin.options.seedTree),
-				glyph: {
-					map: {
-						doc: "",
-						docOpen: "",
-						error: "glyphicon glyphicon-warning-sign",
-						expanderClosed: "glyphicon glyphicon-plus-sign",
-						expanderLazy: "glyphicon glyphicon-plus-sign",
-						// expanderLazy: "glyphicon glyphicon-expand",
-						expanderOpen: "glyphicon glyphicon-minus-sign",
-						// expanderOpen: "glyphicon glyphicon-collapse-down",
-						folder: "",
-						folderOpen: "",
-						loading: "glyphicon glyphicon-refresh"
-							//              loading: "icon-spinner icon-spin"
-					}
+        glyph: {
+          map: {
+            doc: "",
+            docOpen: "",
+            error: "glyphicon glyphicon-warning-sign",
+            expanderClosed: "glyphicon glyphicon-plus-sign",
+            expanderLazy: "glyphicon glyphicon-plus-sign",
+            // expanderLazy: "glyphicon glyphicon-expand",
+            expanderOpen: "glyphicon glyphicon-minus-sign",
+            // expanderOpen: "glyphicon glyphicon-collapse-down",
+            folder: "",
+            folderOpen: "",
+            loading: "glyphicon glyphicon-refresh"
+              //              loading: "icon-spinner icon-spin"
+          }
         },
         activate: function(event, data){
           var node = data.node,
@@ -88,7 +88,7 @@
         lazyLoad: function(event,data){
           data.result = plugin.getDescendantTree(data.node.key);
         },
-			});
+      });
     },
     getAncestorPath: function() {
       const plugin = this;
@@ -134,7 +134,9 @@
       });
       return dfd.promise();
     },
-    getAncestorTree: function({descendants = false, directAncestors = true}){
+    getAncestorTree: function(options){
+      var descendants = options["descendants"] ? !!options["descendants"] : false;
+      var directAncestors = options["directAncestors"] ? !!options["directAncestors"] : true;
       const loadDescendants = descendants, loadOnlyDirectAncestors = directAncestors;
       const dfd = $.Deferred();
       const plugin = this;
@@ -192,12 +194,12 @@
         }
         if(response.numFound > 0){
           const doc = response.docs[0];
-					var ancestor_ids_key = "ancestor_ids_"+plugin.options.perspective;
-					var ancestors_key = "ancestors_"+plugin.options.perspective;
-					if(doc[ancestor_ids_key] === undefined){
-						ancestor_ids_key = "ancestor_ids_closest_"+plugin.options.perspective;
-						ancestors_key = "ancestors_closest_"+plugin.options.perspective;
-					}
+          var ancestor_ids_key = "ancestor_ids_"+plugin.options.perspective;
+          var ancestors_key = "ancestors_"+plugin.options.perspective;
+          if(doc[ancestor_ids_key] === undefined){
+            ancestor_ids_key = "ancestor_ids_closest_"+plugin.options.perspective;
+            ancestors_key = "ancestors_closest_"+plugin.options.perspective;
+          }
           if (loadDescendants) {
             const featureChildren = plugin.getDescendantTree(plugin.options.featureId);
             featureChildren.then(function(value){ buildTree(doc, value)});
@@ -279,65 +281,65 @@
     }
   };
 
-	// You don't need to change something below:
-	// A really lightweight plugin wrapper around the constructor,
-	// preventing against multiple instantiations and allowing any
-	// public function (ie. a function whose name doesn't start
-	// with an underscore) to be called via the jQuery plugin,
-	// e.g. $(element).defaultPluginName('functionName', arg1, arg2)
-	$.fn[pluginName] = function ( options ) {
-		var args = arguments;
+  // You don't need to change something below:
+  // A really lightweight plugin wrapper around the constructor,
+  // preventing against multiple instantiations and allowing any
+  // public function (ie. a function whose name doesn't start
+  // with an underscore) to be called via the jQuery plugin,
+  // e.g. $(element).defaultPluginName('functionName', arg1, arg2)
+  $.fn[pluginName] = function ( options ) {
+    var args = arguments;
 
-		// Is the first parameter an object (options), or was omitted,
-		// instantiate a new instance of the plugin.
-		if (options === undefined || typeof options === 'object') {
-			return this.each(function () {
+    // Is the first parameter an object (options), or was omitted,
+    // instantiate a new instance of the plugin.
+    if (options === undefined || typeof options === 'object') {
+      return this.each(function () {
 
-				// Only allow the plugin to be instantiated once,
-				// so we check that the element has no plugin instantiation yet
-				if (!$.data(this, 'plugin_' + pluginName)) {
+        // Only allow the plugin to be instantiated once,
+        // so we check that the element has no plugin instantiation yet
+        if (!$.data(this, 'plugin_' + pluginName)) {
 
-					// if it has no instance, create a new one,
-					// pass options to our plugin constructor,
-					// and store the plugin instance
-					// in the elements jQuery data object.
-					$.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
-				}
-			});
+          // if it has no instance, create a new one,
+          // pass options to our plugin constructor,
+          // and store the plugin instance
+          // in the elements jQuery data object.
+          $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
+        }
+      });
 
-			// If the first parameter is a string and it doesn't start
-			// with an underscore or "contains" the `init`-function,
-			// treat this as a call to a public method.
-		} else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
+      // If the first parameter is a string and it doesn't start
+      // with an underscore or "contains" the `init`-function,
+      // treat this as a call to a public method.
+    } else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
 
-			// Cache the method call
-			// to make it possible
-			// to return a value
-			var returns;
+      // Cache the method call
+      // to make it possible
+      // to return a value
+      var returns;
 
-			this.each(function () {
-				var instance = $.data(this, 'plugin_' + pluginName);
+      this.each(function () {
+        var instance = $.data(this, 'plugin_' + pluginName);
 
-				// Tests that there's already a plugin-instance
-				// and checks that the requested public method exists
-				if (instance instanceof Plugin && typeof instance[options] === 'function') {
+        // Tests that there's already a plugin-instance
+        // and checks that the requested public method exists
+        if (instance instanceof Plugin && typeof instance[options] === 'function') {
 
-					// Call the method of our plugin instance,
-					// and pass it the supplied arguments.
-					returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
-				}
+          // Call the method of our plugin instance,
+          // and pass it the supplied arguments.
+          returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
+        }
 
-				// Allow instances to be destroyed via the 'destroy' method
-				if (options === 'destroy') {
-					$.data(this, 'plugin_' + pluginName, null);
-				}
-			});
+        // Allow instances to be destroyed via the 'destroy' method
+        if (options === 'destroy') {
+          $.data(this, 'plugin_' + pluginName, null);
+        }
+      });
 
-			// If the earlier cached method
-			// gives a value back return the value,
-			// otherwise return this to preserve chainability.
-			return returns !== undefined ? returns : this;
-		}
-	};
+      // If the earlier cached method
+      // gives a value back return the value,
+      // otherwise return this to preserve chainability.
+      return returns !== undefined ? returns : this;
+    }
+  };
 }(jQuery, window, document));
 
