@@ -12,7 +12,7 @@
     <div id="collapseOne" class="panel-collapse collapse in">
       <div class="panel-body">
 <%      path = object_path(object.fid) %>
-        <legend><%= ts 'information.general' %> <span class="listActions"><%= edit_item_link path %>
+        <legend><%= ts 'information.general' %> <span class="listActions"><%= edit_item_link object.fid %>
 <%        if authorized?(path, :action => 'destroy') %>
             | <%= delete_item_link path %>
 <%        end %></span>
