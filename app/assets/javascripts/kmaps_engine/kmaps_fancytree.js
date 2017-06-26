@@ -97,7 +97,6 @@
         plugin.options.hostname +
         plugin.options.termIndex + "/select?" +
         "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId +
-        //"&fl=ancestor*" + "cult.reg" + "*" +
         "&fl=*level*,ancestor*" + plugin.options.perspective + "*" +
         "&fq=tree:" + plugin.options.tree +
         "&indent=true" +
@@ -105,26 +104,21 @@
         "&json.wrf=?" +
         "&rows=" + SOLR_ROW_LIMIT +
         "&limit=" + SOLR_ROW_LIMIT;
-      ;;;console.log(url);
       $.ajax({
         url: url,
         dataType: 'jsonp',
         jsonp: 'json.wrf'
       }).done(function(data){
-        ;;;console.log(JSON.stringify(data));
         const response = data.response;
         if(response.numFound < 1) {
           dfd.resolve([]);
         } else {
          const path = response.docs[0]["ancestor_id_"+plugin.options.perspective+"_path"];
          const level = response.docs[0]["level_"+plugin.options.perspective+"_i"];
-          ;;;console.log(level);
           var url =
             plugin.options.hostname +
             plugin.options.termIndex + "/select?" +
             "&q=" + "ancestor_id_" + plugin.options.perspective + "_path:" + path +
-            //"&fl=ancestor*" + "cult.reg" + "*" +
-            //"&fl=ancestor*" + plugin.options.perspective + "*" +
             "&fl=*" +
             "&fq=tree:" + plugin.options.tree +
             "&indent=true" +
@@ -133,8 +127,6 @@
             "&rows=" + SOLR_ROW_LIMIT +
             "&fq=level_i:[" + 1 + "+TO+" + ( level + 1) + "]" +
             "&limit=" + SOLR_ROW_LIMIT;
-          ;;;console.log("URL:");
-          ;;;console.log(url);
           dfd.resolve([data]);
         }
       }).fail(function(data){
@@ -156,12 +148,9 @@
         plugin.options.hostname +
         plugin.options.termIndex + "/select?";
       if(loadOnlyDirectAncestors) {
-        ;;;console.log("Load Only Direct Ancestors");
         url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
       } else {
-        ;;;console.log("Load All Ancestors");
         url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
-        ;;;console.log(plugin.getAncestorPath());
       }
       url += "&fl=" + fieldList +
         "&fq=tree:" + plugin.options.tree +
@@ -177,8 +166,6 @@
       }).done(function(data){
         const response = data.response;
         const buildTree = function buildTree(doc,children) {
-          ;;;console.log("AnCESTORS");
-          ;;;console.log("ancestor_id_closest_" + plugin.options.perspective + "_path");
           var ancestorsKey  = "ancestor_ids_" + plugin.options.perspective;
           var ancestorsNameKey  = "ancestors_" + plugin.options.perspective;
           if( doc[ancestorsKey] === undefined ) {
@@ -237,18 +224,6 @@
       var url =
         plugin.options.hostname +
         plugin.options.termIndex + "/select?" +
-        //V0
-        //"&q=" + encodeURI("ancestor_id_path:*/"+featureId+"/* OR ancestor_id_path:"+featureId+"/*") +
-        //"&fl=*," + fieldList +
-        //V1 of the query
-        //"&q=" + "id:" + plugin.options.domain + "-" + featureId + "_*" +
-        //"&fq=related_kmaps_node_type:" + "child" +
-        //"&fl=*," + fieldList +
-        //V2 without counts
-        //"&q=" + "{!child of=block_type:parent}id:" + plugin.options.domain + "-" + featureId +
-        //"&fq=" + "{!collapse field=related_places_id_s}" +
-        //"&fq=related_kmaps_node_type:" + "child" +
-        //"&fl=*," + fieldList +
         //V3 child count
         "&q=" + "{!child of=block_type:parent}id:" + plugin.options.domain + "-" + featureId +
         "&fl=child_count:[subquery],uid,related_places_id_s,related_places_header_s" +","+ fieldList +

@@ -14,7 +14,7 @@
     // minified (especially when both are regularly referenced in your plugin).
 
     var SOLR_ROW_LIMIT = 2000;
-    var DEBUG = true;
+    var DEBUG = false;
 
     // Create the defaults once
     var pluginName = "kmapsTree",
@@ -194,9 +194,10 @@
                     $(data.node.span).find('#ajax-id-' + data.node.key+":not(.nav-processed)").addClass('nav-processed').each(function () {
                       var base = $(this).attr('id');
                       var argument = $(this).attr('argument');
-                      var url = location.origin + location.pathname.substring(0, location.pathname.indexOf(plugin.settings.type)) + plugin.settings.type + '/' + data.node.key + '/overview/nojs';
-                      ;;;console.log("navigated");
                       /*
+                       * TODO: 
+                       * fix this for agnostic purposes, currently just setting a window location
+                      var url = location.origin + location.pathname.substring(0, location.pathname.indexOf(plugin.settings.type)) + plugin.settings.type + '/' + data.node.key + '/overview/nojs';
                             Drupal.ajax[base] = new Drupal.ajax(base, this, {
                                 url: url,
                                 event: 'navigate',
@@ -204,7 +205,7 @@
                                     type: 'throbber'
                                 }
                             });
-                            */
+                      */
                     });
                   }
                   return data;
@@ -309,7 +310,10 @@
                   var focus_id = "";
 
                   log("initing!");
-                  /* ;;; need to clean this up
+                  /* TODO: need to clean this up, added the kmaps_path and the focus_id to
+                   * the default object so it can be passed as an argument. In Drupal it was
+                   * intended to be a setting but for a more agnostic approach it was changed.
+                   *
                     if (Drupal
                         && Drupal.settings
                         && Drupal.settings.kmaps_explorer
@@ -319,8 +323,8 @@
                         focus_id = Drupal.settings.kmaps_explorer.kmaps_id
                     }
                     */
-                  path = plugin.settings.expand_path;
-                  focus_id = plugin.settings.activeNodeId;
+                  path = plugin.settings.expand_path ? plugin.settings.expand_path : path;
+                  focus_id = plugin.settings.activeNodeId ? plugin.settings.activeNodeId : focus_id;
                   if (DEBUG) console.error("path = " + path + " focus_id = " + focus_id);
 
                   if (path) {
@@ -664,7 +668,6 @@
         getPerspectivePath: function() {
           const plugin = this;
           const dfd = $.Deferred();
-          console.log("Getting perspective path for:"+plugin.settings.perspective);
 
             const fieldList = [
                 "id",
@@ -682,14 +685,11 @@
                 "&wt=json" +
                 "&json.wrf=?" +
                 "&rows=" + SOLR_ROW_LIMIT;
-          ;;;console.log("----------------");
-          ;;;console.log("MY URL:"+url);
           $.ajax({
             url: url,
             dataType: 'jsonp',
             jsonp: 'json.wrf'
           }).done(function(data){
-            ;;;console.log(JSON.stringify(data));
             const response = data.response;
             if(response.numFound < 1) {
               dfd.resolve("");
@@ -1023,6 +1023,9 @@
                 // This was a user click
                 //console.error("USER CLICKED: " + data.node.title);
                 $(this.element).trigger("useractivate", encapsulate("useractivate", event, data.node));
+              //TODO: Fix this to have a more elegant way to handle the activate for nodes
+                      var url= this.settings.baseUrl +"/"+data.node.key;
+                      window.location.href = url;
             } else if (event.type === "fancytreekeydown" && origEvent === "keydown") {
                 // This was a user arrow key (or return....)
                 //console.error("USER KEYED: " + data.node.tree.getActiveNode() + " with " + event.keyCode);
