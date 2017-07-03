@@ -356,15 +356,12 @@
           var cl = [];
           if (data.selected) cl.push('kmaps-tt-selected');
           var display_path = data.doc.ancestors ? data.doc.ancestors.join("/") : "";
-          if (settings.domain == 'subjects') { // show hierarchy
-            return '<div data-id="' + data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span>' + (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
-          } else if (settings.domain == 'sources') { // show hierarchy
-            return '<div data-id="' + data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span>' + (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
-          }
-          else { // show feature types
+          if (settings.domain == 'places') { // show feature types
             cl.push('kmaps-place-result');
             var feature_types = data.doc.feature_types ? data.doc.feature_types.join('/') : '';
             return '<div data-id="' + data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-place-name">' + data.value + '</span> <span class="kmaps-feature-type">' + feature_types + '</span>' + '</div>';
+          } else { // show hierarchy
+            return '<div data-id="' + data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span>' + (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
           }
         }
       };
