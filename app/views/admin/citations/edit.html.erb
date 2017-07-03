@@ -16,6 +16,30 @@
 	  <div class="row">
 <%=     label :info_source_id, 'Source ID from Shanti Sources' %>
 <%=     f.text_field :info_source_id, class: [:text, ' form-control form-text'] %>
+<i>Or <a id="source-search-toggler" href="#">click here to search from name</a></i>
+<div id="source-search-container">
+  <input type="text" id="kmaps-search-source" class="kmaps-search-term form-control form-text text-full" placeholder="Search source by text..." autocomplete="off">
+</div>
+<%= javascript_on_load do %>
+  $("#source-search-container").hide();
+  $("#source-search-toggler").on('click',function(e){
+    $("#source-search-container").toggle();
+  });
+  $("#kmaps-search-source").kmapsTypeahead({
+    //term_index: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>/solr/kmassets",
+    term_index: "https://ss206212-us-east-1-aws.measuredsearch.com/solr/kmassets",
+    domain: "sources",
+    filters_domain: "subjects",
+    root_kmap_path: null,
+    features_path: "<%= features_path %>",
+    autocomplete_field: "title",
+    filters: "asset_type:sources"
+  });
+  $("#kmaps-search-source").bind('typeahead:select', function(ev, suggestion) {
+  console.log('Selection: ' + JSON.stringify(suggestion));
+  $("#citation_info_source_id").val(suggestion.id);
+});
+<% end %>
 	  </div>
 <%    else %>
 	  <div class="row">
