@@ -176,7 +176,7 @@
           }
           const result = doc[ancestorsKey] === undefined ? [] : doc[ancestorsKey].reduceRight(function(acc,val,index){
             const node = {
-              title: doc[ancestorsNameKey][index],
+              title: "<strong>" + doc[ancestorsNameKey][index] + "</strong>",
               key: val,
               expanded: true,
               href: plugin.options.featuresPath+val,
@@ -257,11 +257,11 @@
             const match= currentNode["related_places_id_s"].match(regex);
             const key = match[1] === undefined? "" : match[1];
             const child = {
-              title: currentNode["related_places_header_s"]+
+              title: "<strong>" + currentNode["related_places_header_s"] + "</strong> " +
               "("+currentNode["related_places_feature_type_s"]+": "+
               currentNode["related_places_relation_label_s"]+")",
               key: key,
-              expanded: true,
+              expanded: false,
               lazy: true,
               href: plugin.options.featuresPath+key,
             };

@@ -12,5 +12,5 @@
 //
 //= require typeahead/bloodhound.min
 //= require typeahead/typeahead.jquery.min
-//= require kmaps_typeahead/jquery.kmaps-typeahead
+//= require kmaps_engine/jquery.kmaps-typeahead
 //= require kmaps_typeahead/kmaps-util

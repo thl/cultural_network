@@ -163,7 +163,9 @@
 
                 // Fancytree Building Event Handlers
                 createNode: function (event, data) {
-                  data.node.span.childNodes[2].innerHTML = '<span id="ajax-id-' + data.node.key + '">' + data.node.title + ' ..... ' + data.node.data.path + '</span>';
+                  data.node.span.childNodes[2].innerHTML = '<span id="ajax-id-' + data.node.key + '">' +
+                    data.node.title + ' ... ' +
+                    ( data.node.data.path || "") + '</span>';
 
                   var path = plugin.makeStringPath(data);
                   var elem = data.node.span;

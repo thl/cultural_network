@@ -63,7 +63,8 @@
       var prefetch_facets = (settings.prefetch_facets == 'on');
       var ancestor_field = 'ancestor_ids_generic'; //(settings.domain == 'subjects') ? 'ancestor_ids_default' : 'ancestor_ids_pol.admin.hier';
 
-      plugin.fq.push('tree:' + settings.domain);
+      //Previously all the queries have teh following filter, I removed it as a default to work with subjects and sources
+      //plugin.fq.push('tree:' + settings.domain);
       if (settings.filters) {
         plugin.fq.push(settings.filters);
       }
@@ -150,7 +151,10 @@
           filter: function (json) {
             plugin.response = json; // store response... what if cached?
             var filtered = $.map(json.response.docs, function (doc, index) {
-              var highlighting = json.highlighting[doc.id];
+              var highlightingKeys = Object.keys(json.highlighting).filter(function(word){
+                return word.indexOf(doc.id) > -1;
+              });
+              var highlighting = json.highlighting[highlightingKeys[0]];
               var val = settings.autocomplete_field in highlighting ? highlighting[settings.autocomplete_field][0] : doc.header; //take first highlight if present
               var item = {
                 id: doc.id.substring(doc.id.indexOf('-') + 1),
@@ -353,6 +357,8 @@
           if (data.selected) cl.push('kmaps-tt-selected');
           var display_path = data.doc.ancestors ? data.doc.ancestors.join("/") : "";
           if (settings.domain == 'subjects') { // show hierarchy
+            return '<div data-id="' + data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span>' + (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
+          } else if (settings.domain == 'sources') { // show hierarchy
             return '<div data-id="' + data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span>' + (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
           }
           else { // show feature types
