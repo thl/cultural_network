@@ -15,7 +15,7 @@
 <%    elsif object.info_source_type == 'ShantiIntegration::Source' %>
 	  <div class="row">
 <%=     label :info_source_id, 'Source ID from Shanti Sources' %>
-<%=     f.text_field :info_source_id, class: [:text, ' form-control form-text'] %>
+<%=     f.text_field :info_source_id, class: [:text, 'form-text'] %>
 <i>Or <a id="source-search-toggler" href="#">click here to search from name</a></i>
 <div id="source-search-container">
   <input type="text" id="kmaps-search-source" class="kmaps-search-term form-control form-text text-full" placeholder="Search source by text..." autocomplete="off">
