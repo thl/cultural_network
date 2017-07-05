@@ -135,24 +135,13 @@ function collapse_all(){
   </div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
 
-<%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
-<script type='text/javascript'>
-function getTree(){
-  var tree = <%= frt.to_json.html_safe %>;
-  return tree;
-}
-function getNotInTree(){
-  var tree = <%= fnit.to_json.html_safe %>;
-  return tree;
-}
-</script>
 <%= javascript_on_load do %>
   $("#relation_tree_container").kmapsFancytree({
     hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
     featureId: "<%= @feature.fid %>",
     termIndex: "<%= Flare.session.config.path %>",
     tree: "subjects",
-    domain: "subjects",
+    domain: "subjects"
     });
   // Functionality for columnizer
   $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
