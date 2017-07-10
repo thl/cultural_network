@@ -255,8 +255,6 @@
             const regex = new RegExp(plugin.options.domain+"-(.*)");
             const match = currentNode["related_"+plugin.options.domain+"_id_s"].match(regex);
             var key = !match ? "" : match[1] === undefined? "" : match[1];
-            //this should be standarized to only be domain-id for all apps, now im taking into account if its only a number
-            if(plugin.options.domain == "subjects") key = currentNode["related_"+plugin.options.domain+"_id_s"];
             var feature_type = currentNode["related_"+plugin.options.domain+"_feature_type_s"];
             feature_type = feature_type ? " ( " + feature_type + ": " : " ( ";
             const child = {
