@@ -489,8 +489,9 @@ class Feature < ActiveRecord::Base
   
   def document_for_rsolr
     doc = defined?(super) ? super : {}
+    v = View.get_by_code('roman.popular')
     doc[:id] = uid
-    name = self.prioritized_name(View.get_by_code('roman.popular'))
+    name = self.prioritized_name(v)
     doc[:header] = name.nil? ? self.pid : name.name
     self.captions.each do |c|
       if doc["caption_#{c.language.code}"].blank?
@@ -529,6 +530,28 @@ class Feature < ActiveRecord::Base
         else
           doc[key_str] << name.name
         end
+    end
+    Perspective.where(is_public: true).each do |p|  #['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
+      tag = 'ancestors_'
+      id_tag = 'ancestor_ids_'
+      hierarchy = self.ancestors_by_perspective(p)
+      if hierarchy.blank?
+        hierarchy = self.closest_ancestors_by_perspective(p)
+        doc["ancestor_id_closest_#{p.code}_path"] = hierarchy.collect(&:fid).join('/')
+        doc["level_closest_#{p.code}_i"] = hierarchy.size
+        tag << 'closest_'
+        id_tag << 'closest_'
+        closest_ancestor_in_tree = Feature.find(self.closest_hierarchical_feature_id_by_perspective(p))
+        path = closest_ancestor_in_tree.ancestors_by_perspective(p).collect(&:fid)
+      else
+        path = hierarchy.collect(&:fid)
+        doc["level_#{p.code}_i"] = path.size
+      end
+      tag << p.code
+      id_tag << p.code
+      doc["ancestor_id_#{p.code}_path"] = path.join('/')
+      doc[tag] = hierarchy.collect{ |f| f.prioritized_name(v).name }
+      doc[id_tag] = hierarchy.collect{ |f| f.fid }
     end
     doc
   end
