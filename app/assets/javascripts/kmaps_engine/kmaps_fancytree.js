@@ -215,7 +215,7 @@
     getDescendantTree: function(featureId){
       const dfd = $.Deferred();
       const plugin = this;
-      const fieldList = [
+      var fieldList = [
         "header",
         "id",
         "ancestor*",
@@ -223,7 +223,11 @@
         "related_"+plugin.options.domain+"_feature_type_s",
         "related_"+plugin.options.domain+"_relation_label_s",
         "related_"+plugin.options.domain+"_relation_asymmetric_label_s",
+        "related_"+plugin.options.domain+"_relation_asymmetric_label_s",
       ].join(",");
+      if(plugin.options.domain == "places"){
+        fieldList += ",related_subjects_t";
+      }
       var url =
         plugin.options.hostname +
         plugin.options.termIndex + "/select?" +
@@ -256,10 +260,19 @@
             const regex = new RegExp(plugin.options.domain+"-(.*)");
             const match = currentNode["related_"+plugin.options.domain+"_id_s"].match(regex);
             var key = !match ? "" : match[1] === undefined? "" : match[1];
-            var feature_type = currentNode["related_"+plugin.options.domain+"_feature_type_s"];
-            feature_type = feature_type ? " ( " + feature_type + ": " : " ( ";
+            var feature_type = "";
+            if(plugin.options.domain == "places"){
+              const expanded_docs = data.expanded[currentNode["related_"+plugin.options.domain+"_id_s"]];
+              const expanded = expanded_docs ? expanded_docs.docs[0] || [] : [];
+              var related_subjects_s = expanded["related_subjects_t"] ? expanded["related_subjects_t"].join(",") + ": " : "";
+              feature_type = related_subjects_s;
+              if (related_subjects_s == "") {
+                feature_type = currentNode["related_"+plugin.options.domain+"_feature_type_s"];
+                feature_type = feature_type ? feature_type + ": " : " ";
+              }
+            }
             const child = {
-              title: "<strong>" + currentNode["related_"+plugin.options.domain+"_header_s"] + "</strong> " +
+              title: "<strong>" + currentNode["related_"+plugin.options.domain+"_header_s"] + "</strong> (" +
               feature_type +
               currentNode["related_"+plugin.options.domain+"_relation_asymmetric_label_s"]+")",
               key: plugin.options.domain + "-" + key,
