@@ -1028,8 +1028,9 @@
                 //console.error("USER CLICKED: " + data.node.title);
                 $(this.element).trigger("useractivate", encapsulate("useractivate", event, data.node));
               //TODO: Fix this to have a more elegant way to handle the activate for nodes
-                      var url= this.settings.baseUrl +"/"+data.node.key;
-                      window.location.href = url;
+              //var url= this.settings.baseUrl +"/"+data.node.key;
+              var url= this.settings.baseUrl.replace("%%ID%%",data.node.key);
+              window.location.href = url;
             } else if (event.type === "fancytreekeydown" && origEvent === "keydown") {
                 // This was a user arrow key (or return....)
                 //console.error("USER KEYED: " + data.node.tree.getActiveNode() + " with " + event.keyCode);
