@@ -23,9 +23,8 @@
   // Create the defaults once
   var pluginName = 'kmapsFancytree',
     defaults = {
-      hostname: "localhost",
-      termIndex: "/solr/kmterms_dev",
-      assetIndex: "/solr/kmassets_dev",
+      termIndex: "http://localhost/solr/kmterms_dev",
+      assetIndex: "http://localhost/solr/kmassets_dev",
       tree: "places",
       featuresPath: "/features/",
       domain: "places",
@@ -93,9 +92,7 @@
     getAncestorPath: function() {
       const plugin = this;
       const dfd = $.Deferred();
-      var url =
-        plugin.options.hostname +
-        plugin.options.termIndex + "/select?" +
+      var url = plugin.options.termIndex + "/select?" +
         "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId +
         "&fl=*level*,ancestor*" + plugin.options.perspective + "*" +
         "&fq=tree:" + plugin.options.tree +
@@ -115,9 +112,7 @@
         } else {
          const path = response.docs[0]["ancestor_id_"+plugin.options.perspective+"_path"];
          const level = response.docs[0]["level_"+plugin.options.perspective+"_i"];
-          var url =
-            plugin.options.hostname +
-            plugin.options.termIndex + "/select?" +
+          var url = plugin.options.termIndex + "/select?" +
             "&q=" + "ancestor_id_" + plugin.options.perspective + "_path:" + path +
             "&fl=*" +
             "&fq=tree:" + plugin.options.tree +
@@ -146,12 +141,10 @@
         "ancestor*",
         "caption_eng",
       ].join(",");
-      var url =
-        plugin.options.hostname +
-        plugin.options.termIndex + "/select?";
+      var url = plugin.options.termIndex + "/select?";
       if(loadOnlyDirectAncestors) {
         url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
-      } else {
+      } else { //TODO: In feature implementations we should define what to do to extract all ancestors not just direct, currently it always just gets the direct ancestors.
         url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
       }
       url += "&fl=" + fieldList +
@@ -201,7 +194,7 @@
             ancestors_key = "ancestors_closest_"+plugin.options.perspective;
           }
           if (loadDescendants) {
-            const featureChildren = plugin.getDescendantTree(plugin.options.featureId);
+            const featureChildren = plugin.getDescendantTree(plugin.options.domain+"-"+plugin.options.featureId);
             featureChildren.then(function(value){ buildTree(doc, value)});
           } else {
             buildTree(doc);
@@ -215,36 +208,38 @@
     getDescendantTree: function(featureId){
       const dfd = $.Deferred();
       const plugin = this;
-      const fieldList = [
+      var fieldList = [
         "header",
         "id",
         "ancestor*",
         "caption_eng",
-        "related_places_feature_type_s",
-        "related_places_relation_label_s",
+        "related_"+plugin.options.domain+"_feature_type_s",
+        "related_"+plugin.options.domain+"_relation_label_s",
+        "related_"+plugin.options.domain+"_relation_asymmetric_label_s",
+        "related_"+plugin.options.domain+"_relation_asymmetric_label_s",
       ].join(",");
-      var url =
-        plugin.options.hostname +
-        plugin.options.termIndex + "/select?" +
+      if(plugin.options.domain == "places"){
+        fieldList += ",related_subjects_t";
+      }
+      var url = plugin.options.termIndex + "/select?" +
         //V3 child count
-        "&q=" + "{!child of=block_type:parent}id:" + plugin.options.domain + "-" + featureId +
-        "&fl=child_count:[subquery],uid,related_places_id_s,related_places_header_s" +","+ fieldList +
+        "&q=" + "{!child of=block_type:parent}id:" + featureId +
+        "&fl=child_count:[subquery],uid,related_"+plugin.options.domain+"_id_s,related_"+plugin.options.domain+"_header_s" +","+ fieldList +
         "&expand=true" +
         "&child_count.fq=related_kmaps_node_type:child" +
         "&child_count.fl=uid" +
         "&child_count.rows=" + "0" +
-        "&child_count.q={!child of='block_type:parent'}{!term f=uid v=$row.related_places_id_s}" +
+        "&child_count.q={!child of='block_type:parent'}{!term f=uid v=$row.related_"+plugin.options.domain+"_id_s}" +
         "&fq=related_kmaps_node_type:" + "child" +
-        "&fq="+"{!collapse field=related_places_id_s}" +
+        "&fq="+"{!collapse field=related_"+plugin.options.domain+"_id_s}" +
         //end of V3
         "&wt=json" +
         "&limit=" + SOLR_ROW_LIMIT +
         "&indent=true" +
         "&wt=json" +
         "&json.wrf=?" +
-        "&sort=related_places_header_s+asc" +
+        "&sort=related_"+plugin.options.domain+"_header_s+asc" +
         "&rows=" + SOLR_ROW_LIMIT;
-      console.log(url);
       $.ajax({
         url: url,
         dataType: 'jsonp',
@@ -254,13 +249,24 @@
         if(response.numFound > 0){
           const result = response.docs.reduce(function(acc,currentNode,index){
             const regex = new RegExp(plugin.options.domain+"-(.*)");
-            const match= currentNode["related_places_id_s"].match(regex);
-            const key = match[1] === undefined? "" : match[1];
+            const match = currentNode["related_"+plugin.options.domain+"_id_s"].match(regex);
+            var key = !match ? "" : match[1] === undefined? "" : match[1];
+            var feature_type = "";
+            if(plugin.options.domain == "places"){
+              const expanded_docs = data.expanded[currentNode["related_"+plugin.options.domain+"_id_s"]];
+              const expanded = expanded_docs ? expanded_docs.docs[0] || [] : [];
+              var related_subjects_s = expanded["related_subjects_t"] ? expanded["related_subjects_t"].join(",") + ": " : "";
+              feature_type = related_subjects_s;
+              if (related_subjects_s == "") {
+                feature_type = currentNode["related_"+plugin.options.domain+"_feature_type_s"];
+                feature_type = feature_type ? feature_type + ": " : " ";
+              }
+            }
             const child = {
-              title: "<strong>" + currentNode["related_places_header_s"] + "</strong> " +
-              "("+currentNode["related_places_feature_type_s"]+": "+
-              currentNode["related_places_relation_label_s"]+")",
-              key: key,
+              title: "<strong>" + currentNode["related_"+plugin.options.domain+"_header_s"] + "</strong> (" +
+              feature_type +
+              currentNode["related_"+plugin.options.domain+"_relation_asymmetric_label_s"]+")",
+              key: plugin.options.domain + "-" + key,
               expanded: false,
               lazy: true,
               href: plugin.options.featuresPath+key,
