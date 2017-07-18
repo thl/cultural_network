@@ -23,9 +23,8 @@
   // Create the defaults once
   var pluginName = 'kmapsFancytree',
     defaults = {
-      hostname: "localhost",
-      termIndex: "/solr/kmterms_dev",
-      assetIndex: "/solr/kmassets_dev",
+      termIndex: "http://localhost/solr/kmterms_dev",
+      assetIndex: "http://localhost/solr/kmassets_dev",
       tree: "places",
       featuresPath: "/features/",
       domain: "places",
@@ -93,9 +92,7 @@
     getAncestorPath: function() {
       const plugin = this;
       const dfd = $.Deferred();
-      var url =
-        plugin.options.hostname +
-        plugin.options.termIndex + "/select?" +
+      var url = plugin.options.termIndex + "/select?" +
         "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId +
         "&fl=*level*,ancestor*" + plugin.options.perspective + "*" +
         "&fq=tree:" + plugin.options.tree +
@@ -115,9 +112,7 @@
         } else {
          const path = response.docs[0]["ancestor_id_"+plugin.options.perspective+"_path"];
          const level = response.docs[0]["level_"+plugin.options.perspective+"_i"];
-          var url =
-            plugin.options.hostname +
-            plugin.options.termIndex + "/select?" +
+          var url = plugin.options.termIndex + "/select?" +
             "&q=" + "ancestor_id_" + plugin.options.perspective + "_path:" + path +
             "&fl=*" +
             "&fq=tree:" + plugin.options.tree +
@@ -146,9 +141,7 @@
         "ancestor*",
         "caption_eng",
       ].join(",");
-      var url =
-        plugin.options.hostname +
-        plugin.options.termIndex + "/select?";
+      var url = plugin.options.termIndex + "/select?";
       if(loadOnlyDirectAncestors) {
         url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
       } else { //TODO: In feature implementations we should define what to do to extract all ancestors not just direct, currently it always just gets the direct ancestors.
@@ -228,9 +221,7 @@
       if(plugin.options.domain == "places"){
         fieldList += ",related_subjects_t";
       }
-      var url =
-        plugin.options.hostname +
-        plugin.options.termIndex + "/select?" +
+      var url = plugin.options.termIndex + "/select?" +
         //V3 child count
         "&q=" + "{!child of=block_type:parent}id:" + featureId +
         "&fl=child_count:[subquery],uid,related_"+plugin.options.domain+"_id_s,related_"+plugin.options.domain+"_header_s" +","+ fieldList +

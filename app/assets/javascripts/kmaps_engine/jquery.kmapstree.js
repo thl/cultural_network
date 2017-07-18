@@ -343,7 +343,7 @@
                     }).done(
                       function () {
                         if (safe_path) {
-                          focus_id = safe_path.split('/').pop();
+                          focus_id = focus_id || path.split("/").pop();
                           if (DEBUG) console.warn("safe focus_id = " + focus_id);
                         }
                         if (DEBUG) console.log("using focus_id = " + focus_id);
