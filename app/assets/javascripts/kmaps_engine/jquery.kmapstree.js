@@ -164,7 +164,7 @@
                 // Fancytree Building Event Handlers
                 createNode: function (event, data) {
                   data.node.span.childNodes[2].innerHTML = '<span id="ajax-id-' + data.node.key + '">' +
-                    data.node.title + ' ... ' +
+                    data.node.title + ' ' +
                     ( data.node.data.path || "") + '</span>';
 
                   var path = plugin.makeStringPath(data);
@@ -218,13 +218,13 @@
                   data.result = [];
 
                   var docs = data.response.response.docs;
-                  var facet_counts = data.response.facet_counts.facet_fields.ancestor_id_path;
+                  var facet_counts = data.response.facet_counts.facet_fields["ancestor_id_"+plugin.settings.perspective+"_path"];
                   var rootbin = {};
                   var countbin = {};
 
                   docs.sort(function (a, b) {
-                    var aName = a.ancestor_id_path.toLowerCase();
-                    var bName = b.ancestor_id_path.toLowerCase();
+                    var aName = a["ancestor_id_"+plugin.settings.perspective+"_path"].toLowerCase();
+                    var bName = b["ancestor_id_"+plugin.settings.perspective+"_path"].toLowerCase();
                     return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
                   });
 
@@ -236,8 +236,8 @@
 
                   for (var i = 0; i < docs.length; i++) {
                     var doc = docs[i];
-                    var ancestorIdPath = docs[i].ancestor_id_path;
-                    var ancestors = docs[i].ancestors;
+                    var ancestorIdPath = docs[i]["ancestor_id_"+plugin.settings.perspective+"_path"];
+                    var ancestors = docs[i]["ancestors_"+plugin.settings.perspective];
                     var parentIdPath = ancestorIdPath.split('/');
                     var localId = ancestorIdPath;
 
@@ -343,12 +343,14 @@
                     }).done(
                       function () {
                         if (safe_path) {
-                          focus_id = safe_path.split('/').pop();
+                          focus_id = focus_id || path.split("/").pop();
                           if (DEBUG) console.warn("safe focus_id = " + focus_id);
                         }
                         if (DEBUG) console.log("using focus_id = " + focus_id);
-                        tree.activateKey(String(focus_id)).setExpanded(true);
-                        plugin.scrollToActiveNode();
+                        if(focus_id) {
+                          tree.activateKey(String(focus_id)).setExpanded(true);
+                          plugin.scrollToActiveNode();
+                        }
                       }
                     )
                   } else {
@@ -764,8 +766,8 @@
                 "&facet.mincount=2" +
                 "&facet.limit=-1" +
                 "&sort=level_" +plugin.settings.perspective+ "_i+ASC" +
-                "&facet.sort=ancestor_id_path" +
-                "&facet.field={!ex=hoot}ancestor_id_path" +
+                "&facet.sort=ancestor_id_"+plugin.settings.perspective+"_path" +
+                "&facet.field={!ex=hoot}ancestor_id_"+plugin.settings.perspective+"_path" +
 
                 "&wt=json" +
                 "&json.wrf=?" +
@@ -1026,8 +1028,9 @@
                 //console.error("USER CLICKED: " + data.node.title);
                 $(this.element).trigger("useractivate", encapsulate("useractivate", event, data.node));
               //TODO: Fix this to have a more elegant way to handle the activate for nodes
-                      var url= this.settings.baseUrl +"/"+data.node.key;
-                      window.location.href = url;
+              //var url= this.settings.baseUrl +"/"+data.node.key;
+              var url= this.settings.baseUrl.replace("%%ID%%",data.node.key);
+              window.location.href = url;
             } else if (event.type === "fancytreekeydown" && origEvent === "keydown") {
                 // This was a user arrow key (or return....)
                 //console.error("USER KEYED: " + data.node.tree.getActiveNode() + " with " + event.keyCode);
