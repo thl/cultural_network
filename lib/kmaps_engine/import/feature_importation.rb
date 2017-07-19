@@ -83,6 +83,7 @@ module KmapsEngine
         if citation.nil?
           citation = citations.new(conditions.merge(notes: notes))
           citation.info_source_type = info_source_type
+          citation.citable_type = citable.class.name
           citation.save
           self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         else
