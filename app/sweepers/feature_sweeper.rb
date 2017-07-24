@@ -94,18 +94,4 @@ class FeatureSweeper < ActionController::Caching::Sweeper
       expire_full_path_page feature_url(f.fid, options)
     end
   end
-  
-  #def after_commit(record)
-  #  reheat_cache
-  #end
-  
-  #def reheat_cache
-  #  node_id = Rails.cache.read('tree_tmp') rescue nil
-  #  unless node_id.nil?
-  #    Rails.cache.delete('tree_tmp')
-  #    Spawnling.new(:method => :thread, :nice => 3) do  
-  #      KmapsEngine::TreeCache.reheat(node_id)
-  #    end
-  #  end
-  #end
 end
