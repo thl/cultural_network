@@ -47,10 +47,6 @@
 			<!-- Sidebar Second Region -->
 		</section>
 	</article>
-<%= javascript_on_load do %>
-	jQuery(window).unbind("scroll");
-	NodeTree.init('NodeTree', 'NodeTreeList', '<%= features_path %>/');
-<% end %>
 	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
 		<div class="region region-search-flyout">
 			<div id="block-kmaps-explorer-kmaps-explorer-block--2" class="block block-kmaps-explorer">
