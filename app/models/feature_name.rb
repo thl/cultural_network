@@ -30,10 +30,6 @@ class FeatureName < ActiveRecord::Base
       record.ensure_one_primary
       views = feature.update_cached_feature_names
       views = (views + CachedFeatureName.where(feature_name_id: record.id).select(:view_id).collect(&:view_id)).uniq if record.name_changed?
-      # logger.error "Cache expiration: triggered for changing feature #{feature.fid} name #{record.name}."
-      Spawnling.new do
-        feature.expire_tree_cache(views: views) if !views.blank?
-      end
     end
   end #{ |record| record.update_hierarchy
   
@@ -50,10 +46,6 @@ class FeatureName < ActiveRecord::Base
       feature = record.feature
       feature.update_name_positions
       views = feature.update_cached_feature_names
-      # logger.error "Cache expiration: triggered for creating feature #{feature.fid} name #{record.name}."
-      Spawnling.new do
-        feature.expire_tree_cache(views: views) if !views.blank?
-      end
     end
   end
   
@@ -61,10 +53,6 @@ class FeatureName < ActiveRecord::Base
     if !record.skip_update
       feature = record.feature
       views = feature.update_cached_feature_names
-      # logger.error "Cache expiration: triggered for deleting feature #{feature.fid} name #{record.name}."
-      Spawnling.new do
-        feature.expire_tree_cache(views: views) if !views.blank?
-      end
     end
   end
   
