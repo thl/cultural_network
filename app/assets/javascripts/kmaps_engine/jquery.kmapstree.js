@@ -348,8 +348,11 @@
                         }
                         if (DEBUG) console.log("using focus_id = " + focus_id);
                         if(focus_id) {
-                          tree.activateKey(String(focus_id)).setExpanded(true);
-                          plugin.scrollToActiveNode();
+                          var active_node = tree.activateKey(String(focus_id));
+                          if (active_node){
+                            active_node.setExpanded(true);
+                            plugin.scrollToActiveNode();
+                          }
                         }
                       }
                     )
