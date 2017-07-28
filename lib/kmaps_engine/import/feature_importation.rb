@@ -479,8 +479,6 @@ module KmapsEngine
       if name_added
         views = self.feature.update_name_positions
         views = self.feature.update_cached_feature_names if views.blank? && name_changed
-        # logger.error "Cache expiration: triggered for adding names to feature #{self.feature.fid}."
-        self.feature.expire_tree_cache(:views => views) if !views.blank?
       end
 
       # running triggers for feature_name_relation

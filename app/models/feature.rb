@@ -24,13 +24,7 @@ class Feature < ActiveRecord::Base
   validates_presence_of :fid
   validates_uniqueness_of :fid
   validates_numericality_of :position, allow_nil: true
-  
-  after_destroy do |record|
-    if !record.skip_update
-      record.expire_tree_cache
-    end
-  end
-  
+    
   @@associated_models = [FeatureName, FeatureGeoCode, XmlDocument]
   
   # acts_as_solr fields: [:pid]
@@ -433,38 +427,6 @@ class Feature < ActiveRecord::Base
     current_language.nil? ? nil : self.captions.find_by(language_id: current_language.id)
   end
   
-  def self.expire_fragment(perspective_ids, view_ids, feature_ids)
-    for p in perspective_ids
-      for v in view_ids
-        for f in feature_ids
-          s = "#{KmapsEngine::TreeCache::CACHE_PREFIX}#{p}/#{v}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}#{f}#{KmapsEngine::TreeCache::CACHE_SUFFIX}"
-          # logger.error "Cache expiration: #{s}."
-          ActionController::Base.new.expire_fragment(s)
-        end
-      end
-    end
-  end
-  
-  def expire_children_cache(views, perspectives)
-    # Avoiding "regular expression too big" error by slicing node up
-    return if views.blank? || perspectives.blank?
-    self.index
-    children = self.child_relations.where(perspective_id: perspectives).select(:child_node_id).uniq.collect(&:child_node)
-    return if children.empty?
-    Feature.expire_fragment(perspectives, views, children.collect(&:id))
-    children.each{|c| c.expire_children_cache(views, perspectives)}
-  end
-  
-  def expire_tree_cache(options = {})
-    views = options[:views] || Rails.cache.fetch("views/all", expires_in: 1.day) { View.all.collect(&:id) }
-    perspectives = options[:perspectives] || Rails.cache.fetch("perspectives/all-public", expires_in: 1.day) { Perspective.find_all_public.collect(&:id) }
-    parents = !options[:include_parents].nil? && !options[:include_parents] ? nil : self.parent_relations.where(perspective_id: perspectives).select(:parent_node_id).uniq.collect(&:parent_node)
-    parents = [self] if parents.blank?
-    Feature.expire_fragment(perspectives, views, parents.collect(&:id))
-    parents.each{|c| c.expire_children_cache(views, perspectives)}
-    Feature.commit
-  end
-  
   def affiliations_by_user(user, options = {})
     Affiliation.where(options.merge(feature_id: self.id, collection_id: user.collections.collect(&:id)))
   end
@@ -550,7 +512,10 @@ class Feature < ActiveRecord::Base
       tag << p.code
       id_tag << p.code
       doc["ancestor_id_#{p.code}_path"] = path.join('/')
-      doc[tag] = hierarchy.collect{ |f| f.prioritized_name(v).name }
+      doc[tag] = hierarchy.collect do |f|
+        pn = f.prioritized_name(v)
+        pn.nil? ? nil : pn.name
+      end.reject(&:nil?)
       doc[id_tag] = hierarchy.collect{ |f| f.fid }
     end
     doc

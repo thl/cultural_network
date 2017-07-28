@@ -1,7 +1,6 @@
 class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? || c.request.format.csv? }
   #caches_page :related
-  caches_action :node_tree_expanded, :cache_path => Proc.new { |c| node_cache_path}
   caches_action :all,                :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }
   caches_action :children,           :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
   caches_action :list,               :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }
@@ -404,9 +403,5 @@ class FeaturesController < ApplicationController
       p << "view_code=#{view_code}"
     end
     "#{c.request.path}?#{p.join('&')}"
-  end
-  
-  def node_cache_path
-    "#{KmapsEngine::TreeCache::CACHE_PREFIX}#{current_perspective.id}/#{current_view.id}/#{KmapsEngine::TreeCache::CACHE_FILE_PREFIX}#{params[:id]}#{KmapsEngine::TreeCache::CACHE_SUFFIX}"
   end
 end
