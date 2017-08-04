@@ -108,6 +108,8 @@
           prepare: function (query, remote) { //http://stackoverflow.com/questions/18688891/typeahead-js-include-dynamic-variable-in-remote-url
             var extras = {};
             var val = input.val();
+            //val = val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            val = val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, " ");
             switch(settings.match_criterion){
               case 'begins':
                 val = ""+val+"*";

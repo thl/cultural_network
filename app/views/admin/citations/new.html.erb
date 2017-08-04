@@ -53,7 +53,7 @@
 	</div>
 	<div class="row collection">
 <%=   f.label(:info_source_id).s %>
-<%=   f.collection_select :info_source_id, OralSource.all.order(:name), :id, :name, :include_blank=> false %>
+<%=   f.collection_select :info_source_id, OralSource.all.order(:name), :id, :name, :include_blank=> false, prompt: "Select source..." %>
 	</div>
 <%=   render partial: 'form_fields', locals: {f: f, object: object} %>
 <%    feature = contextual_feature %>

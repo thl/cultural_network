@@ -111,6 +111,73 @@
     return $('#' + namespace + '-search-term');
   }
 
+  var update_counts = function (elem, counts) {
+    // console.log("elem = ");
+    // console.dir(elem);
+    // console.error(JSON.stringify(counts,undefined,2));
+
+    var av = elem.find('i.shanticon-audio-video ~ span.badge');
+    if (typeof(counts["audio-video"]) != "undefined") {
+      (counts["audio-video"]) ? av.html(counts["audio-video"]).parent().show() : av.parent().hide();
+    }
+    if (Number(av.text()) > 0) {
+      av.parent().show();
+    }
+
+    var photos = elem.find('i.shanticon-photos ~ span.badge');
+    if (typeof(counts.picture) != "undefined") {
+      photos.html(counts.picture);
+    }
+    (Number(photos.text()) > 0) ? photos.parent().show() : photos.parent().hide();
+
+    var places = elem.find('i.shanticon-places ~ span.badge');
+    if (typeof(counts.related_places) != "undefined") {
+      places.html(counts.related_places);
+    }
+    if (Number(places.text()) > 0) {
+      places.parent().show();
+    }
+
+    var texts = elem.find('i.shanticon-texts ~ span.badge');
+    if (typeof(counts.texts) != "undefined") {
+      texts.html(counts["texts"]);
+    }
+    if (Number(texts.text()) > 0) {
+      texts.parent().show();
+    }
+
+    var subjects = elem.find('i.shanticon-subjects ~ span.badge');
+
+    if (!counts.feature_types) { counts.feature_types = 0 };
+    if (!counts.related_subjects) { counts.related_subjects = 0 };
+
+    var s_counts = Number(counts.related_subjects)  + Number(counts.feature_types);
+    if (s_counts) {
+      subjects.html(s_counts);
+    }
+    if (Number(subjects.text()) > 0) {
+      subjects.parent().show();
+    }
+
+    var visuals = elem.find('i.shanticon-visuals ~ span.badge');
+    if (typeof(counts.visuals) != "undefined") {
+      visuals.html(counts.visuals);
+    }
+    if (Number(visuals.text()) > 0) {
+      visuals.parent().show();
+    }
+
+    var sources = elem.find('i.shanticon-sources ~ span.badge');
+    if (typeof(counts.sources) != "undefined") {
+      sources.html(counts.sources);
+    }
+    if (Number(sources.text()) > 0) {
+      sources.parent().show();
+    }
+
+    elem.find('.assoc-resources-loading').hide();
+  };
+
   // END - utility functions
   var search_key = '';
   Plugin.prototype = {
@@ -190,7 +257,15 @@
         autocomplete_field: plugin.options.autocomplete_field,
         prefetch_fields: plugin.options.prefetch_fields,
         prefetch_filters: plugin.options.prefetch_filters,
-      }).bind('typeahead:asyncrequest',
+      }).kmapsTypeahead('onSuggest',
+        function () {
+          $('a[href=".listview"]').tab('show');
+          $('.kmaps-tt-suggestion', $(plugin.options.menu)).each(function() {
+            var $sugg = $(this);
+            plugin.decorateElementWithPopover(this, $sugg.attr('data-id'), $sugg.find('.kmaps-place-name, .kmaps-term').html(), $sugg.attr('data-path'), '');
+          });
+        }
+      ).bind('typeahead:asyncrequest',
         function () {
           search_key = $typeaheadExplorer.typeahead('val'); //get search term
         }
@@ -370,6 +445,154 @@
         success: callBack,
         error: callBack,
       });
+    },
+    decorateElementWithPopover: function (elem, key, title, path, caption) {
+      const plugin = this;
+      if (jQuery(elem).popover) {
+        jQuery(elem).attr('rel', 'popover');
+
+        jQuery(elem).popover({
+          html: true,
+          content: function () {
+            caption = ((caption) ? caption : "");
+            var popover = "<div class='kmap-path'>/" + path + "</div>" + "<div class='kmap-caption'>" + caption + "</div>" +
+              "<div class='info-wrap' id='infowrap" + key + "'><div class='counts-display'>...</div></div>";
+            return popover;
+          },
+          title: function () {
+            return title + "<span class='kmapid-display'>" + key + "</span>";
+          },
+          trigger: 'hover',
+          placement: 'left',
+          delay: {hide: 5},
+          container: 'body'
+        }
+        );
+
+        jQuery(elem).on('shown.bs.popover', function (x) {
+          $("body > .popover").removeClass("related-resources-popover"); // target css styles on search tree popups
+          $("body > .popover").addClass("search-popover"); // target css styles on search tree popups
+
+          var countsElem = $("#infowrap" + key + " .counts-display");
+          countsElem.html("<span class='assoc-resources-loading'>loading...</span>\n");
+          countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-sources'></i><span class='badge' >?</span></span>");
+          countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-audio-video'></i><span class='badge' >?</span></span>");
+          countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-photos'></i><span class='badge' >?</span></span>");
+          countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-texts'></i><span class='badge' >?</span></span>");
+          countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-visuals'></i><span class='badge' >?</span></span>");
+          countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-places'></i><span class='badge' >?</span></span>");
+          countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-subjects'></i><span class='badge' >?</span></span>");
+
+          // highlight matching text (if/where they occur).
+          var txt = $('#searchform').val();
+          // $('.popover-caption').highlight(txt, {element: 'mark'});
+
+          var fq = plugin.options.shanti_kmaps_admin_solr_filter_query;
+          var project_filter = (fq) ? ("&" + fq) : "";
+          var kmidxBase = plugin.options.hostname;
+          if (!kmidxBase) {
+            console.error("kmindex_root not set!");
+          }
+          var termidxBase = plugin.options.hostname;
+          if (!termidxBase) {
+            console.error("termindex_root not set!");
+          }
+          // Update counts from asset index
+          var domain = plugin.options.domain;
+          var assetCountsUrl =
+            kmidxBase + '/select?q=kmapid:' + domain + '-' + key + project_filter + '&start=0&facets=on&group=true&group.field=asset_type&group.facet=true&group.ngroups=true&group.limit=0&wt=json&json.wrf=?';
+          $.ajax({
+            type: "GET",
+            url: assetCountsUrl,
+            dataType: "jsonp",
+            timeout: 90000,
+            error: function(e) {
+              console.error(e);
+              // countsElem.html("<i class='glyphicon glyphicon-warning-sign' title='" + e.statusText);
+            },
+            beforeSend: function() {
+            },
+
+            success:  function (data) {
+              var updates = {};
+
+              // extract the group counts -- index by groupValue
+              $.each(data.grouped.asset_type.groups, function (x, y) {
+                var asset_type = y.groupValue;
+                var asset_count = y.doclist.numFound;
+                updates[asset_type] = asset_count;
+              });
+
+              update_counts(countsElem, updates);
+            }
+          });
+
+          // Update related place and subjects counts from term index
+
+
+          // {!child of=block_type:parent}id:places-22675&wt=json&indent=true&group=true&group.field=block_child_type&group.limit=0
+          var relatedCountsUrl =
+            termidxBase + '/select?q={!child of=block_type:parent}id:' + domain + '-' + key + project_filter + '&wt=json&indent=true&group=true&group.field=block_child_type&group.limit=0&wt=json&json.wrf=?';
+          $.ajax({
+            type: "GET",
+            url: relatedCountsUrl,
+            dataType: "jsonp",
+            timeout: 90000,
+            error: function(e) {
+              console.error(e);
+              // countsElem.html("<i class='glyphicon glyphicon-warning-sign' title='" + e.statusText);
+            },
+            beforeSend: function() {
+            },
+
+            success:  function (data) {
+              var updates = {};
+
+              // extract the group counts -- index by groupValue
+              $.each(data.grouped.block_child_type.groups, function (x, y) {
+                var block_child_type = y.groupValue;
+                var rel_count = y.doclist.numFound;
+                updates[block_child_type] = rel_count;
+              });
+
+              update_counts(countsElem, updates);
+            }
+          });
+
+          // Another (parallel) query
+
+          var subjectsRelatedPlacesCountQuery = termidxBase + "/select?indent=on&q={!parent%20which=block_type:parent}related_subject_uid_s:" + domain + '-' + key + "%20OR%20feature_type_id_i:" + key + "&wt=json&json.wrf=?&group=true&group.field=tree&group.limit=0";
+
+          $.ajax({
+            type: "GET",
+            url: subjectsRelatedPlacesCountQuery,
+            dataType: "jsonp",
+            timeout: 90000,
+            error: function(e) {
+              console.error(e);
+              // countsElem.html("<i class='glyphicon glyphicon-warning-sign' title='" + e.statusText);
+            },
+            beforeSend: function() {
+            },
+
+            success:  function (data) {
+              var updates = {};
+              // extract the group counts -- index by groupValue
+              $.each(data.grouped.tree.groups, function (x, y) {
+                var tree = y.groupValue;
+                var rel_count = y.doclist.numFound;
+                console.error(tree + " = " + rel_count);
+                updates["related_" + tree] = rel_count;
+              });
+
+              update_counts(countsElem, updates)
+            }
+          });
+
+        });
+      }
+
+      return elem;
     },
   }
 
