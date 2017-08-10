@@ -40,6 +40,7 @@
       autocomplete_field: 'name_autocomplete',
       prefetch_field: 'feature_types',
       prefetch_filters: ['tree:places', 'ancestor_id_path:13735'],
+      save_search_url: 'http://localhost:3000/features/save_search',
     };
 
   // The actual plugin constructor
@@ -55,6 +56,7 @@
 
     this._defaults = defaults;
     this._name = pluginName;
+    this._filters = {};
 
     this.init();
   }
@@ -112,10 +114,6 @@
   }
 
   var update_counts = function (elem, counts) {
-    // console.log("elem = ");
-    // console.dir(elem);
-    // console.error(JSON.stringify(counts,undefined,2));
-
     var av = elem.find('i.shanticon-audio-video ~ span.badge');
     if (typeof(counts["audio-video"]) != "undefined") {
       (counts["audio-video"]) ? av.html(counts["audio-video"]).parent().show() : av.parent().hide();
@@ -177,12 +175,13 @@
 
     elem.find('.assoc-resources-loading').hide();
   };
-
   // END - utility functions
+
   var search_key = '';
   Plugin.prototype = {
     init: function(){
       const plugin = this;
+      plugin._filters = {};
       var $typeaheadExplorer = $(plugin.element);
       /* typeahead input field behaviours and reset button behaviours */
       $('.kmap-typeahead-picker, .kmap-tree-picker').each(function () {
@@ -272,8 +271,21 @@
       ).bind('typeahead:select',
         function (ev, sel) {
           var id = sel.doc.id.substring(sel.doc.id.indexOf('-') + 1);
-          window.location.href = plugin.options.features_path+sel.id;
-          $typeaheadExplorer.typeahead('val', search_key); // revert back to search key
+          $.ajax({
+            type: "POST",
+            url: plugin.options.save_search_url,
+            contentType: 'application/json',
+            data: JSON.stringify({
+              search: search_key,
+              filters: plugin._filters,
+              scope: $(plugin.options.scope_filter_selector+":checked").val(),
+              match: $(plugin.options.match_filter_selector+":checked").val()
+            }),
+            success: function(data) {
+              window.location.href = plugin.options.features_path+sel.id;
+              $typeaheadExplorer.typeahead('val', search_key); // revert back to search key
+            }
+          });
         }
       );
 
@@ -303,6 +315,11 @@
         var search = $filter.typeahead('val'); //get search term
         KMapsUtil.removeFilters($typeahead, field, filtered[namespace][type]);
         delete filtered[namespace][type][kmap_id];
+
+        plugin._filters[namespace] = plugin._filters[namespace] || {};
+        plugin._filters[namespace][type] = plugin._filters[namespace][type] || {};
+        delete plugin._filters[namespace][type][kmap_id.replace(/F/g,'')];
+
         KMapsUtil.trackTypeaheadSelected($filter, filtered[namespace][type]);
         $el.remove();
         var fq = KMapsUtil.getFilters(field, filtered[namespace][type], $box.hasClass('kmaps-conjunctive-filters') ? 'AND' : 'OR');
@@ -337,24 +354,11 @@
           max_terms: 50
         }).bind('typeahead:select',
           function (ev, suggestion) {
-            if (suggestion.count > 0) { // should not be able to select zero-result filters
-              var mode = suggestion.refacet ? 'AND' : 'OR';
-              var $typeahead = getTypeahead(namespace);
-              var $box = getFilterBox(namespace, type);
-              var field = type + "_ids";
-              KMapsUtil.removeFilters($typeahead, field, filtered[namespace][type]);
-              pickFilter(namespace, type, suggestion,plugin.options.filters_domain);
-              $box.toggleClass('kmaps-conjunctive-filters', mode == 'AND');
-              $box.show();
-              KMapsUtil.trackTypeaheadSelected($filter, filtered[namespace][type]);
-              var fq = KMapsUtil.getFilters(field, filtered[namespace][type], mode);
-              $typeahead.kmapsTypeahead('addFilters', fq).kmapsTypeahead('setValue', $typeahead.typeahead('val'), false);
-              for (var i=0; i<others.length; i++) {
-                getFilter(namespace, others[i]).kmapsTypeahead('refetchPrefetch', fq);
-              }
-              $filter.kmapsTypeahead('refacetPrefetch', fq);
-              $filter.kmapsTypeahead('setValue', '', false); // reset filter after selection
-            }
+            plugin._filters = plugin._filters || {};
+            plugin._filters[namespace] = plugin._filters[namespace] || {};
+            plugin._filters[namespace][type] = plugin._filters[namespace][type] || {};
+            plugin._filters[namespace][type][suggestion["id"]]= suggestion;
+            plugin.selectFilter(suggestion,type,$filter,namespace);
           }
         );
       });
@@ -593,6 +597,53 @@
       }
 
       return elem;
+    },
+    restoreSavedSearch: function(options,namespace){
+      const plugin = this;
+      if(options["scope"]){
+        $(plugin.options.scope_filter_selector).filter("[value="+options["scope"]+"]").trigger("click");
+      }
+      if(options["match"]){
+        $(plugin.options.match_filter_selector).filter("[value="+options["match"]+"]").trigger("click");
+      }
+      plugin._filters = options["filters"];
+      $(plugin.element).kmapsTypeahead('setValue', options["search_term"], false); // reset filter after selection
+      if(options["filters"] && options["filters"][namespace]){
+        Object.keys(options["filters"][namespace]).forEach(function(type){
+          console.log(type);
+          var currentFilter = options["filters"][namespace][type];
+          Object.keys(currentFilter).forEach(function(id){
+            plugin.selectFilter(currentFilter[id],type,$("#"+namespace+"-search-filter-"+type),namespace);
+          });
+        });
+      }
+    },
+    selectFilter: function (suggestion,type,filter,namespace) {
+        var others = [];
+        if (filtered[namespace]) {
+          others = Object.keys(filtered[namespace]);
+          others.splice(others.indexOf(type), 1);
+        }
+      var $filter = filter;
+      const plugin = this;
+      if (suggestion.count > 0) { // should not be able to select zero-result filters
+        var mode = suggestion.refacet ? 'AND' : 'OR';
+        var $typeahead = getTypeahead(namespace);
+        var $box = getFilterBox(namespace, type);
+        var field = type + "_ids";
+        KMapsUtil.removeFilters($typeahead, field, filtered[namespace][type]);
+        pickFilter(namespace, type, suggestion,plugin.options.filters_domain);
+        $box.toggleClass('kmaps-conjunctive-filters', mode == 'AND');
+        $box.show();
+        KMapsUtil.trackTypeaheadSelected($filter, filtered[namespace][type]);
+        var fq = KMapsUtil.getFilters(field, filtered[namespace][type], mode);
+        $typeahead.kmapsTypeahead('addFilters', fq).kmapsTypeahead('setValue', $typeahead.typeahead('val'), false);
+        for (var i=0; i<others.length; i++) {
+          getFilter(namespace, others[i]).kmapsTypeahead('refetchPrefetch', fq);
+        }
+        $filter.kmapsTypeahead('refacetPrefetch', fq);
+        $filter.kmapsTypeahead('setValue', '', false); // reset filter after selection
+      }
     },
   }
 
