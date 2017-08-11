@@ -610,7 +610,6 @@
       $(plugin.element).kmapsTypeahead('setValue', options["search_term"], false); // reset filter after selection
       if(options["filters"] && options["filters"][namespace]){
         Object.keys(options["filters"][namespace]).forEach(function(type){
-          console.log(type);
           var currentFilter = options["filters"][namespace][type];
           Object.keys(currentFilter).forEach(function(id){
             plugin.selectFilter(currentFilter[id],type,$("#"+namespace+"-search-filter-"+type),namespace);
