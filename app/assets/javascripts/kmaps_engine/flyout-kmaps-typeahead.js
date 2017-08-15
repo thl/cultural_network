@@ -15,7 +15,8 @@
 
   var pluginName = "flyoutKmapsTypeahead",
     defaults = {
-      hostname: "http://localhost:8983/solr/",
+      hostname: "http://localhost:8983/solr/kmapsterm",
+      hostname_assets: "http://localhost:8983/solr/kmapsassets",
       domain: 'places',
       filters_domain: 'subjects',
       root_kmap_path: null,
@@ -40,7 +41,6 @@
       autocomplete_field: 'name_autocomplete',
       prefetch_field: 'feature_types',
       prefetch_filters: ['tree:places', 'ancestor_id_path:13735'],
-      save_search_url: 'http://localhost:3000/features/save_search',
     };
 
   // The actual plugin constructor
@@ -271,21 +271,14 @@
       ).bind('typeahead:select',
         function (ev, sel) {
           var id = sel.doc.id.substring(sel.doc.id.indexOf('-') + 1);
-          $.ajax({
-            type: "POST",
-            url: plugin.options.save_search_url,
-            contentType: 'application/json',
-            data: JSON.stringify({
-              search: search_key,
-              filters: plugin._filters,
-              scope: $(plugin.options.scope_filter_selector+":checked").val(),
-              match: $(plugin.options.match_filter_selector+":checked").val()
-            }),
-            success: function(data) {
-              window.location.href = plugin.options.features_path+sel.id;
-              $typeaheadExplorer.typeahead('val', search_key); // revert back to search key
-            }
-          });
+          Cookies.set('search_'+plugin.options.domain,JSON.stringify({
+            search_term: search_key,
+            filters: plugin._filters,
+            scope: $(plugin.options.scope_filter_selector+":checked").val(),
+            match: $(plugin.options.match_filter_selector+":checked").val()
+          }));
+          window.location.href = plugin.options.features_path+sel.id;
+          $typeaheadExplorer.typeahead('val', search_key); // revert back to search key
         }
       );
 
@@ -493,7 +486,7 @@
 
           var fq = plugin.options.shanti_kmaps_admin_solr_filter_query;
           var project_filter = (fq) ? ("&" + fq) : "";
-          var kmidxBase = plugin.options.hostname;
+          var kmidxBase = plugin.options.hostname_assets;
           if (!kmidxBase) {
             console.error("kmindex_root not set!");
           }
