@@ -275,7 +275,8 @@
             search_term: search_key,
             filters: plugin._filters,
             scope: $(plugin.options.scope_filter_selector+":checked").val(),
-            match: $(plugin.options.match_filter_selector+":checked").val()
+            match: $(plugin.options.match_filter_selector+":checked").val(),
+            page: $(plugin.options.menu).find("input.pager-input").val()
           }));
           window.location.href = plugin.options.features_path+sel.id;
           $typeaheadExplorer.typeahead('val', search_key); // revert back to search key
@@ -608,6 +609,17 @@
             plugin.selectFilter(currentFilter[id],type,$("#"+namespace+"-search-filter-"+type),namespace);
           });
         });
+      }
+      if(plugin.options.pager == "on"){
+        setTimeout(function(){
+          var lastPage = $(plugin.options.menu).find("input.pager-input:first").attr('data-last');
+          var start = options["page"];
+          if(options["page"] < lastPage) {
+            start = (options["page"] - 1) * plugin.options.max_terms;
+          }
+          $(plugin.element).kmapsTypeahead('setValue', options["search_term"],true,start);
+          plugin.keepopen = false;
+        }, 2000);
       }
     },
     selectFilter: function (suggestion,type,filter,namespace) {
