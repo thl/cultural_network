@@ -214,9 +214,7 @@
         "ancestor*",
         "caption_eng",
         "related_"+plugin.options.domain+"_feature_type_s",
-        "related_"+plugin.options.domain+"_relation_label_s",
-        "related_"+plugin.options.domain+"_relation_asymmetric_label_s",
-        "related_"+plugin.options.domain+"_relation_asymmetric_label_s",
+        "related_"+plugin.options.domain+"_relation_label_s"
       ].join(",");
       if(plugin.options.domain == "places"){
         fieldList += ",related_subjects_t";
@@ -265,7 +263,7 @@
             const child = {
               title: "<strong>" + currentNode["related_"+plugin.options.domain+"_header_s"] + "</strong> (" +
               feature_type +
-              currentNode["related_"+plugin.options.domain+"_relation_asymmetric_label_s"]+")",
+              currentNode["related_"+plugin.options.domain+"_relation_label_s"]+")",
               key: plugin.options.domain + "-" + key,
               expanded: false,
               lazy: true,

@@ -496,6 +496,7 @@ class Feature < ActiveRecord::Base
     Perspective.where(is_public: true).each do |p|  #['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
       tag = 'ancestors_'
       id_tag = 'ancestor_ids_'
+      uid_tag = 'ancestor_uids_'
       hierarchy = self.ancestors_by_perspective(p)
       if hierarchy.blank?
         hierarchy = self.closest_ancestors_by_perspective(p)
@@ -503,6 +504,7 @@ class Feature < ActiveRecord::Base
         doc["level_closest_#{p.code}_i"] = hierarchy.size
         tag << 'closest_'
         id_tag << 'closest_'
+        uid_tag << 'closest_'
         closest_ancestor_in_tree = Feature.find(self.closest_hierarchical_feature_id_by_perspective(p))
         path = closest_ancestor_in_tree.ancestors_by_perspective(p).collect(&:fid)
       else
@@ -511,12 +513,14 @@ class Feature < ActiveRecord::Base
       end
       tag << p.code
       id_tag << p.code
+      uid_tag << p.code
       doc["ancestor_id_#{p.code}_path"] = path.join('/')
       doc[tag] = hierarchy.collect do |f|
         pn = f.prioritized_name(v)
         pn.nil? ? nil : pn.name
       end.reject(&:nil?)
       doc[id_tag] = hierarchy.collect{ |f| f.fid }
+      doc[uid_tag] = hierarchy.collect{ |f| f.uid }
     end
     doc
   end
