@@ -36,8 +36,7 @@
     $("#source-search-container").toggle();
   });
   $("#kmaps-search-source").kmapsTypeahead({
-    //term_index: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>/solr/kmassets",
-    term_index: "https://ss206212-us-east-1-aws.measuredsearch.com/solr/kmassets",
+    term_index: "<%= Flare.config.asset_url %>",
     domain: "sources",
     filters_domain: "subjects",
     root_kmap_path: null,
