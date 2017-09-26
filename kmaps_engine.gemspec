@@ -9,23 +9,24 @@ Gem::Specification.new do |s|
   s.version     = KmapsEngine::VERSION
   s.authors     = ["Andres Montano"]
   s.email       = ["amontano@virginia.edu"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of KmapsEngine."
-  s.description = "TODO: Description of KmapsEngine."
+  s.homepage    = "http://subjects.kmaps.virginia.edu"
+  s.summary     = "This engine provides the core code for creating apps that organize information in a hierarchical fasion we call a knowledge map."
+  s.description = "This engine provides the core code for creating apps that organize information in a hierarchical fasion we call a knowledge map."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
+  
+  # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+  s.add_dependency 'rails', '~> 4.1.16'
 
-  s.add_dependency 'rails', '~> 4.1.5'
-  # s.add_dependency "jquery-rails"
-
-  s.add_dependency 'pg'
+  # Use postgresql as the database for Active Record
+  s.add_dependency 'pg', '~> 0.15'
   
   # Use Uglifier as compressor for JavaScript assets
   s.add_dependency 'uglifier', '>= 1.3.0'
 
   # Use CoffeeScript for .js.coffee assets and views
-  s.add_dependency 'coffee-rails', '~> 4.0.0'
+  s.add_dependency 'coffee-rails', '~> 4.1.0'
   
   # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
   s.add_dependency 'turbolinks'
