@@ -10,6 +10,7 @@
   "use strict";
 
   var SOLR_ROW_LIMIT = 2000;
+  var DEBUG = false;
 
   // undefined is used here as the undefined global variable in ECMAScript 3 is
   // mutable (ie. it can be changed by someone else). undefined isn't really being
@@ -33,7 +34,8 @@
       seedTree: {
         descendants: false,
         directAncestors: true
-      }
+      },
+      displayPopup: false
     };
 
   // The actual plugin constructor
@@ -59,7 +61,7 @@
       // You already have access to the DOM element and the options via the instance,
       // e.g., this.element and this.options
       $(plugin.element).fancytree({
-        extensions: ["glyph"],
+        extensions: ["filter", "glyph"],
         source: plugin.getAncestorTree(plugin.options.seedTree),
         glyph: {
           map: {
@@ -87,7 +89,278 @@
         lazyLoad: function(event,data){
           data.result = plugin.getDescendantTree(data.node.key);
         },
+        createNode: function (event, data) {
+          data.node.span.childNodes[2].innerHTML = '<span id="ajax-id-' + data.node.key + '">' +
+            data.node.title + ' ' +
+            ( data.node.data.path || "") + '</span>';
+
+          var path = "";//plugin.makeStringPath(data);
+          var elem = data.node.span;
+          //var key = plugin.options.domain +"-" + data.node.key;
+          var key = data.node.key;
+          var title = data.node.title;
+          var caption = data.node.data.caption;
+          var theIdPath = data.node.data.path;
+          var displayPath = data.node.data.displayPath;
+
+          if(plugin.options.displayPopup){
+            decorateElementWithPopover(elem, key, title, displayPath, caption);
+          }
+          return data;
+        },
       });
+
+      function makeStringPath(data) {
+        return $.makeArray(data.node.getParentList(false, true).map(function (x) {
+          return x.title;
+        })).join("/");
+      }
+
+      function decorateElementWithPopover(elem, key, title, path, caption) {
+        //if (DEBUG) console.log("decorateElementWithPopover: "  + elem);
+
+        if (jQuery(elem).popover) {
+          jQuery(elem).attr('rel', 'popover');
+
+          //if (DEBUG) console.log("caption = " + caption);
+          jQuery(elem).popover({
+            html: true,
+            content: function () {
+              caption = ((caption) ? caption : "");
+              var popover = "<div class='kmap-path'>/" + path + "</div>" + "<div class='kmap-caption'>" + caption + "</div>" +
+                "<div class='info-wrap' id='infowrap" + key + "'><div class='counts-display'>...</div></div>";
+              //if (DEBUG) console.log("Captioning: " + caption);
+              return popover;
+            },
+            title: function () {
+              return title + "<span class='kmapid-display'>" + key + "</span>";
+            },
+            trigger: 'hover',
+            placement: 'top',
+            delay: {hide: 5},
+            container: 'body'
+          }
+          );
+
+          jQuery(elem).on('shown.bs.popover', function (x) {
+            $("body > .popover").removeClass("related-resources-popover"); // target css styles on search tree popups
+            $("body > .popover").addClass("search-popover"); // target css styles on search tree popups
+
+            var countsElem = $("#infowrap" + key + " .counts-display");
+            countsElem.html("<span class='assoc-resources-loading'>loading...</span>\n");
+            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-sources'></i><span class='badge' >?</span></span>");
+            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-audio-video'></i><span class='badge' >?</span></span>");
+            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-photos'></i><span class='badge' >?</span></span>");
+            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-texts'></i><span class='badge' >?</span></span>");
+            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-visuals'></i><span class='badge' >?</span></span>");
+            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-places'></i><span class='badge' >?</span></span>");
+            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-subjects'></i><span class='badge' >?</span></span>");
+
+            // highlight matching text (if/where they occur).
+            var txt = $('#searchform').val();
+            // $('.popover-caption').highlight(txt, {element: 'mark'});
+
+
+            var fq = plugin.options.solr_filter_query;
+
+            var project_filter = (fq) ? ("&" + fq) : "";
+            var kmidxBase = plugin.options.assetIndex;
+            if (!kmidxBase) {
+              console.error("plugin.option.assetIndex not set!");
+            }
+
+            var termidxBase = plugin.options.termIndex;
+            if (!termidxBase) {
+              console.error("plugin.options.termIndex not set!");
+            }
+
+            // Update counts from asset index
+            var assetCountsUrl =
+              kmidxBase + '/select?q=kmapid:' + key + project_filter + '&start=0&facets=on&group=true&group.field=asset_type&group.facet=true&group.ngroups=true&group.limit=0&wt=json&json.wrf=?';
+            $.ajax({
+              type: "GET",
+              url: assetCountsUrl,
+              dataType: "jsonp",
+              timeout: 90000,
+              error: function (e) {
+                console.error(e);
+                // countsElem.html("<i class='glyphicon glyphicon-warning-sign' title='" + e.statusText);
+              },
+              beforeSend: function () {
+              },
+
+              success: function (data) {
+                if (DEBUG) console.log("shown.bs.popover handler: data = " + JSON.stringify(data, undefined, 1));
+                var updates = {};
+
+                // extract the group counts -- index by groupValue
+                $.each(data.grouped.asset_type.groups, function (x, y) {
+                  var asset_type = y.groupValue;
+                  var asset_count = y.doclist.numFound;
+                  if (DEBUG) console.log(asset_type + " = " + asset_count);
+                  updates[asset_type] = asset_count;
+                });
+
+                if (DEBUG) console.log("shown.bs.popover handler: " + key + "(" + title + ") : " + JSON.stringify(updates));
+                update_counts(countsElem, updates)
+              }
+            });
+
+            // Update related place and subjects counts from term index
+
+
+            // {!child of=block_type:parent}id:places-22675&wt=json&indent=true&group=true&group.field=block_child_type&group.limit=0
+            var relatedCountsUrl =
+              termidxBase + '/select?q={!child of=block_type:parent}id:' + key + project_filter + '&wt=json&indent=true&group=true&group.field=block_child_type&group.limit=0&wt=json&json.wrf=?';
+            if (DEBUG) console.error("relatedCountsUrl = " + relatedCountsUrl);
+            $.ajax({
+              type: "GET",
+              url: relatedCountsUrl,
+              dataType: "jsonp",
+              timeout: 90000,
+              error: function (e) {
+                console.error(e);
+                // countsElem.html("<i class='glyphicon glyphicon-warning-sign' title='" + e.statusText);
+              },
+              beforeSend: function () {
+              },
+
+              success: function (data) {
+                if (DEBUG) console.log("shown.bs.popover handler: data = " + JSON.stringify(data, undefined, 1));
+                var updates = {};
+
+                // extract the group counts -- index by groupValue
+                $.each(data.grouped.block_child_type.groups, function (x, y) {
+                  var block_child_type = y.groupValue;
+                  var rel_count = y.doclist.numFound;
+                  if (DEBUG) console.log(block_child_type + " = " + rel_count);
+                  updates[block_child_type] = rel_count;
+                });
+
+                if (DEBUG) console.log("shown.bs.popover handler: " + key + "(" + title + ") : " + JSON.stringify(updates));
+                update_counts(countsElem, updates)
+              }
+            });
+
+            // Another (parallel) query
+
+            var subjectsRelatedPlacesCountQuery = termidxBase + "/select?indent=on&q={!parent%20which=block_type:parent}related_subject_uid_s:" + key + "&wt=json&json.wrf=?&group=true&group.field=tree&group.limit=0";
+
+            $.ajax({
+              type: "GET",
+              url: subjectsRelatedPlacesCountQuery,
+              dataType: "jsonp",
+              timeout: 90000,
+              error: function (e) {
+                console.error(e);
+                // countsElem.html("<i class='glyphicon glyphicon-warning-sign' title='" + e.statusText);
+              },
+              beforeSend: function () {
+              },
+
+              success: function (data) {
+                if (DEBUG) console.log("shown.bs.popover handler: data = " + JSON.stringify(data, undefined, 1));
+                var updates = {};
+                // extract the group counts -- index by groupValue
+                $.each(data.grouped.tree.groups, function (x, y) {
+                  var tree = y.groupValue;
+                  var rel_count = y.doclist.numFound;
+                  if (DEBUG) console.error(tree + " = " + rel_count);
+                  updates["related_" + tree] = rel_count;
+                });
+
+                update_counts(countsElem, updates)
+              }
+            });
+
+
+          });
+        }
+
+
+        function update_counts(elem, counts) {
+
+          // console.log("elem = ");
+          // console.dir(elem);
+          // console.error(JSON.stringify(counts,undefined,2));
+
+          var av = elem.find('i.shanticon-audio-video ~ span.badge');
+          if (typeof(counts["audio-video"]) != "undefined") {
+            (counts["audio-video"]) ? av.html(counts["audio-video"]).parent().show() : av.parent().hide();
+          }
+          if (Number(av.text()) > 0) {
+            av.parent().show();
+          }
+
+          var photos = elem.find('i.shanticon-photos ~ span.badge');
+          if (typeof(counts.picture) != "undefined") {
+            photos.html(counts.picture);
+          }
+          (Number(photos.text()) > 0) ? photos.parent().show() : photos.parent().hide();
+
+          var places = elem.find('i.shanticon-places ~ span.badge');
+          if (typeof(counts.related_places) != "undefined") {
+            places.html(counts.related_places);
+          }
+          if (Number(places.text()) > 0) {
+            places.parent().show();
+          }
+
+          var texts = elem.find('i.shanticon-texts ~ span.badge');
+          if (typeof(counts.texts) != "undefined") {
+            texts.html(counts["texts"]);
+          }
+          if (Number(texts.text()) > 0) {
+            texts.parent().show();
+          }
+
+          var subjects = elem.find('i.shanticon-subjects ~ span.badge');
+
+          if (!counts.feature_types) {
+            counts.feature_types = 0
+          }
+          ;
+          if (!counts.related_subjects) {
+            counts.related_subjects = 0
+          }
+          ;
+
+          var s_counts = Number(counts.related_subjects) + Number(counts.feature_types);
+          if (DEBUG) {
+            console.error("related_subjects  = " + Number(counts.related_subjects));
+            console.error("feature_types  = " + Number(counts.feature_types));
+            console.error("Calculated subject count: " + s_counts);
+          }
+          if (s_counts) {
+            subjects.html(s_counts);
+          }
+          if (Number(subjects.text()) > 0) {
+            subjects.parent().show();
+          }
+
+
+          var visuals = elem.find('i.shanticon-visuals ~ span.badge');
+          if (typeof(counts.visuals) != "undefined") {
+            visuals.html(counts.visuals);
+          }
+          if (Number(visuals.text()) > 0) {
+            visuals.parent().show();
+          }
+
+          var sources = elem.find('i.shanticon-sources ~ span.badge');
+          if (typeof(counts.sources) != "undefined") {
+            sources.html(counts.sources);
+          }
+          if (Number(sources.text()) > 0) {
+            sources.parent().show();
+          }
+
+          elem.find('.assoc-resources-loading').hide();
+
+        }
+
+        return elem;
+      };
     },
     getAncestorPath: function() {
       const plugin = this;
@@ -170,10 +443,11 @@
           const result = doc[ancestorsKey] === undefined ? [] : doc[ancestorsKey].reduceRight(function(acc,val,index){
             const node = {
               title: "<strong>" + doc[ancestorsNameKey][index] + "</strong>",
-              key: val,
+              key: plugin.options.domain + "-" + val,
               expanded: true,
               href: plugin.options.featuresPath+val,
               lazy: true,
+              displayPath: doc[ancestorsNameKey].join("/"),
               //[].concat to handle the instance when the children are sent as an argument
               children: acc === undefined ? null : [].concat(acc)
             };
@@ -260,11 +534,18 @@
                 feature_type = feature_type ? feature_type + ": " : " ";
               }
             }
+            var ancestorsKey  = "ancestor_ids_" + plugin.options.perspective;
+            var ancestorsNameKey  = "ancestors_" + plugin.options.perspective;
+            if( currentNode[ancestorsKey] === undefined ) {
+              ancestorsKey  = "ancestor_ids_closest_" + plugin.options.perspective;
+              ancestorsNameKey  = "ancestors_closest_" + plugin.options.perspective;
+            }
             const child = {
               title: "<strong>" + currentNode["related_"+plugin.options.domain+"_header_s"] + "</strong> (" +
               feature_type +
               currentNode["related_"+plugin.options.domain+"_relation_label_s"]+")",
-              key: plugin.options.domain + "-" + key,
+              displayPath: "",//currentNode[ancestorsNameKey].join("/"),
+              key: plugin.options.domain +"-"+key,
               expanded: false,
               lazy: true,
               href: plugin.options.featuresPath+key,
