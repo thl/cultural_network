@@ -101,8 +101,18 @@
           var title = data.node.title;
           var caption = data.node.data.caption;
           var theIdPath = data.node.data.path;
-          var displayPath = data.node.data.displayPath;
-
+          //var displayPath = data.node.data.displayPath;
+          var displayPath = data.node.getParentList(true,true).reduce(function(parentPath,ancestor) {
+            var title_match = ancestor.title.match(/<strong>(.*?)<\/strong>/);
+            var current_title = "";
+            if(title_match != null){
+              current_title = title_match[0];
+            }
+            if(parentPath == ""){
+              return current_title;
+            }
+            return parentPath + "/" + current_title;
+          }, "");
           if(plugin.options.displayPopup){
             decorateElementWithPopover(elem, key, title, displayPath, caption);
           }
