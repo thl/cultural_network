@@ -27,7 +27,7 @@
       termIndex: "http://localhost/solr/kmterms_dev",
       assetIndex: "http://localhost/solr/kmassets_dev",
       tree: "places",
-      featuresPath: "/features/",
+      featuresPath: "/features/%%ID%%",
       domain: "places",
       featureId: 1,
       perspective: "pol.admin.hier",
@@ -108,13 +108,20 @@
             if(title_match != null){
               current_title = title_match[0];
             }
+            var current_link = "<a href='"+ancestor.data.href+"'>"+
+              current_title+"</a>";
             if(parentPath == ""){
+              return current_link;
               return current_title;
             }
+            return parentPath + "/" + current_link;
             return parentPath + "/" + current_title;
           }, "");
           if(plugin.options.displayPopup){
-            decorateElementWithPopover(elem, key, title, displayPath, caption);
+            //decorateElementWithPopover(elem, key, title, displayPath, caption);
+            var pop_container = $('<span class="popover-kmaps" data-app="places" data-id="'+key+'"><span class="popover-kmaps-tip"></span><span class="icon shanticon-menu3"></span></span>');
+            $(elem).append($(pop_container));
+            decorateElementWithPopover(pop_container, key, title, displayPath, caption);
           }
           return data;
         },
@@ -139,32 +146,59 @@
               caption = ((caption) ? caption : "");
               var popover = "<div class='kmap-path'>/" + path + "</div>" + "<div class='kmap-caption'>" + caption + "</div>" +
                 "<div class='info-wrap' id='infowrap" + key + "'><div class='counts-display'>...</div></div>";
-              //if (DEBUG) console.log("Captioning: " + caption);
+              popover = "<div id='popover-content-" + key +"'>" + path + "</div>";
               return popover;
             },
             title: function () {
               return title + "<span class='kmapid-display'>" + key + "</span>";
             },
-            trigger: 'hover',
-            placement: 'top',
+            trigger: 'manual',
+            placement: 'bottom',
             delay: {hide: 5},
             container: 'body'
           }
-          );
+          ).on("mouseenter", function (e) {
+            var _this = this;
+            $(this).popover("show");
+            var offsetW = $(".popover").width()/2;
+            $(".popover").css({left: e.pageX-offsetW });
+            $(".popover").on("mouseleave", function () {
+              $(_this).popover('hide');
+            });
+          }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+              if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+              }
+            }, 300);
+          }).on('mousemove',function(e){
+            var offsetH = $(".popover").height();
+            var offsetW = $(".popover").width()/2;
+            var _this = this;
+            //$(this).popover("show");
+            $(".popover").css({left: e.pageX-offsetW });
+          });
 
           jQuery(elem).on('shown.bs.popover', function (x) {
             $("body > .popover").removeClass("related-resources-popover"); // target css styles on search tree popups
             $("body > .popover").addClass("search-popover"); // target css styles on search tree popups
 
-            var countsElem = $("#infowrap" + key + " .counts-display");
-            countsElem.html("<span class='assoc-resources-loading'>loading...</span>\n");
-            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-sources'></i><span class='badge' >?</span></span>");
-            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-audio-video'></i><span class='badge' >?</span></span>");
-            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-photos'></i><span class='badge' >?</span></span>");
-            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-texts'></i><span class='badge' >?</span></span>");
-            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-visuals'></i><span class='badge' >?</span></span>");
-            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-places'></i><span class='badge' >?</span></span>");
-            countsElem.append("<span style='display: none' class='associated'><i class='icon shanticon-subjects'></i><span class='badge' >?</span></span>");
+            var popOverContent = $("#popover-content-"+key);
+            var popOverFooter = $("<div class='popover-footer'></div>");
+            popOverFooter.append("<div class='popover-footer-button'><a href='"+plugin.options.featuresPath.replace("%%ID%%",key.replace(plugin.options.domain+'-',""))+"' class='icon shanticon-link-external' target='_blank'>Full Entry</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-sources' target='_blank'>Related sources (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-audio-video' target='_blank'>Related audio-video (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-photos' target='_blank'>Related photos (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-texts' target='_blank'>Related texts (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-visuals' target='_blank'>Related visuals (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-places' target='_blank'>Related places (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-subjects' target='_blank'>Related subjets (<span class='badge-count' >?</span>)</a></div>");
+            popOverContent.append(popOverFooter);
+            //var countsElem = $("#popover-content-" + key + " .counts-display");
+            //countsElem.html("<span class='assoc-resources-loading'>loading...</span>\n");
+            var countsElem = popOverFooter;
+            countsElem.append("<span class='assoc-resources-loading'>loading...</span>\n");
 
             // highlight matching text (if/where they occur).
             var txt = $('#searchform').val();
@@ -294,37 +328,43 @@
           // console.dir(elem);
           // console.error(JSON.stringify(counts,undefined,2));
 
-          var av = elem.find('i.shanticon-audio-video ~ span.badge');
+          var av = elem.find('.shanticon-audio-video > span.badge-count');
           if (typeof(counts["audio-video"]) != "undefined") {
             (counts["audio-video"]) ? av.html(counts["audio-video"]).parent().show() : av.parent().hide();
           }
           if (Number(av.text()) > 0) {
-            av.parent().show();
+            av.parent().parent().show();
+          } else {
+            av.parent().parent().hide();
           }
 
-          var photos = elem.find('i.shanticon-photos ~ span.badge');
+          var photos = elem.find('.shanticon-photos > span.badge-count');
           if (typeof(counts.picture) != "undefined") {
             photos.html(counts.picture);
           }
-          (Number(photos.text()) > 0) ? photos.parent().show() : photos.parent().hide();
+          (Number(photos.text()) > 0) ? photos.parent().parent().show() : photos.parent().parent().hide();
 
-          var places = elem.find('i.shanticon-places ~ span.badge');
+          var places = elem.find('.shanticon-places > span.badge-count');
           if (typeof(counts.related_places) != "undefined") {
             places.html(counts.related_places);
           }
           if (Number(places.text()) > 0) {
-            places.parent().show();
+            places.parent().parent().show();
+          } else {
+            places.parent().parent().hide();
           }
 
-          var texts = elem.find('i.shanticon-texts ~ span.badge');
+          var texts = elem.find('.shanticon-texts > span.badge-count');
           if (typeof(counts.texts) != "undefined") {
             texts.html(counts["texts"]);
           }
           if (Number(texts.text()) > 0) {
-            texts.parent().show();
+            texts.parent().parent().show();
+          } else {
+            texts.parent().parent().hide();
           }
 
-          var subjects = elem.find('i.shanticon-subjects ~ span.badge');
+          var subjects = elem.find('.shanticon-subjects > span.badge-count');
 
           if (!counts.feature_types) {
             counts.feature_types = 0
@@ -345,24 +385,30 @@
             subjects.html(s_counts);
           }
           if (Number(subjects.text()) > 0) {
-            subjects.parent().show();
+            subjects.parent().parent().show();
+          } else {
+            subjects.parent().parent().hide();
           }
 
 
-          var visuals = elem.find('i.shanticon-visuals ~ span.badge');
+          var visuals = elem.find('.shanticon-visuals > span.badge-count');
           if (typeof(counts.visuals) != "undefined") {
             visuals.html(counts.visuals);
           }
           if (Number(visuals.text()) > 0) {
-            visuals.parent().show();
+            visuals.parent().parent().show();
+          } else {
+            visuals.parent().parent().hide();
           }
 
-          var sources = elem.find('i.shanticon-sources ~ span.badge');
+          var sources = elem.find('.shanticon-sources > span.badge-count');
           if (typeof(counts.sources) != "undefined") {
             sources.html(counts.sources);
           }
           if (Number(sources.text()) > 0) {
-            sources.parent().show();
+            sources.parent().parent().show();
+          } else {
+            sources.parent().parent().hide();
           }
 
           elem.find('.assoc-resources-loading').hide();
@@ -455,7 +501,7 @@
               title: "<strong>" + doc[ancestorsNameKey][index] + "</strong>",
               key: plugin.options.domain + "-" + val,
               expanded: true,
-              href: plugin.options.featuresPath+val,
+              href: plugin.options.featuresPath.replace("%%ID%%",val),
               lazy: true,
               displayPath: doc[ancestorsNameKey].join("/"),
               //[].concat to handle the instance when the children are sent as an argument
@@ -558,7 +604,7 @@
               key: plugin.options.domain +"-"+key,
               expanded: false,
               lazy: true,
-              href: plugin.options.featuresPath+key,
+              href: plugin.options.featuresPath.replace("%%ID%%",key),
             };
             if(currentNode["child_count"] !== undefined) {
               if(currentNode["child_count"]["numFound"] === 0) {
