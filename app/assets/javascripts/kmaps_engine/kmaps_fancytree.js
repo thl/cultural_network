@@ -35,7 +35,8 @@
         descendants: false,
         directAncestors: true
       },
-      displayPopup: false
+      displayPopup: false,
+      mandalaURL: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs"
     };
 
   // The actual plugin constructor
@@ -187,13 +188,13 @@
             var popOverContent = $("#popover-content-"+key);
             var popOverFooter = $("<div class='popover-footer'></div>");
             popOverFooter.append("<div class='popover-footer-button'><a href='"+plugin.options.featuresPath.replace("%%ID%%",key.replace(plugin.options.domain+'-',""))+"' class='icon shanticon-link-external' target='_blank'>Full Entry</a></div>");
-            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-sources' target='_blank'>Related sources (<span class='badge-count' >?</span>)</a></div>");
-            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-audio-video' target='_blank'>Related audio-video (<span class='badge-count' >?</span>)</a></div>");
-            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-photos' target='_blank'>Related photos (<span class='badge-count' >?</span>)</a></div>");
-            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-texts' target='_blank'>Related texts (<span class='badge-count' >?</span>)</a></div>");
-            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-visuals' target='_blank'>Related visuals (<span class='badge-count' >?</span>)</a></div>");
-            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-places' target='_blank'>Related places (<span class='badge-count' >?</span>)</a></div>");
-            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='#' class='icon shanticon-subjects' target='_blank'>Related subjets (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='"+plugin.options.mandalaURL.replace("%%ID%%",key.replace(plugin.options.domain+'-',"")).replace("%%APP%%",plugin.options.domain).replace("%%REL%%","sources")+"' class='icon shanticon-sources' target='_blank'>Related sources (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='"+plugin.options.mandalaURL.replace("%%ID%%",key.replace(plugin.options.domain+'-',"")).replace("%%APP%%",plugin.options.domain).replace("%%REL%%","audio-video")+"' class='icon shanticon-audio-video' target='_blank'>Related audio-video (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='"+plugin.options.featuresPath.replace("%%ID%%",key.replace(plugin.options.domain+'-',""))+"#show_relationship=pictures' class='icon shanticon-photos' target='_blank'>Related photos (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='"+plugin.options.featuresPath.replace("%%ID%%",key.replace(plugin.options.domain+'-',""))+"#show_relationship=documents' class='icon shanticon-texts' target='_blank'>Related texts (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='"+plugin.options.mandalaURL.replace("%%ID%%",key.replace(plugin.options.domain+'-',"")).replace("%%APP%%",plugin.options.domain).replace("%%REL%%","visuals")+"' class='icon shanticon-visuals' target='_blank'>Related visuals (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='"+plugin.options.featuresPath.replace("%%ID%%",key.replace(plugin.options.domain+'-',""))+"#show_relationship=places' class='icon shanticon-places' target='_blank'>Related places (<span class='badge-count' >?</span>)</a></div>");
+            popOverFooter.append("<div style='display: none' class='popover-footer-button'><a href='"+plugin.options.featuresPath.replace("%%ID%%",key.replace(plugin.options.domain+'-',""))+"#show_relationship=topics' class='icon shanticon-subjects' target='_blank'>Related subjets (<span class='badge-count' >?</span>)</a></div>");
             popOverContent.append(popOverFooter);
             //var countsElem = $("#popover-content-" + key + " .counts-display");
             //countsElem.html("<span class='assoc-resources-loading'>loading...</span>\n");
