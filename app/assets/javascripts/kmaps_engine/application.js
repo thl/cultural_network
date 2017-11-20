@@ -18,3 +18,4 @@
 //= require kmaps_engine/jquery.kmapstree
 //= require kmaps_engine/kmaps_typeahead
 //= require kmaps_engine/flyout-kmaps-typeahead
+//= require kmaps_engine/jquery.kmaps-popup
