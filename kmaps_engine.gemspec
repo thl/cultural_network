@@ -28,9 +28,6 @@ Gem::Specification.new do |s|
   # Use CoffeeScript for .js.coffee assets and views
   s.add_dependency 'coffee-rails', '~> 4.1.0'
   
-  # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-  s.add_dependency 'turbolinks'
-
   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
   s.add_dependency 'jbuilder', '~> 2.0'
   
