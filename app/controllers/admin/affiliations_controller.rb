@@ -17,6 +17,13 @@ class Admin::AffiliationsController < AclController
   edit.before { get_collections }
   update.before { get_collections }
   
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def affiliation_params
+    params.require(:affiliation).permit(:collection_id, :feature_id, :perspective_id, :descendants, :skip_update)
+  end
+  
   private
   
   def get_collections

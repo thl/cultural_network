@@ -23,5 +23,10 @@ class Admin::CitationsController < AclController
     search_results = Citation.search(params[:filter]) 
     search_results = search_results.where(['citable_id = ? AND citable_type = ?', parent_object.id, parent_object.class.to_s]) if parent?
     @collection = search_results.page(params[:page])
-  end  
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def citation_params
+    params.require(:citation).permit(:info_source_id, :notes, :citable_id, :citable_type)
+  end
 end

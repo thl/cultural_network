@@ -11,7 +11,6 @@
 #
 
 class WebPage < ActiveRecord::Base
-  attr_accessible :path, :title, :citation_id
   belongs_to :citation
   has_many :imports, :as => 'item', :dependent => :destroy
   

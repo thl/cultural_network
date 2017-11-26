@@ -9,7 +9,6 @@
 #
 
 class ImportationTask < ActiveRecord::Base
-  attr_accessible :task_code
   has_many :spreadsheets, :class_name => 'ImportedSpreadsheet', :foreign_key => 'task_id', :dependent => :destroy
   
   def self.search(filter_value)

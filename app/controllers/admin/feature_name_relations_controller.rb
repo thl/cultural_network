@@ -16,6 +16,13 @@ class Admin::FeatureNameRelationsController < AclController
   #new_action.after {|c| object.child_node.save}
   #update.after {|c| object.child_node.save}
   
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def feature_name_relation_params
+    params.require(:feature_name_relation).permit(:is_translation, :is_phonetic, :phonetic_system_id, :is_orthographic, :orthographic_system_id, :is_alt_spelling, :alt_spelling_system_id, :parent_node_id, :child_node_id, :ancestor_ids, :skip_update)
+  end
+  
   private
   
   def collection

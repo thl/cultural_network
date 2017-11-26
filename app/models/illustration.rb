@@ -12,12 +12,8 @@
 #
 
 class Illustration < ActiveRecord::Base
-  attr_accessible :feature_id, :is_primary, :picture_id, :picture_type, :picture_attributes
-  
   belongs_to :feature
   belongs_to :picture, :polymorphic => true
-  
-  accepts_nested_attributes_for :picture
   
   before_destroy {|record| record.picture.destroy if record.picture.instance_of?(ExternalPicture)}
   

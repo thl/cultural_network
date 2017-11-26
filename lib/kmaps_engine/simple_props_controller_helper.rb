@@ -7,6 +7,11 @@ module KmapsEngine
     
     included do
       helper 'Admin'
+      
+      index.wants.html      { render 'admin/simple_props/index' }
+      show.wants.html       { render 'admin/simple_props/show'  }
+      new_action.wants.html { render 'admin/simple_props/new'   }
+      edit.wants.html       { render 'admin/simple_props/edit'  }
     end
     
     def initialize
@@ -14,14 +19,6 @@ module KmapsEngine
       @guest_perms = []
     end
     
-    def render(*args)
-      tpl = params[:action]
-      format = params[:format]
-      # tpl = args.first[:action]
-      # If there is no current HTTP authentication, bypass this template rendering...
-      tpl && (format.nil? || format == 'html') ? super("admin/simple_props/#{tpl}") : super(*args)
-    end
-
     def collection
       @collection = model_name.classify.constantize.search(params[:filter]).page(params[:page]).order('UPPER(name)')
     end

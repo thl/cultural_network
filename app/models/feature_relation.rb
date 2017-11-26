@@ -15,8 +15,6 @@
 #
 
 class FeatureRelation < ActiveRecord::Base
-  attr_accessible :perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update
-  
   attr_accessor :skip_update
   
   extend KmapsEngine::HasTimespan

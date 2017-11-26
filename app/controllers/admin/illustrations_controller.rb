@@ -13,7 +13,7 @@ class Admin::IllustrationsController < AclController
     if params[:picture_type]=="MmsIntegration::Picture"
       object.picture_type = 'MmsIntegration::Picture'
     else
-      object.picture = ExternalPicture.create(params[:external_picture])
+      object.picture = ExternalPicture.create(external_picture_params)
     end
   end
   
@@ -42,5 +42,15 @@ class Admin::IllustrationsController < AclController
   
   def parent_association
     parent_object.illustrations
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def external_picture_params
+    params.require(:external_picture).permit(:caption, :url, :place_id)
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def illustration_params
+    params.require(:illustration).permit(:feature_id, :is_primary, :picture_id, :picture_type, picture: [:caption, :url, :place_id])
   end
 end

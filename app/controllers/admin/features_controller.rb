@@ -14,7 +14,7 @@ class Admin::FeaturesController < AclController
   new_action.before do
     object.fid = Feature.generate_pid
     object.is_public = true
-    parent_id = params.require(:parent_id)
+    parent_id = params[:parent_id]
     @parent = parent_id.blank? ? nil : Feature.get_by_fid(parent_id) 
     if !@parent.nil?
       @perspectives = @parent.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
@@ -26,20 +26,20 @@ class Admin::FeaturesController < AclController
   
   create.after do |r|
     if !object.id.nil?
-      object.names.create(params[:feature_name])
-      relation = object.all_parent_relations.create(params[:feature_relation])
+      object.names.create(feature_name_params)
+      relation = object.all_parent_relations.create(feature_relation_params)
       affiliations = object.affiliations
       relation.parent_node.affiliations.where(descendants: true).each { |a| affiliations.create(perspective_id: a.perspective.nil? ? nil : a.perspective.id, collection_id: a.collection.id, descendants: true) }
     else
       object.fid = Feature.generate_pid
       object.is_public = true
-      parent_id = params[:feature_relation][:parent_node_id]
+      parent_id = feature_relation_params[:parent_node_id]
       @parent = parent_id.blank? ? nil : Feature.find(parent_id)
       if !@parent.nil?
         @perspectives = @parent.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
         @perspectives = Perspective.order(:name) if @perspectives.include? nil
-        @name = FeatureName.new(params[:feature_name])
-        @relation = FeatureRelation.new(params[:feature_relation])
+        @name = FeatureName.new(feature_name_params)
+        @relation = FeatureRelation.new(feature_relation_params)
       end
     end
   end
@@ -65,6 +65,23 @@ class Admin::FeaturesController < AclController
   
   def clone
     redirect_to admin_feature_url(Feature.get_by_fid(params[:id]).clone_with_names.fid)
+  end
+  
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def feature_params
+    params.require(:feature).permit(:is_public, :fid, :is_blank, :ancestor_ids, :skip_update, names: [:name, :feature_name_type_id, :language_id, :writing_system_id, :etymology, :feature_name, :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id, :position], all_parent_relations: [:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update])
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def feature_name_params
+    params.require(:feature_name).permit(:name, :feature_name_type_id, :language_id, :writing_system_id, :etymology, :feature_name, :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id, :position)
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def feature_relation_params
+    params.require(:feature_relation).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
   end
   
   private

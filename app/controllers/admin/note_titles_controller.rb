@@ -101,4 +101,9 @@ class Admin::NoteTitlesController < AclController
   def collection
     @collection = NoteTitle.search(params[:filter]).page(params[:page])
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def note_title_params
+    params.require(:note_title).permit(:title)
+  end
 end

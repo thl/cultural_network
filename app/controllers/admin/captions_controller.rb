@@ -38,4 +38,11 @@ class Admin::CaptionsController < AclController
   def parent_association
     parent_object.captions
   end
+  
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def caption_params
+    params.require(:caption).permit(:author_id, :content, :feature_id, :language_id)
+  end
 end

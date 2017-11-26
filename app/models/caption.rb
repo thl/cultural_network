@@ -12,7 +12,6 @@
 #
 
 class Caption < ActiveRecord::Base  
-  attr_accessible :author_id, :content, :feature_id, :language_id
   belongs_to :feature
   belongs_to :language
   belongs_to :author, :class_name => 'AuthenticatedSystem::Person'

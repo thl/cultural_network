@@ -21,4 +21,9 @@ class Admin::WebPagesController < AclController
   def collection
     @collection = WebPage.where(:citation_id => parent_object.id).page(params[:page])
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def web_page_params
+    params.require(:web_page).permit(:path, :title, :citation_id)
+  end
 end

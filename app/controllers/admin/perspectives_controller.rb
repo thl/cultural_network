@@ -12,4 +12,11 @@ class Admin::PerspectivesController < AclController
   
   index.wants.xml { render :xml => @collection }
   index.wants.json { render :json => @collection }
+  
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def perspective_params
+    params.require(:perspective).permit(:is_public, :name, :code, :description)
+  end
 end

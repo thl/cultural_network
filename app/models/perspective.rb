@@ -14,9 +14,7 @@
 
 class Perspective < ActiveRecord::Base
   include KmapsEngine::SimplePropCache
-  
-  attr_accessible :is_public, :name, :code, :description
-  
+
   #
   #
   # Associations

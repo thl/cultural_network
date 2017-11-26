@@ -11,7 +11,7 @@
 #
 
 class Import < ActiveRecord::Base
-  attr_accessible :item_id, :item_type, :spreadsheet_id, :item
+  #attr_accessible :item_id, :item_type, :spreadsheet_id, :item
   
   belongs_to :spreadsheet, :class_name => 'ImportedSpreadsheet'
   belongs_to :item, :polymorphic => true

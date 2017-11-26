@@ -11,8 +11,6 @@
 #
 
 class ExternalPicture < ActiveRecord::Base
-  attr_accessible :caption, :url, :place_id
-  
   has_many :illustrations, :as => :picture, :dependent => :destroy
   
   def width
