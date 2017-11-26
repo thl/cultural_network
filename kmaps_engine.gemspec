@@ -17,19 +17,18 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
   
   # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-  s.add_dependency 'rails', '5.0.6'
-
+  s.add_dependency 'rails', '5.1.4'
   # Use postgresql as the database for Active Record
   s.add_dependency 'pg', '~> 0.18'
   # Use Puma as the app server
-  s.add_dependency 'puma', '~> 3.0'
+  s.add_dependency 'puma', '~> 3.7'
   # Use Uglifier as compressor for JavaScript assets
   s.add_dependency 'uglifier', '>= 1.3.0'
-  # Use CoffeeScript for .coffee assets and views
-  s.add_dependency 'coffee-rails', '~> 4.2'
   # See https://github.com/rails/execjs#readme for more supported runtimes
   # gem 'therubyracer', platforms: :ruby
-  
+
+  # Use CoffeeScript for .coffee assets and views
+  s.add_dependency 'coffee-rails', '~> 4.2'
   # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
   s.add_dependency 'turbolinks', '~> 5'
   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
