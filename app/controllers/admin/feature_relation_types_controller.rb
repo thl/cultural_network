@@ -20,4 +20,9 @@ class Admin::FeatureRelationTypesController < AclController
   def collection
     @collection = FeatureRelationType.search(params[:filter]).page(params[:page])
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def feature_relation_type_params
+    params.require(:feature_relation_type).permit(:is_hierarchical, :is_symmetric, :label, :asymmetric_label, :code, :asymmetric_code)
+  end
 end

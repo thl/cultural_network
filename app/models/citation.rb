@@ -15,8 +15,6 @@
 class Citation < ActiveRecord::Base
   include ActiveModel::Validations
   
-  attr_accessible :info_source_id, :notes, :citable_id, :citable_type
-  
   attr_accessor :marked_for_deletion
   
   #

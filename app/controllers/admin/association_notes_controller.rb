@@ -43,4 +43,9 @@ class Admin::AssociationNotesController < AclController
       (object.nil? && params[:association_type].blank?) ||
       (!object.nil? && object.association_type.blank?))
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def association_note_params
+    params.require(:association_note).permit(:association_type, :notable_type, :notable_id)
+  end
 end

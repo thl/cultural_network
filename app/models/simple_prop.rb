@@ -21,9 +21,7 @@
 #
 class SimpleProp < ActiveRecord::Base
   include KmapsEngine::SimplePropCache
-  
-  attr_accessible :name, :code, :description
-  
+
   #
   #
   # Associations

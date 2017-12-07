@@ -49,6 +49,13 @@ class Admin::FeatureRelationsController < AclController
   
   new_action.wants.html { redirect_if_unauthorized }
   
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def feature_relation_params
+    params.require(:feature).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
+  end
+  
   private
   
   def collection

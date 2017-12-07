@@ -16,7 +16,6 @@ class Collection < SimpleProp
   has_many :affiliations, dependent: :destroy
   has_many :features, through: :affiliations
   has_and_belongs_to_many :users, class_name: 'AuthenticatedSystem::User', join_table: 'collections_users'
-  attr_accessible :user_ids
   
   def display_string
     return name unless name.blank?

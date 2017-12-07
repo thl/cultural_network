@@ -15,7 +15,6 @@
 #
 
 class Feature < ActiveRecord::Base
-  attr_accessible :is_public, :fid, :is_blank, :ancestor_ids, :skip_update
   attr_accessor :skip_update
   
   include FeatureExtensionForNamePositioning
@@ -60,12 +59,6 @@ class Feature < ActiveRecord::Base
       pa.reflection.class_name.constantize.roots.where('feature_names.feature_id' => pa.owner.id) #.sort !!! See the FeatureName.<=> method
     end
   end
-  
-  attr_accessible :names_attributes
-  attr_accessible :all_parent_relations_attributes
-  
-  accepts_nested_attributes_for :names
-  accepts_nested_attributes_for :all_parent_relations
   
   def self.associated_models
     @@associated_models

@@ -48,17 +48,7 @@ class Admin::DescriptionsController < AclController
   #  @description =  Description.find(params[:id])
   #  render_descriptions
   #end
-    
-  private
   
-  #def render_descriptions
-  #  #find a way to save selected expanded description
-  #  render :update do |page|
-	#    yield(page) if block_given?
-	#    page.replace_html 'descriptions_div', :partial => 'admin/descriptions/index', :locals => { :feature => parent_object, :description => @d}
-	#  end
-	#end
-	    
   protected
   
   #
@@ -82,4 +72,19 @@ class Admin::DescriptionsController < AclController
     object.is_primary = 'true' if parent_object.descriptions.empty?
     object.is_primary = 'false' if object.is_primary.nil?
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def description_params
+    params.require(:description).permit(:title, :content, :is_primary, :language_id, author_ids: [])
+  end
+  
+  # private
+  
+  #def render_descriptions
+  #  #find a way to save selected expanded description
+  #  render :update do |page|
+	#    yield(page) if block_given?
+	#    page.replace_html 'descriptions_div', :partial => 'admin/descriptions/index', :locals => { :feature => parent_object, :description => @d}
+	#  end
+	#end
 end

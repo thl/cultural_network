@@ -21,4 +21,9 @@ class Admin::PagesController < AclController
   def collection
     @collection = Page.where(:citation_id => parent_object.id).page(params[:page])
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def page_params
+    params.require(:page).permit(:volume, :start_page, :start_line, :end_page, :end_line, :citation_id)
+  end
 end

@@ -38,4 +38,11 @@ class Admin::SummariesController < AclController
   def parent_association
     parent_object.summaries
   end
+  
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def summary_params
+    params.require(:summary).permit(:author_id, :content, :feature_id, :language_id)
+  end
 end

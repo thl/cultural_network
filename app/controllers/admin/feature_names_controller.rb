@@ -27,7 +27,7 @@ class Admin::FeatureNamesController < AclController
     feature = Feature.find(params[:id])
     changed = false
     feature.names.each do |name|
-      name.position = params['feature_name'].index(name.id.to_s) + 1
+      name.position = params[:feature_name].index(name.id.to_s) + 1
       if name.position_changed?
         name.skip_update = true
         name.save
@@ -71,5 +71,10 @@ class Admin::FeatureNamesController < AclController
     search_results = FeatureName.search(params[:filter])
     search_results = search_results.where(:feature_id => feature_id) if feature_id
     @collection = search_results.page(params[:page])
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def feature_name_params
+    params.require(:feature_name).permit(:name, :feature_name_type_id, :language_id, :writing_system_id, :etymology, :feature_name, :is_primary_for_romanization, :ancestor_ids, :skip_update, :feature_id, :position)
   end
 end

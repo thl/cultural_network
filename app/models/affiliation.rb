@@ -12,7 +12,6 @@
 #
 
 class Affiliation < ActiveRecord::Base
-  attr_accessible :collection_id, :feature_id, :perspective_id, :descendants, :skip_update
   attr_accessor :skip_update
   
   belongs_to :collection

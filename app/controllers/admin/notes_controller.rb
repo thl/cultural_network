@@ -31,4 +31,9 @@ class Admin::NotesController < AclController
     search_results = search_results.where(['notable_id = ? AND notable_type = ?', parent_object.id, parent_object.class.to_s]) if parent?
     @collection = search_results.page(params[:page])
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def note_params
+    params.require(:note).permit(:custom_note_title, :note_title_id, :content, :is_public, :id, :author_ids, :notable_type, :notable_id)
+  end
 end
