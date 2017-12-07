@@ -39,18 +39,18 @@
 			init: function() {
         var plugin = this;
         $(plugin.element).children('li').each(function(){
-            let li = this;
+            var li = this;
             $(li).click(plugin.handleClick);
             $(li).addClass('collapsibleListClosed');
             $(li).children('ul').addClass('collapsibleListClosed').each(function(){
-              let ul = this;
+              var ul = this;
               $(ul).css('display', 'none');
             });
         });
 			},
       handleClick: function(e){
-        let li = e.target;
-        let ul = li.getElementsByTagName('ul');
+        var li = e.target;
+        var ul = li.getElementsByTagName('ul');
         const open = $(ul).hasClass('collapsibleListClosed');
         $(ul).css('display',(open ? 'block' : 'none'));
         $(ul).removeClass('collapsibleListOpen');
@@ -62,15 +62,15 @@
         $(".collapsible_all_btn").removeClass("collapsible_all_btn_selected");
       },
       toggleTo: function(li,open){
-        let status = (!open ? 'Open' : 'Closed');
-        let altStatus = (open ? 'Open' : 'Closed');
+        var status = (!open ? 'Open' : 'Closed');
+        var altStatus = (open ? 'Open' : 'Closed');
         $(li).each(function(){
-          let li = this;
-          let ul = li.getElementsByTagName('ul.collapsibleList'+status);
+          var li = this;
+          var ul = li.getElementsByTagName('ul.collapsibleList'+status);
           $(li).removeClass('collapsibleList'+status);
           $(li).addClass('collapsibleList'+altStatus);
           $(li).children('ul').removeClass('collapsibleList'+status).addClass('collapsibleList'+altStatus).each(function(){
-            let ul = this;
+            var ul = this;
             $(ul).css('display',(open ? 'block' : 'none'));
           });
         });
@@ -78,14 +78,14 @@
       expandAll: function(){
         var plugin = this;
         $(plugin.element).children('li.collapsibleListClosed').each(function(){
-          let li = this;
+          var li = this;
           plugin.toggleTo(li,true);
         });
       },
       collapseAll: function(){
         var plugin = this;
         $(plugin.element).children('li.collapsibleListOpen').each(function(){
-          let li = this;
+          var li = this;
           plugin.toggleTo(li,false);
         });
 
