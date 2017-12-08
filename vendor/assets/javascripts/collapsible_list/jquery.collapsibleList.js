@@ -50,6 +50,9 @@
 			},
       handleClick: function(e){
         var li = e.target;
+        if(!$(li).is("li")){
+          li = $(li).closest("li")[0];
+        }
         var ul = li.getElementsByTagName('ul');
         const open = $(ul).hasClass('collapsibleListClosed');
         $(ul).css('display',(open ? 'block' : 'none'));
