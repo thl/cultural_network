@@ -22,7 +22,7 @@ class FeatureRelation < ActiveRecord::Base
   extend IsDateable
   include KmapsEngine::IsNotable
   
-  acts_as_family_tree :tree, -> { where(:feature_relation_type_id => FeatureRelationType.hierarchy_ids).uniq }, :node_class => 'Feature'
+  acts_as_family_tree :tree, -> { where(:feature_relation_type_id => FeatureRelationType.hierarchy_ids) }, :node_class => 'Feature'
       
   after_save do |record|
     if !record.skip_update
