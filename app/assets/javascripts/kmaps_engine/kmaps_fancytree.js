@@ -489,7 +489,7 @@
         "&json.wrf=?" +
         "&rows=" + SOLR_ROW_LIMIT +
         "&limit=" + SOLR_ROW_LIMIT +
-        "&sort=header+asc";
+        "&sort=header_ssort+asc";
       $.ajax({
         url: url,
         dataType: 'jsonp',
