@@ -15,7 +15,7 @@ class Admin::FeaturesController < AclController
     object.fid = Feature.generate_pid
     object.is_public = true
     parent_id = params[:parent_id]
-    @parent = parent_id.blank? ? nil : Feature.get_by_fid(parent_id) 
+    @parent = parent_id.blank? ? nil : Feature.get_by_fid(parent_id)
     if !@parent.nil?
       @perspectives = @parent.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
       @perspectives = Perspective.order(:name) if @perspectives.include?(nil) || current_user.admin?
@@ -46,6 +46,7 @@ class Admin::FeaturesController < AclController
   
   update.before { |r| update_primary_description }
 
+  new_action.wants.html { render('admin/features/select_ancestor') if @parent.nil?  }
   create.wants.html  { redirect_to admin_feature_url(object.fid) }
   update.wants.html  { redirect_to admin_feature_url(object.fid) }
   destroy.wants.html { redirect_to admin_root_url }

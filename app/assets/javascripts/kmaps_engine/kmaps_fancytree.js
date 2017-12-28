@@ -460,9 +460,9 @@
       return dfd.promise();
     },
     getAncestorTree: function(options){
-      var descendants = options["descendants"] ? !!options["descendants"] : false;
-      var directAncestors = options["directAncestors"] ? !!options["directAncestors"] : true;
-      const loadDescendants = descendants, loadOnlyDirectAncestors = directAncestors;
+      var loadDescendants = options["descendants"] ? !!options["descendants"] : false;
+      var loadOnlyDirectAncestors = options["directAncestors"] ? !! options["directAncestors"] : true;
+      loadOnlyDirectAncestors = true;
       const dfd = $.Deferred();
       const plugin = this;
       const fieldList = [
@@ -473,9 +473,14 @@
       ].join(",");
       var url = plugin.options.termIndex + "/select?";
       if(loadOnlyDirectAncestors) {
-        url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
+        if(plugin.options.featureId){
+          url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
+        } else {
+          url += "&q=*";
+          url += "&df=header";
+          url += "&fq=level_"+plugin.options.perspective+"_i:[1 TO 1]";
+        }
       } else { //TODO: In feature implementations we should define what to do to extract all ancestors not just direct, currently it always just gets the direct ancestors.
-        url += "&q=" + "id:" + plugin.options.domain + "-" + plugin.options.featureId;
       }
       url += "&fl=" + fieldList +
         "&fq=tree:" + plugin.options.tree +
@@ -483,7 +488,8 @@
         "&wt=json" +
         "&json.wrf=?" +
         "&rows=" + SOLR_ROW_LIMIT +
-        "&limit=" + SOLR_ROW_LIMIT;
+        "&limit=" + SOLR_ROW_LIMIT +
+        "&sort=header_ssort+asc";
       $.ajax({
         url: url,
         dataType: 'jsonp',
@@ -514,21 +520,25 @@
             }
             return node;
           }, children);
-          dfd.resolve([result]);
+          return [result];
         }
         if(response.numFound > 0){
-          const doc = response.docs[0];
-          var ancestor_ids_key = "ancestor_ids_"+plugin.options.perspective;
-          var ancestors_key = "ancestors_"+plugin.options.perspective;
-          if(doc[ancestor_ids_key] === undefined){
-            ancestor_ids_key = "ancestor_ids_closest_"+plugin.options.perspective;
-            ancestors_key = "ancestors_closest_"+plugin.options.perspective;
-          }
-          if (loadDescendants) {
+          var doc = response.docs[0];
+          if (loadDescendants && plugin.options.featureId) {
             const featureChildren = plugin.getDescendantTree(plugin.options.domain+"-"+plugin.options.featureId);
-            featureChildren.then(function(value){ buildTree(doc, value)});
+            featureChildren.then(function(value){ dfd.resolve(buildTree(doc, value)) });
           } else {
-            buildTree(doc);
+            if(response.numFound > 1){
+              var ancestorTree = [];
+              for(var i = 0; i < response.numFound; i++){
+                doc = response.docs[i];
+                var builtTree = buildTree(doc);
+                ancestorTree = ancestorTree.concat(buildTree(doc));
+              }
+              dfd.resolve(ancestorTree);
+            } else {
+              dfd.resolve(buildTree(doc));
+            }
           }
         } else {
           dfd.resolve([]);

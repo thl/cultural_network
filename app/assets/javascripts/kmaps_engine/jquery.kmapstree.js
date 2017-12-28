@@ -176,7 +176,9 @@
                   var theIdPath = data.node.data.path;
                   var displayPath = data.node.data.displayPath;
 
-                  decorateElementWithPopover(elem, key, title, displayPath, caption);
+                  if(plugin.settings.displayPopup){
+                    decorateElementWithPopover(elem, key, title, displayPath, caption);
+                  }
 
                   return data;
                 },
