@@ -29,6 +29,7 @@ class Feature < ActiveRecord::Base
   # acts_as_solr fields: [:pid]
   
   acts_as_family_tree :node, -> { where(feature_relation_type_id: FeatureRelationType.hierarchy_ids) }, tree_class: 'FeatureRelation'
+  acts_as_indexable
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
   has_many :affiliations, dependent: :destroy
   has_many :all_child_relations, class_name: 'FeatureRelation', foreign_key: 'parent_node_id', dependent: :destroy
@@ -439,15 +440,13 @@ class Feature < ActiveRecord::Base
   
   private
   
-  def self.name_search_options(filter_value, options = {})
-  end
-  
   def document_for_rsolr
-    doc = defined?(super) ? super : {}
-    v = View.get_by_code('roman.popular')
+    doc = defined?(super) ? super : nested_documents_for_rsolr
+    v = View.get_by_code(KmapsEngine::ApplicationSettings.default_view_code)
     doc[:id] = uid
     name = self.prioritized_name(v)
     doc[:header] = name.nil? ? self.pid : name.name
+    doc[:position_i] = self.position
     self.captions.each do |c|
       if doc["caption_#{c.language.code}"].blank?
         doc["caption_#{c.language.code}"] = [c.content]
@@ -498,8 +497,9 @@ class Feature < ActiveRecord::Base
         tag << 'closest_'
         id_tag << 'closest_'
         uid_tag << 'closest_'
-        closest_ancestor_in_tree = Feature.find(self.closest_hierarchical_feature_id_by_perspective(p))
-        path = closest_ancestor_in_tree.ancestors_by_perspective(p).collect(&:fid)
+        closest_fid = self.closest_hierarchical_feature_id_by_perspective(p)
+        closest_ancestor_in_tree = closest_fid.nil? ? nil : Feature.find(closest_fid)
+        path = closest_ancestor_in_tree.nil? ? [] : closest_ancestor_in_tree.ancestors_by_perspective(p).collect(&:fid)
       else
         path = hierarchy.collect(&:fid)
         doc["level_#{p.code}_i"] = path.size
@@ -516,5 +516,49 @@ class Feature < ActiveRecord::Base
       doc[uid_tag] = hierarchy.collect{ |f| f.uid }
     end
     doc
+  end
+  
+  def nested_documents_for_rsolr
+    per = Perspective.get_by_code(KmapsEngine::ApplicationSettings.default_perspective_code)
+    v = View.get_by_code(KmapsEngine::ApplicationSettings.default_view_code)
+
+    hierarchy = self.closest_ancestors_by_perspective(per)
+    doc = { tree: Feature.uid_prefix,
+      block_type: ['parent'],
+      '_childDocuments_'  =>  self.parent_relations.collect do |pr|
+        name = pr.parent_node.prioritized_name(v)
+        name_str = name.nil? ? nil : name.name
+        parent = pr.parent_node
+        { id: "#{self.uid}_#{pr.feature_relation_type.code}_#{parent.fid}",
+          related_uid_s: parent.uid,
+          origin_uid_s: self.uid,
+          block_child_type: ["related_#{Feature.uid_prefix}"],
+          "related_#{Feature.uid_prefix}_id_s" => "#{Feature.uid_prefix}-#{parent.fid}",
+          "related_#{Feature.uid_prefix}_header_s" => name_str,
+          "related_#{Feature.uid_prefix}_path_s" => pr.parent_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+          "related_#{Feature.uid_prefix}_relation_label_s" => pr.feature_relation_type.asymmetric_label,
+          "related_#{Feature.uid_prefix}_relation_code_s" => pr.feature_relation_type.code,
+          related_kmaps_node_type: 'parent',
+          block_type: ['child'] }
+      end + self.child_relations.collect do |pr|
+        name = pr.child_node.prioritized_name(v)
+        name_str = name.nil? ? nil : name.name
+        child = pr.child_node
+        { id: "#{self.uid}_#{pr.feature_relation_type.asymmetric_code}_#{child.fid}",
+          related_uid_s: child.uid,
+          origin_uid_s: self.uid,
+          block_child_type: ["related_#{Feature.uid_prefix}"],
+          "related_#{Feature.uid_prefix}_id_s" => "#{Feature.uid_prefix}-#{child.fid}",
+          "related_#{Feature.uid_prefix}_header_s" => name_str,
+          "related_#{Feature.uid_prefix}_path_s" => pr.child_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+          "related_#{Feature.uid_prefix}_relation_label_s" => pr.feature_relation_type.label,
+          "related_#{Feature.uid_prefix}_relation_code_s" => pr.feature_relation_type.asymmetric_code,
+          related_kmaps_node_type: 'child',
+          block_type: ['child'] }
+      end }
+    doc
+  end
+  
+  def self.name_search_options(filter_value, options = {})
   end
 end

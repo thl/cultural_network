@@ -8,7 +8,7 @@ module KmapsEngine
       reader_url = options[:reader_url] || "#{InterfaceUtils::Server.get_thl_url}/global/php/book_reader.php?url="
       public_url = options[:public_url] || ""
       essay_prefix = options[:prefix] || ""
-      view_code = !options[:view_code].blank? ? options[:view_code].to_s : "roman.popular"
+      view_code = !options[:view_code].blank? ? options[:view_code].to_s : KmapsEngine::ApplicationSettings.default_view_code
       dry_run = options.has_key?(:dry_run) ? options[:dry_run] : false
       limit = options[:limit].blank? ? false : options[:limit].to_i
 

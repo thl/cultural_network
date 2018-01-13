@@ -16,7 +16,7 @@ class DescriptionsController < ApplicationController
   def index
     if @feature.nil?
       @descriptions = Description.all
-      @view = View.get_by_code('roman.popular')
+      @view = View.get_by_code(default_view_code)
       respond_to do |format|
         format.html { redirect_to features_url }
         format.xml
@@ -35,7 +35,7 @@ class DescriptionsController < ApplicationController
     @description = Description.find(params[:id])
     if @feature.nil?
       @feature = @description.feature
-      @view = View.get_by_code('roman.popular')
+      @view = View.get_by_code(default_view_code)
     end
     @tab_options = {:entity => @feature}
     @current_tab_id = :descriptions

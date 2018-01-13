@@ -2,11 +2,11 @@ module KmapsEngine
   module SessionManager
     protected
     def default_perspective_code
-      'pol.admin.hier'
+      KmapsEngine::ApplicationSettings.default_perspective_code
     end
     
     def default_view_code
-      'roman.popular'
+      KmapsEngine::ApplicationSettings.default_view_code
     end
     
     def current_perspective

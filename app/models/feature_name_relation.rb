@@ -54,10 +54,10 @@ class FeatureNameRelation < ActiveRecord::Base
   include KmapsEngine::IsCitable
   include KmapsEngine::IsNotable
   
-  belongs_to :perspective
-  belongs_to :phonetic_system
-  belongs_to :alt_spelling_system
-  belongs_to :orthographic_system
+  belongs_to :perspective, optional: true
+  belongs_to :phonetic_system, optional: true
+  belongs_to :alt_spelling_system, optional: true
+  belongs_to :orthographic_system, optional: true
   has_many :imports, :as => 'item', :dependent => :destroy
   
   def to_s

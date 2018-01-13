@@ -8,7 +8,8 @@ module KmapsEngine
     @@next_pid = 0
 
     def self.configure
-      @@next_pid = Feature.maximum(:fid)
+      max = Feature.maximum(:fid)
+      @@next_pid = max if !max.nil?
       puts "** FeaturePidGenerator, Current PID = #{@@next_pid}"
       current
     end
@@ -24,6 +25,6 @@ module KmapsEngine
     def self.next
       self.configure if @@next_pid==0
       @@next_pid += 1
-    end  
+    end
   end
 end

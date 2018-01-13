@@ -16,7 +16,7 @@ class FeatureNamesController < ApplicationController
       @name_count = 1 #FeatureName.select('feature_id, COUNT(DISTINCT id) as count').group('feature_id').order('count DESC').first.count.to_i
       @citation_count = 1 #FeatureName.joins(:citations).select('feature_names.id, COUNT(DISTINCT citations.id) as count').group('feature_names.id').order('count DESC').first.count.to_i
       @features = [] #FeatureName.select('feature_id').uniq.order('feature_id').includes(:feature => :names).references(:feature => :names).collect(&:feature)
-      #@view = View.get_by_code('roman.popular')
+      #@view = View.get_by_code(default_view_code)
       respond_to do |format|
         format.csv
         format.xml

@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   include KmapsEngine::SessionManager
   
-  protect_from_forgery
+  protect_from_forgery with: :exception
   #before_action :admin_authentication
   before_action :set_common_variables, if: -> { request.format.html? }
   layout :choose_layout

@@ -1,4 +1,4 @@
-<%= header(class: "html not-front #{logged_in? ? 'logged-in' : 'not-logged-in'} no-sidebars page-subjects kmaps rails", stylesheet_files: ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}", 'kmaps_engine/xml-books']) %>
+<%= header(class: "html not-front #{logged_in? ? 'logged-in' : 'not-logged-in'} no-sidebars page-#{Feature.uid_prefix} kmaps rails", stylesheet_files: ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}", 'kmaps_engine/xml-books']) %>
 <!-- Begin Content Region -->
 <main class="main-wrapper container-fluid">
 	<article class="main-content" role="main">
@@ -7,7 +7,7 @@
 			<div class="titlearea banner">
 				<div>
 				<header role="banner">
-					<h1 class="page-title"><span class="icon shanticon-subjects"></span><span class="page-title-text"><%= page_header_title %></span></h1>
+					<h1 class="page-title"><span class="icon shanticon-<%= Feature.uid_prefix %>"></span><span class="page-title-text"><%= page_header_title %></span></h1>
 				</header>
 				<nav class="breadwrap">
 <%=                   f_breadcrumb %>
