@@ -16,6 +16,8 @@ class FeatureGeoCode < ActiveRecord::Base
   belongs_to :feature
   belongs_to :geo_code_type
   has_many :imports, :as => 'item', :dependent => :destroy
+
+  validates :geo_code_type_id, :feature_id, :geo_code_value, presence: true
   
   # belongs_to :info_source, :class_name => 'Document'
   

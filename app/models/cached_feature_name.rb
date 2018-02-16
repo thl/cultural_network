@@ -15,5 +15,5 @@ class CachedFeatureName < ActiveRecord::Base
   
   belongs_to :feature
   belongs_to :view
-  belongs_to :feature_name
+  belongs_to :feature_name, optional: true
 end

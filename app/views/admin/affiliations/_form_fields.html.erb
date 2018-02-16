@@ -21,7 +21,7 @@
 <%= f.radio_button(:descendants, :false, class: 'form-radio' ) %><b><%= ts(:negation) %></b>
   </div>
 <%= javascript_on_load do %>
-      $("input[name='affiliation[descendants]']:radio").change(function() { 
+      $("input[name='affiliation[descendants]']:radio").change(function() {
 		  if ($(this).val()=='true') {
 			  $('#perspectives').show();
 		  } else {

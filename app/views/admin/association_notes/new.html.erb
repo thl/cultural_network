@@ -5,9 +5,10 @@
     <h6><%= AssociationNote.model_name.human.titleize.s %></h6>
   </div>
   <div class="panel-body">
-<%= form_for [:admin, object] do |f| %>
+<%= form_for [:admin, parent_object, object] do |f| %>
 <%=   f.hidden_field :notable_id %>
 <%=   f.hidden_field :notable_type %>
+<%=   hidden_field_tag :association_type, params[:association_type] %>
 <%=   render partial: 'form_fields', locals: {f: f,object:object} %>
 <%=   link_to ts('cancel.this'), admin_feature_path(parent_object.fid), class: 'btn btn-primary form-submit', id: 'edit-cancel' %>
  | <%= globalized_submit_tag 'creat.e.this', class: 'btn btn-primary form-submit' %>
