@@ -1,5 +1,5 @@
 <% add_breadcrumb_item(features_link) if parent_type.to_s =~ /feature/
-   add_breadcrumb_item(feature_link(@parent_object)) if parent_type==:feature
+   add_breadcrumb_item(feature_link(parent_object)) if parent_type==:feature
    add_breadcrumb_item AssociationNote.model_name.human(:count => :many).titleize.s %>
 <div>
   <div class="left">
@@ -10,4 +10,11 @@
   </div>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= AssociationNote.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= render :partial => 'list', :locals => { :list => @collection } %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

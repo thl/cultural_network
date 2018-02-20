@@ -1,0 +1,16 @@
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this importation task from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+<fieldset>
+  <div class="row">
+<%= ImportationTask.human_attribute_name(:task_code).s %>
+<%= f.text_field :task_code, class: [:text, 'text-full form-text'] %>
+  </div>
+</fieldset>

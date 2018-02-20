@@ -1,0 +1,244 @@
+.kmap-typeahead-picker {
+    clear: both;
+}
+.kmaps-tt-menu{
+    max-height: 450px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 0.7rem;
+}
+.kmaps-tt-menu,
+.twitter-typeahead {
+    padding-top: 0 !important;
+    text-rendering: optimizeSpeed;
+    width:100%;
+}
+.kmaps-tt-header{
+    padding: .8rem 2rem .4rem 1.4rem !important; 
+    font-weight:normal !important;
+}
+.kmaps-tt-header:first-of-type {
+    border-top: none;
+    margin-top: 0;
+}
+.kmap-typeahead-picker .kmaps-tt-header:first-of-type{
+    position: relative;
+    height: 60px !important;
+    margin-bottom: 0.4rem;
+}
+.kmaps-tt-header .close{
+    border: 0 none;
+    cursor: pointer;
+    padding: 0;
+    float: right;
+    position: relative;
+    top: -0.5rem;
+    left: 0.7rem;
+    font-size: 2em;
+    /* font-size: 2.12em; */
+    font-weight:normal;
+    background: none;
+    opacity: 0.2;
+}
+.kmaps-tt-header .close:hover,
+.kmaps-tt-header .close:focus{
+    opacity: 0.5;
+}
+.kmaps-tt-footer.kmaps-tt-results{
+    padding: 0.5rem;
+    background-color: #eee;
+    position: relative;
+    /*top: 0.5rem;*/
+}
+.kmap-typeahead-picker label{
+    /*text-transform: capitalize;
+    padding-left:1rem;
+    font-weight: normal;*/
+}
+.kmap-typeahead-picker label span{
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-right: 0.3rem;
+}
+.kmaps-tt-suggestion{
+    padding: 0.2rem 2rem;
+    /*margin-left: 10px;*/
+}
+.kmaps-tt-suggestion:nth-of-type(2){
+    padding-top: 0.7rem;
+}
+/*.kmaps-tt-menu .kmaps-tt-suggestion.kmaps-tt-selected:not(.kmaps-tt-zero-facet):hover,*/
+.kmaps-tt-suggestion:hover:not(.kmaps-tt-selected):not(.kmaps-tt-zero-facet){
+    cursor: pointer;
+    color:#444;
+    background-color: #eee !important;
+}
+.kmaps-tt-suggestion .kmaps-count{
+    font-size: 90%;
+}
+.kmaps-ancestors{
+    display:inline;
+}
+.kmaps-tt-suggestion .kmaps-count,
+.kmaps-tt-suggestion .kmaps-term,
+.kmaps-tt-suggestion .kmaps-ancestors{
+    color:gray;
+}
+/* hover effect for using arrow keys to navigate menu */
+.kmaps-tt-menu .kmaps-tt-suggestion.kmaps-tt-cursor{
+    background-color:transparent !important;
+    background-image:none !important;
+    /* -ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled=false)"; - Note: if needed for overriding library css in IE, but below may suffice, and it should  work in SCSS */
+    filter:none !important;
+    color:#000 !important;
+}
+.kmaps-tt-menu .kmaps-tt-suggestion::before{
+    content: '';
+    width: 9px;
+    height: 9px;
+    border: 1px solid #777;
+    background: transparent;
+    position: relative;
+    right: 8px;
+    bottom: 0;
+    display: inline-block;
+    /*margin-left: 10px;*/
+}
+.kmaps-tt-menu .kmaps-tt-suggestion::before{
+  margin-left:0;
+}
+.kmaps-tt-suggestion:hover:not(.kmaps-tt-selected)::before,
+.kmaps-tt-suggestion.kmaps-tt-cursor::before{
+    border-color: #555;
+    background-color: #555;  /* set custom colors in subtheme css */
+}
+
+.kmaps-tt-suggestion.kmaps-tt-selectable .kmaps-count,
+.kmaps-tt-suggestion.kmaps-tt-selectable .kmaps-term,
+.kmaps-tt-suggestion.kmaps-tt-selectable .kmaps-ancestors,
+.kmaps-tt-suggestion.kmaps-tt-selectable:hover .kmaps-count,
+.kmaps-tt-suggestion.kmaps-tt-selectable:hover .kmaps-term,
+.kmaps-tt-suggestion.kmaps-tt-selectable:hover .kmaps-ancestors,
+.kmaps-tt-suggestion.kmaps-tt-selectable.kmaps-tt-cursor .kmaps-count,
+.kmaps-tt-suggestion.kmaps-tt-selectable.kmaps-tt-cursor .kmaps-term,
+.kmaps-tt-suggestion.kmaps-tt-selectable.kmaps-tt-cursor .kmaps-ancestors{
+    color:#000 !important;
+}
+
+.kmaps-tt-suggestion.kmaps-tt-selected:hover .kmaps-count,
+.kmaps-tt-suggestion.kmaps-tt-selected:hover .kmaps-term,
+.kmaps-tt-suggestion.kmaps-tt-selected:hover .kmaps-ancestors{
+    color:grey !important;
+}
+/* remove strike-through on feature-type menus null assets */
+.kmap-filter .kmaps-tt-menu .kmaps-tt-zero-facet .kmaps-term{
+  text-decoration:none;
+}
+
+/*----------------------*/
+/*---- BEGIN Paging ----*/
+/*----------------------*/
+.typeahead-pager{
+  font-size: 70%;
+  text-align: right;
+  list-style: outside none none;
+  margin: 0;
+  padding-left: 0;
+}
+.typeahead-pager li {
+  display: inline;
+  color: #707070;
+  padding: 0 1px;
+  line-height: 1em;
+  font-weight: bold;
+}
+.typeahead-pager .pager-input {
+  width: 4rem;
+  text-align:center;
+}
+.kmaps-tt-header .typeahead-pager{
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+}
+.typeahead-pager .pager-item > form,
+.typeahead-pager .pager-item > form div,
+.typeahead-pager .pager-item > form input {
+  display: inline !important;
+}
+.typeahead-pager li .ajax-loading{
+  display: none !important;
+}
+.typeahead-pager li > a {
+  border: none;
+  color: #aaa;
+  padding: 5px 0;
+  margin: 0;
+  background: transparent;
+  background-clip: padding-box;
+  display: inline-block;
+  position: relative;
+  top: 0;
+}
+.typeahead-pager li>a:hover,
+.typeahead-pager li>a:active {
+  color: #333;
+  box-shadow: 0 0 3px rgba(50, 50, 50, 0.4);
+  border-collapse: separate;
+  cursor: pointer;
+}
+.typeahead-pager li>a:active {
+  color: #000;
+  box-shadow: none;
+}
+.typeahead-pager li>a:hover .icon,
+.typeahead-pager li>a:active .icon {
+  color: #444;
+}
+.typeahead-pager .pager-first .icon,
+.typeahead-pager .pager-previous .icon,
+.typeahead-pager .pager-next .icon,
+.typeahead-pager .pager-last .icon {
+  font-size: 1em;
+  color: #222;
+  display: inline-block;
+  background: transparent;
+}
+.pager-first .icon::before {
+  content: '|<';
+}
+.typeahead-pager .pager-previous .icon::before {
+  content: '<<';
+}
+.typeahead-pager .pager-next .icon::before {
+  content: '>>';
+}
+.typeahead-pager .pager-last .icon::before {
+  content: '>|';
+}
+.typeahead-pager li.icon::before {
+  position: relative;
+  top: 0.1rem;
+}
+/*-- Pager changing active to black and inactive to grey --*/
+.typeahead-pager .pager-first .icon,
+.typeahead-pager .pager-previous .icon,
+.typeahead-pager .pager-next .icon,
+.typeahead-pager .pager-last .icon {
+  color: #c0c0c0;
+}
+.typeahead-pager .pager-first.active .icon,
+.typeahead-pager .pager-previous.active .icon,
+.typeahead-pager .pager-next.active .icon,
+.typeahead-pager .pager-last.active .icon {
+  color: #222;
+}
+.typeahead-pager li span {
+  padding: 0 8px;
+}
+.typeahead-pager li>span {
+  border: none;
+}
+/*----------------------*/
+/*----- END paging -----*/
+/*----------------------*/

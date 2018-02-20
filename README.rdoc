@@ -1,3 +1,71 @@
-= CulturalNetwork
+= KmapsEngine
 
-This project rocks and uses MIT-LICENSE.
+This engine provides the core code for creating apps that organize information in a hierarchical fasion
+we call a knowledge map.
+
+==Apps
+
+The apps that are fully developed based on the kmaps_engine are:
+
+1. The {Knowledge Map of Subjects}[http://github.com/shanti-uva/subjects]
+
+   Code that extends the kmaps_engine specific for subjects is located at subjects_engine[http://github.com/shanti-uva/subjects_engine]
+
+2. The {Knowledge Map of Places}[http://github.com/shanti-uva/places]
+
+   Code that extends the kmaps_engine specific for places is located at places_engine[http://github.com/thl/places_engine]
+
+==Themes
+
+The following themes provide a look and feel for the app:
+
+1. Shanti[http://github.com/shanti-uva/shanti_integration]
+2. THL[http://github.com/thl/thl_integration]
+
+==CSS
+
+1. interface_utils/application
+
+   Adds common CSS such as:
+
+   * authenticated_system[http://github.com/thl/authenticated_system]
+
+     Styling associated with logging in, etc.
+
+   * complex_scripts[http://github.com/thl/complex_scripts]
+
+     Styling to handle Asian scripts such as Tibetan and Chinese.
+
+   * Rails' scaffolds
+   * Bootstrap
+   * Editing icons
+
+2. kmaps_engine/node-tree
+
+   CSS to handle current right-hand side navigation.
+  
+3. kmaps_engine/main
+
+   Based on css/shanti-main-kmaps.css on drupal_shanti_sarvaka_kmaps[http://github.com/shanti-uva/drupal_shanti_sarvaka_kmaps].
+
+4. vendor CSS from Drupal Shanti
+
+  The project bases its CSS on the themes maintained by the {Drupal SHANTI team}[https://github.com/shanti-uva] you will find specific CSS separated by modules in the vendor section of the code, just specific files from each module are being used not the whole CSS bundle. The following modules are currently in use by this project and maintained by {Drupal Shanti team}[https://github.com/shanti-uva]:
+    * kmaps_explorer
+    * kmaps_tree
+    * kmaps_typeahead
+    * sarvaka_kmaps
+    * shanti_kmaps_admin
+
+The CSS on these files have been modified to be able to take advantage of Rails asset pipeline.
+
+==JS
+
+External JavaScript is located inside the vendor directory(kmaps_engine/vendor/assets/javascripts). The structure serves to have an easier time when upgrading independent libraries, if we need to extend or modify them we just add them to the project's asets JavaScript.
+
+The following vendor libraries and plugins are currently being Mantained by the {Drupal Shanti team}[https://github.com/shanti-uva]:
+
+  * kmaps_tree
+  * kmaps_typeahead
+
+To view all the vendor libraries/plugins visit the code inside (kmaps_engine/vendor/assets).

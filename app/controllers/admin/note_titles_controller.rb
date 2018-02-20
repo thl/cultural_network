@@ -1,5 +1,12 @@
-class Admin::NoteTitlesController < ResourceController::Base
-  before_filter :collection
+class Admin::NoteTitlesController < AclController
+  resource_controller
+  
+  before_action :collection
+  
+  def initialize
+    super
+    @guest_perms = []
+  end
 
   # GET /note_titles
   # GET /note_titles.xml
@@ -93,5 +100,10 @@ class Admin::NoteTitlesController < ResourceController::Base
   #
   def collection
     @collection = NoteTitle.search(params[:filter]).page(params[:page])
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def note_title_params
+    params.require(:note_title).permit(:title)
   end
 end

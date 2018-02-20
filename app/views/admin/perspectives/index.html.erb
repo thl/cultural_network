@@ -1,9 +1,14 @@
-<% add_breadcrumb_item collection_name %>
+<% add_breadcrumb_item Perspective.model_name.human(:count => :many).s %>
 <div>
     <div class="left"><%= resource_search_form %></div>
 <%= highlighted_new_item_link [:perspective], nil, :align => 'right' %>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Perspective.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <% if @collection.empty? %>
  <%= empty_collection_message %>
 <% else %>
@@ -11,17 +16,19 @@
 <%=  pagination_row :colspan=>3 %>
      <tr>
        <th class="listActionCol"></th>
-       <th><%= Perspective.human_attribute_name(:is_public).s %></th>    
+       <th><%= Perspective.human_attribute_name(:is_public).s %></th>
        <th><%= Perspective.human_attribute_name(:name).s %></th>
        <th><%= Perspective.human_attribute_name(:code).s %></th>
      </tr>
 <%   @collection.each do |item| %>
      <tr>
        <td class="listActionsCol"><%= list_actions_for_item(item) %></td>
-       <td><%= item.is_public ? ts(:affirmation) : ts(:negation) %></td>    
+       <td><%= item.is_public ? ts(:affirmation) : ts(:negation) %></td>
        <td><%= item.name %></td>
        <td><%= item.code %></td>
      </tr>
 <%   end %>
    </table>
 <% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

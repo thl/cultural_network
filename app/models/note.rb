@@ -1,19 +1,40 @@
+# == Schema Information
+#
+# Table name: notes
+#
+#  id                :integer          not null, primary key
+#  notable_type      :string(255)
+#  notable_id        :integer
+#  note_title_id     :integer
+#  custom_note_title :string(255)
+#  content           :text
+#  created_at        :datetime
+#  updated_at        :datetime
+#  association_type  :string(255)
+#  is_public         :boolean          default(TRUE)
+#
+
 class Note < ActiveRecord::Base
   # Included for use of model_display_name in notable_type_name.  Is there
   # a better approach to this?
   include ApplicationHelper
   
-  attr_accessible :custom_note_title, :note_title_id, :content, :is_public, :id, :author_ids
   belongs_to :notable, :polymorphic=>true
-  belongs_to :note_title
+  belongs_to :note_title, optional: true
   has_and_belongs_to_many :authors, :class_name => 'AuthenticatedSystem::Person', :join_table => 'authors_notes', :association_foreign_key => 'author_id'
+  has_many :imports, :as => 'item', :dependent => :destroy
+
+  validates_presence_of :content
+  
   accepts_nested_attributes_for :authors
   
   before_save :determine_title
   
   # AssociationNote uses single-table inheritance from Note, so we need to make sure that no AssociationNotes are
-  # returned by .find. 
-  default_scope where(:association_type => nil)
+  # returned by .find.
+  def self.default_scope
+    where(:association_type => nil)
+  end
   
   def title
     self.custom_note_title.blank? ? (self.note_title.nil? ? nil : self.note_title.title) : self.custom_note_title
@@ -28,7 +49,7 @@ class Note < ActiveRecord::Base
   end
   
   def self.search(filter_value)
-    self.where(build_like_conditions(%W(notes.content notes.custom_note_title note_titles.title), filter_value)).includes(:note_title)
+    self.where(build_like_conditions(%W(notes.content notes.custom_note_title note_titles.title), filter_value)).includes(:note_title).references(:note_title)
   end
   
   private
@@ -41,21 +62,4 @@ class Note < ActiveRecord::Base
       self.custom_note_title = ""
     end
   end
-  
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: notes
-#
-#  id                :integer         not null, primary key
-#  notable_id        :integer
-#  note_title_id     :integer
-#  association_type  :string(255)
-#  content           :text
-#  custom_note_title :string(255)
-#  is_public         :boolean         default(TRUE)
-#  notable_type      :string(255)
-#  created_at        :timestamp
-#  updated_at        :timestamp

@@ -1,9 +1,24 @@
+# == Schema Information
+#
+# Table name: simple_props
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  code        :string(255)
+#  description :text
+#  notes       :text
+#  type        :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class WritingSystem < SimpleProp  
   #
   #
   # Associations
   #
   #
+  has_many :feature_names
   
   #
   #
@@ -15,17 +30,3 @@ class WritingSystem < SimpleProp
     code == 'latin'
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: simple_props
-#
-#  id          :integer         not null, primary key
-#  code        :string(255)
-#  description :text
-#  name        :string(255)
-#  notes       :text
-#  type        :string(255)
-#  created_at  :timestamp
-#  updated_at  :timestamp

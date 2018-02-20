@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  filename: MyString
+  importation_task_id: 1
+  imported_at: 2013-08-14 17:17:58
+
+two:
+  filename: MyString
+  importation_task_id: 1
+  imported_at: 2013-08-14 17:17:58

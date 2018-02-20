@@ -1,0 +1,24 @@
+<% if list.empty? %>
+<%=  empty_collection_message %>
+<% else %>
+   <table class="listGrid">
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= Collection.model_name.human.titleize.s %></th>
+	   <th><%= Collection.human_attribute_name(:descendants) %></th>
+	   <th><%= Collection.human_attribute_name(:perspective_id) %></th>
+     </tr>
+<%   list.each do |item| %>
+     <tr>
+       <td class="centerText">
+<%=      list_actions_for_item(item, :delete_path => admin_feature_affiliation_path(item.feature, item),
+         :edit_path => edit_admin_feature_affiliation_path(item.feature, item),
+         :view_path => admin_feature_affiliation_path(item.feature, item)) %>
+       </td>
+       <td><%= def_if_blank(item, :collection, :name) %></td>
+	   <td><%= item.descendants? ? 'Yes' : 'No' %></td>
+       <td><%= def_if_blank(item, :perspective, :name) %></td>
+     </tr>
+<%   end %>
+   </table>
+<% end %>

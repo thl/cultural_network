@@ -1,0 +1,35 @@
+<ul>
+	<li><h3>Main Menu</h3><a class="link-blocker"></a></li>
+<% if logged_in?
+     feature = contextual_feature %>
+     <li><%= link_to 'Edit mode', (feature.nil? || !logged_in? || !object_authorized?(feature)) ? admin_root_path : admin_feature_path(feature.fid), {:hreflang => 'Manage controlled lists.'} %></li>
+<% end %>
+	<li>
+		<a href="#">Preferences <span class="fa arrow"></span></a>
+		<ul>
+			<!-- header -->
+			<li><h3>Preferences</h3></li>
+			<li class='user-prefs'><a href="#">Site Language <span class="fa plus-times"></span></a>
+				<h2>Site Language</h2>
+				<ul>
+<%=               render 'public/language_list' %>
+				</ul>
+			</li>
+			<!-- header -->
+			<li class='user-prefs'><a href="#"><%= Perspective.model_name.human.titleize.s %> <span class="fa plus-times"></span></a>
+				<h2>Perspective</h2>
+				<ul>
+<%=               render 'public/perspective_list' %>
+				</ul>
+			</li>
+			<!-- header -->
+			<li class='user-prefs'><a href="#"><%= View.model_name.human.titleize.s %> <span class="fa plus-times"></span></a>
+				<h2>Place Name Language</h2>
+				<ul>
+<%=               render 'public/view_list' %>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li><%= login_status %></li>
+</ul>

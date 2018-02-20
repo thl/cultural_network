@@ -1,4 +1,3 @@
-<%= tagged_tinymce_script %>
 <style type="text/css">
 input[type=text] {
 	width:35em;
@@ -12,21 +11,27 @@ input[type=text] {
 	border:1px solid #CCCCCC;
 }
 </style>
-<%= error_messages_for model_name %>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this <%= GeoCodeType.model_name.human %> from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
-  <legend>
-<%= model_name.titleize %>
-  </legend>	
   <div class="row">
-<%= f.label :feature, Feature.model_name.human.s %>
-    <span><%= f_label(@object.feature) %></span>
+<%= f.label :feature, Feature.model_name.human.titleize.s %>
+    <span><%= f_label(object.feature) %></span>
   </div>
   <div class="row">
-<%= f.label :geo_code_type, GeoCodeType.model_name.human.s %>
-<%= f.collection_select(:geo_code_type_id, GeoCodeType.all, :id, :to_s, :include_blank=>true) %>
+<%= f.label :geo_code_type, GeoCodeType.model_name.human.titleize.s %>
+<%= f.collection_select(:geo_code_type_id, GeoCodeType.all, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker') %>
   </div>
   <div class="row">
 <%= f.label(:value).s %>
-<%= f.text_field :geo_code_value, :class => :text %>
+<%= f.text_field :geo_code_value, class: [:text, 'text-full form-control form-text'] %>
   </div>
 </fieldset>

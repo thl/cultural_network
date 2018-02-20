@@ -1,4 +1,4 @@
-<% add_breadcrumb_item collection_name %>
+<% add_breadcrumb_item SimpleProp.model_name.human(:count => :many).s %>
 <div>
   <div class="left">
 <%= resource_search_form %>
@@ -6,6 +6,11 @@
 <%= highlighted_new_item_link [controller_name], nil, :align => 'right' %>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= SimpleProp.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <% if @collection.empty? %>
 <%=  empty_collection_message %>
 <% else %>
@@ -25,3 +30,5 @@
 <%   end %>
    </table>
 <% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

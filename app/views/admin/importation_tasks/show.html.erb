@@ -1,0 +1,23 @@
+<% add_breadcrumb_item link_to(ImportationTask.model_name.human(:count => :many).s, collection_path)
+   add_breadcrumb_item link_to(object.id, admin_importation_task_path(object)) %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ImportationTask.model_name.human.titleize.s %><%= edit_item_link object %></h6>
+  </div>
+  <div class="panel-body">
+<fieldset>
+  <div class="row">
+    <label><%= ImportationTask.human_attribute_name(:task_code).s %></label>
+    <span><%= def_if_blank(object, :task_code) %></span>
+  </div>
+  <p>
+    <b><%= ImportedSpreadsheet.human_attribute_name(:filename).s %></b>
+  </p>
+    <ul>
+<%  for spreadsheet in object.spreadsheets %>
+      <li><i><%= spreadsheet.filename %></i>: <%= spreadsheet.imports.count %> imported items.<li>
+<%  end %>
+    </ul>
+</fieldset>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

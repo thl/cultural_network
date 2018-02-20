@@ -5,7 +5,6 @@
 <%=  pagination_row :colspan=>7 unless @collection.nil? %>
      <tr>
        <th class="listActionsCol"></th>
-       <th><%= Feature.model_name.human.titleize.s %></th>
        <th><%= FeatureGeoCode.human_attribute_name(:geo_code_value).s %></th>
        <th><%= GeoCodeType.model_name.human.titleize.s %></th>
        <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
@@ -20,9 +19,8 @@
          :edit_path => item.feature.nil? ? edit_admin_feature_geo_code_path(item) : edit_admin_feature_feature_geo_code_path(item.feature, item),
          :view_path => item.feature.nil? ? admin_feature_geo_code_path(item) : admin_feature_feature_geo_code_path(item.feature, item)) %>
        </td>
-       <td><%= item.feature %></td>
        <td><%= item.geo_code_value %></td>
-       <td><%= def_if_blank(item, :class) %></td>
+       <td><%= item.geo_code_type.name if !item.geo_code_type.nil? %></td>
        <td><%= note_link_list_for item %></td>
        <td><%= new_note_link_for item %></td>
        <td><%= time_unit_link_list_for item %></td>

@@ -2,18 +2,19 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  include CulturalNetwork::SessionManager
+  include KmapsEngine::SessionManager
   
-  protect_from_forgery
-  before_filter :admin_authentication
+  protect_from_forgery with: :exception
+  #before_action :admin_authentication
+  before_action :set_common_variables, if: -> { request.format.html? }
   layout :choose_layout
   
   protected
   
   def is_admin_area?
-    params[:controller] =~ /^admin/
+    params[:controller] =~ /^(admin|authenticated_system\/[^s])/
   end
-  
+    
   def admin_authentication
     login_required if is_admin_area?
     #authenticate_or_request_with_http_basic do |username, password|
@@ -31,8 +32,7 @@ class ApplicationController < ActionController::Base
     'public'
   end
 
-  def set_common_variables(session_params)
-
+  def set_common_variables
     session[:interface] ||= {}
 
     # Allow for views and perspectives to be set by GET params.  It might be possible to simplify this code...
@@ -48,23 +48,10 @@ class ApplicationController < ActionController::Base
       end
     end
     @top_level_nodes = Feature.current_roots(current_perspective, current_view)
-    @session = Session.new(:perspective_id => self.current_perspective.id, :view_id => self.current_view.id)
+    @session = Session.new(perspective_id: self.current_perspective.nil? ? nil : self.current_perspective.id, view_id: self.current_view.nil? ? nil : self.current_view.id, language: I18n.locale)
     @perspectives = Perspective.find_all_public
     @views = View.order('name')
-
-    search_defaults = {
-    	:filter => '',
-    	:scope => 'name',
-    	:match => 'contains',
-    	:search_scope => 'global',
-    	:has_descriptions => '0'
-    }
-
-    # These are used to show the same search results that were on the previous page.
-    @previous_search_params = session_params[:interface][:search_params] || search_defaults
-
-    # These are used to show the same search form field values that were on the previous page.
-    @search_form_params = search_defaults
+    @search_form = Search.defaults
   end
   
 end

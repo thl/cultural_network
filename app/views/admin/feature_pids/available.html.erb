@@ -1,5 +1,10 @@
-<h1><%= ts 'feature.unused_ids' %></h1>
-<p><%= 
+<% add_breadcrumb_item ts('feature.unused_ids') %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ts 'feature.unused_ids' %></h6>
+  </div>
+  <div class="panel-body">
+<p><%=
   # @feature_count
   @features.collect(&:fid).sort.join('<br/>').html_safe
 %></p>
@@ -8,3 +13,5 @@
 <%= link_to ts('back.to', :what => t('feature.id_generator')), admin_feature_pids_path %> |
 <%= link_to ts('back.to', :what => t(:admin)), admin_root_path %>
 </p>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

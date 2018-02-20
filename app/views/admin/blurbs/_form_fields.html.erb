@@ -1,19 +1,28 @@
-<%= tagged_tinymce_script %>
-<%= error_messages_for 'blurb' %>
+<%= tinymce_assets %>
+<%= tinymce %>
+<% if @blurb.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this blurb from being saved:</h2>
+    <ul>
+    <% @blurb.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 <fieldset>
-	<legend><%= Blurb.model_name.human.titleize.s %></legend>
 	<div class="row">
 <%=   f.label(:title).s %>
-<%=   f.text_field :title, :class => :text %>
+<%=   f.text_field :title, class: [:text, 'text-full form-control form-text'] %>
 	</div>
 	<div class="row">
 <%=   f.label(:code).s %>
-<%=   f.text_field :code, :class => :text %>
+<%=   f.text_field :code, class: [:text, 'text-full form-control form-text'] %>
 	</div>
 	<div class="row">
 <%=   f.label(:content).s %>
 	</div>
 	<div class="row">
-<%=   f.text_area :content, :rows=>4, :class => 'mceEditor' %>
+<%=   f.text_area :content, rows: 4, class: 'tinymce' %>
 	</div>
 </fieldset>

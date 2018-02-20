@@ -4,28 +4,15 @@ module ApplicationHelper
   # Required for truncate_html
   require 'rexml/parsers/pullparser'
   
-  # overrides link_to_remote in vendor/rails/action_pack/lib/action_view/prototype_helper.rb
-  # THIS NEEDS TO BE RADICALLY FIXED!
-  #def link_to_remote(name, options = {}, html_options = {})
-  #  html_options.merge!({:href => url_for(options[:url])}) if ( html_options[:href].nil? || html_options[:href].blank? ) && !options[:url].blank?
-  #  option_html = options.delete(:html)
-  #  html_options.merge!(option_html) if !option_html.nil?
-  #  link_to_function(name, remote_function(options), html_options)
-  #end
-  
   def side_column_links
     str = "<h3 class=\"head\">#{link_to 'Place Dictionary', '#nogo', {:hreflang => 'Manages geographical features.'}}</h3>\n<ul>\n"
     str += "<li>#{link_to 'Home', root_path, {:hreflang => 'Search and navigate through places.'}}</li>\n"
 	  str += "<li>#{link_to 'Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20end%20user%20manual.html', {:hreflang => 'End User Manual'}}</li>"
     str += "<li>#{link_to 'Edit', admin_root_path, {:hreflang => 'Manage places.'}}</li>\n" if logged_in?
     str += "<li>#{link_to 'Editing Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20editorial%20manual.html', {:hreflang => 'Editorial Manual'}}</li>" if logged_in?
-    str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{Category.get_url('20/children')}", {:hreflang => 'Feature Thesaurus'}}</li>"
+    str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{SubjectsIntegration::Feature.get_url('20')}", {:hreflang => 'Feature Thesaurus'}}</li>" if defined?(SubjectsIntegration)
     str += "</ul>"
     return str.html_safe
-  end
-  
-  def collection_name
-    model_name ? model_name.humanize.downcase.pluralize : nil
   end
   
   #
@@ -34,15 +21,34 @@ module ApplicationHelper
   def blank_label; '-'; end
   
   def breadcrumb_separator
-    "&nbsp;<span class='arrow'>&gt;</span>&nbsp;".html_safe
+    "<span class=\"icon shanticon-arrow3-right\"></span>"
   end
-
+  
+  def page_header_title
+    if @feature.nil?
+      ts('app.short')
+    else
+      name = @feature.prioritized_name(current_view)
+      name.nil? ? @feature.pid : name.name
+    end
+  end
+  
   #
   # Creates a breadcrumb trail to the feature
   #
-  def f_breadcrumb(feature)
+  def f_breadcrumb
+    if @feature.nil?
+      content_tag :ol, "<li>#{link_to(ts('home.this'), root_path)}</li>".html_safe, class: 'breadcrumb'
+    else
+      list = @feature.closest_ancestors_by_perspective(current_perspective).collect do |r|
+        name = r.prioritized_name(current_view)
+        name = name.nil? ? r.pid : name.name
+        link_to(name, feature_path(r.fid))
+      end
+      list = [link_to("#{ts('app.short')}:", root_path)] + list[0...list.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [list.last]
+      content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
+    end
     # content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
-    content_tag :div, feature.closest_ancestors_by_perspective(current_perspective).collect{|r| f_link(r, feature_path(r.fid), {}, {:s => true})}.join(breadcrumb_separator).html_safe, :class => "breadcrumbs"
   end
   
   #
@@ -107,7 +113,7 @@ module ApplicationHelper
   #
   #
   def f_label(feature, html_attrs={})
-    html_attrs[:class] = "#{html_attrs[:class]} feature_name"
+    html_attrs[:class] = html_attrs[:class].blank? ? 'feature_name' : "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)
     content_tag(:span, fname_labels(feature), html_attrs)
   end
@@ -116,11 +122,11 @@ module ApplicationHelper
   #
   #
   def f_link(feature, url, html_attrs={}, options={})
-    html_attrs[:class] = "#{html_attrs[:class]} feature_name"
+    html_attrs[:class] = html_attrs[:class].blank? ? 'feature_name' : "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)
-    url = url_for :controller => 'features', :action => 'iframe', :id => feature.id if current_page?(:controller => 'features', :action => 'iframe')
+    # url = url_for iframe_feature_path(feature.id) if current_page?(Rails.application.routes.recognize_path iframe_feature_path(feature.id))
     name = fname_labels(feature)
-    name = name.s if !options[:s].nil? && options[:s] == true
+    name = name.s if !options[:s].nil? && options[:s]
     link_to(name, url, html_attrs)
   end
   
@@ -148,7 +154,7 @@ module ApplicationHelper
   
   def description_title(d)
     title = d.title.blank? ? "Essay" : d.title
-    authors = d.authors.empty? ? "" : " <span class='by'> by </span><span class='content_by'>#{join_with_and(d.authors.collect(&:fullname))}</span>"
+    authors = d.authors.empty? ? "" : " <span class='by'> by </span><span class='content_by'>#{join_with_and(d.authors.collect(&:fullname))}</span><span class='by'> in </span><span class='content_by'>#{d.language.name}</span>"
     date = " <span class='last_updated'>(#{h(d.updated_at.to_date.to_formatted_s(:long))})</span>"
     "#{title}#{authors}#{date}".html_safe
   end
@@ -178,7 +184,7 @@ module ApplicationHelper
       ("<span class='has-draggable-popups note-popup-link'>(" +
         link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
         link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => h(link_title)) +
-      ")</span>" + javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")).html_safe
+      ")</span>").html_safe
     else
       ""
     end
@@ -219,9 +225,9 @@ module ApplicationHelper
     link_title = "#{note_title}#{note_authors}#{note_date}"
     link_url = polymorphic_url([note.notable, note])
     link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-    ("<span class='has-draggable-popups'>
+    "<span class='has-draggable-popups'>
       #{link_to(link_title, link_url, :class => link_classes, :title => h(note_title))}
-    </span>" + javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")).html_safe
+    </span>".html_safe
   end
   
   #
@@ -229,9 +235,8 @@ module ApplicationHelper
   #
   def time_units_for(object, options={})
     if object.respond_to?(:time_units)
-      time_units = object.time_units_ordered_by_date
-      if time_units.length > 0
-        time_units_list = time_units.collect{|tu| "#{tu}#{note_popup_link_for(tu)}" }.reject{|str| str.blank?}.join("; ")
+      if object.time_units.size > 0
+        time_units_list = object.time_units_ordered_by_date.collect{|tu| "#{tu}#{note_popup_link_for(tu)}" }.reject{|str| str.blank?}.join("; ")
         "<span class='time-units'>(#{time_units_list})</span>".html_safe
       end
     end
@@ -242,14 +247,12 @@ module ApplicationHelper
   #
   def model_display_name(str)
     names = {
-      'association_note' => 'note',
-      'description' => 'essay',
-      'feature_geo_code' => 'geo_code',
-      'feature_name' => 'name',
-      'feature_object_type' => 'feature_type',
-      'shape' => 'location',
-      'time_unit' => 'date',
-      'category_feature' => Topic.human_name #'kmap_characteristic'
+      'association_note' => Note.model_name.human,
+      'description' => Description.model_name.human,
+      'feature' => Feature.model_name.human,
+      'feature_geo_code' => FeatureGeoCode.model_name.human,
+      'feature_name' => FeatureName.model_name.human,
+      'time_unit' => 'date'
     }
     names[str].nil? ? str : names[str]
   end
@@ -267,16 +270,7 @@ module ApplicationHelper
   def highlight(string)
     ('<span class="highlight">' + string + '</span>').html_safe
   end
-  
-  def custom_secondary_tabs_list
-    # The :index values are necessary for this hash's elements to be sorted properly
-    {
-      :place => {:index => 1, :title => "Place"},
-      :descriptions => {:index => 2, :title => "Essays"},
-      :related => {:index => 3, :title => "Related"}
-    }
-  end
-  
+    
   def custom_secondary_tabs(current_tab_id=:place)
 
     @tab_options ||= {}
@@ -289,7 +283,7 @@ module ApplicationHelper
     
     current_tab_id = :place unless (tabs.keys << :home).include? current_tab_id
     
-    tabs = tabs.sort{|a,b| a[1][:index] <=> b[1][:index]}.collect{|tab_id, tab|
+    tabs = tabs.sort_by{ |t| t[1][:index] }.collect{|tab_id, tab|
       remove_tab = false
       if tab[:url].blank? && !@tab_options[:entity].blank?
         entity = @tab_options[:entity]
@@ -303,18 +297,18 @@ module ApplicationHelper
             remove_tab = true
           else
             url = feature_description_path(entity.fid, entity.descriptions.first)
-            count = entity.descriptions.length
+            count = entity.descriptions.size
           end
         when :related
           url = related_feature_path(entity.fid)
-          count = nil
+          count = entity.all_relations.size
         end
       else
         tab_url = tab[:url]
       end
-      title = count.nil? ? tab[:title] : "#{tab[:title]} (#{count})"
+      title = count.nil? ? tab[:title] : "#{tab[:title]} <span class=\"badge\">#{count}</span>"
       
-      remove_tab ? nil : [tab_id, title, url]
+      remove_tab ? nil : [tab_id, title, url, tab[:shanticon]]
     }.reject{|t| t.nil?}
     
     tabs
@@ -364,26 +358,23 @@ module ApplicationHelper
   
   # Custom HTML truncate for PD descriptions, which don't always validate
   def truncate_html(input, len = 30, extension = "...")
-    output = input
-    output.gsub!(/<\/p>\s*<p>/is, "<br /><br />")
-    output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
-    output.gsub!(/<br.*?>/, "\v")
-    if output.length < len
-      return input
-    end
+    #output = input
+    #output.gsub!(/<\/p>\s*<p>/iu, "<br /><br />")
+    #output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
+    #output.gsub!(/<br.*?>/, "\v")
     
     # We need to be able to call .s on the input, but not on the extension, so we
     # have to use a modified version of truncate() instead of truncate() itself.
     # output = truncate(input, :length => len, :omission => extension)
-    l = len - extension.mb_chars.length
-    chars = input.mb_chars
+    l = len - extension.size
     # Temporarily removing .s, as it takes a while to run on long strings
     #output = (chars.length > len ? chars[0...l].s + extension : input).to_s
-    output = (chars.length > len ? chars[0...l] + extension : input).to_s
+    #output = input.size > len ? input[0...l] + extension : input
     
+    output = strip_tags(input)
     output.strip!
-    output.gsub!(/\v/, "<br />")
-    output.html_safe
+    #output.gsub!(/\v/, "<br />")
+    return (output.size < len ?  output : (output[0...l] + extension)).html_safe
   end
   
   # HTML truncate for valid HTML, requires REXML::Parsers::PullParser
@@ -435,5 +426,46 @@ module ApplicationHelper
         collection.total_entries
       ]
     end).html_safe
+  end
+  
+  def pictures_url(feature)
+    pictures_associated_medium_path(feature.fid)
+  end
+  
+  def videos_url(feature)
+    videos_associated_medium_path(feature.fid)
+  end
+  
+  def documents_url(feature)
+    documents_associated_medium_path(feature.fid)
+  end
+  
+  def object_authorized?(o)
+    current_user.object_authorized?(o)
+  end
+  
+  def contextual_feature
+    return @contextual_feature if !@contextual_feature.nil?
+    feature = nil
+    feature = @feature if defined?(@feature) && !@feature.nil?
+    feature = object if feature.nil? && defined?(object) && object.instance_of?(Feature)
+    feature = case parent_type
+    when :feature then parent_object
+    when :description, :feature_name, :feature_geo_code then parent_object.feature
+    when :feature_relation then parent_object.child_node
+    when :feature_name_relation then parent_object.child_node.feature
+    else nil
+    end if feature.nil? && defined?(parent_type)
+    if feature.nil? || feature.id.nil?
+      context_id = session[:interface].blank? ? nil : session[:interface][:context_id]
+      begin
+        feature = Feature.find(context_id) if !context_id.blank?
+      rescue ActiveRecord::RecordNotFound
+        feature = nil
+      end
+    else
+      session[:interface][:context_id] = feature.id
+    end
+    @contextual_feature = feature
   end
 end

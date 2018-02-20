@@ -1,0 +1,12 @@
+	<li class="drop-hdr"><em><%= ts("Perspective")%></em></li>
+<%= form_for @session, url: change_perspective_session_path(@session.perspective_id) do |f| %>
+<% for perspective in @perspectives %>
+	      <li class='form-group'><label class='radio-inline'><%= f.radio_button :perspective_id, perspective.id, class: 'radio_perspective_pref' %><%= perspective.name%></label></li>
+<%    end
+    end
+    perspective_path = change_perspective_session_path('a').chop %>
+<%=	javascript_on_load do %>
+      jQuery('.radio_perspective_pref').click(function (){
+        window.location.pathname = '<%= perspective_path %>' + this.value;
+      });
+<%  end %>

@@ -1,4 +1,4 @@
-# Cultural network view localization file for Dzongkha.
+# Kmaps engine network view localization file for Dzongkha.
 dz:
     about: 'About'
     child: 'Child'
@@ -13,6 +13,7 @@ dz:
         record: 'Clone %{what}'
     current: 'Current %{what}'
     default: 'Default %{what}'
+    location: 'Location'
     hide: 'Hide %{what}'
     information:
         general: 'General Information'
@@ -30,6 +31,9 @@ dz:
         record: 'No %{what}'
     other: 'Other %{what}'
     perspective: 'the %{what} perspective'
+    place:
+        one: 'ས་གནས།'
+        other: 'ས་གནས་ཚུ།'
     prefix:
         with: 'Prefix with %{what}'
     priorit:
@@ -77,6 +81,9 @@ dz:
         in: 'Type in %{what}'
         value: 'Type Value'
     value: 'Value'
+    video:
+        one: 'གློག་བརྙན་མགོ་མིང་།'
+        other: 'གློག་བརྙན་མགོ་མིང་ཚུ།'
     view:
         record: 'View %{what}'
         this: 'View'

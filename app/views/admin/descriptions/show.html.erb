@@ -1,41 +1,88 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item feature_descriptions_link(@object.feature)
-   add_breadcrumb_item @object.id %>
+<% add_breadcrumb_item feature_link(object.feature)
+   add_breadcrumb_item feature_descriptions_link(object.feature)
+   add_breadcrumb_item object.id %>
 <div>
-  <h1><%= Description.model_name.human.titleize.s %>: <%= @object.id %></h1>
+  <h1><%= Description.model_name.human.titleize.s %>: <%= object.id %></h1>
 </div>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Description.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
+  <div id="accordion" class="panel-group">
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= Description.model_name.human.titleize.s %></a></h6>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
 <fieldset>
-  <legend><%= "#{Description.model_name.human.titleize.s} #{edit_item_link @object}".html_safe %></legend>
-<% if !@object.title.blank?
-     if !@object.authors.empty? %>
-       <span class='title'><%= @object.title %></span>
+  <legend><%= "#{Description.model_name.human.titleize.s} #{edit_item_link object}".html_safe %></legend>
+<% if !object.title.blank?
+     if !object.authors.empty? %>
+       <span class='title'><%= object.title %></span>
        <span class='by'><%= ' by ' %></span>
-       <span class='content_by'><%= join_with_and(@object.authors.collect(&:fullname)) %></span>
+       <span class='content_by'><%= join_with_and(object.authors.collect(&:fullname)) %></span>
 <%   else %>
-       <span class='title'><%= @object.title %></span>
+       <span class='title'><%= object.title %></span>
 <%   end
    else
-     if !@object.authors.empty? %>
+     if !object.authors.empty? %>
        <span class='title'><%= Description.model_name.human.titleize.s %></span>
        <span class='by'><%= ' by ' %></span>
-       <span class='content_by'><%= join_with_and(@object.authors.collect(&:fullname)) %></span>
+       <span class='content_by'><%= join_with_and(object.authors.collect(&:fullname)) %></span>
 <%   end
    end %>
    <div class="row">
-     <label><%= Description.human_attribute_name(:content).s %>:</label><br/><span><%= def_if_blank(@object, :content).html_safe %></span>
+     <label><%= Description.human_attribute_name(:content).s %>:</label><br/><span><%= def_if_blank(object, :content).html_safe %></span>
    </div>
    <div class="row">
-     <label><%= Description.human_attribute_name(:is_primary).s %></label> <span><%= yes_no @object.is_primary %></span>
+     <label><%= Language.model_name.human.s %>:</label> <span><%= def_if_blank(object.language, :name).html_safe %></span>
    </div>
    <div class="row">
-     <label><%= ts 'creat.e.d' %>:</label> <span><%= @object.created_at.to_formatted_s(:us_datetime) %></span>
+     <label><%= Description.human_attribute_name(:is_primary).s %></label> <span><%= yes_no object.is_primary %></span>
    </div>
    <div class="row">
-     <label><%= ts 'update.d.this' %>:</label> <span><%= @object.updated_at.to_formatted_s(:us_datetime) %></span>
+     <label><%= ts 'creat.e.d' %>:</label> <span><%= object.created_at.to_formatted_s(:us_datetime) %></span>
+   </div>
+   <div class="row">
+     <label><%= ts 'update.d.this' %>:</label> <span><%= object.updated_at.to_formatted_s(:us_datetime) %></span>
    </div>	
 </fieldset>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseOne -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Citations' %></a></h6>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= citation_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseTwo -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Notes' %></a></h6>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= note_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseThree -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Dates' %></a></h6>
+    </div>
+    <div id="collapseFour" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= time_unit_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseFour -->
+</section> <!-- END panel -->
+  </div> <!-- END accordion -->
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->
