@@ -23,13 +23,15 @@ class Note < ActiveRecord::Base
   belongs_to :note_title, optional: true
   has_and_belongs_to_many :authors, class_name: 'AuthenticatedSystem::Person', join_table: 'authors_notes', association_foreign_key: 'author_id'
   has_many :imports, as: 'item', dependent: :destroy
+
+  validates_presence_of :content
   
   accepts_nested_attributes_for :authors
   
   before_save :determine_title
   
   # AssociationNote uses single-table inheritance from Note, so we need to make sure that no AssociationNotes are
-  # returned by .find. 
+  # returned by .find.
   def self.default_scope
     where(:association_type => nil)
   end

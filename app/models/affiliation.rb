@@ -16,7 +16,7 @@ class Affiliation < ActiveRecord::Base
   
   belongs_to :collection
   belongs_to :feature
-  belongs_to :perspective
+  belongs_to :perspective, optional: true
   
   validates_uniqueness_of :collection_id, scope: :feature_id
   
@@ -37,7 +37,7 @@ class Affiliation < ActiveRecord::Base
       perspective = record.perspective
       descendants = record.perspective.nil? ? record.feature.all_descendants : record.feature.descendants_by_perspective_with_parent(record.perspective).collect(&:first)
       descendants.each do |f|
-        Affiliation.delete_all(collection_id: record.collection.id, feature_id: f.id, perspective_id: perspective.nil? ? nil : perspective.id)
+        Affiliation.where(collection_id: record.collection.id, feature_id: f.id, perspective_id: perspective.nil? ? nil : perspective.id).delete_all
       end
     end
   end
@@ -58,7 +58,7 @@ class Affiliation < ActiveRecord::Base
         perspective = perspective_id.nil? ? nil : Perspective.find(perspective_id)
         descendants = record.perspective.nil? ? record.feature.all_descendants : record.feature.descendants_by_perspective_with_parent(record.perspective).collect(&:first)
         descendants.each do |f|
-          Affiliation.delete_all(collection_id: record.collection.id, feature_id: f.id, perspective_id: perspective_id)
+          Affiliation.where(collection_id: record.collection.id, feature_id: f.id, perspective_id: perspective_id).delete_all
         end
       end
     elsif record.perspective_id_changed?
@@ -66,7 +66,7 @@ class Affiliation < ActiveRecord::Base
       perspective = perspective_id.nil? ? nil : Perspective.find(perspective_id)
       descendants = record.perspective.nil? ? record.feature.all_descendants : record.feature.descendants_by_perspective_with_parent(record.perspective).collect(&:first)
       descendants.each do |f|
-        Affiliation.delete_all(collection_id: record.collection.id, feature_id: f.id, perspective_id: perspective_id)
+        Affiliation.where(collection_id: record.collection.id, feature_id: f.id, perspective_id: perspective_id).delete_all
       end
       
       perspective = record.perspective
