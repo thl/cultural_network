@@ -1,38 +1,59 @@
+# == Schema Information
+#
+# Table name: feature_relations
+#
+#  id                       :integer          not null, primary key
+#  child_node_id            :integer          not null
+#  parent_node_id           :integer          not null
+#  ancestor_ids             :string(255)
+#  notes                    :text
+#  role                     :string(20)
+#  perspective_id           :integer          not null
+#  created_at               :datetime
+#  updated_at               :datetime
+#  feature_relation_type_id :integer          not null
+#
+
 class FeatureRelation < ActiveRecord::Base
-  attr_accessible :perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update
-  
   attr_accessor :skip_update
   
-  extend CulturalNetwork::HasTimespan
-  include CulturalNetwork::IsCitable
+  extend KmapsEngine::HasTimespan
+  include KmapsEngine::IsCitable
   extend IsDateable
-  include CulturalNetwork::IsNotable
+  include KmapsEngine::IsNotable
   
-  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {:feature_relation_type_id => FeatureRelationType.hierarchy_ids}
-  
+  acts_as_family_tree :tree, -> { where(:feature_relation_type_id => FeatureRelationType.hierarchy_ids) }, :node_class => 'Feature'
+      
   after_save do |record|
     if !record.skip_update
-      record.expire_cache
-      [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
-      # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
-      [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
-    end
-  end
-  
-  before_destroy do |r|
-    if !r.skip_update
-      r.expire_cache
+      Spawnling.new do
+        # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
+        [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
+      end
     end
   end
   
   after_destroy do |record|
-    [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
-  end  
+    if !record.skip_update && record.perspective.is_public?
+      Spawnling.new do
+        is_root = false
+        [record.parent_node, record.child_node].each do |r|
+          if !r.nil?
+            r.update_hierarchy
+            is_root = true if r.is_public==1 && r.ancestors.blank?
+          end
+        end
+        Rails.cache.delete_matched("features/current_roots/#{record.perspective_id}/*") if is_root
+      end
+    end
+  end
+  
   #
   #
   #
   belongs_to :perspective
   belongs_to :feature_relation_type
+  has_many :imports, :as => 'item', :dependent => :destroy
   
   #
   #
@@ -93,29 +114,4 @@ class FeatureRelation < ActiveRecord::Base
     self.where(build_like_conditions(%W(role parents.fid children.fid), filter_value)
     ).joins('LEFT JOIN features parents ON parents.id=feature_relations.parent_node_id LEFT JOIN features children ON children.id=feature_relations.child_node_id')
   end
-    
-  def expire_cache
-    fid = Rails.cache.read('fid')
-    #puts "fid from fr model: #{fid}, child_node_id: #{child_node_id}, parent_node_id = #{parent_node_id}"
-    if child_node_id == fid.to_i
-      Rails.cache.write('tree_tmp', parent_node_id)
-      parent_node.expire_children_cache unless parent_node.nil?
-    end
-  end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: feature_relations
-#
-#  id                       :integer         not null, primary key
-#  child_node_id            :integer         not null
-#  feature_relation_type_id :integer         not null
-#  parent_node_id           :integer         not null
-#  perspective_id           :integer         not null
-#  ancestor_ids             :string(255)
-#  notes                    :text
-#  role                     :string(20)
-#  created_at               :timestamp
-#  updated_at               :timestamp

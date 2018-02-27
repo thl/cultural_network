@@ -1,6 +1,6 @@
 class DescriptionsController < ApplicationController
   caches_page :show, :index, :if => Proc.new { |c| c.request.format.xml? }
-  before_filter :find_feature
+  before_action :find_feature
  
   def contract
     d = Description.find(params[:id])
@@ -14,32 +14,43 @@ class DescriptionsController < ApplicationController
   end
   
   def index
-    @descriptions = @feature.descriptions
-    respond_to do |format|
-      format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+    if @feature.nil?
+      @descriptions = Description.all
+      @view = View.get_by_code(default_view_code)
+      respond_to do |format|
+        format.html { redirect_to features_url }
+        format.xml
+        format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+      end
+    else
+      @descriptions = @feature.descriptions
+      respond_to do |format|
+        format.xml
+        format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+      end
     end
   end
   
   def show
+    @description = Description.find(params[:id])
     if @feature.nil?
-      redirect_to features_url
-    else
-      set_common_variables(session)
-      @description = Description.find(params[:id])
-      @tab_options = {:entity => @feature}
-      @current_tab_id = :descriptions
-      respond_to do |format|
-        format.html
-        format.xml
-        format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
-      end
+      @feature = @description.feature
+      @view = View.get_by_code(default_view_code)
+    end
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :descriptions
+    respond_to do |format|
+      format.html
+      format.xml
+      format.js
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
     end
   end
 
   private
   # This is tied to features
   def find_feature
-    @feature = Feature.get_by_fid(params[:feature_id]) # Feature.find(params[:feature_id])
+    feature_id = params[:feature_id]
+    @feature = feature_id.nil? ? nil : Feature.get_by_fid(feature_id) # Feature.find(params[:feature_id])
   end
 end

@@ -1,28 +1,16 @@
 # require 'config/environment'
-require 'cultural_network/import/essay_import'
-require 'cultural_network/import/feature_name_match'
-require 'cultural_network/import/feature_importation'
+require 'kmaps_engine/import/essay_import'
+require 'kmaps_engine/import/feature_name_match'
+
 namespace :db do
   namespace :import do
-    csv_desc = "Use to import CSV containing features into DB.\n" +
-                  "Syntax: rake db:import:csv SOURCE=csv-file-name"
-    desc csv_desc
-    task :features do
-      source = ENV['SOURCE']
-      if source.blank?
-        puts csv_desc
-      else
-        CulturalNetwork::FeatureImportation.new.do_feature_import(source)
-      end
-    end
-    
     desc 'Import essays from URLs'
     task :essays do
       source = ENV['SOURCE']
       options = {}
       options[:dry_run] = ENV['DRY_RUN'] || false
       options[:prefix] = ENV['PREFIX'] || ""
-      options[:reader_url] = ENV['READER_URL'] || "#{InterfaceUtils::Server.get_url}/global/php/book_reader.php?url="
+      options[:reader_url] = ENV['READER_URL'] || "#{InterfaceUtils::Server.get_thl_url}/global/php/book_reader.php?url="
       options[:public_url] = ENV['PUBLIC_URL'] || "" # Example: /places/monasteries/publications/chosphel-book.php#book=
       options[:full_url] = ENV['FULL_URL'] || nil
       options[:limit] = ENV['LIMIT'] || nil
@@ -31,7 +19,7 @@ namespace :db do
         puts "Please specify a source.\n" +
              "Syntax: rake db:import:essays SOURCE=csv-file-name PREFIX=/bellezza/wb/"
       else
-        CulturalNetwork::EssayImport.new.import_with_book_reader(source, options)
+        KmapsEngine::EssayImport.new.import_with_book_reader(source, options)
       end
     end
   end
@@ -52,7 +40,7 @@ namespace :db do
         puts "Please specify a source.\n"+
           "Syntax: rake db:feature_name_match:match SOURCE=csv-file-name"
       else
-        CulturalNetwork::FeatureNameMatch.match(source, options)
+        KmapsEngine::FeatureNameMatch.match(source, options)
       end
     end
   end  

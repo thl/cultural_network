@@ -1,0 +1,34 @@
+<% add_breadcrumb_item Collection.model_name.human(:count => :many).s %>
+<div>
+  <div class="left">
+<%= resource_search_form %>
+  </div>
+</div>
+<br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Collection.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
+<%= highlighted_new_item_link [controller_name], nil, :align => 'right' %>
+<% if @collection.empty? %>
+<%=  empty_collection_message %>
+<% else %>
+   <table class="listGrid">
+<%=  pagination_row :colspan=>3 %>
+     <tr>
+       <th class="listActionCol"></th>
+       <th><%= SimpleProp.human_attribute_name(:name).s %></th>
+       <th><%= SimpleProp.human_attribute_name(:code).s %></th>
+     </tr>
+<%   @collection.each do |item| %>
+     <tr>
+       <td class="listActionsCol"><%= list_actions_for_item(item) %></td>
+       <td><%= item.name %></td>
+       <td><%= item.code %></td>
+     </tr>
+<%   end %>
+   </table>
+<% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

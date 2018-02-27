@@ -1,0 +1,31 @@
+<% add_breadcrumb_item ImportationTask.model_name.human(:count => :many).s %>
+<div>
+    <div class="left"><%= resource_search_form %></div>
+</div>
+<br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ImportationTask.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
+<% if @collection.empty? %>
+ <%= empty_collection_message %>
+<% else %>
+   <table class="listGrid">
+<%=  pagination_row :colspan=>3 %>
+     <tr>
+       <th class="listActionCol"></th>
+       <th><%= ImportationTask.human_attribute_name(:task_code).s %></th>    
+       <th><%= ImportedSpreadsheet.human_attribute_name(:filename).s %></th>
+     </tr>
+<%   @collection.each do |item| %>
+     <tr>
+       <td class="listActionsCol"><%= list_actions_for_item(item) %></td>
+       <td><%= item.task_code %></td>
+       <td><%= item.spreadsheets.collect(&:filename).join(', ') %></td>
+     </tr>
+<%   end %>
+   </table>
+<% end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

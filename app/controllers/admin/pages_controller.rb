@@ -1,5 +1,12 @@
-class Admin::PagesController < ResourceController::Base
+class Admin::PagesController < AclController
+  resource_controller
+  
   belongs_to :citation
+  
+  def initialize
+    super
+    @guest_perms = []
+  end
   
   create.wants.html { redirect_to polymorphic_url([:admin, object.citation.citable, object.citation]) }
   update.wants.html { redirect_to polymorphic_url([:admin, object.citation.citable, object.citation]) }
@@ -8,12 +15,15 @@ class Admin::PagesController < ResourceController::Base
   protected
   
   def parent_association
-    @parent_object ||= parent_object
-    @parent_object.pages # ResourceController needs this for the parent association
+    parent_object.pages # ResourceController needs this for the parent association
   end
   
   def collection
-    @parent_object ||= parent_object
-    @collection = Page.where(:citation_id => @parent_object.id).page(params[:page])
+    @collection = Page.where(:citation_id => parent_object.id).page(params[:page])
+  end
+  
+  # Only allow a trusted parameter "white list" through.
+  def page_params
+    params.require(:page).permit(:volume, :start_page, :start_line, :end_page, :end_line, :citation_id)
   end
 end

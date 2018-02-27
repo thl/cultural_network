@@ -1,0 +1,13 @@
+	<li class="drop-hdr"><em><%= ts("Language preferences")%></em></li>
+<%= form_for @session, url: change_language_session_path(@session.language) do |f| %>
+<%    for language in I18n.available_locales
+        language_metadata = LANGUAGES[language] %>
+	      <li class='form-group'><label class='radio-inline'><%= f.radio_button :language, language, class: 'radio_language_pref' %><%= ts(language_metadata[:title], locale: language)%></label></li>
+<%    end
+    end
+  	lang_path = change_language_session_path('a').chop %>
+<%=	javascript_on_load do %>
+      jQuery('.radio_language_pref').click(function (){
+        window.location.pathname = '<%= lang_path %>' + this.value;
+      });
+<%  end %>

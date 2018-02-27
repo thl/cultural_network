@@ -1,6 +1,19 @@
+# == Schema Information
+#
+# Table name: feature_relation_types
+#
+#  id               :integer          not null, primary key
+#  is_symmetric     :boolean
+#  label            :string(255)      not null
+#  asymmetric_label :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  code             :string(255)      not null
+#  is_hierarchical  :boolean          default(FALSE), not null
+#  asymmetric_code  :string(255)
+#
+
 class FeatureRelationType < ActiveRecord::Base
-  attr_accessible :is_hierarchical, :is_symmetric, :label, :asymmetric_label, :code, :asymmetric_code
-  
   has_many :feature_relations, :dependent => :destroy
   
   before_save :set_asymmetric_label
@@ -10,7 +23,7 @@ class FeatureRelationType < ActiveRecord::Base
   end
   
   def self.update_or_create(attributes)
-    r = self.find_by_code(attributes[:code])
+    r = self.find_by(code: attributes[:code])
     r.nil? ? self.create(attributes) : r.update_attributes(attributes)
   end
   
@@ -39,7 +52,7 @@ class FeatureRelationType < ActiveRecord::Base
   # This seems to be generally satisfactory for now, since a migration creates the initial
   # FeatureRelationTypes.
   def self.hierarchy_ids
-    Rails.cache.fetch('feature_relation_types/hierarchical_ids') { self.where(:is_hierarchical => true).order(:id).collect(&:id) }
+    Rails.cache.fetch('feature_relation_types/hierarchical_ids', :expires_in => 1.day) { self.table_exists? ? self.where(:is_hierarchical => true).order(:id).collect(&:id) : nil }
   end
   
   def to_s
@@ -52,7 +65,7 @@ class FeatureRelationType < ActiveRecord::Base
   
   def self.get_by_code(code)
     frt_id = Rails.cache.fetch("feature_relation_types/code/#{code}", :expires_in => 1.day) do
-      frt = self.find_by_code(code)
+      frt = self.find_by(code: code)
       frt.nil? ? nil : frt.id
     end
     frt_id.nil? ? nil : FeatureRelationType.find(frt_id)
@@ -60,24 +73,9 @@ class FeatureRelationType < ActiveRecord::Base
   
   def self.get_by_asymmetric_code(code)
     frt_id = Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}", :expires_in => 1.day) do
-      frt = self.find_by_asymmetric_code(code)
+      frt = self.find_by(asymmetric_code: code)
       frt.nil? ? nil : frt.id
     end
     frt_id.nil? ? nil : FeatureRelationType.find(frt_id)
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: feature_relation_types
-#
-#  id               :integer         not null, primary key
-#  asymmetric_code  :string(255)
-#  asymmetric_label :string(255)
-#  code             :string(255)     not null
-#  is_hierarchical  :boolean         not null
-#  is_symmetric     :boolean
-#  label            :string(255)     not null
-#  created_at       :datetime
-#  updated_at       :datetime

@@ -1,0 +1,16 @@
+<% # if we're showing the affiliation of a particular Feature
+   if parent_object
+     add_breadcrumb_item features_link
+     add_breadcrumb_item feature_link(parent_object)
+   end
+   add_breadcrumb_item Affiliation.model_name.human(:count => :many).s %>
+<p id="notice"><%= notice %></p>
+<br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Affiliation.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
+    <%= render partial: 'list', locals: { list: collection } %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

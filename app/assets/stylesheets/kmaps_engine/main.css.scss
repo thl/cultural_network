@@ -1,0 +1,52 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require sarvaka_kmaps/shanti-main-kmaps
+ *= require_self
+ */
+
+/*
+* gallery images
+*/
+.og-details .tab-pane {
+  padding: 1rem 0 0;
+}
+.og-details h3{
+  margin: 0.5em 0;
+}
+.og-details #info li,
+.og-details #download li{
+   margin: 1rem 0 0;
+}
+
+article table.pagerer:last-child{
+  margin: 2rem 0 7rem;
+}
+
+/*
+* associated media no image
+*/
+.item-no-img {
+    display: list-item !important;
+    clear: both;
+    list-style: square inside none;
+	text-align:left;
+}
+
+/* search flyout */
+#search-note p {
+  font-size: x-small;
+  font-style: italic;
+}
+#goto-fid.input-group{
+  display: table;
+  float:none;
+}
+/* END - search flyout */

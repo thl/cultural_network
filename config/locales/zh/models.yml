@@ -1,8 +1,11 @@
-# Cultural network model localization file for Chinese.
+# Kmaps engine network model localization file for Chinese.
 zh:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
         models:
+            affiliation:
+                one: 'affiliation'
+                other: 'affiliations'
             alt_spelling_system:
                 one: '其它拼写方式'
                 other: '其它拼写方式'
@@ -12,24 +15,30 @@ zh:
             blurb:
                 one: '简介'
                 other: '简介'
+            caption:
+                one: 'caption'
+                other: 'captions'
             category_feature:
                 one: '主题或特点'
                 other: '主题和特点'
             citation:
                 one: '引用'
                 other: '引用'
+            collection:
+                one: 'collection'
+                other: 'collections'
             description:
                 one: '文章'
                 other: '文章'
+            external_picture:
+                one: 'external picture'
+                other: 'external pictures'
             feature_name:
                 one: '名字'
                 other: '别名'
             feature_name_type:
                 one: '名称类型'
                 other: '名称类型'
-            feature_relation_type:
-                one: '特征关系类型'
-                other: '特征关系类型'
             language:
                 one: '语言'
                 other: '语言'
@@ -54,6 +63,9 @@ zh:
             phonetic_system:
                 one: '语音系统'
                 other: '语音系统'
+            summary:
+                one: 'summary'
+                other: 'summaries'
             user:
                 one: '用户'
                 other: '用户'
@@ -62,7 +74,9 @@ zh:
                 other: '书写系统'
         # Attribute names will be titleized.
         attributes:
-            blurp:
+            affiliation:
+                descendants: 'Include descendants?'
+            blurb:
                 code: '代码'
                 content: '内容'
                 title: '标签'
@@ -79,6 +93,8 @@ zh:
                 content: '题目'
                 is_primary: '是主要的'
                 title: '文章标题'
+            external_picture:
+                place_id: 'Place (Places Dictionary FID)'
             feature_geo_code:
                 geo_code_value: '数值'
             feature_name:

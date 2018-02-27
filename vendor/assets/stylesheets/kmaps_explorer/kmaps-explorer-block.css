@@ -1,0 +1,20 @@
+/* greyed out hint is apparently confusing (MANU-2571) */
+.block-kmaps-explorer .kmap-typeahead-picker .kmaps-tt-hint {
+    display: none;
+}
+
+/* List view results cannot be closed */
+.view-wrap .kmaps-tt-header button.close{
+    display: none;
+    /* visibility: hidden; */
+}
+.view-wrap .kmaps-tt-header:first-of-type{
+    position: relative;
+    height: 60px !important;
+    padding-top:1rem;
+}
+
+/* List results cursor should be a hand */
+.view-wrap .kmaps-tt-suggestion{
+    cursor: pointer;
+}

@@ -1,0 +1,42 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require interface_utils/application
+ *= require kmaps_engine/node-tree
+ *= require kmaps_engine/main
+ *= require kmaps_tree/kmapstree
+ *= require kmaps_engine/kmaps_typeahead
+ *= require kmaps_engine/shanti_kmaps_typeahead
+ *= require kmaps_engine/kmaps-explorer
+ */
+
+div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; }
+
+/* The Rails flash message (after an update for example...) */
+.flash{
+	background-color:#ffeeaa;
+	padding:.5em;
+	color:darkred;
+	border:solid 1px gray;
+	margin-bottom:.5em;
+	font-weight:bold;
+}
+
+/* Fix the Drag handle in the searchbox to fit inside the gray box */
+.page-places .input-section .toggle-link.advanced-link {
+  display:block;
+  padding: 0px 0px 10px 0px;
+}
+
+.menu-main .user-prefs li:hover, .menu-main .user-prefs li:active {
+    background: #fafafa;
+    color: #555;
+}
