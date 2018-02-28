@@ -25,6 +25,9 @@ class FeatureSweeper < ActionController::Caching::Sweeper
       feature = record.feature
     end
     options = {:only_path => true}
+    feature.index! if feature.is_public?
+    feature.parents.each{ |f| f.index! if f.is_public? }
+    feature.children.each{ |f| f.index! if f.is_public? }
     FORMATS.each do |format|
       options[:format] = format
       if record.instance_of?(Feature)
