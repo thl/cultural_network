@@ -1,8 +1,11 @@
-# Cultural network model localization file for English.
+# Kmaps engine network model localization file for English.
 en:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
         models:
+            affiliation:
+                one: 'affiliation'
+                other: 'affiliations'
             alt_spelling_system:
                 one: 'alternative spelling system'
                 other: 'alternative spelling systems'
@@ -10,26 +13,32 @@ en:
                 one: 'general note'
                 other: 'general notes'
             blurb:
-                one: 'blurp'
-                other: 'blurps'
+                one: 'blurb'
+                other: 'blurbs'
+            caption:
+                one: 'caption'
+                other: 'captions'
             category_feature:
-                one: 'subject or characteristic'
-                other: 'subjects & characteristics'
+                one: 'subject'
+                other: 'subjects'
             citation:
                 one: 'citation'
                 other: 'citations'
+            collection:
+                one: 'collection'
+                other: 'collections'
             description:
                 one: 'essay'
                 other: 'essays'
+            external_picture:
+                one: 'external picture'
+                other: 'external pictures'
             feature_name:
                 one: 'name'
                 other: 'names'
             feature_name_type:
                 one: 'name type'
                 other: 'name types'
-            feature_relation_type:
-                one: 'role'
-                other: 'roles'
             language:
                 one: 'language'
                 other: 'languages'
@@ -54,6 +63,9 @@ en:
             phonetic_system:
                 one: 'phonetic system'
                 other: 'phonetic systems'
+            summary:
+                one: 'summary'
+                other: 'summaries'
             user:
                 one: 'user'
                 other: 'users'
@@ -62,7 +74,9 @@ en:
                 other: 'writing systems'
         # Attribute names will be titleized.
         attributes:
-            blurp:
+            affiliation:
+                descendants: 'Include descendants?'
+            blurb:
                 code: 'Code'
                 content: 'Content'
                 title: 'Title'
@@ -79,6 +93,8 @@ en:
                 content: 'Content'
                 is_primary: 'Primary?'
                 title: 'Essay Title'
+            external_picture:
+                place_id: 'Place (Places Dictionary FID)'
             feature_geo_code:
                 geo_code_value: 'Value'
             feature_name:
@@ -121,5 +137,5 @@ en:
     activeresource:
         models:
             topic:
-                one: 'characteristic'
-                other: 'characteristics'
+                one: 'subject'
+                other: 'subjects'

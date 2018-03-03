@@ -1,0 +1,23 @@
+<% options ||= {}
+   if list.empty? %>
+<%=  empty_collection_message t('no.record', :what => t(:available, :what => WebPage.model_name.human)).capitalize.s %>
+<% else %>
+   <table class="listGrid">
+<%=  pagination_row :colspan=>6 unless list.nil? %>
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= WebPage.human_attribute_name(:title).s %></th>
+       <th><%= WebPage.human_attribute_name(:path).s %></th>
+     </tr>
+<%   list.each do |item| %>
+     <tr>
+       <td class="listActionsCol">
+<%       path = polymorphic_path([:admin, item.citation, item]) %>
+<%=      list_actions_for_item(item, :delete_path => path, :view_path => path, :edit_path => edit_polymorphic_path([:admin, item.citation, item])) %>
+       </td>    
+       <td><%= item.title %></td>
+       <td><%= item.full_path %></td>
+     </tr>
+<%   end %>  
+   </table>
+<% end %>

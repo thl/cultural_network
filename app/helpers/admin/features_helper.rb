@@ -32,7 +32,7 @@ module Admin::FeaturesHelper
   # either the index action or the locate_for_relation action
   #
   def current_features_path(*args)
-    @locating_relation ? locate_for_relation_admin_feature_path(@object, *args) : admin_features_path(*args)
+    @locating_relation ? locate_for_relation_admin_feature_path(object.fid, *args) : admin_features_path(*args)
   end
   
   #

@@ -1,6 +1,21 @@
+# == Schema Information
+#
+# Table name: pages
+#
+#  id          :integer          not null, primary key
+#  citation_id :integer
+#  volume      :integer
+#  start_page  :integer
+#  start_line  :integer
+#  end_page    :integer
+#  end_line    :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class Page < ActiveRecord::Base
-  attr_accessible :volume, :start_page, :start_line, :end_page, :end_line
   belongs_to :citation
+  has_many :imports, :as => 'item', :dependent => :destroy
   
   def to_s
     s = volume.nil? ? '' : "#{volume}: "
@@ -17,18 +32,3 @@ class Page < ActiveRecord::Base
     s
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: pages
-#
-#  id          :integer         not null, primary key
-#  citation_id :integer
-#  end_line    :integer
-#  end_page    :integer
-#  start_line  :integer
-#  start_page  :integer
-#  volume      :integer
-#  created_at  :timestamp
-#  updated_at  :timestamp

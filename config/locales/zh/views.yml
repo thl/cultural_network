@@ -1,4 +1,4 @@
-# Cultural network view localization file for Chinese.
+# Kmaps engine network view localization file for Chinese.
 zh:
     about: '关于'
     child: '儿童'
@@ -13,6 +13,7 @@ zh:
         record: '克隆%{what}'
     current: '当前%{what}'
     default: '默认%{what}'
+    location: 'Location'
     hide: '隐藏%{what}'
     information:
         general: '基本信息'
@@ -30,6 +31,9 @@ zh:
         record: '无 %{what}'
     other: '其它%{what}'
     perspective: '%{what}的观点'
+    place:
+        one: '地点'
+        other: '地点'
     prefix:
         with: '以%{what}为前缀'
     priorit:
@@ -77,6 +81,9 @@ zh:
         in: '输入 %{what}'
         value: '输入值'
     value: '数值'
+    video:
+        one: '影片标题'
+        other: '影片标题'
     view:
         record: '查看%{what}'
         this: '查看'

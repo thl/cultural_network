@@ -1,0 +1,29 @@
+<%= tinymce_assets %>
+<%= tinymce %>
+<% if object.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(object.errors.count, "error") %> prohibited this caption from being saved:</h2>
+    <ul>
+    <% object.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+<fieldset>
+<p><b><%= f.label :language_id, Language.model_name.human.titleize.s %></b><br/>
+  <div class="row">
+	<%= f.collection_select :language_id, @languages, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
+  </div>
+</p>
+<p><b><%= f.label(:content, Caption.model_name.human.titleize.s) %></b><br/>
+  <div class="row">
+<%= f.text_area :content, rows: 3, cols: 50, class: 'tinymce' %>
+  </div>
+</p>
+<p><b><%= f.label :author_id, ts(:author, count: 1).titleize %></b><br/>
+  <div class="row">
+	<%= f.collection_select :author_id, @authors, :id, :fullname, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
+  </div>
+</p>
+</fieldset>

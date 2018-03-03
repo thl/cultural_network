@@ -25,6 +25,8 @@
                <span class='title'><%= item.title %></span>
                <span class='by'><%= ' by ' %></span>
                <span class='content_by'><%= join_with_and(item.authors.collect(&:fullname)) %></span>
+               <span class='by'><%= ' in ' %></span>
+               <span class='content_by'><%= item.language.name %></span>
 <%           else %>
                <span class='title'><%= item.title %></span>
 <%           end

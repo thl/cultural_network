@@ -18,7 +18,7 @@
 	   <tr>
          <td class="listActionsCol">
 <%=        list_actions_for_item(item, :delete_path => polymorphic_path([:admin, item.notable, item]),
-  		   :edit_path => polymorphic_path([:admin, item.notable, item], :action => "edit"),
+  		   :edit_path => edit_polymorphic_path([:admin, item.notable, item]),
   		   :view_path => polymorphic_path([:admin, item.notable, item])) %>
          </td>
 <%=      "<td>#{item.notable_type.titleize}</td>" unless options[:hide_type] %>

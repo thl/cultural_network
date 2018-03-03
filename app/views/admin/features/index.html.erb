@@ -1,6 +1,5 @@
-<% add_breadcrumb_item features_link
-   if @locating_relation
-     add_breadcrumb_items(feature_link(@object), feature_relations_link(@object), ts('select.record', :what => t('relat.ion.this')))
+<% if @locating_relation
+     add_breadcrumb_items(feature_link(object), feature_relations_link(object), ts('select.record', :what => t('relat.ion.this', :count => 1)))
 end %>
 <div id="featureContextTreeAndList">
   <div id="featureContextList">
@@ -18,44 +17,42 @@ end %>
       <%#= context_search_message(@context_feature) %>
     </div>
     <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureName.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
     <table class="listGrid">
-<%= pagination_row :colspan=>3 %>  
+<%= pagination_row :colspan=>3 %>
       <tr>
         <th class="listActionsCol"></th>
         <th class="leftText"><%= FeatureName.model_name.human(:count => :many).titleize.s %></th>
-        <th><%= Feature.human_attribute_name(:object_type).s %></th>
       </tr>
 <%    @collection.each do |item| %>
-      <tr class="<%= @context_feature==item ? 'selected' : '' %>">  
+      <tr class="<%= @context_feature==item ? 'selected' : '' %>">
         <td class="listActionsCol">
 <%      if @locating_relation %>
-<%=       form_tag new_admin_feature_feature_relation_path(@object), {:method=>:get} %>
+<%=       form_tag new_admin_feature_feature_relation_path(object), {:method=>:get} %>
 <%=         hidden_field_tag :target_id, item.id %>
 <%=         globalized_submit_tag 'select.this' %>
           </form>
 <%      else %>
 <%=       list_actions_for_item(item, :hide_edit => true) %>
-<%      end %>
+<%      end
+        perspective = current_perspective
+        parent = item.closest_parent_by_perspective(perspective) %>
         </td>
         <td style="width:60%;">
 <%=     f_label(item) %>
-        </td>
-        <td class="leftText">
-<%      if @context_feature==item %>
-          <strong style="color:black;"><%= item.object_types.first.title rescue '' %></strong>
-<%      else %>
-<%=       link_to item.object_types.first.title, current_features_path(:context_id=>item.id, :filter=>params[:filter]) unless item.object_types.empty? %>
-<%      end %>  
+<%      if !parent.nil? %>
+          (<%= f_label(item.parent) %>)
+<%      end %>
         </td>
       </tr>
 <%    end %>
     </table>
-  </div>
-  <div id="featureContextTree">
-    <h2><%= link_to(current_perspective, current_features_path) %> (<%= link_to ts(:switch, :what => Perspective.model_name.human.s), edit_session_path %>)</h2>
-    <ul>
-<%=   new_tree_builder.build(@context_feature) { |node| !node.is_blank? } %>
-    </ul>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->
   </div>
   <br class="clear"/>
 </div>

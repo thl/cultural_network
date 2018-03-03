@@ -1,4 +1,8 @@
-module AdminHelper  
+module AdminHelper
+  def is_admin_area?
+    params[:controller] =~ /^(admin|authenticated_system\/[^s])/
+  end
+  
   def admin_textarea(form_builder, field, options={})
     options[:cols] ||= 70
     options[:rows] ||= 10
@@ -26,45 +30,62 @@ module AdminHelper
     ('<span class="listActions">'+items.join(' | ')+'</span>').html_safe
   end
   
+  def admin_resources
+    resources = {}
+    # resources['Admin Home'] = admin_root_path if authorized? admin_root_path
+    if authorized?(admin_alt_spelling_systems_path) || authorized?(admin_languages_path) || authorized?(admin_orthographic_systems_path) || authorized?(admin_phonetic_systems_path) || authorized?(admin_writing_systems_path)
+      menu = resources['Name preferences'] = {}
+      menu[AltSpellingSystem.model_name.human(:count => :many).titleize.s] = admin_alt_spelling_systems_path if authorized? admin_alt_spelling_systems_path
+      menu[Language.model_name.human(:count => :many).titleize.s] = admin_languages_path if authorized? admin_languages_path
+      menu[OrthographicSystem.model_name.human(:count => :many).titleize.s] = admin_orthographic_systems_path if authorized? admin_orthographic_systems_path
+      menu[PhoneticSystem.model_name.human(:count => :many).titleize.s] = admin_phonetic_systems_path if authorized? admin_phonetic_systems_path
+      menu[WritingSystem.model_name.human(:count => :many).titleize.s] = admin_writing_systems_path if authorized? admin_writing_systems_path
+    end
+    
+    if authorized?(admin_collections_path) || authorized?(authenticated_system_people_path) || authorized?(authenticated_system_roles_path)
+      menu = resources['User admin'] = {}
+      menu[Collection.model_name.human(:count => :many).titleize.s] = admin_collections_path if authorized? admin_collections_path
+      menu[AuthenticatedSystem::Person.model_name.human(:count => :many).titleize.s] = authenticated_system_people_path if authorized? authenticated_system_people_path
+      menu[AuthenticatedSystem::Role.model_name.human(:count => :many).titleize.s] = authenticated_system_roles_path if authorized? authenticated_system_roles_path
+    end
+    
+    if authorized?(admin_geo_code_types_path) || authorized?(admin_perspectives_path) || authorized?(admin_views_path) || authorized?(admin_oral_sources_path) || authorized?(admin_note_titles_path)
+      menu = resources['Data management'] = {}
+      menu[GeoCodeType.model_name.human(:count => :many).titleize.s] = admin_geo_code_types_path if authorized? admin_geo_code_types_path
+      menu["Create new #{Feature.model_name.human.titleize.s}"] = new_admin_feature_path if authorized? new_admin_feature_path
+      menu[FeatureRelationType.model_name.human(:count => :many).titleize.s] = admin_feature_relation_types_path if authorized? admin_feature_relation_types_path
+      menu[Perspective.model_name.human(:count => :many).titleize.s] = admin_perspectives_path if authorized? admin_perspectives_path
+      menu[View.model_name.human(:count => :many).titleize.s] = admin_views_path if authorized? admin_views_path
+      menu[OralSource.model_name.human(:count => :many).titleize.s] = admin_oral_sources_path if authorized? admin_oral_sources_path
+      menu[NoteTitle.model_name.human(:count => :many).titleize.s] = admin_note_titles_path if authorized? admin_note_titles_path
+    end
+    
+    if authorized?(admin_blurbs_path) || authorized?(admin_feature_pids_path) || authorized?(admin_importation_tasks_path)
+      menu = resources['Admin tasks'] = {}
+      menu[Blurb.model_name.human(:count => :many).titleize.s] = admin_blurbs_path if authorized? admin_blurbs_path
+      menu["#{Feature.human_attribute_name(:pid).s} Generator"] = admin_feature_pids_path if authorized? admin_feature_pids_path
+      menu[ImportationTask.model_name.human(:count => :many).titleize.s] = admin_importation_tasks_path if authorized? admin_importation_tasks_path
+    end
+    resources
+  end
+  
   def resource_nav
-    resources = {
-      'Admin Home'=>admin_root_path,
-      'Alt Spelling Systems'=>admin_alt_spelling_systems_path,
-      'Blurbs'=>admin_blurbs_path,
-      'Citations'=>admin_citations_path,
-      'Features'=>admin_features_path,
-      'Feature Geocodes'=>admin_feature_geo_codes_path,
-      'Feature IDs Generator' => admin_feature_pids_path,
-      'Feature Names'=>admin_feature_names_path,
-      'Feature Name Relations'=>admin_feature_name_relations_path,
-      'Feature Name Types'=>admin_feature_name_types_path,
-      'Feature Relations'=>admin_feature_relations_path,
-      'Feature Relation Types'=>admin_feature_relation_types_path,
-      'Geocode Types'=>admin_geo_code_types_path,
-      'Languages'=>admin_languages_path,
-      'Notes'=>admin_notes_path,
-      'Note Titles'=>admin_note_titles_path,
-      'Orthographic Systems'=>admin_orthographic_systems_path,
-      'People'=>admin_people_path,
-      'Perspectives'=>admin_perspectives_path,
-      'Phonetic Systems'=>admin_phonetic_systems_path,
-      'Views' => admin_views_path,
-      'Writing Systems'=>admin_writing_systems_path
-    }.sort
-    select_tag :resources, options_for_select(resources,  "/#{params[:controller]}"), :id=>:SelectNav
+    path = "#{ActionController::Base.relative_url_root}/#{params[:controller]}"
+    path = authenticated_system_people_path if path =~ /\/authenticated_system\/users/
+    select_tag :resources, options_for_select(admin_resources.sort, path), id: :SelectNav, class: 'form-control form-select ss-select selectpicker'
   end
   
   def resource_search_form(extra_hidden_fields={})
     #extra_hidden_fields[:page] = params[:page] # keep the current page when clearing?
     html = "<div>"
     html += form_tag '', :method=>:get
-    html += text_field_tag :filter, h(params[:filter]), :class => :text
+    html += text_field_tag :filter, h(params[:filter]), class: [:text, 'text-full form-text']
     extra_hidden_fields.each do |k,v|
       html += hidden_field_tag k, h(v)
     end
-    html += submit_tag 'Search'
+    html += submit_tag 'Search', class: 'btn btn-primary form-submit'
     html += ' '
-    html += link_to('clear', resolved_collection_path, extra_hidden_fields) if params[:filter]
+    html += link_to('clear', resolved_collection_path, extra_hidden_fields.merge({class: 'btn btn-primary form-submit', id: 'edit-cancel'})) if params[:filter] 
     html += '</form></div>'
     html.html_safe
   end
@@ -87,7 +108,7 @@ module AdminHelper
     "A #{model_name.titleize} can only be created from a resource that uses one.".html_safe
   end
   
-  def empty_collection_message(message="No #{model_name.titleize.pluralize} found.")
+  def empty_collection_message(message="No #{model_name.classify.constantize.model_name.human(:count => :many).titleize} found.")
     "<div class='info'>#{message}</div>".html_safe
   end
   
@@ -148,7 +169,7 @@ module AdminHelper
   #
   #
   def features_link
-    link_to_unless_current('features', admin_features_path)
+    link_to_unless_current(Feature.model_name.human(:count => :many), admin_features_path)
   end
   
   #
@@ -181,7 +202,10 @@ module AdminHelper
   #
   def render_breadcrumbs
     #@breadcrumbs.unshift link_to_unless_current('features', admin_features_path)
-    @breadcrumbs.to_a.join(' > ').html_safe
+    #@breadcrumbs.to_a.join(' > ').html_safe
+    @breadcrumbs ||= []
+    list = [link_to("#{ts('home.this')}:", admin_root_path)]+@breadcrumbs[0...@breadcrumbs.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [@breadcrumbs.last]
+    content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
   end
   
   def add_breadcrumb_item(item)
@@ -192,26 +216,7 @@ module AdminHelper
   def add_breadcrumb_items(*items)
     items.each {|item| add_breadcrumb_item item}
   end
-  
-  #
-  # Pass in a set of root FeatureNames (having the same parent)
-  # to build a ul list
-  # "completed" is used only by this method
-  #
-  def feature_name_ul(feature, use_links=true, root_names=nil, completed=[])
-    root_names = feature.names.roots.order('position') if feature
-    html=''
-    root_names.each do |name|
-      next if completed.include? name
-      completed << name
-      html += '<li style="margin-left:1em; list-style:square;">'
-      html += (use_links ? link_to(name.name, admin_feature_name_path(name)) : name.name)
-      html += feature_name_ul(nil, use_links, name.children, completed)
-      html += '</li>'
-    end
-    (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe
-  end
-  
+    
   #
   # Pass in a set of root FeatureNames (having the same parent)
   # to build a ul list
@@ -219,7 +224,7 @@ module AdminHelper
   #
   def feature_name_tr(feature, root_names=nil, completed=[])
     root_names = feature.names.roots.order('position') if feature
-    root_names = root_names.sort_by{ |i| i[:position] }
+    root_names = root_names.sort{ |a, b| a.position <=> b.position }
     html=''
     root_names.each do |name|
       next if completed.include? name
@@ -245,7 +250,7 @@ module AdminHelper
     	padding = name.all_parents.size * 25
     	html +=	'<td style="padding-left: ' + padding.to_s + 'px">'
     	html += (name.name) + '</td>'
-    	html += '<td>' + def_if_blank(name, :class).to_s + '</td>'
+    	html += '<td>' + def_if_blank(name, :feature_name_type).to_s + '</td>'
     	html += '<td>' + def_if_blank(name, :language).to_s + '</td>'
     	html += '<td>' + def_if_blank(name, :writing_system).to_s + '</td>'
     	html += '<td>' + fn_relationship(name).to_s + '</td>'
@@ -288,7 +293,7 @@ module AdminHelper
   #
   #
   def feature_link(feature, *args)
-    link_to(fname_labels(feature), admin_feature_path(feature, *args), {:class=>:featureLabel, :title=>h(feature.name)})
+    link_to(fname_labels(feature), admin_feature_path(feature.fid, *args), {:class=>:featureLabel, :title=>h(feature.name)})
   end
   
   def feature_names_sorted(feature_names)
@@ -350,8 +355,8 @@ module AdminHelper
     relation.role_of?(feature) do |other,sentence|
       items=[]
       if options[:use_first]
-        items << (options[:link_first] ? 
-          (options[:use_names] ? f_link(feature, admin_feature_path(feature)) : feature_link(feature)) : 
+        items << (options[:link_first] ?
+          (options[:use_names] ? f_link(feature, admin_feature_path(feature.fid)) : feature_link(feature)) :
           feature_label(feature))
       end
       if options[:use_relation]
@@ -360,11 +365,8 @@ module AdminHelper
       end
       if options[:use_second]
         items << (options[:link_second] ? 
-          (options[:use_names] ? f_link(other, admin_feature_path(other)) : feature_link(other)) : 
+          (options[:use_names] ? f_link(other, admin_feature_path(other.fid)) : feature_link(other)) :
           feature_label(other))
-        if options[:show_feature_types]
-          items << "(" + other.object_types.collect{|type| type.title }.join(", ") + ")"
-        end
       end
       items.join(" ").html_safe
     end
@@ -418,7 +420,7 @@ module AdminHelper
     
   def note_link_list_for(object)
     if object.respond_to?(:notes) && object.notes.length > 0
-      object.notes.enum_with_index.collect{|n, i|
+      object.notes.each_with_index.collect{|n, i|
         note_title = n.title.blank? ? "Note" : n.title
         note_authors = " by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0
         link_to "Note #{i+1}", polymorphic_path([:admin, object, n]), :title => h("#{note_title}#{note_authors}")
@@ -432,7 +434,7 @@ module AdminHelper
     if object.respond_to?(:time_units)
       time_units = object.time_units_ordered_by_date
       if time_units.length > 0
-        time_units.enum_with_index.collect{|tu, i|
+        time_units.each_with_index.collect{|tu, i|
           time_unit_title = tu.to_s.blank? ? "Date" : tu.to_s
           link_to "Date #{i+1}", polymorphic_path([:admin, object, tu]), :title => h("#{time_unit_title}")
         }.join(', ').html_safe
@@ -459,7 +461,7 @@ module AdminHelper
       ""
     end
   end
-    
+  
   def fn_relationship(feature_name)
     feature_name.display_string
   end

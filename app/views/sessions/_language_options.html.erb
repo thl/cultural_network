@@ -1,0 +1,13 @@
+<% current_language = I18n.locale
+   languages = []
+   for language in I18n.available_locales
+	 next if language==:root
+	 language_metadata = LANGUAGES[language]
+     lang_title = language_metadata.nil? ? language.to_s : ts(language_metadata[:title], :locale => language)
+     if language==current_language
+       languages << lang_title
+     else
+       languages << link_to(lang_title, change_language_session_path(language))
+     end
+   end %>
+<%= languages.join(' | ').html_safe %>

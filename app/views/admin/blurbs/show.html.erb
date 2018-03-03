@@ -1,7 +1,11 @@
-<% add_breadcrumb_item link_to (collection_name, collection_path)
-   add_breadcrumb_item @blurb %>
+<% add_breadcrumb_item link_to(Blurb.model_name.human(:count => :many).s, collection_path)
+   add_breadcrumb_item @blurb.id %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Blurb.model_name.human.titleize.s %><%= edit_item_link @blurb %></h6>
+  </div>
+  <div class="panel-body">
 <fieldset>
-  <legend><%= Blurb.model_name.human.titleize.s %> <%= edit_item_link @blurb %></legend>
   <div class="row">
     <label><%= Blurb.human_attribute_name(:title).s %></label>
     <span><%= def_if_blank(@blurb, :title) %></span>
@@ -15,3 +19,5 @@
     <span><%= def_if_blank(@blurb, :content).html_safe %></span>
   </div>	
 </fieldset>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

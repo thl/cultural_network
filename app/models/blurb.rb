@@ -1,6 +1,16 @@
+# == Schema Information
+#
+# Table name: blurbs
+#
+#  id         :integer          not null, primary key
+#  code       :string(255)
+#  title      :string(255)
+#  content    :text
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Blurb < ActiveRecord::Base
-  attr_accessible :title, :code, :content
-  
   #
   #
   # Validation
@@ -17,15 +27,3 @@ class Blurb < ActiveRecord::Base
     where(build_like_conditions(%W(blurbs.code blurbs.title blurbs.content), filter_value))
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: blurbs
-#
-#  id         :integer         not null, primary key
-#  code       :string(255)
-#  content    :text
-#  title      :string(255)
-#  created_at :timestamp
-#  updated_at :timestamp

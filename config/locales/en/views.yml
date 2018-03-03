@@ -1,4 +1,4 @@
-# Cultural network view localization file for English.
+# Kmaps engine network view localization file for English.
 en:
     about: 'About'
     child: 'Child'
@@ -13,6 +13,7 @@ en:
         record: 'Clone %{what}'
     current: 'Current %{what}'
     default: 'Default %{what}'
+    location: 'Location'
     hide: 'Hide %{what}'
     information:
         general: 'General Information'
@@ -30,6 +31,9 @@ en:
         record: 'No %{what}'
     other: 'Other %{what}'
     perspective: 'the %{what} perspective'
+    place:
+        one: 'Place'
+        other: 'Places'
     prefix:
         with: 'Prefix with %{what}'
     priorit:
@@ -77,6 +81,9 @@ en:
         in: 'Type in %{what}'
         value: 'Type Value'
     value: 'Value'
+    video:
+        one: 'Video title'
+        other: 'Video titles'
     view:
         record: 'View %{what}'
         this: 'View'

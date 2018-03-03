@@ -1,2 +1,6 @@
+admin = $('#node_<%= @node.id %>_div > .node-name > a').attr('href').indexOf('/admin/') >= 0;
 $("#node_<%= @node.id %>_div").html("<%= escape_javascript(render(:partial => 'contracted', :object => @node)) %>");
 NodeTree.reselectNode();
+if (admin) {
+  $("#node_<%= @node.id %>_div a:not([class='node-plus'],[class='node-minus'])").attr('href', function (i, attr) { return attr.replace(/\/features/, '/admin/features'); });
+}

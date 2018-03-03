@@ -1,0 +1,2 @@
+module Admin::CaptionsHelper
+end
