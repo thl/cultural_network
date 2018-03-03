@@ -28,6 +28,7 @@
             },
             expand_path: null,
             // baseUrl: "http://subjects.kmaps.virginia.edu/"
+            sortChildren: true,
         };
 
     // copied from jquery.fancytree.js to support moved loadKeyPath function
@@ -391,7 +392,9 @@
                     console.log("loadChildren...");
                   }
 
-                  ctx.node.sortChildren(null, true);
+                  if(plugin.settings.sortChildren){
+                    ctx.node.sortChildren(null, true);
+                  }
 
                 }
               }).on('fancytreeinit', function (x, y) {
