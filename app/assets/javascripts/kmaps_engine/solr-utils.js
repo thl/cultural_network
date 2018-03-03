@@ -214,18 +214,18 @@
       var response = data.response;
       if(response.numFound > 0){
         var result = response.docs.reduce(function(acc,currentNode,index){
-          let node_type = currentNode["related_kmaps_node_type"] ;
+          var node_type = currentNode["related_kmaps_node_type"] ;
           if(node_type === undefined) {
             node_type = "other";
           }
           if(acc[node_type] === undefined){
             acc[node_type] =  [];
           }
-          let relation_label = currentNode["related_"+ plugin.settings.domain +"_relation_label_s"];
+          var relation_label = currentNode["related_"+ plugin.settings.domain +"_relation_label_s"];
           if(acc[node_type][relation_label] === undefined){
             acc[node_type][relation_label] = [];
           }
-          let node_id = currentNode['related_'+plugin.settings.domain+'_id_s'];
+          var node_id = currentNode['related_'+plugin.settings.domain+'_id_s'];
           acc[node_type][relation_label][node_id] = currentNode;
           return acc;
         }, []);
