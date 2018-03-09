@@ -32,7 +32,7 @@ class Admin::FeatureRelationsController < AclController
   #
   def create
     process_feature_relation_type_id_mark
-    @object = FeatureRelation.new(params[:feature_relation])
+    @object = FeatureRelation.new(feature_relation_params)
 
     respond_to do |format|
       if @object.save
@@ -53,7 +53,7 @@ class Admin::FeatureRelationsController < AclController
   
   # Only allow a trusted parameter "white list" through.
   def feature_relation_params
-    params.require(:feature).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
+    params.require(:feature_relation).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
   end
   
   private

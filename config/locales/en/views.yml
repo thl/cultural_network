@@ -65,6 +65,9 @@ en:
             primary: '''*'' denotes a primary essay'
             with: 'Show only entries with essays'
         feature:
+            browse_summary:
+              one: '%{who} has %{how_many} other %{what} directly related to it, which is presented here.'
+              other: '%{who} has %{how_many} other %{what} directly related to it, which are presented here.'
             name:
                 has_transliteration: '%{what} has a transliteration of %{whom}'
                 resource: 'resource that uses one'
