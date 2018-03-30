@@ -58,4 +58,23 @@ class Citation < ActiveRecord::Base
   def self.search(filter_value)
     self.where(build_like_conditions(%W(citations.notes), filter_value))
   end
+  
+  def bibliographic_reference
+    if self.info_source_type.start_with?('MmsIntegration')
+      m = self.info_source
+      if m.type == 'OnlineResource'
+        pages = self.web_pages
+        if pages.count==1
+          return pages.first.full_path
+        else
+          pages_a = pages.to_a
+          e = pages_a.shift
+          return ([e.full_path] + a.collect(&:path)).join(', ')
+        end
+      else
+        return ([m.bibliographic_reference] + self.pages.collect(&:to_s)).join(', ')
+      end
+    end
+    return nil
+  end
 end
