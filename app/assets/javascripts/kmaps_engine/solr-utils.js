@@ -73,7 +73,7 @@
       var relation_subjects_ordered = Object.keys(data[group_key][key]).sort();
       for(var relation_subject in relation_subjects_ordered){
         relation_subject = relation_subjects_ordered[relation_subject];
-        var relation = jQuery('<li></li>');
+        var relation = jQuery('<li class="dontend"></li>');
         var feature_list = jQuery('<ul></ul>');
         var feature_count = 0;
         var sortedFeatures = data[group_key][key][relation_subject];
@@ -163,10 +163,10 @@
     var feature_name = feature_label;
     for(var key in data[group_key]){ //parent,child, other
             var feature_block = jQuery('<div></div>').addClass('feature-block');
-            var header = jQuery('<h6></h6>').append(jQuery('<span class="glyphicon"></span> '));
+            var header = jQuery('<h6 class="dontend"></h6>').append(jQuery('<span class="glyphicon"></span> '));
             header.append(feature_name +" "+ key);
             var relation_subject_list = jQuery('<ul style="list-stype:none;" class="collapsibleList"></ul>');
-            var relation_subject_item = jQuery('<li class="collapsible_list_header"></li>');
+            var relation_subject_item = jQuery('<li class="dontend collapsible_list_header"></li>');
             relation_subject_item.append(header);
             var related_subject_list = jQuery('<ul></ul>');
             var feature_count = 0;
@@ -267,7 +267,7 @@
           ancestorsnamekey  = "ancestors_closest_" + plugin.settings.perspective;
         }
         nodeinfo['ancestors'] = doc[ancestorskey] === undefined ? "" : doc[ancestorskey].reduce(function(acc,val,index){
-          var currancestor = "<a href='"+featuresPath.replace("%%id%%",val)+"'>"+doc[ancestorsnamekey][index]+"</a>"
+          var currancestor = "<a href='"+featuresPath.replace("%%ID%%",val)+"'>"+doc[ancestorsnamekey][index]+"</a>"
           acc += "/"+currancestor;
           return acc;
         }, "");
