@@ -1,0 +1,6 @@
+<div class="thl-popup-padded-content">
+<% citations.each do |citation| %>
+     <div class="citation-reference"><%= citation.bibliographic_reference.html_safe %></div>
+     <div class="note-content"><%= "#{citation.notes}".s %></div>
+<% end %>
+</div>

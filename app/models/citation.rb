@@ -60,21 +60,19 @@ class Citation < ActiveRecord::Base
   end
   
   def bibliographic_reference
-    if self.info_source_type.start_with?('MmsIntegration')
-      m = self.info_source
-      if m.type == 'OnlineResource'
-        pages = self.web_pages
-        if pages.count==1
-          return pages.first.full_path
-        else
-          pages_a = pages.to_a
-          e = pages_a.shift
-          return ([e.full_path] + a.collect(&:path)).join(', ')
-        end
+    source = self.info_source
+    if self.info_source_type.start_with?('MmsIntegration') && source.type == 'OnlineResource'
+      pages = self.web_pages
+      if pages.count==1
+        source_str = pages.first.full_path
       else
-        return ([m.bibliographic_reference] + self.pages.collect(&:to_s)).join(', ')
+        pages_a = pages.to_a
+        e = pages_a.shift
+        source_str = ([e.full_path] + a.collect(&:path)).join(', ')
       end
+    else
+      source_str = ([source.bibliographic_reference] + self.pages.collect(&:to_s)).join(', ') + '.'
     end
-    return nil
+    return source_str
   end
 end
