@@ -58,6 +58,8 @@
             $(li).children('ul').addClass('collapsibleListOpen').each(function(){
               var ul = this;
               plugin.getCurrentId(true);
+              $(li).addClass('js-collapsible-id-li-'+plugin.getCurrentId());
+              $(li).data('js-collapsible-id',plugin.getCurrentId());
               $(ul).addClass('js-collapsible-id-'+plugin.getCurrentId());
               $(ul).data('js-collapsible-id',plugin.getCurrentId());
               $(ul).css('display', 'block');
@@ -76,20 +78,25 @@
         if(!$(li).is("li")){
           li = $(li).closest("li")[0];
         }
-        var ul = li.getElementsByTagName('ul');
-        var ulId = $(ul).data('js-collapsible-id');
+        var liId = $(li).attr('class').split(/\s+/).filter(function (value,index){ return value.match(/^js-collapsible-id-li-.*/);})[0];
+        if(!liId || liId == '') return;
+        var ulId = liId.replace(/^js-collapsible-id-li-/,'');
+        var ul = $('ul.js-collapsible-id-'+ulId);
         const open = $(ul).hasClass('collapsibleListClosed');
         if(open){
           $(".js-collapsible-id-"+ulId).show();
         } else {
           $(".js-collapsible-id-"+ulId).hide();
         }
-        $(ul).removeClass('collapsibleListOpen');
-        $(ul).removeClass('collapsibleListClosed');
-        $(ul).addClass('collapsibleList' + (open ? 'Open' : 'Closed'));
-        $(li).removeClass('collapsibleListOpen');
-        $(li).removeClass('collapsibleListClosed');
-        $(li).addClass('collapsibleList' + (open ? 'Open' : 'Closed'));
+        $(ul).removeClass('collapsibleListOpen')
+          .removeClass('collapsibleListClosed')
+          .addClass('collapsibleList' + (open ? 'Open' : 'Closed'));
+        $(li).removeClass('collapsibleListOpen')
+          .removeClass('collapsibleListClosed')
+          .addClass('collapsibleList' + (open ? 'Open' : 'Closed'));
+        $('li.'+liId).removeClass('collapsibleListOpen')
+          .removeClass('collapsibleListClosed')
+          .addClass('collapsibleList' + (open ? 'Open' : 'Closed'));
         $(".collapsible_all_btn").removeClass("collapsible_all_btn_selected");
       },
       toggleTo: function(li,open){
