@@ -1,0 +1,267 @@
+/**
+* Mandala Images - Development
+* 
+* version 1.x - shanti-main-images.css
+* --------------------------------------------------
+* University of Virginia / SHANTI MANDALA / IMAGES
+* --------------------------------------------------
+* 
+*/
+
+/* BEGIN sub-theme colors */
+.titlearea,
+.carousel-control,
+.breadcrumb .icon,
+.nav-tabs.nav-justified>li.active>a,
+.nav-tabs.nav-justified>li.active>a:focus,
+.nav-tabs.nav-justified>li.active>a:hover,
+.shanti-thumbnail-image.shanti-field-visuals .icon {
+  /* background-color: #c4be28 !important; */
+  background-color: #c0ba27 !important;
+}
+/* darker shades below are used to better define details */
+.bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a .check-mark,
+.bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a:active .check-mark,
+.navbar-brand:hover .site-slogan,
+.main-content .selectpicker .caret::before,
+.view-section .nav-tabs>li.active>a, 
+.view-section .nav-tabs>li.active>a:hover, 
+.view-section .nav-tabs>li.active>a:active,
+.view-section .fancytree-container .glyphicon,
+.view-section .fancytree-container .fancytree-node:hover > .glyphicon,
+.view-section .fancytree-container .fancytree-node:active > .glyphicon,
+.view-section .fancytree-node.fancytree-active > .glyphicon,
+.view-section .fancytree-node.fancytree-selected > .glyphicon {
+  /* color: rgb(196,190,40) !important; */
+  color: #c0ba27 !important;
+}
+
+.nav-tabs.nav-justified>li.active {
+  border-top-color: #c0ba27 !important;
+}
+
+.navbar-brand:active .site-slogan {
+  color: #444 !important;
+}
+
+::-moz-selection{
+  background: #b728c4 !important;
+} 
+::selection {
+  background: #b728c4 !important;
+}
+
+@media screen and (min-width: 768px) {
+  .nav-tabs.nav-justified>li.active::before {
+    color: #c0ba27 !important;
+  }
+}
+
+/**
+***  END Sarvaka subtheme colors */
+
+
+
+
+
+
+
+
+
+.content-section.equal-height{
+  /*padding-bottom: 7rem;*/
+}
+
+.content-section.equal-height > div.messages{
+  max-width: 1050px !important;
+  margin: 0 auto !important;
+}
+
+
+.front .view-content{
+  position: relative;
+  top: 0.5rem;
+}
+
+.front table.pagerer:first-of-type{
+  position: relative;
+  top:0.5rem;
+}
+
+.front .main-col h2:first-of-type{
+  float: left;
+  margin-top: 1rem;
+}
+
+
+ul.pager{ margin: 0 0 0.5rem;}
+
+
+
+/**
+* BEGIN ollection Styles
+*/
+
+/*----- Collection List page ------*/
+.view-collections .views-exposed-form .views-exposed-widget .form-submit { margin-top: -5px; } /* for Apply (filter) button on Collection list page */
+.view-collections .add-coll-btn { position: relative; top: -0.45em; }
+.view-collections .views-row .field-content p { margin: 5px 0px; }
+.view-collections .views-row p { margin: 5px 0px; }
+.view-collections .views-row .views-field-created .field-content { font-style: italic; }
+.view-collections .views-row .coll-list-type  { font-size: 0.9em; }
+.view-collections .views-row .coll-list-type .type { font-style: italic; }
+.view-collections .views-field-title span.icon.shanticon-stack {  
+  margin-right: 0.5em;
+  position: relative;
+  top: 0.1rem;
+}
+
+.view-collections .views-field-title h3{ /* set to H4 header font-size */
+  font-size: 1.32em;
+}
+
+/*------------------------------------------*/
+/*--- Dropdown details tab #info content ---*/
+/*------------------------------------------*/
+/* single image page */
+/* the outer frame */
+.page-file #block-system-main > .content {
+  padding: 0 1.5rem 1.5rem;
+  margin-top: -0.5rem;
+  margin-bottom: 7rem;
+  border: 4px solid #e7e7e7;
+}
+ /* filmstrip */
+.page-file .file-image {
+  border-left: 3rem dotted #e3e3e3;
+  border-right: 3rem dotted #e3e3e3;
+  margin-top: 2rem;
+  padding: 0 2rem 2rem;
+}
+
+.page-file .file-image img {
+  float: right;
+  margin: 0 0 1rem 1rem !important;
+}
+
+.page-file .file-image .field .field-label {
+  margin-top: 1.5rem;
+  text-transform: uppercase;
+  font-family: 'museo-sans-500',helvetica,arial,sans-serif;
+}
+
+.page-file .file-image > .content {
+  margin-top: -0.5rem;
+  background: white;
+  border: 1px solid #e9e9e9;
+  border-top: 1rem solid #ccc;
+  padding: 2rem 2rem 2rem 3rem;
+  box-shadow: -1px 2px 5px #e0e0e0;
+  border-collapse: separate;
+}
+
+.field-name-field-sharedshelf-solr-search {
+  display: none;
+}
+
+/*----- PDF Styles -----*/
+body.page-file-pdf .main-col .block-system > .content {
+	border-left: none;
+	border-right: none;
+	border-bottom: none;
+}
+
+body.page-file-pdf #block-system-main > .content{ padding-top:1rem;}
+
+body.page-file-pdf .content-section.equal-height{ padding-bottom:1rem; }
+
+body.page-file-pdf .content-section.equal-height .tab-content .tab-pane:nth-child(n+2){
+  padding: 1rem 2.5rem 7rem;
+  background: #fff;
+  border-radius: .2rem .2rem .5rem .5rem;
+  border: 1px solid #ddd;
+  border-width: 0 1px 1px;
+}
+
+body.page-file-pdf ul.nav.nav-tabs li:first-child{ margin-left:1rem; }
+
+body.page-file-pdf ul.nav.nav-tabs a{
+  text-transform: uppercase;
+  font-family: 'museo-sans-700', helvetica, arial, sans-serif !important;
+  font-size: 0.88em !important;
+  line-height: 1.75em !important;
+  height: 3em !important;
+}
+
+div.pdfextlink{ 
+  position:absolute; 
+  right:0; 
+  top: -4.3rem;
+  font-family: 'museo-sans-700';
+  font-size: 0.88em; 
+}
+
+div#pdf.tab-pane.iframe.active{ position:relative; }
+
+iframe.pdf-frame {
+    background-image: image-url('interface_utils/ajax-loader.gif');
+    background-repeat: no-repeat;
+    background-position: center 200px;
+    border-color:transparent;
+}
+
+/*------ File Page ------*/
+.file-ss-div {
+	margin: 12px auto;
+}
+
+.file-ss-div .field {
+	margin: 4px 0 0 0;
+}
+
+
+
+/*-------------------------*/
+/*======== max-width ======*/
+/*-------------------------*/
+@media screen and (max-width: 992px) {
+
+  .page-file .file-image img {
+    float: none;
+    margin: 2rem auto;
+  }
+}
+
+@media screen and (max-width: 600px) {
+
+  .page-file .file-image {
+    border: none;
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 991px) {
+}
+
+
+/*--------------------------*/
+/*======== min-width =======*/
+/*--------------------------*/
+@media screen and (min-width: 768px) {
+}
+
+@media screen and (min-width: 992px) {
+}
+
+@media screen and (min-width: 1150px) {
+}
+
+
+
+
+/* misc */
+/* 
+.flex-images { overflow: hidden; }
+.flex-images .item { float: left; margin: 4px; border: 1px solid #eee; box-sizing: content-box; overflow: hidden;  }
+.flex-images .item img { display: block; width: 100%; height: 100%; }
+*/

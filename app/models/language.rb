@@ -1,9 +1,27 @@
+# == Schema Information
+#
+# Table name: simple_props
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  code        :string(255)
+#  description :text
+#  notes       :text
+#  type        :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class Language < SimpleProp  
   #
   #
   # Associations
   #
   #
+  has_many :captions
+  has_many :descriptions
+  has_many :feature_names
+  has_many :summaries
   
   #
   # Validation
@@ -11,11 +29,11 @@ class Language < SimpleProp
   #
   
   ## Language codes should all come from ISO 639-2 available at http://www.loc.gov/standards/iso639-2/php/code_list.php
-  validates_format_of :code, :with => /^[a-z]{3}$/
+  validates_format_of :code, :with => /\A[a-z]{3}\z/
   validates_uniqueness_of :code
   
   def is_chinese?
-    code == 'chi'
+    code == 'zho'
   end
   
   def is_english?
@@ -27,11 +45,15 @@ class Language < SimpleProp
   end
   
   def is_tibetan?
-    code == 'tib'
+    code == 'bod'
   end
   
   def is_western?
     Language.is_western_id? self.id
+  end
+  
+  def self.current
+    self.find_by(['code LIKE ?', "#{I18n.locale}%"])
   end
 
   def lacks_transcription_system?
@@ -48,17 +70,3 @@ class Language < SimpleProp
     @@lacks_transcription_system_ids.include? language_id
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: simple_props
-#
-#  id          :integer         not null, primary key
-#  code        :string(255)
-#  description :text
-#  name        :string(255)
-#  notes       :text
-#  type        :string(255)
-#  created_at  :timestamp
-#  updated_at  :timestamp

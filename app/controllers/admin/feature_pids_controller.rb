@@ -1,4 +1,9 @@
-class Admin::FeaturePidsController < ApplicationController
+class Admin::FeaturePidsController < AclController
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
   # GET /feature_pids
   # GET /feature_pids.xml
   def index

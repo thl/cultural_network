@@ -1,0 +1,18 @@
+<div>
+  <h1>Please select the feature in the hierarchy where you would like to add your new feature</h1>
+</div>
+<div id="relation_tree_container">
+</div>
+<%= javascript_include_tag 'kmaps_engine/kmaps_relations_tree' %>
+<%= javascript_on_load do %>
+  $("#relation_tree_container").kmapsRelationsTree({
+    featureId: 13735,
+    featuresPath: "<%= admin_features_path %>/new?parent_id=%%ID%%",
+    termIndex: "<%= Feature.config.url %>",
+    perspective: "<%= current_perspective.code %>",
+    seedTree: {
+      descendants: true,
+      directAncestors: false,
+    }
+  });
+<% end %>

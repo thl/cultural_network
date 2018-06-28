@@ -22,9 +22,6 @@ module FeaturesHelper
     'fid' == params[:search_scope]
   end
   
-  #
-  # This method is getting called from the ContextualTreeBuilder
-  #
   def node_li_value(node, target)
     if target && node.id == target.id
       f_label(node, :class=>:selected)
@@ -92,15 +89,16 @@ module FeaturesHelper
       html += feature_name_ul(nil, use_links, name.children.order('position'), completed)
       html += '</li>'
     end
-    (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe
+    (html.blank? ? '' : "<ul style='margin:0; margin-top: 5px;'>#{html}</ul>").html_safe
   end
   
   def feature_name_display(name, options={})
     if options[:show_association_links]
       name_notes_link = note_popup_link_for(name)
+      name_citations_link = citation_popup_link_for(name)
       name_time_units_link = time_units_for(name)
     end
-    "#{name.name.to_s.s} (#{name.language.to_s.s}, #{name.writing_system.to_s.s}, #{name.pp_display_string.to_s.s})#{name_notes_link}#{name_time_units_link}"
+    "#{name.detailed_name.s}#{name_notes_link}#{name_citations_link}#{name_time_units_link}"
   end
   
   def feature_name_header(feature)
@@ -112,5 +110,9 @@ module FeaturesHelper
   def generate_will_paginate_link(page, text)
     # slippery way of getting this link to be ajaxy and to 'know' its url; see views/features/_descendants.html.erb
     "<a href='#' class='ajax_get' name='#{url_for(params.merge(:page => page != 1 ? page : nil))}'>#{text}</a>".html_safe
+  end
+  
+  def active_menu_item
+    !session[:interface].blank? && !session[:interface][:menu_item].blank? ? session[:interface][:menu_item] : 'browse'
   end
 end

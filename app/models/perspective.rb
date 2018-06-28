@@ -1,15 +1,27 @@
+# == Schema Information
+#
+# Table name: perspectives
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  code        :string(255)
+#  description :text
+#  notes       :text
+#  is_public   :boolean          default(FALSE)
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class Perspective < ActiveRecord::Base
-  include CulturalNetwork::SimplePropCache
-  
-  attr_accessible :is_public, :name, :code, :description
-  
+  include KmapsEngine::SimplePropCache
+
   #
   #
   # Associations
   #
   #
-  include CulturalNetwork::IsCitable
-  extend CulturalNetwork::HasTimespan
+  include KmapsEngine::IsCitable
+  extend KmapsEngine::HasTimespan
   
   #
   #
@@ -36,18 +48,8 @@ class Perspective < ActiveRecord::Base
     self.where(:is_public => true).order('name')
   end
   
+  def self.update_or_create(attributes)
+    r = self.find_by(code: attributes[:code])
+    r.nil? ? self.create(attributes) : r.update_attributes(attributes)
+  end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
-#
-# Table name: perspectives
-#
-#  id          :integer         not null, primary key
-#  code        :string(255)
-#  description :text
-#  is_public   :boolean
-#  name        :string(255)
-#  notes       :text
-#  created_at  :timestamp
-#  updated_at  :timestamp

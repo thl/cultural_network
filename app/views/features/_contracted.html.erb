@@ -2,6 +2,6 @@
     if has_no_children %>
       <span class="node-empty"></span>
 <%  else %>
-<%=   link_to '', {:action => 'expanded', :id => contracted.id}, :remote => true, :class => 'node-plus' %>
+<%=   link_to '', expanded_feature_path(contracted.id), :remote => true, :class => 'node-plus' %>
 <%  end %>
 <%= render :partial => 'features/selectable_node', :locals => { :node => contracted } %>

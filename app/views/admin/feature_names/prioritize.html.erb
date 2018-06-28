@@ -1,13 +1,17 @@
-<%= javascript_include_tag 'jquery.ajax.sortable' %>
+<%= javascript_include_tag 'kmaps_engine/jquery.ajax.sortable' %>
 <%= javascript_on_load do %>
 	jQuery('#featureNamesList').ajaxSortable({
-		action: '<%= "#{admin_feature_names_path}/set_priorities" %>',
+		action: '<%= set_priorities_admin_feature_names_path %>',
 		object_id: <%= @feature.id.to_s %>
 	});
 <% end
-   add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@feature)
    add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.names')) %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ts('change.record', :what => t('priorit.ization_of.names')) %>: <%= f_label(@feature) %></h6>
+  </div>
+  <div class="panel-body">
 <div>
 <h1><%= ts('change.record', :what => t('priorit.ization_of.names')) %>: <%= f_label(@feature) %></h1>
 </div>
@@ -27,8 +31,7 @@
        <th><%= ts 'relat.ion.ship.this' %></th>
        <th><%= ts 'priorit.y' %></th>
      </tr>
-<%   list.sort!{ |a,b| a.position <=> b.position }
-     list.each do |item| %>
+<%   list.sort_by{ |l| l.position }.each do |item| %>
        <tr id="feature_name_<%= item.id.to_s %>">
          <td class="centerText">
 <%       if @locating_relation %>
@@ -52,5 +55,7 @@
      </table>
 <% end %>
 <div class="returnLink">
-<%= link_to "&#8592; #{ts 'snippet.feature.return'}".html_safe, admin_feature_path(@feature) %>
+<%= link_to "&#8592; #{ts 'snippet.feature.return'}".html_safe, admin_feature_path(@feature.fid) %>
 </div>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

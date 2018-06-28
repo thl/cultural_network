@@ -1,0 +1,6 @@
+<div class="col-sm-7"> <!-- so the text can be read with the fly-out open -->
+<% if !@intro_blurb.nil? %>
+     <h2><%= @intro_blurb.title  %></h2>
+<%=  @intro_blurb.content.html_safe if !@intro_blurb.content.nil? %>
+<% end %>
+</div>

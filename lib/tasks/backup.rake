@@ -19,7 +19,7 @@ namespace :db do
         begin
           klass = tbl.classify.constantize
           puts "Writing #{tbl}..."
-          File.open("#{tbl}.yml", 'w+') { |f| YAML.dump klass.find(:all).collect(&:attributes), f }
+          File.open("#{tbl}.yml", 'w+') { |f| YAML.dump klass.all.collect(&:attributes), f }
         rescue
           puts "Skipping #{tbl}"
         end

@@ -1,10 +1,4 @@
-<%= render :partial => 'top' %>
-<div class="left" id="Home">
-  <div class="has-right-margin">
-    <h2><%= @intro_blurb.title  %></h2>
-<%= @intro_blurb.content.html_safe %>
-  </div>
-</div>
+<%= render 'index' %>
 <%= # Check for outdated, hash-based paths for features, like "/#59" and redirect them to the correct path
    javascript_on_load do %>
      if(window.location.hash){
@@ -16,4 +10,4 @@
      }
 <% end %>
 <%= javascript_on_load "document.title = '#{t 'app.this'}'" %>
-<%= render :partial => "bottom" %>
+<%= render 'bottom' %>

@@ -1,0 +1,22 @@
+<% if list.empty? %>
+<%=  empty_collection_message %>
+<% else %>
+   <table class="listGrid">
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= Illustration.model_name.human.titleize.s %></th>
+       <th><%= Illustration.human_attribute_name(:is_primary).s %></th>
+     </tr>
+<%   list.each do |item| %>
+     <tr>
+       <td class="centerText">
+<%=      list_actions_for_item(item, :delete_path => admin_feature_illustration_path(item.feature, item),
+         :edit_path => edit_admin_feature_illustration_path(item.feature, item),
+         :view_path => admin_feature_illustration_path(item.feature, item)) %>
+       </td>
+       <td><%= item.to_s %></td>
+       <td align="center"><%= 'X' if item.is_primary? %>
+     </tr>
+<%   end %>
+   </table>
+<% end %>

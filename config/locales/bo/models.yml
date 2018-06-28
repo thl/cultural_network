@@ -1,8 +1,11 @@
-# Cultural network model localization file for Tibetan.
+# Kmaps engine network model localization file for Tibetan.
 bo:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
         models:
+            affiliation:
+                one: 'affiliation'
+                other: 'affiliations'
             alt_spelling_system:
                 one: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན།'
                 other: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན་དག'
@@ -12,24 +15,30 @@ bo:
             blurb:
                 one: 'མཚམས་སྦྱོར་རགས་བསྡུས།'
                 other: 'མཚམས་སྦྱོར་རགས་བསྡུས་རྣམས། '
+            caption:
+                one: 'caption'
+                other: 'captions'
             category_feature:
-                one: 'བརྗོད་བྱ་གཙོ་བ་ཡང་ན་ཁྱད་ཆོས།'
-                other: 'བརྗོད་བྱ་གཙོ་བ་དང་ན་ཁྱད་ཆོས།'
+                one: 'བརྗོད་བྱ་གཙོ་བ།'
+                other: 'བརྗོད་བྱ་གཙོ་བ།'
             citation:
                 one: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
                 other: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
+            collection:
+                one: 'collection'
+                other: 'collections'
             description:
                 one: 'རྩོམ་ཡིག'
                 other: 'རྩོམ་ཡིག'
+            external_picture:
+                one: 'external picture'
+                other: 'external pictures'
             feature_name:
                 one: 'མིང་།'
                 other: 'མིང་གཞན།'
             feature_name_type:
                 one: 'མིང་གི་རིགས།'
                 other: 'མིང་གི་རིགས་ཁག '
-            feature_relation_type:
-                one: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བའི་རིགས་ཁག'
-                other: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བའི་རིགས། '
             language:
                 one: 'སྐད་ཡིག'
                 other: 'སྐད་ཡིག་གི་སྡེ།'
@@ -54,6 +63,9 @@ bo:
             phonetic_system:
                 one: 'སྒྲ་སྐད་གྱི་རྒྱུད་ཁོངས།'
                 other: 'སྒྲ་སྐད་གྱི་རྒྱུད་ཁོངས།'
+            summary:
+                one: 'summary'
+                other: 'summaries'
             user:
                 one: 'བེད་སྤྱོད་གཏོང་མཁན།'
                 other: 'བེད་སྤྱོད་གཏོང་མཁན་རྣམས། '
@@ -62,7 +74,9 @@ bo:
                 other: 'འབྲི་བའི་རྒྱུད་ཁོངས་ཁག'
         # Attribute names will be titleized.
         attributes:
-            blurp:
+            affiliation:
+                descendants: 'Include descendants?'
+            blurb:
                 code: 'ཚབ་ཨང་།'
                 content: 'ནང་དོན།'
                 title: 'གདོང་འཛར།'
@@ -79,6 +93,8 @@ bo:
                 content: 'ཁ་བྱང་།'
                 is_primary: 'གཙོ་བོ་ཡིན།'
                 title: 'རྩོམ་ཡིག་གི་ཁ་བྱང་།'
+            external_picture:
+                place_id: 'Place (Places Dictionary FID)'
             feature_geo_code:
                 geo_code_value: 'གྲངས་ཐང་།'
             feature_name:
@@ -121,5 +137,5 @@ bo:
     activeresource:
         models:
             topic:
-                one: 'ཁྱད་ཆོས།'
-                other: 'ཁྱད་ཆོས་ཁག '
+                one: 'བརྗོད་བྱ་གཙོ་བ།'
+                other: 'བརྗོད་བྱ་གཙོ་བ་ཁག'

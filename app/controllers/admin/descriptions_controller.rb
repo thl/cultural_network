@@ -1,11 +1,37 @@
-class Admin::DescriptionsController < ResourceController::Base
+class Admin::DescriptionsController < AclController
+  include KmapsEngine::ResourceObjectAuthentication
+  resource_controller
+  
   cache_sweeper :description_sweeper, :only => [:update, :destroy]
   belongs_to :feature
-  before_filter :collection
+  before_action :collection
 
-  create.before { defaults_primary }
-
-  edit.before {@authors = AuthenticatedSystem::Person.order('fullname') }
+  def initialize
+    super
+    @guest_perms = []
+  end
+  
+  new_action.before do
+    used_languages = parent_object.captions.collect(&:language_id)
+    english = Language.get_by_code('eng')
+    query = Language.order('name')
+    @languages = used_languages.empty? ? query : query.where(['id NOT IN (?)', used_languages])
+    object.language = english if !used_languages.include? english.id
+  end
+  
+  edit.before do
+    @languages = Language.order('name')
+    @authors = AuthenticatedSystem::Person.order('fullname')
+  end
+  
+  create.before do
+    @languages = Language.order('name')
+    defaults_primary
+  end
+  
+  update.before do
+    @languages = Language.order('name')
+  end
   
   # renders add_author.js.erb
   def add_author
@@ -22,17 +48,7 @@ class Admin::DescriptionsController < ResourceController::Base
   #  @description =  Description.find(params[:id])
   #  render_descriptions
   #end
-    
-  private
   
-  #def render_descriptions
-  #  #find a way to save selected expanded description
-  #  render :update do |page|
-	#    yield(page) if block_given?
-	#    page.replace_html 'descriptions_div', :partial => 'admin/descriptions/index', :locals => { :feature => parent_object, :description => @d}
-	#  end
-	#end
-	    
   protected
   
   #
@@ -40,7 +56,6 @@ class Admin::DescriptionsController < ResourceController::Base
   #
   def collection
     # needed for the list view
-    @parent_object = parent_object if parent?
     
     feature_id=nil
     if params[:feature_id]
@@ -57,4 +72,19 @@ class Admin::DescriptionsController < ResourceController::Base
     object.is_primary = 'true' if parent_object.descriptions.empty?
     object.is_primary = 'false' if object.is_primary.nil?
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def description_params
+    params.require(:description).permit(:title, :content, :is_primary, :language_id, author_ids: [])
+  end
+  
+  # private
+  
+  #def render_descriptions
+  #  #find a way to save selected expanded description
+  #  render :update do |page|
+	#    yield(page) if block_given?
+	#    page.replace_html 'descriptions_div', :partial => 'admin/descriptions/index', :locals => { :feature => parent_object, :description => @d}
+	#  end
+	#end
 end
