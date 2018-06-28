@@ -442,7 +442,13 @@ figcaption .center-caption {
 
 /*--- bullets ---*/
 /*.texts-list li::before,*/
+<<<<<<< HEAD
 .kmaps-list-columns:not(.subjects-in-subjects) ul li::before,
+||||||| merged common ancestors
+.kmaps-list-columns ul li::before,
+=======
+.kmaps-list-columns:not('.subjects-in-subjects') ul li::before,
+>>>>>>> Sync CSS from Mandala theme
 .places-in-subjects.kmaps-list-columns li::before{
   content: '';
   width: 5px;
