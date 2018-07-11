@@ -113,7 +113,7 @@
             var extras = {};
             var orig_val = input.val();
             //val = val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-            var val = orig_val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, " ");
+            var val = orig_val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\,\/\\\^\$\|]/g, " ");
             switch(settings.match_criterion){
               case 'begins':
                 val = ""+val+"*";
