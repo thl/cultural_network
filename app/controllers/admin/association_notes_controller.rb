@@ -14,7 +14,13 @@ class Admin::AssociationNotesController < AclController
 
   create.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }
   update.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }
-  destroy.wants.html { redirect_to polymorphic_url([:admin, object.notable]) }
+  destroy.wants.html do
+    if object.notable.class == Feature
+      redirect_to admin_feature_url(object.notable.fid)
+    else
+      redirect_to polymorphic_url([:admin, object.notable])
+    end
+  end
   
   def initialize
     super
