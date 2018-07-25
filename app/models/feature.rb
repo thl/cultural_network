@@ -541,6 +541,18 @@ class Feature < ActiveRecord::Base
         #end
       end
     end
+    names = self.names
+    names.select(:writing_system_id).distinct.collect(&:writing_system).each do |w|
+      key_arr = ['name', w.code] #name.language.code]
+      key_str = key_arr.join('_')
+      names.where(writing_system: w).each do |name|
+        if doc[key_str].blank?
+          doc[key_str] = [name.name]
+        else
+          doc[key_str] << name.name
+        end
+      end
+    end
     child_documents = doc['_childDocuments_']
     child_documents += names.recursive_roots_with_path.collect do |np|
       name = np.first
