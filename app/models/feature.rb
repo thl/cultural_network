@@ -59,6 +59,12 @@ class Feature < ActiveRecord::Base
       pa = proxy_association
       pa.reflection.class_name.constantize.roots.where('feature_names.feature_id' => pa.owner.id) #.sort !!! See the FeatureName.<=> method
     end
+    
+    def recursive_roots_with_path
+      res = []
+      self.roots.order('position').collect{ |r| res += r.recursive_roots_with_path }
+      res
+    end
   end
   
   def self.associated_models
@@ -485,24 +491,6 @@ class Feature < ActiveRecord::Base
     end
     doc[:created_at] = self.created_at.utc.iso8601
     doc[:updated_at] = self.updated_at.utc.iso8601
-    #name_ids = []
-    self.names.each do |name|
-    #View.all.each do |v|
-      #name = self.prioritized_name(v)
-      #if !(name.nil? || name_ids.include?(name.id))
-        #name_ids << name.id
-        key_arr = ['name', name.language.code]
-        rel_code = name.relationship_code
-        key_arr << rel_code if !rel_code.nil?
-        ws = name.writing_system
-        key_arr << ws.code if !ws.nil?
-        key_str = key_arr.join('_')
-        if doc[key_str].blank?
-          doc[key_str] = [name.name]
-        else
-          doc[key_str] << name.name
-        end
-    end
     Perspective.where(is_public: true).each do |p|  #['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
       tag = 'ancestors_'
       id_tag = 'ancestor_ids_'
@@ -533,6 +521,64 @@ class Feature < ActiveRecord::Base
       doc[id_tag] = hierarchy.collect{ |f| f.fid }
       doc[uid_tag] = hierarchy.collect{ |f| f.uid }
     end
+    #name_ids = []
+    #names = self.names
+    #names.each do |name|
+    View.all.each do |v|
+      name = self.prioritized_name(v)
+      if !name.nil? #&& !name_ids.include?(name.id)
+        #name_ids << name.id
+        key_arr = ['name', v.code] #name.language.code]
+        #rel_code = name.relationship_code
+        #key_arr << rel_code if !rel_code.nil?
+        #ws = name.writing_system
+        #key_arr << ws.code if !ws.nil?
+        key_str = key_arr.join('_')
+        #if doc[key_str].blank?
+          doc[key_str] = [name.name]
+        #else
+          #doc[key_str] << name.name
+        #end
+      end
+    end
+    names = self.names
+    names.select(:writing_system_id).distinct.collect(&:writing_system).each do |w|
+      key_arr = ['name', w.code] #name.language.code]
+      key_str = key_arr.join('_')
+      names.where(writing_system: w).each do |name|
+        if doc[key_str].blank?
+          doc[key_str] = [name.name]
+        else
+          doc[key_str] << name.name
+        end
+      end
+    end
+    child_documents = doc['_childDocuments_']
+    child_documents += names.recursive_roots_with_path.collect do |np|
+      name = np.first
+      path = np.second
+      uid = "#{FeatureName.uid_prefix}-#{name.id}"
+      writing_system = name.writing_system
+      child_document =
+      { id: "#{self.uid}_#{uid}",
+        origin_uid_s: self.uid,
+        block_child_type: ["related_names"],
+        #tree: FeatureName.uid_prefix,
+        "related_#{FeatureName.uid_prefix}_id_s" => uid,
+        "related_#{FeatureName.uid_prefix}_header_s" => name.name,
+        "related_#{FeatureName.uid_prefix}_path_s" => path.join('/'),
+        "related_#{FeatureName.uid_prefix}_level_i" => path.size,
+        "related_#{FeatureName.uid_prefix}_language_s" => name.language.name,
+        "related_#{FeatureName.uid_prefix}_relationship_s" => name.pp_display_string,
+        block_type: ['child']
+      }
+      if !writing_system.nil?
+        child_document["related_#{FeatureName.uid_prefix}_writing_system_s"] = writing_system.name
+        child_document["related_#{FeatureName.uid_prefix}_writing_system_code_s"] = writing_system.code
+      end
+      child_document
+    end
+    doc['_childDocuments_'] = child_documents
     doc
   end
   

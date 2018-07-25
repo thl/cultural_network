@@ -147,4 +147,15 @@ class FeatureName < ActiveRecord::Base
       primary_names.where(['id <> ?', keep.id]).update_all(is_primary_for_romanization: false) if !keep.nil?
     end
   end
+  
+  def recursive_roots_with_path(path_prefix = [])
+    path = path_prefix + [self.id]
+    res = [[self, path]]
+    self.children.order('position').collect{ |r| res += r.recursive_roots_with_path(path) }
+    res
+  end
+  
+  def self.uid_prefix
+    'names'
+  end
 end
