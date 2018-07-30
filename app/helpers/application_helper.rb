@@ -497,7 +497,7 @@ module ApplicationHelper
     feature = object if feature.nil? && defined?(object) && object.instance_of?(Feature)
     feature = case parent_type
     when :feature then parent_object
-    when :description, :feature_name, :feature_geo_code then parent_object.feature
+    when :description, :feature_name, :feature_geo_code, :feature_object_type then parent_object.feature
     when :feature_relation then parent_object.child_node
     when :feature_name_relation then parent_object.child_node.feature
     else nil
