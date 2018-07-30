@@ -9,7 +9,7 @@
       domain: 'places',
       root_kmapid: '',
       autocomplete_field: 'name_autocomplete',
-      search_fields: ['name_bod_tibt'],
+      search_fields: ['name_tibt'],
       max_terms: 150,
       max_defaults: 50,
       min_chars: 1,
