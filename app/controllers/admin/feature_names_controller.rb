@@ -45,7 +45,7 @@ class Admin::FeatureNamesController < AclController
   def destroy
     name = FeatureName.find(params[:id])
     name.destroy
-    redirect_to(:back)
+    redirect_back(fallback_location: admin_root_path)
   end
   
   protected
