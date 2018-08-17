@@ -3,6 +3,11 @@ module FeatureExtensionForNamePositioning
     view = current_view
     name_id = Rails.cache.fetch("#{self.cache_key}/#{view.cache_key}/prioritized_name", :expires_in => 1.hour) do
       cached_name = self.cached_feature_names.find_by(view_id: view.id)
+      # handles exceptional stale cache
+      if !cached_name.nil? && !cached_name.feature_name_id.nil? && cached_name.feature_name.nil?
+        cached_name.destroy
+        cached_name = nil
+      end
       if cached_name.nil?
         calculated_name = self.calculate_prioritized_name(view)
         cached_name = self.cached_feature_names.create(:view_id => view.id, :feature_name_id => calculated_name.id) if !calculated_name.nil?
