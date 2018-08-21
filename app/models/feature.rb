@@ -535,7 +535,7 @@ class Feature < ActiveRecord::Base
         #key_arr << ws.code if !ws.nil?
         key_str = key_arr.join('_')
         #if doc[key_str].blank?
-          doc[key_str] = [name.name]
+          doc[key_str] = [name.name.s]
         #else
           #doc[key_str] << name.name
         #end

@@ -30,6 +30,7 @@
             // baseUrl: "http://subjects.kmaps.virginia.edu/"
             sortNodes: true,
             sortNodesBy: "header",
+            view: ""
         };
 
     // copied from jquery.fancytree.js to support moved loadKeyPath function
@@ -212,6 +213,10 @@
                   var facet_counts = data.response.facet_counts.facet_fields["ancestor_id_"+plugin.settings.perspective+"_path"];
                   var rootbin = {};
                   var countbin = {};
+                  var name_tag = "";
+                  if (plugin.settings.view != "") {
+                    name_tag = "name_"+plugin.settings.view
+                  }
 
                   for (var i = 0; i < facet_counts.length; i += 2) {
                     var path = facet_counts[i];
@@ -237,10 +242,14 @@
                     var displayPath = (ancestors) ? ancestors.join("/") : "";
                     var parentPath = (parentIdPath) ? parentIdPath.join("/") : "";
                     var position_i = doc['position_i'];
+                    var node_header = doc.header;
+                    if (name_tag != "" && doc[name_tag] != undefined) {
+                      node_header = doc[name_tag];
+                    }
                     var n =
                       {
                         key: localId,
-                        title: doc.header,
+                        title: node_header,
                         header: doc.header,
                         parent: parentPath,
                         path: ancestorIdPath,
@@ -686,7 +695,8 @@
                 "ancestor*",
                 "caption_eng",
                 "level_" +plugin.settings.perspective+ "_i",
-                "position_i"
+                "position_i",
+                "name_*"
             ].join(",");
 
             var result =
