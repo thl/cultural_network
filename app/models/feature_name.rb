@@ -69,7 +69,7 @@ class FeatureName < ActiveRecord::Base
   belongs_to :writing_system, optional: true
   belongs_to :type, class_name: 'FeatureNameType', foreign_key: :feature_name_type_id, optional: true
   # belongs_to :info_source, :class_name => 'Document'
-  has_many :cached_feature_names, dependent: :destroy
+  has_many :cached_feature_names, dependent: :delete_all
   has_many :imports, as: 'item', dependent: :destroy
   
   #
