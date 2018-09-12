@@ -30,7 +30,8 @@
             // baseUrl: "http://subjects.kmaps.virginia.edu/"
             sortNodes: true,
             sortNodesBy: "header",
-            view: ""
+            view: "",
+            autoCollapse: false
         };
 
     // copied from jquery.fancytree.js to support moved loadKeyPath function
@@ -125,6 +126,7 @@
                 quicksearch: false,
                 checkbox: false,
                 selectMode: 2,
+                autoCollapse: plugin.settings.autoCollapse,
                 minExpandLevel: 1, // TODO: reconcile this with lazy loading.  Only "1" is supported currently.
                 theme: 'bootstrap',
                 debugLevel: 0,
