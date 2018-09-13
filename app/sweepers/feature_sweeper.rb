@@ -25,7 +25,11 @@ class FeatureSweeper < ActionController::Caching::Sweeper
       feature = record.feature
     end
     options = {:only_path => true}
-    feature.index! if !feature.destroyed? && feature.is_public?
+    if feature.destroyed?
+      feature.remove!
+    elsif feature.is_public?
+      feature.index!
+    end
     feature.parents.each{ |f| f.index! if f.is_public? }
     feature.children.each{ |f| f.index! if f.is_public? }
     FORMATS.each do |format|
