@@ -104,7 +104,7 @@ module FeaturesHelper
   def feature_name_header(feature)
     # names = apply_name_preference(feature.names).sort
     name = feature.prioritized_name(current_view)
-    name.nil? ? feature.pid : name
+    name.nil? ? feature.pid : name.name.s.html_safe
   end
 
   def generate_will_paginate_link(page, text)

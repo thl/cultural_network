@@ -34,6 +34,24 @@
     height: 100%; /* issue 263 */
 }
 
+.fancytree-container .glyphicon {
+  color: #4d59ca;
+  font-family: 'Glyphicons Halflings';
+  font-size: 15px;
+  margin-right: 1.2rem;
+  position: relative;
+  top: .5rem;
+  -webkit-transform: scale(1.175);
+  transform: scale(1.175);
+  filter: alpha(opacity=80);
+  opacity: .8;
+  background-image: none !important;
+}
+
+.fancytree-node:hover > .glyphicon {
+  opacity:1;
+}
+
 ul.fancytree-container ul
 {
     padding: 0 0 0 16px;

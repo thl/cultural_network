@@ -168,42 +168,38 @@ module ApplicationHelper
   #
   #
   def note_popup_link_for(object, options={})
-    unless options[:association_type].blank?
-      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
-        notes = object.association_notes_for(options[:association_type])
-        link_url = polymorphic_path([object, :association_notes], :association_type => options[:association_type])
-      end
-    else
+    if options[:association_type].blank?
       if object.respond_to?(:notes) && object.public_notes.length > 0
         notes = object.public_notes
         link_url = polymorphic_path([object, :notes])
       end
+    else
+      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
+        notes = object.association_notes_for(options[:association_type])
+        link_url = polymorphic_path([object, :association_notes], :association_type => options[:association_type])
+      end
     end
-    unless notes.nil?
-      link_title = notes.collect{|n| (n.title.nil? ? 'Note' : n.title) + (" by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0).to_s}.join(', ')
-      link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-      ("<span class='has-draggable-popups note-popup-link'>" +
-        link_to("", link_url, :class => "popup-link-icon note-popup-link-icon shanticon-stack "+link_classes, :title => Note.model_name.human(count: notes.count).titleize,  data: {:"js-kmaps-popup" => link_url }) +
-        #link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => Note.model_name.human(count: notes.count).titleize, data: {:"js-kmaps-popup" => link_url }) +
-      "</span>").html_safe
+    if defined?(notes) && !notes.nil?
+      content_tag :span, class: 'has-draggable-popups note-popup-link' do
+        link_to("", link_url,
+               :class => 'popup-link-icon note-popup-link-icon shanticon-stack draggable-pop no-view-alone overflow-y-auto height-350',
+               :title => Note.model_name.human(count: notes.count).titleize,  data: {'js-kmaps-popup' => link_url })
+      end.html_safe
     else
       ""
     end
   end
   def citation_popup_link_for(object, options={})
-    if object.respond_to?(:citations) && !object.citations.empty?
-      citations = object.citations
-      link_url = polymorphic_path([object, :citations])
-    end
-    unless citations.nil?
-      link_title = citations.collect{|c| (c.citable_type.nil? ? 'Citation' : c.citable_type) + (" source type: #{c.info_source_type}").to_s}.join(', ')
-      link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-      ("<span class='has-draggable-popups citation-popup-link'>" +
-        link_to("", link_url, :class => "popup-link-icon citation-popup-link-icon shanticon-sources "+link_classes, :title => Citation.model_name.human(count: citations.count).titleize, data: {:"js-kmaps-popup" => link_url }) +
-        #link_to("See Citation", link_url, :class => "citation-popup-link-text "+link_classes, :title => Citation.model_name.human(count: citations.count).titleize, data: {:"js-kmaps-popup" => link_url }) +
-      "</span>").html_safe
+    if object.respond_to?(:citations) && !object.citations.blank?
+      content_tag :span, class: 'has-draggable-popups citation-popup-link' do
+        link_url = polymorphic_path([object, :citations])
+        link_to('', link_url,
+               class: 'popup-link-icon citation-popup-link-icon shanticon-sources draggable-pop no-view-alone overflow-y-auto height-350',
+               title: Citation.model_name.human(count: object.citations.count).titleize,
+               data: {'js-kmaps-popup' => link_url })
+      end.html_safe
     else
-      ""
+      ''
     end
   end
   
