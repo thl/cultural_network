@@ -1,13 +1,13 @@
 <script type="text/javascript">
 function toggle_yes_radio(select_element, radio_prefix){
-	if($(select_element).val() != ""){
-		$('#'+radio_prefix+'_0').removeAttr('checked');
-		$('#'+radio_prefix+'_1').attr('checked', 'checked');
-	}else{
-		$('#'+radio_prefix+'_1').removeAttr('checked');
-		$('#'+radio_prefix+'_0').attr('checked', 'checked');
-	}
-	return true;
+  if($(select_element).val() != ""){
+    $('#'+radio_prefix+'_0').removeAttr('checked');
+    $('#'+radio_prefix+'_1').attr('checked', 'checked');
+  }else{
+    $('#'+radio_prefix+'_1').removeAttr('checked');
+    $('#'+radio_prefix+'_0').attr('checked', 'checked');
+  }
+  return true;
 }
 </script>
 <div>

@@ -1,10 +1,10 @@
 <%    header = ['features.fid', 'feature_names.delete']
       1.upto(@name_count) do |i|
-   	    header += ["#{i}.feature_names.name", "#{i}.languages.code", "#{i}.writing_systems.code", "#{i}.feature_names.etymology", "#{i}.feature_names.is_primary", "#{i}.feature_name_relations.parent_node", "#{i}.feature_name_relations.is_translation", "#{i}.feature_name_relations.relationship.code", "#{i}.alt_spelling_systems.code"]
-		if @citation_count > 0
-		  1.upto(@citation_count) { |j| header += ["#{i}.feature_names.#{j}.info_source.code", "#{i}.feature_names.#{j}.info_source.note", "#{i}.feature_names.#{j}.info_source.volume", "#{i}.feature_names.#{j}.info_source.pages"] }
-		end
-	  end
-	  rows = [header] + @features.collect{ |feature| names_row(feature, @citation_count) }
-	  names_matrix_cleanup(rows) %>
+         header += ["#{i}.feature_names.name", "#{i}.languages.code", "#{i}.writing_systems.code", "#{i}.feature_names.etymology", "#{i}.feature_names.is_primary", "#{i}.feature_name_relations.parent_node", "#{i}.feature_name_relations.is_translation", "#{i}.feature_name_relations.relationship.code", "#{i}.alt_spelling_systems.code"]
+    if @citation_count > 0
+      1.upto(@citation_count) { |j| header += ["#{i}.feature_names.#{j}.info_source.code", "#{i}.feature_names.#{j}.info_source.note", "#{i}.feature_names.#{j}.info_source.volume", "#{i}.feature_names.#{j}.info_source.pages"] }
+    end
+    end
+    rows = [header] + @features.collect{ |feature| names_row(feature, @citation_count) }
+    names_matrix_cleanup(rows) %>
 <%=raw rows.collect{ |row| CSV.generate_line(row, col_sep: "\t") }.join %>

@@ -1,11 +1,11 @@
 /**
 * Mandala Images - Development
-* 
+*
 * version 1.x - shanti-main-images.css
 * --------------------------------------------------
 * University of Virginia / SHANTI MANDALA / IMAGES
 * --------------------------------------------------
-* 
+*
 */
 
 /* BEGIN sub-theme colors */
@@ -24,8 +24,8 @@
 .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a:active .check-mark,
 .navbar-brand:hover .site-slogan,
 .main-content .selectpicker .caret::before,
-.view-section .nav-tabs>li.active>a, 
-.view-section .nav-tabs>li.active>a:hover, 
+.view-section .nav-tabs>li.active>a,
+.view-section .nav-tabs>li.active>a:hover,
 .view-section .nav-tabs>li.active>a:active,
 .view-section .fancytree-container .glyphicon,
 .view-section .fancytree-container .fancytree-node:hover > .glyphicon,
@@ -46,7 +46,7 @@
 
 ::-moz-selection{
   background: #b728c4 !important;
-} 
+}
 ::selection {
   background: #b728c4 !important;
 }
@@ -110,7 +110,7 @@ ul.pager{ margin: 0 0 0.5rem;}
 .view-collections .views-row .views-field-created .field-content { font-style: italic; }
 .view-collections .views-row .coll-list-type  { font-size: 0.9em; }
 .view-collections .views-row .coll-list-type .type { font-style: italic; }
-.view-collections .views-field-title span.icon.shanticon-stack {  
+.view-collections .views-field-title span.icon.shanticon-stack {
   margin-right: 0.5em;
   position: relative;
   top: 0.1rem;
@@ -166,9 +166,9 @@ ul.pager{ margin: 0 0 0.5rem;}
 
 /*----- PDF Styles -----*/
 body.page-file-pdf .main-col .block-system > .content {
-	border-left: none;
-	border-right: none;
-	border-bottom: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
 }
 
 body.page-file-pdf #block-system-main > .content{ padding-top:1rem;}
@@ -193,12 +193,12 @@ body.page-file-pdf ul.nav.nav-tabs a{
   height: 3em !important;
 }
 
-div.pdfextlink{ 
-  position:absolute; 
-  right:0; 
+div.pdfextlink{
+  position:absolute;
+  right:0;
   top: -4.3rem;
   font-family: 'museo-sans-700';
-  font-size: 0.88em; 
+  font-size: 0.88em;
 }
 
 div#pdf.tab-pane.iframe.active{ position:relative; }
@@ -212,11 +212,11 @@ iframe.pdf-frame {
 
 /*------ File Page ------*/
 .file-ss-div {
-	margin: 12px auto;
+  margin: 12px auto;
 }
 
 .file-ss-div .field {
-	margin: 4px 0 0 0;
+  margin: 4px 0 0 0;
 }
 
 
@@ -260,7 +260,7 @@ iframe.pdf-frame {
 
 
 /* misc */
-/* 
+/*
 .flex-images { overflow: hidden; }
 .flex-images .item { float: left; margin: 4px; border: 1px solid #eee; box-sizing: content-box; overflow: hidden;  }
 .flex-images .item img { display: block; width: 100%; height: 100%; }

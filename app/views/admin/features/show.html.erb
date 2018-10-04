@@ -16,7 +16,7 @@
 <%        if authorized?(path, :action => 'destroy') %>
             | <%= delete_item_link path %>
 <%        end %></span>
-				</legend>
+        </legend>
         <div class="row">
           <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= object.fid %></span>
         </div>
@@ -43,8 +43,8 @@
      </div>
      <br class="clear"/>
 <%=  render :partial => 'admin/affiliations/list', :locals => { :list => object.affiliations } %>
-	</div> <!-- END panel-body -->
-	</div> <!-- END collapseTwo -->
+  </div> <!-- END panel-body -->
+  </div> <!-- END collapseTwo -->
 </section>
 <% end %>
   <section class="panel panel-default">
@@ -62,16 +62,16 @@
 <%=     render :partial => 'admin/feature_names/feature_names', :locals => { :list => object.names } %>
         <dl class="no-style">
 <%        object.names.roots.order('position').each do |name|
-	        path = admin_feature_feature_name_path(name.feature, name) %>
+          path = admin_feature_feature_name_path(name.feature, name) %>
 <%=         ("<dt><strong>Etymology of #{name.name} (" + list_actions_for_item(name, :delete_path => path, :manage_path => path,
             :edit_path => edit_admin_feature_feature_name_path(name.feature, name), :hide_view => true, :hide_delete => true
             ) + "):</strong></dt><dd>#{name.etymology}</dd>").html_safe unless name.etymology.blank? %>
 <%        end %>
         </dl>
 <%= association_note_list_fieldset(FeatureName.name) %>
-		</div> <!-- END paneld-body -->
-		</div> <!-- END collapseThree -->
-	</section>
+    </div> <!-- END paneld-body -->
+    </div> <!-- END collapseThree -->
+  </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Caption.model_name.human(:count => :many).titleize.s %></a></h6>
@@ -81,8 +81,8 @@
 <%=       highlighted_new_item_link [object, :caption] %>
           <br class="clear"/>
 <%=       render :partial => 'admin/captions/list', :locals => { :list => object.captions } %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseFour -->
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseFour -->
 </section>
 <section class="panel panel-default">
       <div class="panel-heading">
@@ -105,8 +105,8 @@
 <%=       highlighted_new_item_link [object, :illustration] %>
           <br class="clear"/>
 <%=       render :partial => 'admin/illustrations/list', :locals => { :list => object.illustrations } %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseSix -->
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseSix -->
 </section>
     <section class="panel panel-default">
       <div class="panel-heading">
@@ -118,8 +118,8 @@
           <br class="clear"/>
 <%=       render :partial => 'admin/feature_geo_codes/list', :locals => { :list => object.geo_codes } %>
 <%=       association_note_list_fieldset(FeatureGeoCode.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseSeven -->
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseSeven -->
 </section>
 
 <% if current_user.admin? || object.authorized_for_descendants?(current_user) %>
@@ -136,8 +136,8 @@
          <br class="clear"/>
 <%=      render :partial => 'admin/feature_relations/list', :locals => { :list => object.all_relations, :object => object, :use_first => false, :use_names => true } %>
 <%=      association_note_list_fieldset(FeatureRelation.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseEight -->
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseEight -->
 </section>
 <%  end %>
     <section class="panel panel-default">
@@ -150,8 +150,8 @@
           <br class="clear"/>
 <%=       render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => object.descriptions.order('is_primary DESC, title') } %>
 <%=       association_note_list_fieldset(Description.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseNine -->
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseNine -->
 </section>
   </div> <!-- END accordion -->
 </div> <!-- END featureShow -->

@@ -2,15 +2,15 @@
 <%= tinymce %>
 <style type="text/css">
 input[type=text] {
-	width:35em;
-	padding:.1em;
-	display: inline-block;
-	border:none; 
-	padding:5px; 
-	font:normal normal normal verdana, arial, sans-serif;
-	font-size:100%;
-	background:#FFFFFF none repeat scroll 0 0;
-	border:1px solid #CCCCCC;
+  width:35em;
+  padding:.1em;
+  display: inline-block;
+  border:none;
+  padding:5px;
+  font:normal normal normal verdana, arial, sans-serif;
+  font-size:100%;
+  background:#FFFFFF none repeat scroll 0 0;
+  border:1px solid #CCCCCC;
 }
 </style>
 <% if object.errors.any? %>
@@ -37,17 +37,17 @@ input[type=text] {
 </p>
 <p><b><%= f.label :language_id, Language.model_name.human.titleize.s %></b><br/>
   <div class="row">
-	<%= f.collection_select :language_id, @languages, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
+  <%= f.collection_select :language_id, @languages, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
   </div>
-</p>  
+</p>
 <p><%= link_to ts('add.record', what: t('new.record', what: t(:author, count: 1))), add_author_admin_feature_descriptions_path(object.feature), remote: true %></p>
 <div id="authors_div">
 <% for author in object.authors %>
 <%=  render partial: 'authors_selector', locals: {selected: author.id} %>
 <% end %>
-</div>    
+</div>
 <div id="is_primary_div">
-<p><%= f.check_box :is_primary %> 
+<p><%= f.check_box :is_primary %>
 <%= f.label(:is_primary).s %></p>
 </div>
 <div id="update_div"/>

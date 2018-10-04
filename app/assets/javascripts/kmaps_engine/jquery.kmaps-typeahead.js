@@ -128,7 +128,7 @@
                 val = "*"+val+"*";
                 orig_val = "*"+orig_val+"*";
             }
-						val = settings.case_sensitive ? val : val.toLowerCase();
+            val = settings.case_sensitive ? val : val.toLowerCase();
             if (val) {
               var solr_query = settings.autocomplete_field + ':' + val.replace(/[\s\u0f0b\u0f0d]+/g, '\\ ');
               if(settings.search_fields){

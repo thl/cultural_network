@@ -7,8 +7,8 @@
  * Tree container
 
  Lion colors:
-	gray highlight bar: #D4D4D4
-	blue highlight-bar and -border #3875D7
+  gray highlight bar: #D4D4D4
+  blue highlight-bar and -border #3875D7
 
 
  */
@@ -89,7 +89,7 @@ ul.fancytree-no-connector > li
 .ui-fancytree-disabled ul.fancytree-container
 {
     opacity: 0.5;
-    /*	filter: alpha(opacity=50); /* Yields a css warning */
+    /*  filter: alpha(opacity=50); /* Yields a css warning */
     background-color: silver;
 }
 
@@ -133,13 +133,13 @@ span.fancytree-drag-helper-img,
  */
 /* span.fancytree-connector
 {
-	background-image: none;
+  background-image: none;
 }
  */
 /*******************************************************************************
  * Expander icon
  * Note: IE6 doesn't correctly evaluate multiples class names,
- *		 so we create combined class names that can be used in the CSS.
+ *     so we create combined class names that can be used in the CSS.
  *
  * Prefix: fancytree-exp-
  * 1st character: 'e': expanded, 'c': collapsed, 'n': no children
@@ -152,7 +152,7 @@ span.fancytree-expander
     background-position: 0px -80px;
     cursor: pointer;
 }
-span.fancytree-expander:hover { 	background-position: -16px -80px; }
+span.fancytree-expander:hover {   background-position: -16px -80px; }
 .fancytree-exp-n span.fancytree-expander:hover /* Collapsed, not delayed, not last sibling */
 {
     background-position: -16px -80px;
@@ -223,7 +223,7 @@ span.fancytree-checkbox:hover { background-position: -16px -32px; }
 /*******************************************************************************
  * Node type icon
  * Note: IE6 doesn't correctly evaluate multiples class names,
- *		 so we create combined class names that can be used in the CSS.
+ *     so we create combined class names that can be used in the CSS.
  *
  * Prefix: fancytree-ico-
  * 1st character: 'e': expanded, 'c': collapsed
@@ -276,14 +276,14 @@ span.fancytree-active .fancytree-title {
 
 /*
 table.fancytree-ext-table {
-	border-collapse: collapse;
-	width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 table.fancytree-ext-table tbody tr:nth-child(even){
-	background-color: #f4f4f8;
+  background-color: #f4f4f8;
 }
 table.fancytree-ext-table tbody tr td {
-	border: 1px solid lightgray;
+  border: 1px solid lightgray;
 }
 */
 table.fancytree-ext-table tbody tr.fancytree-focused {
@@ -302,8 +302,8 @@ table.fancytree-ext-table tbody tr.fancytree-selected {
 
 /*
 table.fancytree-ext-columnview {
-	border-collapse: collapse;
-	width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 */
 table.fancytree-ext-columnview td >ul
@@ -329,7 +329,7 @@ table.fancytree-ext-columnview td >ul li
 }
 /*
 table.fancytree-ext-columnview tbody tr[0] {
-	height: 200px;
+  height: 200px;
 }
 */
 table.fancytree-ext-columnview tbody tr td {

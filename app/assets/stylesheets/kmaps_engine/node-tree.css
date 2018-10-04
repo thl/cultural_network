@@ -2,10 +2,10 @@
 }
 
 #NodeTree ul{
-	margin: 0 0 0 0;
-	list-style-image:none;
-	list-style-position:outside;
-	list-style-type:none;
+  margin: 0 0 0 0;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
 }
 
 #NodeTree ul li{
@@ -15,31 +15,31 @@
 }
 
 #NodeTree .selected-node{
-	background-color:#faffa2;
+  background-color:#faffa2;
 }
 
 #NodeTree .loading-node{
-	margin-left:3px;
-	padding-left:16px;
-	background:transparent url(http://thlib.org/global/images/ajax-loader.gif); 
+  margin-left:3px;
+  padding-left:16px;
+  background:transparent url(http://thlib.org/global/images/ajax-loader.gif);
 }
 
 #NodeTree .node-plus, #NodeTree .node-minus, #NodeTree .node-empty{
-	float:left;
-	width:11px;
-	height:11px;
-	margin:3px 6px 0 0;
-	border:0;
+  float:left;
+  width:11px;
+  height:11px;
+  margin:3px 6px 0 0;
+  border:0;
 }
 
 #NodeTree .node-plus{
-	background:transparent no-repeat url(http://thlib.org/global/images/btn-plus-lg.gif);
+  background:transparent no-repeat url(http://thlib.org/global/images/btn-plus-lg.gif);
 }
 
 #NodeTree .node-minus{
-	background:transparent no-repeat url(http://thlib.org/global/images/btn-minus-lg.gif);
+  background:transparent no-repeat url(http://thlib.org/global/images/btn-minus-lg.gif);
 }
 
 #NodeTree .node-empty{
-	background:transparent no-repeat url(http://thlib.org/global/images/btn-empty-lg.gif);
+  background:transparent no-repeat url(http://thlib.org/global/images/btn-empty-lg.gif);
 }

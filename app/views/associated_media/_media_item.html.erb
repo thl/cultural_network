@@ -1,23 +1,23 @@
 <%       # url_essay points to the image size essay
-		 if medium['url_essay'].blank? 
-		   if medium['title'].nil?
-			   if medium['caption'].nil?
-				   title = medium['id']
-			   else
-				   title = medium['caption']
-			   end
-		   else
-			   title = medium['title'].first
-		   end %>
+     if medium['url_essay'].blank?
+       if medium['title'].nil?
+         if medium['caption'].nil?
+           title = medium['id']
+         else
+           title = medium['caption']
+         end
+       else
+         title = medium['title'].first
+       end %>
            <li  class="item-no-img"><%= link_to title,MmsIntegration::Medium.get_url(medium['id']) %></li> <!-- END item -->
 <%       else %>
            <div class="item">
 <%         media_data = {
                 hugesrc: "#{medium['url_huge']}?::#{medium['url_huge_width']}::#{medium['url_huge_height']}",
                 largesrc: medium['url_huge'],
-            	title: title,
-				media_id: medium['id'],
+              title: title,
+        media_id: medium['id'],
           } %>
 <%=          link_to image_tag(medium['url_essay'], height: 180, alt: title), associated_medium_path(medium['id']), class: 'media-thumb', data: media_data  %>
-		    </div> <!-- END item -->
+        </div> <!-- END item -->
 <%       end %>

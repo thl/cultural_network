@@ -2,7 +2,7 @@
 <%=  empty_collection_message %>
 <% else %>
      <table class="listGrid">
-<%=  pagination_row :colspan=>10 unless @collection.nil? %>	
+<%=  pagination_row :colspan=>10 unless @collection.nil? %>
      <tr>
        <th class="listActionsCol"></th>
        <th><%= FeatureName.model_name.human.titleize.s %></th>

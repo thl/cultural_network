@@ -1,11 +1,11 @@
-	<li class="drop-hdr"><em><%= ts('Select Place Name Language')%></em></li>
+  <li class="drop-hdr"><em><%= ts('Select Place Name Language')%></em></li>
 <%= form_for @session, url: change_view_session_path(@session.view_id) do |f| %>
 <% for view in @views %>
-	      <li class='form-group'><label class='radio-inline'><%= f.radio_button :view_id, view.id, class: 'radio_view_pref' %><%= ts(view.name)%></label></li>
+        <li class='form-group'><label class='radio-inline'><%= f.radio_button :view_id, view.id, class: 'radio_view_pref' %><%= ts(view.name)%></label></li>
 <%    end
     end
     view_path = change_view_session_path('a').chop %>
-<%=	javascript_on_load do %>
+<%=  javascript_on_load do %>
       jQuery('.radio_view_pref').click(function (event){
         event.stopPropagation();
         window.location.pathname = '<%= view_path %>' + this.value;

@@ -8,12 +8,12 @@
   <div class="panel-body">
 <%= form_for object, url: object_path, method: :put do |f| %>
 <%    if object.info_source_type.start_with? 'MmsIntegration' %>
-	  <div class="row">
+    <div class="row">
 <%=     label :info_source_id, 'Document or Online Resource ID from MMS application' %>
 <%=     f.text_field :info_source_id, class: [:text, ' form-control form-text'] %>
-	  </div>
+    </div>
 <%    elsif object.info_source_type == 'ShantiIntegration::Source' %>
-	  <div class="row">
+    <div class="row">
 <%=     label :info_source_id, 'Source ID from Shanti Sources' %>
 <%=     f.text_field :info_source_id, class: [:text, 'form-text'] %>
 <i>Or <a id="source-search-toggler" href="#">click here to search from name</a></i>
@@ -39,12 +39,12 @@
   $("#citation_info_source_id").val(suggestion.id);
 });
 <% end %>
-	  </div>
+    </div>
 <%    else %>
-	  <div class="row">
+    <div class="row">
 <%=     label :info_source_id, OralSource.model_name.human.titleize.s %>
 <%=     f.collection_select :info_source_id, OralSource.all.order(:name), :id, :name, include_blank: false %>
-	  </div>
+    </div>
 <%    end %>
 <%=   render partial: 'form_fields', locals: {f: f, object: object} %>
 <%    feature = contextual_feature %>
