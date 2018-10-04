@@ -13,7 +13,7 @@
 <fieldset>
 <p><b><%= f.label :language_id, Language.model_name.human.titleize.s %></b><br/>
   <div class="row">
-	<%= f.collection_select :language_id, @languages, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
+  <%= f.collection_select :language_id, @languages, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
   </div>
 </p>
 <p><b><%= f.label(:content, Caption.model_name.human.titleize.s) %></b><br/>
@@ -23,7 +23,7 @@
 </p>
 <p><b><%= f.label :author_id, ts(:author, count: 1).titleize %></b><br/>
   <div class="row">
-	<%= f.collection_select :author_id, @authors, :id, :fullname, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
+  <%= f.collection_select :author_id, @authors, :id, :fullname, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
   </div>
 </p>
 </fieldset>

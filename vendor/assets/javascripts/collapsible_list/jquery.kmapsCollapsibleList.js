@@ -2,37 +2,37 @@
 // scripts and/or other plugins which may not be closed properly.
 ;( function( $, window, document, undefined ) {
 
-	"use strict";
+  "use strict";
 
-		// undefined is used here as the undefined global variable in ECMAScript 3 is
-		// mutable (ie. it can be changed by someone else). undefined isn't really being
-		// passed in so we can ensure the value of it is truly undefined. In ES5, undefined
-		// can no longer be modified.
+    // undefined is used here as the undefined global variable in ECMAScript 3 is
+    // mutable (ie. it can be changed by someone else). undefined isn't really being
+    // passed in so we can ensure the value of it is truly undefined. In ES5, undefined
+    // can no longer be modified.
 
-		// window and document are passed through as local variables rather than global
-		// as this (slightly) quickens the resolution process and can be more efficiently
-		// minified (especially when both are regularly referenced in your plugin).
+    // window and document are passed through as local variables rather than global
+    // as this (slightly) quickens the resolution process and can be more efficiently
+    // minified (especially when both are regularly referenced in your plugin).
 
-		// Create the defaults once
-		var pluginName = "kmapsCollapsibleList",
-			defaults = {
+    // Create the defaults once
+    var pluginName = "kmapsCollapsibleList",
+      defaults = {
         recurse: false,
-				selector: "collapsibleList"
-			};
+        selector: "collapsibleList"
+      };
 
-		// The actual plugin constructor
-		function kmapsCollapsibleListPlugin ( element, options ) {
-			this.element = element;
+    // The actual plugin constructor
+    function kmapsCollapsibleListPlugin ( element, options ) {
+      this.element = element;
 
-			// jQuery has an extend method which merges the contents of two or
-			// more objects, storing the result in the first object. The first object
-			// is generally empty as we don't want to alter the default options for
-			// future instances of the plugin
-			this.settings = $.extend( {}, defaults, options );
-			this._defaults = defaults;
-			this._name = pluginName;
+      // jQuery has an extend method which merges the contents of two or
+      // more objects, storing the result in the first object. The first object
+      // is generally empty as we don't want to alter the default options for
+      // future instances of the plugin
+      this.settings = $.extend( {}, defaults, options );
+      this._defaults = defaults;
+      this._name = pluginName;
       this.currentListId = makeid(5);
-			this.init();
+      this.init();
     }
 
   function makeid(len) {
@@ -47,9 +47,9 @@
   }
 
 
-		// Avoid Plugin.prototype conflicts
-		$.extend( kmapsCollapsibleListPlugin.prototype, {
-			init: function() {
+    // Avoid Plugin.prototype conflicts
+    $.extend( kmapsCollapsibleListPlugin.prototype, {
+      init: function() {
         var plugin = this;
         $(plugin.element).children('li').each(function(){
             var li = this;
@@ -65,7 +65,7 @@
               $(ul).css('display', 'block');
             });
         });
-			},
+      },
       getCurrentId: function getCurrentId(generate){
         var plugin = this;
         if(generate){
@@ -132,7 +132,7 @@
         });
 
       }
-		} );
+    } );
 
     // See https://github.com/jquery-boilerplate/jquery-boilerplate/wiki/Extending-jQuery-Boilerplate
     $.fn[pluginName] = function (options) {

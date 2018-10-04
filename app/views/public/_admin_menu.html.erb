@@ -1,8 +1,8 @@
-<%	lang_path = change_language_session_path('a').chop %>
+<%  lang_path = change_language_session_path('a').chop %>
 <%= javascript_on_load do %>
       $('body').on('ifChecked', 'input.optionlang', function() {
-		  window.location.pathname = '<%= lang_path %>' + $(this).val(); });
-<%  end	%>
+      window.location.pathname = '<%= lang_path %>' + $(this).val(); });
+<%  end  %>
 <!-- LOAD menus -->
 <section id="menu" class="menu-main" style="display:none;">
   <nav id="menu-drill" role="navigation">

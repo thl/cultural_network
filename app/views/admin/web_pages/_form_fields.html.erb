@@ -8,7 +8,7 @@
     </ul>
   </div>
 <% end %>
-<fieldset>	
+<fieldset>
   <legend><%= ts(:for, :what => WebPage.model_name.human(:count => :many), :whom => t('citation.of', :what => object.citation.citable.id)) %></legend>
   <div class="row">
 <%= f.label(:title).s %>

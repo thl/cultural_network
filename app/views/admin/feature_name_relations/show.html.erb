@@ -32,7 +32,7 @@
     <label><%= ts 'is.orthographic', :this => feature_name_label(object.child_node), :that => feature_name_label(object.parent_node) %></label>
     <div><%= yes_no object.is_orthographic %></div>
     <div><%= def_if_blank(object, :orthographic_system, :name) { '' } %></div>
-  </div>	
+  </div>
   <br/>
   <div class="inlineRow">
     <label><%= ts 'is.alt_spelling', :this => feature_name_label(object.child_node), :that => feature_name_label(object.parent_node) %></label>

@@ -1,29 +1,29 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  
+
   # Required for truncate_html
   require 'rexml/parsers/pullparser'
-  
+
   def side_column_links
     str = "<h3 class=\"head\">#{link_to 'Place Dictionary', '#nogo', {:hreflang => 'Manages geographical features.'}}</h3>\n<ul>\n"
     str += "<li>#{link_to 'Home', root_path, {:hreflang => 'Search and navigate through places.'}}</li>\n"
-	  str += "<li>#{link_to 'Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20end%20user%20manual.html', {:hreflang => 'End User Manual'}}</li>"
+    str += "<li>#{link_to 'Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20end%20user%20manual.html', {:hreflang => 'End User Manual'}}</li>"
     str += "<li>#{link_to 'Edit', admin_root_path, {:hreflang => 'Manage places.'}}</li>\n" if logged_in?
     str += "<li>#{link_to 'Editing Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20editorial%20manual.html', {:hreflang => 'Editorial Manual'}}</li>" if logged_in?
     str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{SubjectsIntegration::Feature.get_url('20')}", {:hreflang => 'Feature Thesaurus'}}</li>" if defined?(SubjectsIntegration)
     str += "</ul>"
     return str.html_safe
   end
-  
+
   #
   #
   #
   def blank_label; '-'; end
-  
+
   def breadcrumb_separator
     "<span class=\"icon shanticon-arrow3-right\"></span>"
   end
-  
+
   def page_header_title
     if @feature.nil?
       ts('app.short')
@@ -32,7 +32,7 @@ module ApplicationHelper
       name.nil? ? @feature.pid : name.name
     end
   end
-  
+
   #
   # Creates a breadcrumb trail to the feature
   #
@@ -51,21 +51,21 @@ module ApplicationHelper
     end
     # content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
   end
-  
+
   #
   # Creates a breadcrumb trail to the feature name
   #
   def fname_breadcrumb(feature_name)
     acts_as_family_tree_breadcrumb(feature_name) {|r| fname_label(r)}
   end
-	
-	def concise_fname_breadcrumb(feature_name)
-	  label = ""
-	  feature_name.all_parents.size.times { label << "> "}
-	  label << fname_label(feature_name)
+
+  def concise_fname_breadcrumb(feature_name)
+    label = ""
+    feature_name.all_parents.size.times { label << "> "}
+    label << fname_label(feature_name)
     label.html_safe
-	end
-  
+  end
+
   #
   # Accepts an instance of an ActsAsFamilyTree node and creates a breadcrumb trail from it's ancestors
   # Can pass a block for item formatting
@@ -81,7 +81,7 @@ module ApplicationHelper
       block_given? ? yield(r) : r.to_s
     end.join(sep)
   end
-    
+
   #
   # Returns the blank_label method output
   # if the path to the value is invalid or blank
@@ -101,7 +101,7 @@ module ApplicationHelper
     end
     obj
   end
-  
+
   #
   #
   #
@@ -109,7 +109,7 @@ module ApplicationHelper
     sep = block_given? ? yield : ' - '
     dates.compact.collect {|date| date.to_formatted_s(:us_date)}.join(sep)
   end
-  
+
   #
   #
   #
@@ -118,7 +118,7 @@ module ApplicationHelper
     html_attrs[:title] ||= h(feature.name)
     content_tag(:span, fname_labels(feature), html_attrs)
   end
-  
+
   #
   #
   #
@@ -130,7 +130,7 @@ module ApplicationHelper
     name = name.s if !options[:s].nil? && options[:s]
     link_to(name, url, html_attrs)
   end
-  
+
   #
   # This should be getting the class from the writing system, not language
   #
@@ -147,66 +147,62 @@ module ApplicationHelper
       fname_label(name)
     end
   end
-  
+
   def fname_label(feature_name)
     css_class=feature_name.writing_system.nil? ? nil : feature_name.writing_system.code
     content_tag(:span, h(feature_name.to_s), {:class=>css_class})
   end
-  
+
   def description_title(d)
     title = d.title.blank? ? "Essay" : d.title
     authors = d.authors.empty? ? "" : " <span class='by'> by </span><span class='content_by'>#{join_with_and(d.authors.collect(&:fullname))}</span><span class='by'> in </span><span class='content_by'>#{d.language.name}</span>"
     date = " <span class='last_updated'>(#{h(d.updated_at.to_date.to_formatted_s(:long))})</span>"
     "#{title}#{authors}#{date}".html_safe
   end
-  
+
   def description_simple_title(d)
     d.title.blank? ? "Essay" : d.title
   end
-  
+
   #
   #
   #
   def note_popup_link_for(object, options={})
-    unless options[:association_type].blank?
-      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
-        notes = object.association_notes_for(options[:association_type])
-        link_url = polymorphic_path([object, :association_notes], :association_type => options[:association_type])
-      end
-    else
+    if options[:association_type].blank?
       if object.respond_to?(:notes) && object.public_notes.length > 0
         notes = object.public_notes
         link_url = polymorphic_path([object, :notes])
       end
+    else
+      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
+        notes = object.association_notes_for(options[:association_type])
+        link_url = polymorphic_path([object, :association_notes], :association_type => options[:association_type])
+      end
     end
-    unless notes.nil?
-      link_title = notes.collect{|n| (n.title.nil? ? 'Note' : n.title) + (" by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0).to_s}.join(', ')
-      link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-      ("<span class='has-draggable-popups note-popup-link'>" +
-        link_to("", link_url, :class => "popup-link-icon note-popup-link-icon shanticon-stack "+link_classes, :title => Note.model_name.human(count: notes.count).titleize,  data: {:"js-kmaps-popup" => link_url }) +
-        #link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => Note.model_name.human(count: notes.count).titleize, data: {:"js-kmaps-popup" => link_url }) +
-      "</span>").html_safe
+    if defined?(notes) && !notes.nil?
+      content_tag :span, class: 'has-draggable-popups note-popup-link' do
+        link_to("", link_url,
+               :class => 'popup-link-icon note-popup-link-icon shanticon-stack draggable-pop no-view-alone overflow-y-auto height-350',
+               :title => Note.model_name.human(count: notes.count).titleize,  data: {'js-kmaps-popup' => link_url })
+      end.html_safe
     else
       ""
     end
   end
   def citation_popup_link_for(object, options={})
-    if object.respond_to?(:citations) && !object.citations.empty?
-      citations = object.citations
-      link_url = polymorphic_path([object, :citations])
-    end
-    unless citations.nil?
-      link_title = citations.collect{|c| (c.citable_type.nil? ? 'Citation' : c.citable_type) + (" source type: #{c.info_source_type}").to_s}.join(', ')
-      link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-      ("<span class='has-draggable-popups citation-popup-link'>" +
-        link_to("", link_url, :class => "popup-link-icon citation-popup-link-icon shanticon-sources "+link_classes, :title => Citation.model_name.human(count: citations.count).titleize, data: {:"js-kmaps-popup" => link_url }) +
-        #link_to("See Citation", link_url, :class => "citation-popup-link-text "+link_classes, :title => Citation.model_name.human(count: citations.count).titleize, data: {:"js-kmaps-popup" => link_url }) +
-      "</span>").html_safe
+    if object.respond_to?(:citations) && !object.citations.blank?
+      content_tag :span, class: 'has-draggable-popups citation-popup-link' do
+        link_url = polymorphic_path([object, :citations])
+        link_to('', link_url,
+               class: 'popup-link-icon citation-popup-link-icon shanticon-sources draggable-pop no-view-alone overflow-y-auto height-350',
+               title: Citation.model_name.human(count: object.citations.count).titleize,
+               data: {'js-kmaps-popup' => link_url })
+      end.html_safe
     else
-      ""
+      ''
     end
   end
-  
+
   #
   #
   #
@@ -221,7 +217,7 @@ module ApplicationHelper
         link_url = polymorphic_path([object, :notes])
       end
     end
-    if !notes.nil? && notes.length > 0 
+    if !notes.nil? && notes.length > 0
       # Wrapping this in a <p /> makes its font size incorrect, so for now, we'll achieve the top margin with
       # a <br />.
       ('<br />
@@ -249,7 +245,7 @@ module ApplicationHelper
       '</ul>').html_safe
     end
   end
-  
+
   #
   #
   #
@@ -275,7 +271,7 @@ module ApplicationHelper
       #{link_to(link_title, link_url, class: link_classes, title: h(citation_citable_type))}
     </span>".html_safe
   end
-  
+
   #
   #
   #
@@ -289,7 +285,7 @@ module ApplicationHelper
   def has_time_units(object)
     object.respond_to?(:time_units) && object.time_units.exists?
   end
-  
+
   #
   # Allows for specification of what model names should be displayed as to users (e.g. "location" instead of "shape")
   #
@@ -304,33 +300,33 @@ module ApplicationHelper
     }
     names[str].nil? ? str : names[str]
   end
-    
+
   #
   #
   #
   def yes_no(value)
     (value.nil? || value==0 || value=='false' || value == false) ? ts(:negation) : ts(:affirmation)
   end
-  
+
   #
   #
   #
   def highlight(string)
     ('<span class="highlight">' + string + '</span>').html_safe
   end
-    
+
   def custom_secondary_tabs(current_tab_id=:place)
 
     @tab_options ||= {}
-    
+
     if @tab_options[:entity].blank?
       tabs = {}
     else
       tabs = custom_secondary_tabs_list
     end
-    
+
     current_tab_id = :place unless (tabs.keys << :home).include? current_tab_id
-    
+
     tabs = tabs.sort_by{ |t| t[1][:index] }.collect{|tab_id, tab|
       remove_tab = false
       if tab[:url].blank? && !@tab_options[:entity].blank?
@@ -355,13 +351,13 @@ module ApplicationHelper
         tab_url = tab[:url]
       end
       title = count.nil? ? tab[:title] : "#{tab[:title]} <span class=\"badge\">#{count}</span>"
-      
+
       remove_tab ? nil : [tab_id, title, url, tab[:shanticon]]
     }.reject{|t| t.nil?}
-    
+
     tabs
   end
-  
+
   # TODO: Add rules here based on language of name and perspective.
   def apply_name_preference(names)
     return [] if names.empty?
@@ -393,7 +389,7 @@ module ApplicationHelper
       filtered.uniq # in case any dupes get added
     end
   end
-  
+
   def join_with_and(list)
     size = list.size
     case size
@@ -403,14 +399,14 @@ module ApplicationHelper
     when 3 then [list[0..size-2].join(', '), list[size-1]].join(', and ')
     end.s
   end
-  
+
   # Custom HTML truncate for PD descriptions, which don't always validate
   def truncate_html(input, len = 30, extension = "...")
     #output = input
     #output.gsub!(/<\/p>\s*<p>/iu, "<br /><br />")
     #output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
     #output.gsub!(/<br.*?>/, "\v")
-    
+
     # We need to be able to call .s on the input, but not on the extension, so we
     # have to use a modified version of truncate() instead of truncate() itself.
     # output = truncate(input, :length => len, :omission => extension)
@@ -418,13 +414,13 @@ module ApplicationHelper
     # Temporarily removing .s, as it takes a while to run on long strings
     #output = (chars.length > len ? chars[0...l].s + extension : input).to_s
     #output = input.size > len ? input[0...l] + extension : input
-    
+
     output = strip_tags(input)
     output.strip!
     #output.gsub!(/\v/, "<br />")
     return (output.size < len ?  output : (output[0...l] + extension)).html_safe
   end
-  
+
   # HTML truncate for valid HTML, requires REXML::Parsers::PullParser
   def truncate_well_formed_html(input, len = 30, extension = "...")
     def attrs_to_s(attrs)
@@ -456,7 +452,7 @@ module ApplicationHelper
 
     (results.to_s + (input.length > len ? extension : '')).html_safe
   end
-  
+
   # Override the default page_entries_info from will_paginate
   def page_entries_info(collection, options = {})
     entry_name = options[:entry_name] ||
@@ -475,23 +471,23 @@ module ApplicationHelper
       ]
     end).html_safe
   end
-  
+
   def pictures_url(feature)
     pictures_associated_medium_path(feature.fid)
   end
-  
+
   def videos_url(feature)
     videos_associated_medium_path(feature.fid)
   end
-  
+
   def documents_url(feature)
     documents_associated_medium_path(feature.fid)
   end
-  
+
   def object_authorized?(o)
     current_user.object_authorized?(o)
   end
-  
+
   def contextual_feature
     return @contextual_feature if !@contextual_feature.nil?
     feature = nil

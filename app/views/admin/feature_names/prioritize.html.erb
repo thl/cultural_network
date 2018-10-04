@@ -1,9 +1,9 @@
 <%= javascript_include_tag 'kmaps_engine/jquery.ajax.sortable' %>
 <%= javascript_on_load do %>
-	jQuery('#featureNamesList').ajaxSortable({
-		action: '<%= set_priorities_admin_feature_names_path %>',
-		object_id: <%= @feature.id.to_s %>
-	});
+  jQuery('#featureNamesList').ajaxSortable({
+    action: '<%= set_priorities_admin_feature_names_path %>',
+    object_id: <%= @feature.id.to_s %>
+  });
 <% end
    add_breadcrumb_item feature_link(@feature)
    add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.names')) %>

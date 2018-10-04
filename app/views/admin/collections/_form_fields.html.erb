@@ -28,6 +28,6 @@
 <%=  render partial: 'shared/double_select', locals: { available_options_title: "#{t(:available, what: AuthenticatedSystem::User.model_name.human(count: :many))}:",
      associated_options_title: t('associate.d.record', what: AuthenticatedSystem::User.model_name.human(count: :many)),
      associated_options: object.users.collect { |u| [u.screen_name, u.id]},
-	 associated_options_tag: 'collection[user_ids]',
+   associated_options_tag: 'collection[user_ids]',
      all_options: @users.collect { |u| [u.screen_name, u.id]} } %>
 </fieldset>

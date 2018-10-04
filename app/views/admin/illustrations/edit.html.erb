@@ -38,18 +38,18 @@
 <%=         picture_fields.label :caption, ExternalPicture.human_attribute_name(:caption).s %>
 <%=         picture_fields.text_field :caption, class: [:text, 'text-full form-control form-text'] %>
           </div>
-	      <div class="row">
+        <div class="row">
 <%=         picture_fields.label :place_id, ExternalPicture.human_attribute_name(:place_id).s %>
 <%=         picture_fields.text_field :place_id, class: [:text, 'text-full form-control form-text'] %>
-	      </div>
+        </div>
 
-<%      end 
+<%      end
       end %>
-	  <div class="row">
+    <div class="row">
 <%=     f.label(:is_primary).s %>
 <%=     f.radio_button(:is_primary, :true ) %><b><%= ts(:affirmation) %></b>&nbsp;&nbsp;
 <%=     f.radio_button(:is_primary, :false ) %><b><%= ts(:negation) %></b>
-	  </div>
+    </div>
 <%=   link_to ts('cancel.this'), collection_path, class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %>
 <%  end %>
   </div> <!-- END panel-body -->

@@ -83,8 +83,8 @@ class Admin::DescriptionsController < AclController
   #def render_descriptions
   #  #find a way to save selected expanded description
   #  render :update do |page|
-	#    yield(page) if block_given?
-	#    page.replace_html 'descriptions_div', :partial => 'admin/descriptions/index', :locals => { :feature => parent_object, :description => @d}
-	#  end
-	#end
+  #    yield(page) if block_given?
+  #    page.replace_html 'descriptions_div', :partial => 'admin/descriptions/index', :locals => { :feature => parent_object, :description => @d}
+  #  end
+  #end
 end
