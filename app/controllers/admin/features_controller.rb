@@ -24,9 +24,13 @@ class Admin::FeaturesController < AclController
     end
   end
   
+  create.before do
+    object.skip_update = true
+  end
+  
   create.after do |r|
     if !object.id.nil?
-      object.names.create(feature_name_params)
+      object.names.create(feature_name_params.merge(skip_update: true))
       relation = object.all_parent_relations.create(feature_relation_params)
       affiliations = object.affiliations
       relation.parent_node.affiliations.where(descendants: true).each { |a| affiliations.create(perspective_id: a.perspective.nil? ? nil : a.perspective.id, collection_id: a.collection.id, descendants: true) }

@@ -16,15 +16,22 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   end
   
   def expire_cache(record)
+    return if record.skip_update
     if record.instance_of? Feature
       feature = record
       return if feature.ancestor_ids_changed?
     elsif record.instance_of?(FeatureRelation)
       feature = record.child_node
+      Rails.cache.delete("features/#{feature.fid}/parent_by_perspective/#{record.perspective_id}")
+      Rails.cache.delete("features/#{feature.fid}/closest_parent_by_perspective/#{record.perspective_id}")
+      Rails.cache.delete("features/#{feature.fid}/closest_hierarchical_feature_by_perspective/#{record.perspective_id}")
+      Rails.cache.delete("features/#{feature.fid}/ancestors_by_perspective/#{record.perspective_id}")
+      Rails.cache.delete("features/#{feature.fid}/closest_ancestors_by_perspective/#{record.perspective_id}")
     else #if record.instance_of? FeatureName
       feature = record.feature
     end
     options = {:only_path => true}
+    # Relevant for solr:
     if feature.destroyed?
       feature.remove!
     elsif feature.is_public?
