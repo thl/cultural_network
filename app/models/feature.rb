@@ -543,6 +543,7 @@ class Feature < ActiveRecord::Base
     end
     names = self.names
     names.select(:writing_system_id).distinct.collect(&:writing_system).each do |w|
+      next if w.nil?
       key_arr = ['name', w.code] #name.language.code]
       key_str = key_arr.join('_')
       names.where(writing_system: w).each do |name|
