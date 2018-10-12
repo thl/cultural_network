@@ -443,6 +443,10 @@ class Feature < ActiveRecord::Base
   def uid
     "#{Feature.uid_prefix}-#{self.fid}"
   end
+  
+  def uid_i
+    self.fid*100 + Feature.uid_code
+  end
 
   def related_features_count
     response = Feature.search_by("{!child of=block_type:parent}id:#{self.uid}", group: true,
@@ -467,7 +471,8 @@ class Feature < ActiveRecord::Base
   def document_for_rsolr
     doc = defined?(super) ? super : nested_documents_for_rsolr
     v = View.get_by_code(KmapsEngine::ApplicationSettings.default_view_code)
-    doc[:id] = uid
+    doc[:id] = self.uid
+    doc[:uid_i] = self.uid_i
     name = self.prioritized_name(v)
     doc[:header] = name.nil? ? self.pid : name.name
     doc[:position_i] = self.position
