@@ -272,6 +272,13 @@ module ApplicationHelper
     </span>".html_safe
   end
 
+  def feature_assets_popup(feature_id)
+    content_tag :span, class: 'popover-kmaps', data: { id: feature_id } do
+      concat content_tag(:span,'', class: 'popover-kmaps-tip')
+      concat content_tag(:span, '', class: 'icon shanticon-menu3')
+    end
+  end
+
   #
   #
   #
@@ -500,7 +507,6 @@ module ApplicationHelper
     when :feature_name_relation then parent_object.child_node.feature
     else nil
     end if feature.nil? && defined?(parent_type)
-    logger.debug { "Session:#{session.inspect}" }
     feature = object.feature if feature.nil? && defined?(object) && object.respond_to?(:feature)
     if feature.nil? || feature.id.nil?
       context_id = session[:interface].blank? ? nil : session[:interface][:context_id]
