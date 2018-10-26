@@ -9,6 +9,10 @@ class Admin::NotesController < AclController
     @guest_perms = []
   end
 
+  new_action.before do
+    object.notable_type = parent_object.class.name
+  end
+  
   edit.before {@authors = AuthenticatedSystem::Person.order('fullname') }
 
   create.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }

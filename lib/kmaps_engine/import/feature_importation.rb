@@ -1,4 +1,5 @@
 require 'kmaps_engine/import/importation'
+#require KmapsEngine::Engine.root.join('app', 'models', 'language').to_s
 
 module KmapsEngine
   class FeatureImportation < Importation

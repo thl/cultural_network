@@ -1,11 +1,15 @@
 class Admin::CitationsController < AclController
   resource_controller
-  belongs_to :description, :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_geo_code
+  belongs_to :caption, :description, :feature, :feature_geo_code, :feature_name, :feature_name_relation, :feature_relation, :summary
   before_action :collection
   
   def initialize
     super
     @guest_perms = []
+  end
+  
+  new_action.before do
+    object.citable_type = parent_object.class.name
   end
   
   create.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }
