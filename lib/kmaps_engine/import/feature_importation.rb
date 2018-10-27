@@ -356,7 +356,7 @@ module KmapsEngine
             name_changed = true
           end
           if name[n].id.nil?
-            puts "Name #{name_str} could not be added to feature #{self.feature.pid}. #{name[n].errors.messages.to_s}
+            puts "Name #{name_str} could not be added to feature #{self.feature.pid}. #{name[n].errors.messages.to_s}"
             next
           end
         end
@@ -769,6 +769,5 @@ module KmapsEngine
         end
       end
     end
-    
   end
 end
