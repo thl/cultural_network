@@ -133,7 +133,6 @@ module KmapsEngine
                   end
                 end
                 if !volume_str.blank?
-                  volume_str.strip!
                   volume = volume_str.to_i if !volume_str.blank?
                 end
                 conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
@@ -357,7 +356,7 @@ module KmapsEngine
             name_changed = true
           end
           if name[n].id.nil?
-            puts "Name #{name_str} could not be added to feature #{self.feature.pid}."
+            puts "Name #{name_str} could not be added to feature #{self.feature.pid}. #{name[n].errors.messages.to_s}
             next
           end
         end
