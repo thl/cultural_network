@@ -3,10 +3,12 @@ require 'kmaps_engine/import/importation'
 
 module KmapsEngine
   class FeatureImportation < Importation
+    STATUS_LENGTH = 50
     attr_accessor :feature
+    attr_accessor :log
 
-    def self.say msg
-      Rails.logger.info "IMPORTER COMMENT (#{Time.now.to_s}): #{msg}"
+    def say(msg)
+      self.log.error { "#{Time.now}: #{msg}" }
     end
 
     # Currently supported fields:
@@ -61,20 +63,20 @@ module KmapsEngine
             if !source_name.blank?
               info_source = OralSource.find_by_name(source_name)
               info_source_type = 'OralSource'
-              puts "Oral source with name #{source_name} was not found." if info_source.nil?
+              self.say "Oral source with name #{source_name} was not found." if info_source.nil?
             end
           else
             info_source = MmsIntegration::Document.find_by_original_medium_id(info_source_code)
             info_source_type = 'MmsIntegration::Medium'
-            puts "Info source with code #{info_source_code} was not found." if info_source.nil?
+            self.say "Info source with code #{info_source_code} was not found." if info_source.nil?
           end
         else
           info_source = MmsIntegration::Medium.find(info_source_id)
           info_source_type = 'MmsIntegration::Medium'
-          puts "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
+          self.say "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
         end              
       rescue Exception => e
-        puts e.to_s
+        self.say e.to_s
       end
       if !info_source.nil?
         notes = self.fields.delete("#{field_prefix}.info_source.note")
@@ -94,7 +96,7 @@ module KmapsEngine
           end
         end
         if citation.nil?
-          puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
+          self.say "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
         elsif info_source_type.start_with?('MmsIntegration')
           0.upto(2) do |j|
             prefix = j==0 ? "#{field_prefix}.info_source" : "#{field_prefix}.info_source.#{j}"
@@ -173,7 +175,7 @@ module KmapsEngine
           self.spreadsheet.imports.create(item: note) if note.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
         note.authors << author if !note.nil? && !author.nil? && !note.author_ids.include?(author.id)
-        puts "Note #{note_str} could not be added to #{notable.class_name.titleize} #{notable.id}." if note.nil?
+        self.say "Note #{note_str} could not be added to #{notable.class_name.titleize} #{notable.id}." if note.nil?
       end
     end
 
@@ -186,19 +188,19 @@ module KmapsEngine
       if fid.blank?
         old_pid = self.fields.delete('features.old_pid')
         if old_pid.blank?
-          puts "Either a \"features.fid\" or a \"features.old_pid\" must be present in line #{current}!"
+          self.say "Either a \"features.fid\" or a \"features.old_pid\" must be present in line #{current}!"
           return false
         end
 
         feature = Feature.find_by(old_pid: old_pid)
         if feature.nil?
-          puts "Feature with old pid #{old_pid} was not found."
+          self.say "Feature with old pid #{old_pid} was not found."
           return false
         end
       else
         feature = Feature.get_by_fid(fid)
         if feature.nil?
-          puts "Feature with THL ID #{fid} was not found."
+          self.say "Feature with THL ID #{fid} was not found."
           return false
         end
       end
@@ -263,7 +265,7 @@ module KmapsEngine
             note = association_notes.create(:association_type => 'FeatureName', :content => feature_names_note)
             self.spreadsheet.imports.create(:item => note) if note.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
-          puts "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
+          self.say "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
         end
       end
       name = Array.new(total)
@@ -282,7 +284,7 @@ module KmapsEngine
         if !relationship_system_code.blank?
           relationship_system = SimpleProp.get_by_code(relationship_system_code)
           if relationship_system.nil?
-            puts "Phonetic or orthographic system with code #{relationship_system_code} was not found for feature #{self.feature.pid}."
+            self.say "Phonetic or orthographic system with code #{relationship_system_code} was not found for feature #{self.feature.pid}."
           else
             if relationship_system.instance_of? OrthographicSystem
               orthographic_system = relationship_system
@@ -291,19 +293,19 @@ module KmapsEngine
             elsif relationship_system.instance_of? AltSpellingSystem
               alt_spelling_system = relationship_system
             else
-              puts "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
+              self.say "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
             end
           end
         else
           begin
             orthographic_system = OrthographicSystem.get_by_code_or_name(self.fields.delete("#{i}.orthographic_systems.code"), self.fields.delete("#{i}.orthographic_systems.name"))
           rescue Exception => e
-            puts e.to_s
+            self.say e.to_s
           end
           begin
             phonetic_system = PhoneticSystem.get_by_code_or_name(self.fields.delete("#{i}.phonetic_systems.code"), self.fields.delete("#{i}.phonetic_systems.name"))
           rescue Exception => e
-            puts e.to_s
+            self.say e.to_s
           end
         end
         if !existing
@@ -311,18 +313,18 @@ module KmapsEngine
           begin
             language = Language.get_by_code_or_name(self.fields.delete("#{i}.languages.code"), self.fields.delete("#{i}.languages.name"))
           rescue Exception => e
-            puts e.to_s
+            self.say e.to_s
           end
           begin
             writing_system = WritingSystem.get_by_code_or_name(self.fields.delete("#{i}.writing_systems.code"), self.fields.delete("#{i}.writing_systems.name"))
             conditions[:writing_system_id] = writing_system.id if !writing_system.nil?
           rescue Exception => e
-            puts e.to_s
+            self.say e.to_s
           end
           begin
             alt_spelling_system = AltSpellingSystem.get_by_code_or_name(self.fields.delete("#{i}.alt_spelling_systems.code"), self.fields.delete("#{i}.alt_spelling_systems.name"))
           rescue Exception => e
-            puts e.to_s
+            self.say e.to_s
           end
           # if language is not specified it may be inferred.
           if language.nil?
@@ -356,7 +358,7 @@ module KmapsEngine
             name_changed = true
           end
           if name[n].id.nil?
-            puts "Name #{name_str} could not be added to feature #{self.feature.pid}. #{name[n].errors.messages.to_s}"
+            self.say "Name #{name_str} could not be added to feature #{self.feature.pid}. #{name[n].errors.messages.to_s}"
             next
           end
         end
@@ -377,13 +379,13 @@ module KmapsEngine
           if !phonetic_system.nil? && (phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip')
             parent_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(prioritized_names, WritingSystem.get_by_code('tibt').id)
             if parent_name.nil?
-              puts "No tibetan name was found to associate #{phonetic_system.code} to #{name_str} for feature #{self.feature.pid}."
+              self.say "No tibetan name was found to associate #{phonetic_system.code} to #{name_str} for feature #{self.feature.pid}."
             else
               name_relation = name[n].parent_relations.find_by(parent_node_id: parent_name.id)
               if name_relation.nil?
                 name_relation = name[n].parent_relations.create(:skip_update => true, :parent_node_id => parent_name.id, :phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :is_phonetic => 1, :is_translation => is_translation)
                 if name_relation.nil?
-                  puts "Could not associate #{name_str} to Tibetan name for feature #{self.feature.pid}."
+                  self.say "Could not associate #{name_str} to Tibetan name for feature #{self.feature.pid}."
                 else
                   parent_name.update_hierarchy
                   name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
@@ -404,7 +406,7 @@ module KmapsEngine
                 name_relation = name[n].child_relations.create(:skip_update => true, :is_orthographic => 1, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :is_translation => is_translation, :child_node_id => simp_chi_name.id)
                 self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
                 if name_relation.nil?
-                  puts "Could not make #{name_str} a parent of simplified chinese name for feature #{self.feature.pid}"
+                  self.say "Could not make #{name_str} a parent of simplified chinese name for feature #{self.feature.pid}"
                 else
                   simp_chi_name.update_hierarchy
                   name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
@@ -446,7 +448,7 @@ module KmapsEngine
             if !parent_name_str.blank?
               parent_name = prioritized_names.detect{|fn| fn.name==parent_name_str}
               if parent_name.nil?
-                puts "Parent name #{parent_name_str} of #{name[n].name} for feature #{self.feature.pid} not found."
+                self.say "Parent name #{parent_name_str} of #{name[n].name} for feature #{self.feature.pid} not found."
               else
                 name << parent_name
                 parent_position = name.size - 1
@@ -464,13 +466,13 @@ module KmapsEngine
         pending_relation = item[:relation]
         parent_node = name[item[:parent_position]]
         if parent_node.nil?
-          puts "Parent name #{item[:parent_position]} of #{pending_relation.child_node.id} for feature #{self.feature.pid} not found."
+          self.say "Parent name #{item[:parent_position]} of #{pending_relation.child_node.id} for feature #{self.feature.pid} not found."
         else
           relation = pending_relation.child_node.parent_relations.find_by(parent_node_id: parent_node.id)
           if relation.nil?
             pending_relation.parent_node = parent_node
             relation = pending_relation.save
-            puts "Relation between names #{relation.child_note.name} and #{relation.parent_node.name} for feature #{self.feature.pid} could not be saved." if relation.nil?              
+            self.say "Relation between names #{relation.child_note.name} and #{relation.parent_node.name} for feature #{self.feature.pid} could not be saved." if relation.nil?              
           end        
         end
       end
@@ -496,12 +498,12 @@ module KmapsEngine
         begin
           geocode_type = GeoCodeType.get_by_code_or_name(self.fields.delete("#{i}.geo_code_types.code"), self.fields.delete("#{i}.geo_code_types.name"))
         rescue Exception => e
-          puts e.to_s
+          self.say e.to_s
         end
         next if geocode_type.nil?
         geocode_value = self.fields.delete("#{i}.feature_geo_codes.geo_code_value")
         if geocode_value.blank?
-          puts "Geocode value #{geocode_value} required for #{geocode_type.name}."
+          self.say "Geocode value #{geocode_value} required for #{geocode_type.name}."
           next
         end
         geocodes = self.feature.geo_codes
@@ -513,7 +515,7 @@ module KmapsEngine
           self.spreadsheet.imports.create(:item => geocode) if geocode.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
         if geocode.nil?
-          puts "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{self.feature.pid}"
+          self.say "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{self.feature.pid}"
           next
         end
         second_prefix = "#{i}.feature_geo_codes"
@@ -548,7 +550,7 @@ module KmapsEngine
         next if parent_fid.blank?
         parent = Feature.get_by_fid(parent_fid)
         if parent.nil?
-          puts "Parent feature with THL #{parent_fid} not found."
+          self.say "Parent feature with THL #{parent_fid} not found."
           next
         end
         perspective_code = self.fields.delete("#{prefix}perspectives.code")
@@ -556,17 +558,17 @@ module KmapsEngine
         perspective = nil
         if perspective_code.blank? && perspective_name.blank?
           if !replace_relations
-            puts "Perspective type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
+            self.say "Perspective type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
             next
           end
         else
           begin
             perspective = Perspective.get_by_code_or_name(perspective_code, perspective_name)
           rescue Exception => e
-            puts e.to_s
+            self.say e.to_s
           end
           if perspective.nil?
-            puts "Perspective #{perspective_code || perspective_name} was not found."
+            self.say "Perspective #{perspective_code || perspective_name} was not found."
             next
           end
         end
@@ -574,7 +576,7 @@ module KmapsEngine
         relation_type = nil
         if relation_type_str.blank?
           if !replace_relations
-            puts "Feature relation type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
+            self.say "Feature relation type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
             next
           end
         else
@@ -582,7 +584,7 @@ module KmapsEngine
           if relation_type.nil?
             relation_type = FeatureRelationType.get_by_asymmetric_code(relation_type_str)
             if relation_type.nil?
-              puts "Feature relation type #{relation_type_str} was not found."
+              self.say "Feature relation type #{relation_type_str} was not found."
               next
             else
               conditions = { :parent_node_id => self.feature.id, :child_node_id => parent.id }
@@ -616,7 +618,7 @@ module KmapsEngine
           feature_ids_with_changed_relations << self.feature.id if !feature_ids_with_changed_relations.include? self.feature.id
         end
         if feature_relation.nil?
-          puts "Couldn't establish relationship #{relation_type_str} between feature #{self.feature.pid} and #{parent_fid}."
+          self.say "Couldn't establish relationship #{relation_type_str} between feature #{self.feature.pid} and #{parent_fid}."
         else
           second_prefix = "#{prefix}feature_relations"
           0.upto(3) do |j|
@@ -650,7 +652,7 @@ module KmapsEngine
           attributes[:language_id] = language.id if !language.nil?
           if description.nil?
             if language.nil?
-              puts "Language needed to create description for feature #{self.feature.pid}."
+              self.say "Language needed to create description for feature #{self.feature.pid}."
               description = nil
             else
               description = descriptions.create(attributes)
@@ -680,22 +682,22 @@ module KmapsEngine
           author_name = self.fields.delete("#{prefix}.author.fullname")
           language_str = self.fields.delete("#{prefix}.languages.code")
           if language_str.blank?
-            puts "Language required in #{feature.fid} for caption #{caption_content}."
+            self.say "Language required in #{feature.fid} for caption #{caption_content}."
             next
           else
             language = Language.get_by_code(language_str)
             if language.nil?
-              puts "Language #{language_str} not found in #{feature.fid} for caption #{caption_content}."
+              self.say "Language #{language_str} not found in #{feature.fid} for caption #{caption_content}."
               next
             end
           end
           if author_name.blank?
-            puts "Author required in #{feature.fid} for caption #{caption_content}."
+            self.say "Author required in #{feature.fid} for caption #{caption_content}."
             next
           else
             author = AuthenticatedSystem::Person.find_by(fullname: author_name)
             if author.nil?
-              puts "Author #{author_name} not found in #{feature.fid} for caption #{caption_content}."
+              self.say "Author #{author_name} not found in #{feature.fid} for caption #{caption_content}."
               next
             end
           end
@@ -708,7 +710,7 @@ module KmapsEngine
             caption.update_attributes(attributes)
           end
           if caption.id.nil?
-            puts "Caption #{caption_content} not saved for #{feature.fid}."
+            self.say "Caption #{caption_content} not saved for #{feature.fid}."
             next
           end
           self.spreadsheet.imports.create(:item => caption) if caption.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
@@ -730,22 +732,22 @@ module KmapsEngine
           author_name = self.fields.delete("#{prefix}.author.fullname")
           language_str = self.fields.delete("#{prefix}.languages.code")
           if language_str.blank?
-            puts "Language required in #{feature.fid} for summary #{summary_content}."
+            self.say "Language required in #{feature.fid} for summary #{summary_content}."
             next
           else
             language = Language.get_by_code(language_str)
             if language.nil?
-              puts "Language #{language_str} not found in #{feature.fid} for summary #{summary_content}."
+              self.say "Language #{language_str} not found in #{feature.fid} for summary #{summary_content}."
               next
             end
           end
           if author_name.blank?
-            puts "Author required in #{feature.fid} for summary #{summary_content}."
+            self.say "Author required in #{feature.fid} for summary #{summary_content}."
             next
           else
             author = AuthenticatedSystem::Person.find_by(fullname: author_name)
             if author.nil?
-              puts "Author #{author_name} not found in #{feature.fid} for summary #{summary_content}."
+              self.say "Author #{author_name} not found in #{feature.fid} for summary #{summary_content}."
               next
             end
           end
@@ -758,7 +760,7 @@ module KmapsEngine
             summary.update_attributes(attributes)
           end
           if summary.id.nil?
-            puts "Summary #{summary_content} not saved for #{feature.fid}."
+            self.say "Summary #{summary_content} not saved for #{feature.fid}."
             next
           end
           self.spreadsheet.imports.create(:item => summary) if summary.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
@@ -767,6 +769,16 @@ module KmapsEngine
             self.add_info_source(subpref, summary)
           end
         end
+      end
+    end
+    
+    def progress_bar(num, total, current)
+      output = STDERR.tty? ? STDERR : STDOUT
+      if num==total-1
+        output.printf("\r%-#{STATUS_LENGTH*2}s\n", "\rDone. #{num} items processed.")
+      else
+        percentage = num.to_f / total * STATUS_LENGTH
+        output.printf("\rProcessing: [%-#{STATUS_LENGTH}s] - item: %s", '=' * percentage, current)
       end
     end
   end
