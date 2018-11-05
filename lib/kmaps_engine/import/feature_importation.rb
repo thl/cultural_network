@@ -6,9 +6,20 @@ module KmapsEngine
     STATUS_LENGTH = 50
     attr_accessor :feature
     attr_accessor :log
+    attr_accessor :bar
+    attr_accessor :num_errors
+    attr_accessor :valid_point
+    attr_accessor :output
+    
+    def initialize
+      self.output = STDERR.tty? ? STDERR : STDOUT
+      self.reset_progress_bar
+    end
 
     def say(msg)
       self.log.error { "#{Time.now}: #{msg}" }
+      self.num_errors += 1
+      self.valid_point = false
     end
 
     # Currently supported fields:
@@ -772,13 +783,27 @@ module KmapsEngine
       end
     end
     
+    def reset_progress_bar
+      self.bar = ''
+      self.valid_point = true
+      self.num_errors = 0
+    end
+    
     def progress_bar(num, total, current)
-      output = STDERR.tty? ? STDERR : STDOUT
       if num==total-1
-        output.printf("\r%-#{STATUS_LENGTH*2}s\n", "\rDone. #{num} items processed.")
+        self.output.printf("\r%-#{STATUS_LENGTH*2}s\n", "\rDone. #{num} items processed with #{self.num_errors} errors.")
+        self.reset_progress_bar
       else
-        percentage = num.to_f / total * STATUS_LENGTH
-        output.printf("\rProcessing: [%-#{STATUS_LENGTH}s] - item: %s", '=' * percentage, current)
+        longitude = (num.to_f / total * STATUS_LENGTH).to_i
+        if longitude > self.bar.size
+          self.bar << (self.valid_point ? '=' : 'X')
+          self.valid_point = true
+        end
+        if output.tty?
+          self.output.printf("\rProcessing: [%-#{STATUS_LENGTH}s] - item: %s", self.bar, current)
+        else
+          self.output.puts("Processing item #{num}/#{total}: #{current}")
+        end
       end
     end
   end
