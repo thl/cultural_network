@@ -230,8 +230,8 @@ module KmapsEngine
     # 1 to 18) is "i.feature_names.name".
     # Optional columns are "i.languages.code"/"i.languages.name",
     # "i.writing_systems.code"/"i.writing_systems.name",
-    # "i.feature_names.info_source.id"/"i.feature_names.info_source.code"
-    # and "i.feature_names.is_primary"
+    # "i.feature_names.info_source.id"/"i.feature_names.info_source.code",
+    # "i.feature_names.is_primary" and "i.feature_names.etymology"
     # If optional column "i.feature_names.time_units.date" is specified, a date will be
     # associated to the name.
     # Additionally, optional column "i.feature_name_relations.parent_node" can be
@@ -282,9 +282,10 @@ module KmapsEngine
       name = Array.new(total)
       1.upto(total) do |i|
         n = i-1
-        name_str = self.fields.delete("#{i}.feature_names.name")
+        name_tag = "#{i}.feature_names"
+        name_str = self.fields.delete("#{name_tag}.name")
         if name_str.blank?
-          name_str = self.fields.delete("#{i}.feature_names.existing_name")
+          name_str = self.fields.delete("#{name_tag}.existing_name")
           next if name_str.blank?
           name[n] = names.find_by(name: name_str)
           existing = true
@@ -345,10 +346,12 @@ module KmapsEngine
               language = Language.get_by_code('bod') if phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip'
             end
           end
+          etymology = self.fields.delete("#{name_tag}.etymology")
           conditions[:language_id] = language.id if !language.nil?
           name[n] = names.find_by(conditions)
           is_primary = self.fields.delete("#{i}.feature_names.is_primary")
           conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
+          conditions[:etymology] = etymology if !etymology.blank?
           
           # now deal with relationships
           relation_conditions = Hash.new
@@ -363,10 +366,14 @@ module KmapsEngine
               self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
               name_added = true if !name_added
             end
-          elsif !position.blank?
-            name[n].update_attribute(:position, position)
-            self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
-            name_changed = true
+          else
+            name[n].position = position if !position.blank?
+            name[n].etymology = etymology if !etymology.blank?
+            if name[n].changed?
+              name[n].save!
+              self.spreadsheet.imports.create(:item => name[n]) if name[n].imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+              name_changed = true
+            end
           end
           if name[n].id.nil?
             self.say "Name #{name_str} could not be added to feature #{self.feature.pid}. #{name[n].errors.messages.to_s}"
