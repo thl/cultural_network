@@ -796,7 +796,13 @@ module KmapsEngine
       self.num_errors = 0
     end
     
-    def progress_bar(num, total, current)
+    def update_progress_bar(bar:, valid_point:, num_errors:)
+      self.bar = bar
+      self.valid_point = valid_point
+      self.num_errors = num_errors
+    end
+    
+    def progress_bar(num:, total:, current:)
       if num==total-1
         self.output.printf("\r%-#{STATUS_LENGTH*2}s\n", "\rDone. #{num} items processed with #{self.num_errors} errors.")
         self.reset_progress_bar
