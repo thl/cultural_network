@@ -719,16 +719,17 @@ module KmapsEngine
               next
             end
           end
-          conditions = {language_id: language.id, author_id: author.id}
-          attributes = {:content => caption_content}
+          conditions = {language_id: language.id}
+          attributes = {author_id: author.id, :content => caption_content}
           caption = captions.find_by(conditions)
           if caption.nil?
             caption = captions.create(conditions.merge(attributes))
           else
+            self.say "Caption #{caption_content} overwrites previous content #{caption.content} for #{feature.fid}."
             caption.update_attributes(attributes)
           end
           if caption.id.nil?
-            self.say "Caption #{caption_content} not saved for #{feature.fid}."
+            self.say "Caption #{caption_content} not saved for #{feature.fid}.- #{caption.errors.messages}"
             next
           end
           self.spreadsheet.imports.create(:item => caption) if caption.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
@@ -769,12 +770,13 @@ module KmapsEngine
               next
             end
           end
-          conditions = {language_id: language.id, author_id: author.id}
-          attributes = {:content => summary_content}
+          conditions = {language_id: language.id}
+          attributes = {author_id: author.id, :content => summary_content}
           summary = summaries.find_by(conditions)
           if summary.nil?
             summary = summaries.create(conditions.merge(attributes))
           else
+            self.say "Summary #{summary_content} overwrites previous content #{summary.content} for #{feature.fid}."
             summary.update_attributes(attributes)
           end
           if summary.id.nil?
