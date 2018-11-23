@@ -3,7 +3,8 @@ require 'kmaps_engine/import/importation'
 
 module KmapsEngine
   class FeatureImportation < Importation
-    STATUS_LENGTH = 50
+    STATUS_LENGTH = 36
+    FID_LENGTH = 7
     attr_accessor :feature
     attr_accessor :log
     attr_accessor :bar
@@ -815,9 +816,9 @@ module KmapsEngine
           self.valid_point = true
         end
         if output.tty?
-          self.output.printf("\rProcessing: [%-#{STATUS_LENGTH}s] - item: %s", self.bar, current)
+          self.output.printf("\rProcessing %-#{FID_LENGTH}s [%-#{STATUS_LENGTH}s]", current, self.bar)
         else
-          self.output.puts("Processing item #{num}/#{total}: #{current}")
+          self.output.puts("Processing #{current} (#{num}/#{total})")
         end
       end
     end
