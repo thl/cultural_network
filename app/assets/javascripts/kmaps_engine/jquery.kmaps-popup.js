@@ -34,7 +34,10 @@ const POPUP_TYPE_INFO = 1;
       mandalaURL: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
       solrUtils: {}, //requires solr-utils.js library
       type: POPUP_TYPE_ASSET, // {asset, info}
-      infoUrl: ""
+      infoUrl: "",
+      orientation: 'bottom',
+      language: 'eng',
+      defaultLanguage: 'eng'
     };
 
   // The actual plugin constructor
@@ -86,15 +89,20 @@ const POPUP_TYPE_INFO = 1;
                 return title + "<span class='kmapid-display'>" + key + "</span>";
               },
               trigger: 'manual',
-              placement: 'bottom',
+              placement: plugin.options.orientation,
               delay: {hide: 5},
               container: 'body'
             }
             ).on("mouseenter", function (e) {
               var _this = this;
               $(this).popover("show");
-              var offsetW = $(".popover").width()/2;
-              $(".popover").css({left: e.pageX-offsetW });
+              var offsetH = $(".popover").width()/2;
+              var offsetW = $(".popover").height()/2;
+              if( plugin.options.orientation == 'bottom' || plugin.options.orientation == 'top' ) {
+                $(".popover").css({left: e.pageX-offsetW });
+              } else {
+                $(".popover").css({top:  e.pageY - offsetH});
+              }
               $(".popover").on("mouseleave", function () {
                 $(_this).popover('hide');
               });
@@ -106,11 +114,15 @@ const POPUP_TYPE_INFO = 1;
                 }
               }, 300);
             }).on('mousemove',function(e){
-              var offsetH = $(".popover").height();
+              var offsetH = $(".popover").height()/2;
               var offsetW = $(".popover").width()/2;
               var _this = this;
               //$(this).popover("show");
-              $(".popover").css({left: e.pageX-offsetW });
+              if( plugin.options.orientation == 'bottom' || plugin.options.orientation == 'top' ) {
+                $(".popover").css({left: e.pageX-offsetW });
+              } else {
+                $(".popover").css({top:  e.pageY - offsetH});
+              }
             });
 
             jQuery(elem).on('shown.bs.popover', function (x) {
@@ -125,6 +137,23 @@ const POPUP_TYPE_INFO = 1;
                 var title = nodeInfo['title'] === undefined ? "" : nodeInfo['title'];
                 popOverContent.parent().prepend(ancestorsPath);
                 popOverContent.parent().parent().find('.popover-title').prepend(title);
+              });
+              // Another (parallel) query
+              var  asyncNodeCaptions = plugin.options.solrUtils.getNodeCaptions(key);
+              asyncNodeCaptions.then(function(nodeCaptions){
+                if(nodeCaptions['caption_'+plugin.options.language]) {
+                  popOverContent.prepend(nodeCaptions['caption_'+plugin.options.language]);
+                  popOverContent.prepend(nodeCaptions.first);
+                } else if (nodeCaptions['caption_'+plugin.options.defaultLanguage]) {
+                  popOverContent.prepend(nodeCaptions['caption_'+plugin.options.defaultLanguage]);
+                } else {
+                  if (nodeCaptions) {
+                    if (Object.keys(nodeCaptions).length > 0) {
+                      var key = Object.keys(nodeCaptions)[0];
+                      popOverContent.prepend(nodeCaptions[key]);
+                    }
+                  }
+                }
               });
               var popOverFooter = $("<div class='popover-footer'></div>");
               popOverFooter.append("<div class='popover-footer-button'><a href='"+plugin.options.featuresPath.replace("%%ID%%",key.replace(plugin.options.domain+'-',""))+"' class='icon shanticon-link-external' target='_blank'>Full Entry</a></div>");

@@ -15,7 +15,6 @@
 //= require kmaps_engine/popup-ui-handler
 //= require kmaps_engine/top
 //= require kmaps_tree/jquery.fancytree-all.min
-//= require kmaps_engine/jquery.kmapstree
 //= require kmaps_engine/kmaps_typeahead
 //= require kmaps_engine/flyout-kmaps-typeahead
 //= require kmaps_engine/jquery.kmaps-popup

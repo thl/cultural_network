@@ -9,6 +9,10 @@ module KmapsEngine
       KmapsEngine::ApplicationSettings.default_view_code
     end
     
+    def default_relation_type_code
+      KmapsEngine::ApplicationSettings.default_relation_type_code
+    end
+
     def current_perspective
       perspective_id = session[:perspective_id]
       begin

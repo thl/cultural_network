@@ -24,5 +24,13 @@ module KmapsEngine
         str
       end
     end
+
+    def self.default_relation_type_code
+      Rails.cache.fetch("application_settings/#{InterfaceUtils::Server.get_domain}/default_relation_type", :expires_in => 1.day) do
+        str = InterfaceUtils::ApplicationSettings.settings['default.relation_type.code']
+        str = nil if str.blank?
+        str
+      end
+    end
   end
 end
