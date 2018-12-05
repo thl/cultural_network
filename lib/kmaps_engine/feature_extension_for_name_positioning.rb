@@ -108,6 +108,8 @@ module FeatureExtensionForNamePositioning
         name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('ind.transcrip').id)
       # language=dzo: Right now we mostly have only the latin version of these names, which is marked as original.
       when 'dzo'
+        name = HelperMethods.find_name_for_writing_and_phonetic_system(all_names, latin_id, PhoneticSystem.get_by_code('dzo.to.eng.transcrip').id)
+        return name if !name.nil?
         name = HelperMethods.find_name_for_writing_system(all_names, latin_id)
         # Later we will get the writing system=dzongkha or writing system=tibt version, and then this latin version will be demoted to a derivative of those dzongkha script names with writing system=latn , and phonetic_systems=dzo.to.eng.transcript
         # The new rule would look like this:
