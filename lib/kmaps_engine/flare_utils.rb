@@ -104,10 +104,24 @@ module KmapsEngine
             end
           end
           Feature.commit
+          ipc_hash = { bar: self.bar, num_errors: self.num_errors, valid_point: self.valid_point }
+          data = Marshal.dump(ipc_hash)
+          ipc_writer.puts(data.length)
+          ipc_writer.write(data)
+          ipc_writer.flush
+          ipc_writer.close
         end
         Spawnling.wait([sid])
+        size = ipc_reader.gets
+        data = ipc_reader.read(size.to_i)
+        ipc_hash = Marshal.load(data)
+        self.update_progress_bar(bar: ipc_hash[:bar], num_errors: ipc_hash[:num_errors], valid_point: ipc_hash[:valid_point])
         current = limit
       end
+      ipc_writer.close
+      puts "#{Time.now}: Reindexing done."
+      self.log.debug "#{Time.now}: Reindexing done."
+      STDOUT.flush
     end
     
     def self.wait_if_business_hours(daylight)

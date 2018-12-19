@@ -38,7 +38,7 @@ module KmapsEngine
     
     def progress_bar(num:, total:, current:)
       if num==total-1
-        self.output.printf("\r%-#{STATUS_LENGTH*2}s\n", "\rDone. #{num} items processed with #{self.num_errors} errors.")
+        self.output.printf("\r%-#{STATUS_LENGTH*2}s\n", "\rDone. #{total} items processed with #{self.num_errors} errors.")
         self.reset_progress_bar
       else
         longitude = (num.to_f / total * STATUS_LENGTH).to_i
@@ -47,9 +47,9 @@ module KmapsEngine
           self.valid_point = true
         end
         if output.tty?
-          self.output.printf("\rProcessing %-#{FID_LENGTH}s [%-#{STATUS_LENGTH}s]", current, self.bar)
+          self.output.printf("\rProcessed %-#{FID_LENGTH}s [%-#{STATUS_LENGTH}s]", current, self.bar)
         else
-          self.output.puts("Processing #{current} (#{num}/#{total})")
+          self.output.puts("Processed #{current} (#{num}/#{total})")
         end
       end
     end
