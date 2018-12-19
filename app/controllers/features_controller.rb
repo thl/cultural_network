@@ -1,12 +1,5 @@
 class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? || c.request.format.csv? }
-  #caches_page :related
-  caches_action :all,                :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }
-  caches_action :children,           :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
-  caches_action :list,               :cache_path => Proc.new { |c| cache_key_by_params(c, :view_code => true) }
-  caches_action :nested,             :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
-  caches_action :fancy_nested,       :cache_path => Proc.new { |c| cache_key_by_params(c, :perspective_code => true, :view_code => true) }
-  #
   #
   def index
     @feature = Feature.find(session[:interface][:context_id]) unless session[:interface].blank? || session[:interface][:context_id].blank?
@@ -241,35 +234,6 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.xml { render 'nested_collection' if params_id.nil? }
       format.json { render :json => Hash.from_xml(render_to_string(:action => params_id.nil? ? 'nested_collection.xml.builder' : 'nested.xml.builder')) }
-    end
-  end
-  
-  def fancy_nested
-    params_id = params[:id]
-    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code(default_view_code)
-    @perspective = params[:perspective_code].nil? ? nil : Perspective.get_by_code(params[:perspective_code])
-    @perspective ||= Perspective.get_by_code(default_perspective_code)
-    if params_id.nil?
-      @features = Feature.current_roots(@perspective, @view).sort_by{ |f| [f.position, f.prioritized_name(@view).name] }
-    else
-      @feature = Feature.get_by_fid(params_id)
-    end
-    respond_to do |format|
-      format.xml { render 'fancy_nested_collection' if params_id.nil? }
-      format.json do
-        hash = Hash.from_xml(render_to_string(:action => params_id.nil? ? 'fancy_nested_collection.xml.builder' : 'fancy_nested.xml.builder'))
-        render :json => hash['features']
-      end
-    end
-  end
-
-  def fancy_children
-    @feature = Feature.get_by_fid(params[:id])
-    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-    @view ||= View.get_by_code(default_view_code)
-    respond_to do |format|
-      format.json
     end
   end
   

@@ -73,23 +73,44 @@ class Feature < ActiveRecord::Base
   
   def parent_by_perspective(perspective)
     feature_id = Rails.cache.fetch("features/#{self.fid}/parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
-      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
-      parent_relation.nil? ? nil : parent_relation.parent_node.id
+      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at).first
+      parent_relation.nil? ? nil : parent_relation.parent_node_id
     end
     feature_id.nil? ? nil : Feature.find(feature_id)
+  end
+  
+  def parents_by_perspective(perspective)
+    feature_ids = Rails.cache.fetch("features/#{self.fid}/parents_by_perspective/#{perspective.id}", expires_in: 1.day) do
+      parent_relations = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at)
+      parent_relations.empty? ? [] : parent_relations.collect{ |pr| pr.parent_node_id }.uniq
+    end
+    feature_ids.empty? ? [] : feature_ids.collect { |id| Feature.find(id) }
   end
     
   def closest_parent_by_perspective(perspective)
     feature_id = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
-      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
+      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at).first
       break parent_relation.parent_node.id if !parent_relation.nil?
-      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id).select('parent_node_id').order('created_at').first
+      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id).select(:parent_node_id).order(:created_at).first
       break parent_relation.parent_node.id if !parent_relation.nil?
-      parent_relation = FeatureRelation.where(child_node_id: self.id).select('parent_node_id').order('created_at').first
+      parent_relation = FeatureRelation.where(child_node_id: self.id).select(:parent_node_id).order(:created_at).first
       break parent_relation.parent_node.id if !parent_relation.nil?
       nil
     end
     feature_id.nil? ? nil : Feature.find(feature_id)
+  end
+  
+  def closest_parents_by_perspective(perspective)
+    feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
+      parent_relations = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at)
+      break parent_relations.collect{ |pr| pr.parent_node_id } if !parent_relations.empty?
+      parent_relations = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id).select(:parent_node_id).order(:created_at)
+      break parent_relations.collect{ |pr| pr.parent_node_id } if !parent_relations.empty?
+      parent_relations = FeatureRelation.where(child_node_id: self.id).select(:parent_node_id).order(:created_at)
+      break parent_relations.collect{ |pr| pr.parent_node_id } if !parent_relations.empty?
+      []
+    end
+    feature_ids.nil? ? [] : feature_ids.uniq.collect { |id| Feature.find(id) }
   end
   
   def closest_hierarchical_feature_id_by_perspective(perspective)
@@ -111,28 +132,40 @@ class Feature < ActiveRecord::Base
 
   def ancestors_by_perspective(perspective)
     feature_ids = Rails.cache.fetch("features/#{self.fid}/ancestors_by_perspective/#{perspective.id}", expires_in: 1.day) do
-      current = self
-      stack = []
-      roots = Feature.current_roots_by_perspective(perspective)
+      root_ids = Feature.current_roots_by_perspective(perspective).collect(&:id)
+      pending = [[self, [self.id]]]
       begin
-        stack.push(current)
-        current = current.parent_by_perspective(perspective)
-      end while !current.nil? && !stack.include?(current)
-      ids = stack.reverse.collect(&:id)
-      roots.collect(&:id).include?(ids.first) ? ids : []
+        current_with_path = pending.shift # Use shift for Breadth First Search. For Depth First Search use pop.
+        current = current_with_path.first
+        path = current_with_path.last
+        parents = current.parents_by_perspective(perspective).reject{ |p| path.include?(p.id) }
+        goaled = parents.select{ |p| root_ids.include?(p.id) }.collect{ |p| path + [p.id] }
+        if goaled.empty?
+          pending += parents.collect{ |p| [p, path + [p.id]] }
+        end
+      end while !pending.empty? && goaled.empty? # Currenty getting shortest path. Comment second condition to keep iterating in order to get all paths
+      ids = goaled.first # Should several paths be handled?
+      ids.nil? ? [] : ids.reverse
     end
-    feature_ids.collect{|fid| Feature.find(fid)}
+    feature_ids.collect{|id| Feature.find(id)}
   end
   
   def closest_ancestors_by_perspective(perspective)
     feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_ancestors_by_perspective/#{perspective.id}", expires_in: 1.day) do
-      current = self
-      stack = []
+      root_ids = Feature.current_roots_by_perspective(perspective).collect(&:id)
+      pending = [[self, [self.id]]]
       begin
-        stack.push(current)
-        current = current.closest_parent_by_perspective(perspective)
-      end while !current.nil? && !stack.include?(current)
-      stack.reverse.collect(&:id)
+        current_with_path = pending.shift # Use shift for Breadth First Search. For Depth First Search use pop.
+        current = current_with_path.first
+        path = current_with_path.last
+        parents = current.closest_parents_by_perspective(perspective).reject{ |p| path.include?(p.id) }
+        goaled = parents.select{ |p| root_ids.include?(p.id) }.collect{ |p| path + [p.id] }
+        if goaled.empty?
+          pending += parents.collect{ |p| [p, path + [p.id]] }
+        end
+      end while !pending.empty? && goaled.empty? # Currenty getting shortest path. Comment second condition to keep iterating in order to get all paths
+      ids = goaled.first # Should several paths be handled?
+      ids.nil? ? [] : ids.reverse
     end
     feature_ids.collect{|fid| Feature.find(fid)}
   end
