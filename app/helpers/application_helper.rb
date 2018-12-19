@@ -38,7 +38,7 @@ module ApplicationHelper
   #
   def f_breadcrumb(ancestors_list = nil)
     if ancestors_list.nil? && @feature.nil?
-      content_tag :ol, "<li>#{link_to(ts('home.this'), root_path)}</li>".html_safe, class: 'breadcrumb'
+      content_tag :ol, "<li>#{link_to(ts('home.this').html_safe, root_path)}</li>".html_safe, class: 'breadcrumb'
     else
       ancestors_list ||= @feature.closest_ancestors_by_perspective(current_perspective)
       list = ancestors_list.collect do |r|
@@ -46,7 +46,7 @@ module ApplicationHelper
         name = name.nil? ? r.pid : name.name
         link_to(name, feature_path(r.fid))
       end
-      list = [link_to("#{ts('app.short')}:", root_path)] + list[0...list.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [list.last]
+      list = [link_to("#{ts('app.short')}:".html_safe, root_path)] + list[0...list.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [list.last]
       content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
     end
     # content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
