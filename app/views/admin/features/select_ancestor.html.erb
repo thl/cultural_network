@@ -11,34 +11,33 @@
  domain: Feature.uid_prefix,
  perspective: current_perspective.code,
  tree: Feature.uid_prefix,
- feature_path: "#{new_admin_feature_path}?parent_id=%%ID%%",
+ features_path: "#{new_admin_feature_path}?parent_id=%%ID%%",
  mandala_path: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
  feature_fid: @feature.fid
 } %>
 <%= javascript_include_tag 'kmaps_engine/kmaps_relations_tree' %>
 <%= javascript_on_load do %>
-  var relatedSolrUtils = kmapsSolrUtils.init({
+  var selectAncestorSolrUtils = kmapsSolrUtils.init({
     termIndex: $('#related_js_data').data('termIndex'),
     assetIndex: $('#related_js_data').data('assetIndex'),
     featureId: $('#related_js_data').data('featureId'),
     domain: $('#related_js_data').data('domain'),
     perspective: $('#related_js_data').data('perspective'),
     tree: $('#related_js_data').data('tree'), //places
-    featuresPath: $('#related_js_data').data('featurePath'),
+    featuresPath: $('#related_js_data').data('featuresPath'),
   });
   $("#relation_tree_container").kmapsRelationsTree({
     featureId: $('#related_js_data').data('featureFid'),
-    featuresPath: $('#related_js_data').data('featurePath'),
+    featuresPath: $('#related_js_data').data('featuresPath'),
     termIndex: $('#related_js_data').data('termIndex'),
     assetIndex: $('#related_js_data').data('assetIndex'),
     perspective: $('#related_js_data').data('perspective'),
     tree: $('#related_js_data').data('tree'), //places
     domain: $('#related_js_data').data('domain'), //places
-    seedTree: {
-      descendants: true,
-      directAncestors: true,
-    },
+    descendants: false,
+    directAncestors: true,
+    descendantsFullDetail: false,
     displayPopup: false,
-    solrUtils: relatedSolrUtils
+    solrUtils: selectAncestorSolrUtils,
   });
 <% end %>

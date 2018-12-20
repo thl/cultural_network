@@ -12,19 +12,19 @@ class Admin::FeaturesController < AclController
   before_action :collection, only: :locate_for_relation
   
   new_action.before do
-    object.fid = Feature.generate_pid
     object.is_public = true
     parent_id = params[:parent_id]
     @parent = parent_id.blank? ? nil : Feature.get_by_fid(parent_id)
     if !@parent.nil?
       @perspectives = @parent.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
       @perspectives = Perspective.order(:name) if @perspectives.include?(nil) || current_user.admin?
-      @name = FeatureName.new(language_id: Language.get_by_code('eng').id, writing_system_id: WritingSystem.get_by_code('latin').id, is_primary_for_romanization: true)
-      @relation = FeatureRelation.new(parent_node_id: @parent.id)
+      @name = FeatureName.new(language: Language.get_by_code('eng'), writing_system: WritingSystem.get_by_code('latin'), is_primary_for_romanization: true)
+      @relation = FeatureRelation.new(parent_node: @parent, perspective: Perspective.get_by_code(default_perspective_code), feature_relation_type: FeatureRelationType.get_by_code(default_relation_type_code) )
     end
   end
   
   create.before do
+    object.fid = Feature.generate_pid
     object.skip_update = true
   end
   

@@ -31,13 +31,15 @@
       domain: "places",
       featureId: 1,
       perspective: "pol.admin.hier",
-      seedTree: {
-        descendants: false,
-        directAncestors: true
-      },
+      descendants: false,
+      directAncestors: true,
+      descendantsFullDetail: true,
+      sortBy: 'header_ssort+ASC',
+      initialScrollToActive: false,
       displayPopup: false,
       mandalaURL: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
-      solrUtils: {} //requires solr-utils.js library
+      solrUtils: {}, //requires solr-utils.js library
+      language: 'eng',
     };
 
   // The actual plugin constructor
@@ -59,12 +61,23 @@
   Plugin.prototype = {
     init: function () {
       const plugin = this;
+      var options = {
+        descendants: plugin.options.descendants,
+        directAncestors: plugin.options.directAncestors,
+        descendantsFullDetail: plugin.options.descendantsFullDetail,
+        sortBy: plugin.options.sortBy,
+      };
       // Place initialization logic here
       // You already have access to the DOM element and the options via the instance,
       // e.g., this.element and this.options
       $(plugin.element).fancytree({
         extensions: ["filter", "glyph"],
-        source: plugin.getAncestorTree(plugin.options.seedTree),
+        source: plugin.getAncestorTree(options),
+        init: function(event,data) {
+          if(plugin.options.initialScrollToActive){
+            plugin.scrollToActiveNode();
+          }
+        },
         glyph: {
           map: {
             doc: "",
@@ -89,7 +102,7 @@
           }
         },
         lazyLoad: function(event,data){
-          data.result = plugin.getDescendantTree(data.node.key);
+            data.result = plugin.getDescendantTree(data.node.key,data.node.getKeyPath(),plugin.options.sortBy);
         },
         createNode: function (event, data) {
           data.node.span.childNodes[2].innerHTML = '<span id="ajax-id-' + data.node.key + '">' +
@@ -127,8 +140,8 @@
               domain: plugin.options.domain,
               featureId:  "",
               mandalaURL: plugin.options.mandalaURL,
-              solrUtils: plugin.options.solrUtils
-
+              solrUtils: plugin.options.solrUtils,
+              language: plugin.options.language
             });
           }
           return data;
@@ -142,17 +155,40 @@
       }
 
     },
+    scrollToActiveNode: async function() {
+      var plugin = this;
+      var tree = $(plugin.element).fancytree('getTree');
+      var active = tree.getActiveNode();
+      if (active){
+        var sleep = function sleep(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        };
+        await sleep(200);
+        active.makeVisible().then(function() {
+          var totalOffset =$(active.li).offset().top-$(active.li).closest('.view-wrap').offset().top;
+          $(active.li).closest('.view-wrap').scrollTop(totalOffset);
+        });
+      }
+    },
     getAncestorPath: function() {
       const plugin = this;
       return plugin.options.solrUtils.getAncestorPath();
     },
     getAncestorTree: function(options){
       const plugin = this;
-      return plugin.options.solrUtils.getAncestorTree(options);
+      if(plugin.options.directAncestors) {
+        return plugin.options.solrUtils.getAncestorTree(options);
+      }
+      return plugin.options.solrUtils.getFullAncestorTree(options);
     },
-    getDescendantTree: function(featureId){
+    getDescendantTree: function(featureId,keyPath){
       const plugin = this;
-      return plugin.options.solrUtils.getDescendantTree(featureId);
+      if(!plugin.options.directAncestors) {
+        var ancestorPath = keyPath.split("/"+plugin.options.domain+"-");
+        ancestorPath.shift();
+        return plugin.options.solrUtils.getDescendantsInPath(ancestorPath.join("/"),ancestorPath.length+1,plugin.options.sortBy);
+      }
+      return plugin.options.solrUtils.getDescendantTree(featureId,plugin.options.descendantsFullDetail,plugin.options.sortBy);
     }
   };
 
