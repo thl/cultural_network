@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   # Use Puma as the app server
   s.add_dependency 'puma', '~> 3.7'
   # Use Uglifier as compressor for JavaScript assets
-  s.add_dependency 'uglifier', '>= 1.3.0'
+  s.add_dependency 'uglifier', '~> 4.1', '>= 4.1.20'
   # See https://github.com/rails/execjs#readme for more supported runtimes
   # gem 'therubyracer', platforms: :ruby
 
@@ -34,6 +34,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'turbolinks', '~> 5'
   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
   s.add_dependency 'jbuilder', '~> 2.5'
+  # Reduces boot times through caching; required in config/boot.rb
+  s.add_dependency 'bootsnap', '>= 1.1.0' #, require: false
+  
   # Use Redis adapter to run Action Cable in production
   # gem 'redis', '~> 3.0'
   # Use ActiveModel has_secure_password

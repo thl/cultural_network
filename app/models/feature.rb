@@ -134,18 +134,19 @@ class Feature < ActiveRecord::Base
     feature_ids = Rails.cache.fetch("features/#{self.fid}/ancestors_by_perspective/#{perspective.id}", expires_in: 1.day) do
       root_ids = Feature.current_roots_by_perspective(perspective).collect(&:id)
       pending = [[self, [self.id]]]
-      begin
+      goaled = nil
+      while !pending.empty?
         current_with_path = pending.shift # Use shift for Breadth First Search. For Depth First Search use pop.
         current = current_with_path.first
         path = current_with_path.last
-        parents = current.parents_by_perspective(perspective).reject{ |p| path.include?(p.id) }
-        goaled = parents.select{ |p| root_ids.include?(p.id) }.collect{ |p| path + [p.id] }
-        if goaled.empty?
-          pending += parents.collect{ |p| [p, path + [p.id]] }
+        if root_ids.include?(current.id)
+          goaled = path
+          break # Currenty getting shortest path. Comment second condition and turn goaled into an array to keep iterating in order to get all paths
         end
-      end while !pending.empty? && goaled.empty? # Currenty getting shortest path. Comment second condition to keep iterating in order to get all paths
-      ids = goaled.first # Should several paths be handled?
-      ids.nil? ? [] : ids.reverse
+        parents = current.parents_by_perspective(perspective).reject{ |p| path.include?(p.id) }
+        pending += parents.collect{ |p| [p, path + [p.id]] }
+      end
+      goaled.nil? ? [] : goaled.reverse
     end
     feature_ids.collect{|id| Feature.find(id)}
   end
@@ -154,18 +155,19 @@ class Feature < ActiveRecord::Base
     feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_ancestors_by_perspective/#{perspective.id}", expires_in: 1.day) do
       root_ids = Feature.current_roots_by_perspective(perspective).collect(&:id)
       pending = [[self, [self.id]]]
-      begin
+      goaled = nil
+      while !pending.empty? && goaled.nil? # Currenty getting shortest path. Comment second condition and turn goaled into an array to keep iterating in order to get all paths
         current_with_path = pending.shift # Use shift for Breadth First Search. For Depth First Search use pop.
         current = current_with_path.first
         path = current_with_path.last
-        parents = current.closest_parents_by_perspective(perspective).reject{ |p| path.include?(p.id) }
-        goaled = parents.select{ |p| root_ids.include?(p.id) }.collect{ |p| path + [p.id] }
-        if goaled.empty?
-          pending += parents.collect{ |p| [p, path + [p.id]] }
+        if root_ids.include?(current.id)
+          goaled = path
+          break
         end
-      end while !pending.empty? && goaled.empty? # Currenty getting shortest path. Comment second condition to keep iterating in order to get all paths
-      ids = goaled.first # Should several paths be handled?
-      ids.nil? ? [] : ids.reverse
+        parents = current.closest_parents_by_perspective(perspective).reject{ |p| path.include?(p.id) }
+        pending += parents.collect{ |p| [p, path + [p.id]] }
+      end
+      goaled.nil? ? [] : goaled.reverse
     end
     feature_ids.collect{|fid| Feature.find(fid)}
   end
