@@ -160,10 +160,6 @@
       var tree = $(plugin.element).fancytree('getTree');
       var active = tree.getActiveNode();
       if (active){
-        var sleep = function sleep(ms) {
-          return new Promise(resolve => setTimeout(resolve, ms));
-        };
-        await sleep(200);
         active.makeVisible().then(function() {
           var totalOffset =$(active.li).offset().top-$(active.li).closest('.view-wrap').offset().top;
           $(active.li).closest('.view-wrap').scrollTop(totalOffset);

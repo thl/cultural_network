@@ -486,40 +486,44 @@
           var lastElementIndex = ancestorNodes.length - 1 ;
           plugin.settings.featureId = plugin.settings.domain+"-"+ancestorNodes[lastElementIndex];
         }
+
         if (ancestorNodes === undefined ) {
           return [];
-        } else {
-          const result = await ancestorNodes.reduceRight(async function(acc,val,index){
-            var acc = await acc;
-            var ancestorsSiblings = [];
-            var currentIndexInAncestorList = -1;
-            var siblings = [];
-            if(index != 0) {
-              const ancestorVal = ancestorNodes[index - 1];
-              const descendantsLevel = index + 1;
-              siblings = await plugin.getDescendantsInPath(ancestorNodes.slice(0,index).join("/"),descendantsLevel,sortBy);
-            } else if( index == 0 ) { //Get all root nodes, nodes in level 1
-              siblings = await plugin.getDescendantsInPath("*",1,sortBy);
-            }
-            for (var i in siblings) {
-              var sib = siblings[i];
-              if(sib.key == (plugin.settings.domain +"-"+val)) {
-                if(acc){
-                  sib.children = [].concat(acc);
-                }
-                if(sib.key == plugin.settings.featureId) {
-                  sib.expanded = loadDescendants;
-                  sib.active = true;
-                  sib.lazy = true;
-                  sib.backColor = '#eaeaea';
-                }
-                break;
-              }
-            }
-            return siblings;
-          }, children);
-          return result;
         }
+
+        const recursiveAncestors = async function(acc,val,index){
+          var ancestorsSiblings = [];
+          var currentIndexInAncestorList = -1;
+          var siblings = [];
+          if(index != 0) {
+            const ancestorVal = ancestorNodes[index - 1];
+            const descendantsLevel = index + 1;
+            siblings = await plugin.getDescendantsInPath(ancestorNodes.slice(0,index).join("/"),descendantsLevel,sortBy);
+          } else if( index == 0 ) { //Get all root nodes, nodes in level 1
+            siblings = await plugin.getDescendantsInPath("*",1,sortBy);
+          }
+          for (var i in siblings) {
+            var sib = siblings[i];
+            if(sib.key == (plugin.settings.domain +"-"+val)) {
+              if(acc){
+                sib.children = [].concat(acc);
+              }
+              sib.expanded = loadDescendants;
+              if(sib.key == plugin.settings.featureId) {
+                sib.active = true;
+                sib.lazy = true;
+                sib.backColor = '#eaeaea';
+              }
+              break;
+            }
+          }
+          return siblings;
+        };
+        var resultTree = children;
+        for (var i = ancestorNodes.length - 1; i >= 0; i--) {
+          resultTree = await recursiveAncestors(resultTree,ancestorNodes[i],i);
+        }
+        return resultTree;
       };
       if(response.numFound > 0){
         var doc = response.docs[0];
@@ -616,7 +620,7 @@
             ancestorsNameKey  = "ancestors_closest_" + plugin.settings.perspective;
           }
           const child = {
-            title: "<strong>" + currentNode["header"] + "</strong>",
+            title: currentNode["header"],
             displayPath: "",//currentNode[ancestorsNameKey].join("/"),
             key: plugin.settings.domain +"-"+key,
             expanded: false,
