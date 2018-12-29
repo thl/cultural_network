@@ -9,7 +9,7 @@ end %>
       </div>
       <div class="right highlight">
 <%    if @locating_relation %>
-<%=     ts(:for, :what => t('relat.ion.location'), :whom => feature_link(object)) %>
+<%=     t(:for, :what => t('relat.ion.location'), :whom => feature_link(object)).html_safe %>
 <%    else %>
 <%=     new_item_link [:feature] %>
 <%    end %>

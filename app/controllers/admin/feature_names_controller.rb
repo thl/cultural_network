@@ -2,7 +2,7 @@ class Admin::FeatureNamesController < AclController
   include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   
-  cache_sweeper :feature_sweeper, :only => [:update, :destroy]
+  cache_sweeper :feature_sweeper, :only => [:create, :update, :destroy]
   belongs_to :feature
   before_action :collection, :only=>:locate_for_relation
   

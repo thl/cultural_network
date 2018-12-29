@@ -324,7 +324,7 @@ module AdminHelper
   #
   #
   def feature_link(feature, *args)
-    link_to(fname_labels(feature), admin_feature_path(feature.fid, *args), {:class=>:featureLabel, :title=>h(feature.name)})
+    link_to(fname_labels(feature), admin_feature_path(feature.fid, *args), {class: :featureLabel, title: feature.name})
   end
 
   def feature_names_sorted(feature_names)

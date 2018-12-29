@@ -72,18 +72,13 @@ class Feature < ActiveRecord::Base
   end
   
   def parent_by_perspective(perspective)
-    feature_id = Rails.cache.fetch("features/#{self.fid}/parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
-      parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at).first
-      parent_relation.nil? ? nil : parent_relation.parent_node_id
-    end
-    feature_id.nil? ? nil : Feature.find(feature_id)
+    parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at).first
+    parent_relation.nil? ? nil : parent_relation.parent_node
   end
   
   def parents_by_perspective(perspective)
-    feature_ids = Rails.cache.fetch("features/#{self.fid}/parents_by_perspective/#{perspective.id}", expires_in: 1.day) do
-      parent_relations = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at)
-      parent_relations.empty? ? [] : parent_relations.collect{ |pr| pr.parent_node_id }.uniq
-    end
+    parent_relations = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at)
+    feature_ids = parent_relations.empty? ? [] : parent_relations.collect{ |pr| pr.parent_node_id }.uniq
     feature_ids.empty? ? [] : feature_ids.collect { |id| Feature.find(id) }
   end
     
@@ -101,7 +96,7 @@ class Feature < ActiveRecord::Base
   end
   
   def closest_parents_by_perspective(perspective)
-    feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", expires_in: 1.day) do
+    feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_parents_by_perspective/#{perspective.id}", expires_in: 1.day) do
       parent_relations = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at)
       break parent_relations.collect{ |pr| pr.parent_node_id } if !parent_relations.empty?
       parent_relations = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id).select(:parent_node_id).order(:created_at)

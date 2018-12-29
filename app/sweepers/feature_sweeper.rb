@@ -28,8 +28,8 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         perspective_id = perspective.id
         descendants = feature.descendants_by_perspective_with_parent(perspective).collect(&:first) + [record.parent_node]
         descendants.each do |f|
-          Rails.cache.delete("features/#{f.fid}/parent_by_perspective/#{perspective_id}")
           Rails.cache.delete("features/#{f.fid}/closest_parent_by_perspective/#{perspective_id}")
+          Rails.cache.delete("features/#{f.fid}/closest_parents_by_perspective/#{perspective_id}")
           Rails.cache.delete("features/#{f.fid}/closest_hierarchical_feature_by_perspective/#{perspective_id}")
           Rails.cache.delete("features/#{f.fid}/ancestors_by_perspective/#{perspective_id}")
           Rails.cache.delete("features/#{f.fid}/closest_ancestors_by_perspective/#{perspective_id}")
