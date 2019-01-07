@@ -88,7 +88,11 @@ person = AuthenticatedSystem::Person.find_by(fullname: 'Kmaps Admin')
 person = AuthenticatedSystem::Person.create(fullname: 'Kmaps Admin') if person.nil?
 a = { login: 'kmaps_admin', password: 'kmaps2013', password_confirmation: 'kmaps2013', email: 'root@' }
 u = AuthenticatedSystem::User.find_by(login: a[:login])
-u = u.nil? ? person.create_user(a) : u.update_attributes(a)
+if u.nil?
+  u = person.create_user(a)
+else
+  u.update_attributes(a)
+end
 
 role = AuthenticatedSystem::Role.find_by(title: 'System Administrator')
 role = AuthenticatedSystem::Role.create(title: 'System Administrator') if role.nil?

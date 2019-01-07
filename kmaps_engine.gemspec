@@ -14,11 +14,10 @@ Gem::Specification.new do |s|
   s.description = "This engine provides the core code for creating apps that organize information in a hierarchical fasion we call a knowledge map."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.test_files = Dir["test/**/*"]
   
   # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
   #s.add_dependency 'rails', '5.1.4'
-  s.add_dependency 'rails', '>= 4.0'
+  s.add_dependency 'rails', '>= 5.2'
   # Use postgresql as the database for Active Record
   s.add_dependency 'pg', '~> 0.18'
   # Use Puma as the app server
@@ -53,4 +52,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'annotate'
   #gem 'system_timer'
   #gem 'cached_resource'
+
+  #Testing dependencies
+  s.add_development_dependency 'rspec-rails'
+  s.test_files = Dir["spec/**/*"]
 end

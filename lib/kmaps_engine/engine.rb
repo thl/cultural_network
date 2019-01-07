@@ -35,5 +35,12 @@ module KmapsEngine
       
       Sprockets::Context.send :include, Rails.application.routes.url_helpers
     end
+
+    config.generators do |g|
+      g.test_framework :rspec
+      g.assets false
+      g.helper false
+    end
+
   end
 end
