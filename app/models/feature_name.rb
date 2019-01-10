@@ -59,6 +59,7 @@ class FeatureName < ActiveRecord::Base
   include KmapsEngine::IsCitable
   extend IsDateable
   include KmapsEngine::IsNotable
+  include KmapsEngine::HasPassages
   
   #
   # Associations
