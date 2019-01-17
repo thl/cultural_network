@@ -1,9 +1,6 @@
 module KmapsEngine
   module ProgressBar
     extend ActiveSupport::Concern
-    STATUS_LENGTH = 36
-    FID_LENGTH = 7
-
     included do
       attr_accessor :feature
       attr_accessor :log
@@ -12,10 +9,26 @@ module KmapsEngine
       attr_accessor :valid_point
       attr_accessor :output
     end
-    
-    def initialize
+
+    STATUS_LENGTH = 36
+    FID_LENGTH = 7
+
+    START_HOUR = 8
+    END_HOUR = 17
+
+    def initialize(log_file, log_level)
       self.output = STDERR.tty? ? STDERR : STDOUT
       self.reset_progress_bar
+      create_log(log_file, log_level)
+    end
+
+    def create_log(log_file, log_level)
+      self.log = ActiveSupport::Logger.new(log_file)
+      self.log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
+    end
+
+    def close_log
+      self.log.close
     end
 
     def say(msg)
@@ -23,19 +36,19 @@ module KmapsEngine
       self.num_errors += 1
       self.valid_point = false
     end
-    
+
     def reset_progress_bar
       self.bar = ''
       self.valid_point = true
       self.num_errors = 0
     end
-    
+
     def update_progress_bar(bar:, valid_point:, num_errors:)
       self.bar = bar
       self.valid_point = valid_point
       self.num_errors = num_errors
     end
-    
+
     def progress_bar(num:, total:, current:)
       if num==total-1
         self.output.printf("\r%-#{STATUS_LENGTH*2}s\n", "\rDone. #{total} items processed with #{self.num_errors} errors.")
@@ -54,7 +67,35 @@ module KmapsEngine
       end
     end
 
+
     module ClassMethods
+
+      def wait_if_business_hours(daylight)
+        return if daylight.blank?
+        now = self.now
+        end_time = self.end_time
+        if now.wday<6 && self.start_time<now && now<end_time
+          delay = self.end_time - now
+          puts "#{Time.now}: Resting until #{end_time}..."
+          sleep(delay)
+        end
+      end
+
+      protected
+
+      def now
+        Time.now
+      end
+
+      def start_time
+        now = self.now
+        Time.new(now.year, now.month, now.day, START_HOUR)
+      end
+
+      def end_time
+        now = self.now
+        Time.new(now.year, now.month, now.day, END_HOUR)
+      end
     end
   end
 end

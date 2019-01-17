@@ -23,6 +23,6 @@ class Caption < ActiveRecord::Base
   validates :plain_content, length: 1..140
 
   def plain_content
-    ActionController::Base.helpers.strip_tags(content)
+    content.strip_tags
   end
 end
