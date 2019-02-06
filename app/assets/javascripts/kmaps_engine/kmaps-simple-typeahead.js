@@ -3,28 +3,15 @@
 (function ($, window, document, undefined) {
   "use strict";
 
-  var pluginName = "kmapsTypeahead",
+  var pluginName = "kmapsSimpleTypeahead",
     defaults = {
-      term_index: 'http://localhost/solr/kmterms_dev',
+      solr_index: 'http://localhost/solr/kmterms_dev',
       domain: 'places',
-      root_kmapid: '',
       autocomplete_field: 'name_autocomplete',
       search_fields: ['name_tibt'],
       max_terms: 150,
-      max_defaults: 50,
       min_chars: 1,
-      selected: 'omit', // possible values: 'omit' or 'class'
-      ancestors: '', // default to empty, which will be changed to 'on' for subjects, 'off' for places
-      ancestor_separator: ' - ',
       pager: 'off', // or 'on'
-      prefetch_facets: 'off',
-      prefetch_field: 'feature_types',
-      prefetch_filters: ['tree:places', 'ancestor_id_path:13735'],
-      prefetch_limit: -1,
-      zero_facets: 'skip', // possible values: 'skip' or 'ignore'
-      empty_query: 'level_i:2', //ignored unless min_chars = 0
-      empty_limit: 10,
-      empty_sort: '',
       sort: '',
       fields: '',
       filters: '',
@@ -34,6 +21,7 @@
       match_criterion: 'contains', //{contains, begins, exactly}
       case_sensitive: false,
       ignore_tree: false,
+      templates: {},
     };
 
   function Plugin(element, options) {
@@ -42,11 +30,8 @@
     this.params = {};
     this.fq = [];
     this.refetch = [];
-    this.refacet = [];
     this.selected = [];
     this.kmaps_engine = null; // Bloodhound instance
-    this.facet_counts = null; // Bloodhound instance
-    this.fake = null; // fake query for setValue
     this.start = 0; // for paging
     this.$menu = null; // dropdown menu
     this.response = null; // solr response
@@ -61,10 +46,7 @@
       var input = $(plugin.element);
       var settings = plugin.settings;
 
-      var use_ancestry = settings.ancestors == 'on' || (settings.ancestors == '' && settings.domain == 'subjects');
       var result_paging = (settings.pager == 'on');
-      var prefetch_facets = (settings.prefetch_facets == 'on');
-      var ancestor_field = 'ancestor_ids_generic'; //(settings.domain == 'subjects') ? 'ancestor_ids_default' : 'ancestor_ids_pol.admin.hier';
 
       //Previously all the queries have the following filter, I removed it as a default to work with subjects and sources
       if(!settings.ignore_tree){
@@ -73,17 +55,8 @@
       if (settings.filters) {
         plugin.fq.push(settings.filters);
       }
-      if (settings.root_kmapid) {
-        settings.root_kmapid = settings.root_kmapid.toString().trim().split(/\s+/);
-        plugin.fq.push(ancestor_field + ':(' + settings.root_kmapid.join(' OR ') + ')');
-        settings.root_kmapid = settings.root_kmapid.map(Number);
-      }
       var fl = [];
-      fl.push('id', 'header');
-      if (use_ancestry) {
-        plugin.fq.push('ancestor_id_path:*'); // force this field to be present
-        fl.push('ancestors', 'ancestor_id_path', ancestor_field);
-      }
+      fl.push('id', 'header', 'uid');
       if (settings.domain == 'places') { // get feature types
         fl.push('feature_types');
       }
@@ -99,7 +72,7 @@
         'hl.simple.pre': '',
         'hl.simple.post': ''
       };
-      var url = settings.term_index + '/select?' + $.param(params, true);
+      var url = settings.solr_index + '/select?' + $.param(params, true);
       var options = {
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -113,7 +86,6 @@
           prepare: function (query, remote) { //http://stackoverflow.com/questions/18688891/typeahead-js-include-dynamic-variable-in-remote-url
             var extras = {};
             var orig_val = input.val();
-            //val = val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             var val = orig_val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\,\/\\\^\$\|]/g, " ");
             switch(settings.match_criterion){
               case 'begins':
@@ -144,20 +116,6 @@
                 'fq': plugin.fq
               };
             }
-            else {
-              if (!prefetch_facets) { // prefetch_facets shouldn't get here anyway
-                extras = {
-                  'q': settings.empty_query,
-                  'rows': settings.empty_limit,
-                  'sort': settings.empty_sort,
-                  'start': plugin.start,
-                  'fq': plugin.fq
-                };
-              }
-            }
-            if (query !== plugin.fake) {
-              plugin.start = 0;
-            }
 
             var additional_filters = "";
             settings.additional_filters.forEach(function(filter){
@@ -170,7 +128,7 @@
             remote.url += '&' + $.param(extras, true)+additional_filters;
             return remote;
           },
-          filter: function (json) {
+          transform: function (json) {
             plugin.response = json; // store response... what if cached?
             var filtered = $.map(json.response.docs, function (doc, index) {
               var highlightingKeys = Object.keys(json.highlighting).filter(function(word){
@@ -186,23 +144,6 @@
                 numFound: json.response.numFound,
                 count: 0 // for good measure
               };
-              if (use_ancestry) {
-                var anstring;
-                if (settings.root_kmapid) {
-                  var idx = -1;
-                  for (var i=0; idx == -1; i++) {
-                    idx = doc[ancestor_field].indexOf(settings.root_kmapid[i]);
-                  }
-                  anstring = doc.ancestors.slice(idx).reverse().join(settings.ancestor_separator);
-                }
-                else {
-                  anstring = doc.ancestors.slice(0).reverse().join(settings.ancestor_separator);
-                }
-                $.extend(item, {
-                  parent: doc.ancestors[doc.ancestors.length-2],
-                  anstring: anstring
-                });
-              }
               return item;
             });
             // exclude terms that were already prefetched
@@ -210,120 +151,10 @@
             filtered.filter(function (term) {
               return (plugin.kmaps_engine.get([term.id]).length == 0);
             });
-            /*if (use_ancestry) {
-             filtered.sort(function (a, b) { // sort results by ancestry
-             return a.doc.ancestor_id_path > b.doc.ancestor_id_path;
-             });
-             }*/
             return filtered;
           }
         }
       };
-      var prefetch_field = settings.prefetch_field + '_xfacet';
-      var sortFacetsDescending = function (a, b) {
-        return b.count - a.count;
-      };
-      if (prefetch_facets) {
-        var prefetch_params = {
-          'wt': 'json',
-          'indent': true,
-          'fl': '*',
-          'q': '*:*',
-          'rows': 0,
-          'facet': true,
-          'facet.field': prefetch_field,
-          'facet.limit': settings.prefetch_limit,
-          'facet.sort': 'count',
-          'facet.mincount': 1
-        };
-        $.extend(options, {
-          sorter: sortFacetsDescending,
-          prefetch: {
-            url: settings.term_index + '/select?' + $.param(prefetch_params, true),
-            cache: false, // change to true??
-            prepare: function (prefetch) {
-              var extras = {
-                'fq': settings.prefetch_filters.concat(plugin.refetch)
-              };
-              prefetch.dataType = 'jsonp';
-              prefetch.jsonp = 'json.wrf';
-              prefetch.url += '&' + $.param(extras, true);
-              return prefetch;
-            },
-            filter: function (json) {
-              var raw = json.facet_counts.facet_fields[prefetch_field];
-              var facets = [];
-              for (var i = 0; i < raw.length; i += 2) {
-                var spl = raw[i].indexOf(':');
-                facets.push({
-                  id: raw[i].substring(0, spl),
-                  value: raw[i].substring(spl + 1),
-                  count: parseInt(raw[i + 1]),
-                  refacet: false
-                });
-              }
-              return facets;
-            }
-          }
-        });
-        var refacet_field = settings.prefetch_field + '_autocomplete';
-        var refacet_params = $.extend({}, prefetch_params);
-        delete refacet_params['facet.field'];
-        plugin.facet_counts = new Bloodhound({
-          datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          sufficient: settings.max_terms,
-          identify: function (term) {
-            return term.id;
-          },
-          remote: {
-            url: settings.term_index + '/select?' + $.param(refacet_params, true),
-            cache: false, // change to true??
-            prepare: function (query, remote) {
-              if (plugin.refacet.length > 0) { // no refaceting for an OR search
-                var extras = {};
-                var val = input.val();
-                if (val) {
-                  extras = {
-                    'fq': plugin.refacet.concat(plugin.refetch),
-                    'facet.field': refacet_field,
-                    'facet.prefix': val.toLowerCase().replace(/[\s\u0f0b\u0f0d]+/g, '\\ ')
-                  };
-                }
-                else {
-                  extras = {
-                    'fq': plugin.refacet.concat(plugin.refetch),
-                    'facet.field': prefetch_field
-                  };
-                }
-                remote.dataType = 'jsonp';
-                remote.jsonp = 'json.wrf';
-                remote.url += '&' + $.param(extras, true);
-              }
-              else { // don't go to the server at all
-                remote.url = null;
-              }
-              return remote;
-            },
-            filter: function (json) {
-              if(json.facet_counts === undefined) return [];
-              var raw = json.facet_counts.facet_fields[prefetch_field] ? json.facet_counts.facet_fields[prefetch_field] : json.facet_counts.facet_fields[refacet_field];
-              var facets = [];
-              for (var i = 0; i < raw.length; i += 2) {
-                var mixed = raw[i].substring(raw[i].indexOf('|') + 1);
-                var spl = mixed.indexOf(':');
-                facets.push({
-                  id: mixed.substring(0, spl),
-                  value: mixed.substring(spl + 1).replace(/_/g, ' '),
-                  count: parseInt(raw[i + 1]),
-                  refacet: true
-                });
-              }
-              return facets;
-            }
-          }
-        });
-      }
       plugin.kmaps_engine = new Bloodhound(options);
 
       var typeaheadOptions = $.extend(
@@ -349,7 +180,7 @@
 
       var templates = {
         pending: function () {
-          return '<div class="kmaps-tt-message kmaps-tt-searching">Searching ...</div>'
+          return '<div class="kmaps-tt-message kmaps-tt-searching">Searching ...</div>';
         },
         header: function (data) {
           var results;
@@ -383,50 +214,12 @@
             var feature_types = data.doc.feature_types ? data.doc.feature_types.join('/') : '';
             return '<div data-id="' + settings.domain+"-"+data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-place-name">' + data.value + '</span> <span class="kmaps-feature-type">' + feature_types + '</span>' + '</div>';
           } else { // show hierarchy
-            return '<div data-id="' + settings.domain+"-"+data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span>' + (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
+            return '<div data-id="' + settings.domain+"-"+data.id + '" data-path="' + display_path + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span>' + '</div>';
           }
         }
       };
-      var prefetch_templates = {
-        header: function (data) {
-          var msg;
-          if (plugin.selected.length == 0) {
-            if (data.query == '') {
-              if (settings.max_defaults > data.suggestions.length) {
-                msg = data.suggestions.length + ' Filters';
-              }
-              else {
-                msg = 'Top ' + settings.max_defaults + ' Filters';
-              }
-            }
-            else {
-              msg = 'Add Filter';
-            }
-          }
-          else {
-            msg = 'Filter terms with <span class="kmaps-filter-method">\'OR\'</span>';
-          }
-          return '<div class="kmaps-tt-header kmaps-tt-results"><button class="close" aria-hidden="true" type="button">×</button>' + msg + '</div>';
-        },
-        notFound: function (data) {
-          var msg;
-          if (data.query) {
-            msg = 'No filters with <em>' + data.query + '</em>. ' + settings.no_results_msg;
-          }
-          else {
-            msg = 'No filter matches any results. ' + settings.no_results_msg;
-          }
-          return '<div class="kmaps-tt-message"><span class="no-results">' + msg + '</span></div>';
-        },
-        suggestion: function (data) {
-          var cl = [];
-          if (data.selected) cl.push('kmaps-tt-selected');
-          if (data.count == 0) cl.push('kmaps-tt-zero-facet');
-          return '<div data-id="' + data.id + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span> ' +
-            '<span class="kmaps-count">(' + data.count + ')</span>' +
-            (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
-        }
-      };
+
+      templates = $.extend({}, templates, plugin.settings.templates);
 
       var filterSelected = function (suggestions) {
         if (plugin.selected.length == 0) {
@@ -447,77 +240,21 @@
           });
         }
       };
-      if (prefetch_facets) {
-        input.typeahead(typeaheadOptions,
-          {
-            name: 'facet_counts',
-            limit: parseInt(settings.max_terms) * 2, // apparently needs to be doubled to accommodate both prefetched and remote terms
-            display: 'value',
-            source: function (q, sync, async) {
-              plugin.facet_counts.search(q, sync, function (suggestions) {
-                async(filterSelected(suggestions));
-              });
-            },
-            templates: {
-              header: function (data) {
-                var msg = 'Filter terms with <span class="kmaps-filter-method">\'AND\'</span>';
-                return '<div class="kmaps-tt-header kmaps-tt-results"><button class="close" aria-hidden="true" type="button">×</button>' + msg + '</div>';
-              },
-              suggestion: function (data) {
-                var cl = [];
-                if (data.selected) cl.push('kmaps-tt-selected');
-                cl.push('selectable-facet');
-                return '<div data-id="' + data.id + '" class="' + cl.join(' ') + '"><span class="kmaps-term">' + data.value + '</span> ' +
-                  '<span class="kmaps-count">(' + data.count + ')</span>' +
-                  (use_ancestry ? ' <span class="kmaps-ancestors">' + data.anstring + '</span>' : '') + '</div>';
-              }
-            }
-          },
-          {
-            name: settings.domain,
-            limit: 999,//parseInt(settings.max_terms) * 2, // apparently needs to be doubled to accommodate both prefetched and remote terms
-            display: 'value',
-            templates: prefetch_templates,
-            source: function (q, sync, async) {
-              if (q === '') {
-                var facets = plugin.kmaps_engine.all();
-                if (facets.length > 0 && settings.max_defaults > 0) {
-                  sync(filterSelected(facets.sort(sortFacetsDescending).slice(0, Math.min(facets.length, settings.max_defaults))));
-                }
-                else {
-                  plugin.kmaps_engine.search(q, function (suggestions) {
-                    sync(filterSelected(suggestions))
-                  }, function (suggestions) {
-                    async(filterSelected(suggestions));
-                  });
-                }
-              }
-              else {
-                plugin.kmaps_engine.search(q, function (suggestions) {
-                  sync(filterSelected(suggestions))
-                }, function (suggestions) {
-                  async(filterSelected(suggestions));
-                });
-              }
-            }
+
+      input.typeahead(typeaheadOptions,
+        {
+          name: settings.domain,
+          limit: parseInt(settings.max_terms),
+          display: 'value',
+          templates: templates,
+          source: function (q, sync, async) {
+            plugin.kmaps_engine.search(q, sync, function (suggestions) {
+              async(filterSelected(suggestions));
+            });
           }
-        );
-      }
-      else {
-        input.typeahead(typeaheadOptions,
-          {
-            name: settings.domain,
-            limit: parseInt(settings.max_terms) * 2, // apparently needs to be doubled to accommodate both prefetched and remote terms
-            display: 'value',
-            templates: templates,
-            source: function (q, sync, async) {
-              plugin.kmaps_engine.search(q, sync, function (suggestions) {
-                async(filterSelected(suggestions));
-              });
-            }
-          }
-        );
-      }
+        }
+      );
+
       input.bind('typeahead:render',
         function () {
           plugin.getMenu().find('.kmaps-tt-selected, .kmaps-tt-zero-facet').removeClass('kmaps-tt-selectable');
@@ -569,15 +306,6 @@
       this.kmaps_engine.clear();
       this.kmaps_engine.clearPrefetchCache();
       this.kmaps_engine.initialize(true).done(callback);
-    },
-
-    refacetPrefetch: function (filters) {
-      if (filters.length == 0 || filters[0].indexOf(' OR ') !== -1) { // don't recompute prefetch facet counts for an OR search
-        this.refacet = [];
-      }
-      else { // recompute facets for an AND search or a search with only one facet
-        this.refacet = filters;
-      }
     },
 
     addFilters: function (filters) {

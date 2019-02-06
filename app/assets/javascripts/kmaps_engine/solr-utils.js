@@ -448,13 +448,15 @@
     var loadDescendants = options["descendants"] ? !! options["descendants"] : false;
     var loadOnlyDirectAncestors = options["directAncestors"] ? options["directAncestors"] : false;
     var sortBy = options["sortBy"] ? options["sortBy"] : "header_ssort+ASC"
+    var extraFields = options["extraFields"] ? options["extraFields"] : []
+    var nodeMarkerPredicates = options["nodeMarkerPredicates"] ? options["nodeMarkerPredicates"] : []
     const dfd = $.Deferred();
     const fieldList = [
       "header",
       "id",
       "ancestor_id_"+plugin.settings.perspective+"_path",
       "level_"+plugin.settings.perspective+"_i"
-    ].join(",");
+    ].concat(extraFields).join(",");
     var url = plugin.settings.termIndex + "/select?";
     if(!loadOnlyDirectAncestors) {
       if(plugin.settings.featureId){
@@ -498,9 +500,9 @@
           if(index != 0) {
             const ancestorVal = ancestorNodes[index - 1];
             const descendantsLevel = index + 1;
-            siblings = await plugin.getDescendantsInPath(ancestorNodes.slice(0,index).join("/"),descendantsLevel,sortBy);
+            siblings = await plugin.getDescendantsInPath(ancestorNodes.slice(0,index).join("/"),descendantsLevel,sortBy, extraFields, nodeMarkerPredicates);
           } else if( index == 0 ) { //Get all root nodes, nodes in level 1
-            siblings = await plugin.getDescendantsInPath("*",1,sortBy);
+            siblings = await plugin.getDescendantsInPath("*",1,sortBy, extraFields, nodeMarkerPredicates);
           }
           for (var i in siblings) {
             var sib = siblings[i];
@@ -535,7 +537,7 @@
           if( doc[currentLevelTag] === undefined ) {
             currentLevel  = ancestorNodes.length;
           }
-          const featureChildren = plugin.getDescendantsInPath(doc[ancestorsKey],currentLevel + 1,sortBy);
+          const featureChildren = plugin.getDescendantsInPath(doc[ancestorsKey],currentLevel + 1,sortBy, extraFields, nodeMarkerPredicates);
           featureChildren.then(function(children){
             var ancestorTree = buildAncestorTree(doc, children);
             ancestorTree.then(function(ancestorTree){ dfd.resolve(ancestorTree) });
@@ -547,7 +549,7 @@
               dfd.resolve(ancestorTree);
             });
           } else {
-            const roots = plugin.getDescendantsInPath("*",1,sortBy);
+            const roots = plugin.getDescendantsInPath("*",1,sortBy,extraFields, nodeMarkerPredicates);
             roots.then(function(roots){
               dfd.resolve(roots);
             });
@@ -559,7 +561,7 @@
     });
     return dfd.promise();
   }
-  Plugin.getDescendantsInPath = function getDescendantsInPath(path,level,sortBy){
+  Plugin.getDescendantsInPath = function getDescendantsInPath(path,level,sortBy,extraFields = [], nodeMarkerPredicates = []){
     const plugin = this;
     const dfd = $.Deferred();
     var fieldList = [
@@ -573,7 +575,7 @@
       "level_"+plugin.settings.perspective+"_i",
       "related_"+plugin.settings.domain+"_feature_type_s",
       "related_"+plugin.settings.domain+"_relation_label_s",
-    ].join(",");
+    ].concat(extraFields).join(",");
     if(plugin.settings.domain == "places"){
       fieldList += ",related_subjects_t";
     }
@@ -619,6 +621,25 @@
             ancestorsKey  = "ancestor_ids_closest_" + plugin.settings.perspective;
             ancestorsNameKey  = "ancestors_closest_" + plugin.settings.perspective;
           }
+          var marks = []
+          if (nodeMarkerPredicates.length > 0){
+            nodeMarkerPredicates.forEach(function(marker, index){
+              //marker['field'] marker['value'] marker['operation'] marker['mark']
+              if(marker['operation'] == '==') {
+                if (JSON.stringify(currentNode[marker['field']]) == JSON.stringify(marker.value)) {
+                  marks.push(marker['mark']);
+                }
+              } else if(marker['operation'] == 'includes') {
+                if (currentNode[marker['field']].includes(marker['value'])) {
+                  marks.push(marker['mark']);
+                }
+              } else if(marker['operation'] == '!includes') {
+                if (!currentNode[marker['field']].includes(marker['value'])) {
+                  marks.push(marker['mark']);
+                }
+              }
+            });
+          }
           const child = {
             title: currentNode["header"],
             displayPath: "",//currentNode[ancestorsNameKey].join("/"),
@@ -626,6 +647,7 @@
             expanded: false,
             lazy: true,
             href: plugin.settings.featuresPath.replace("%%ID%%",key),
+            marks: marks,
           };
           if(facetHash[currentNode["ancestor_id_"+plugin.settings.perspective+"_path"]] === undefined) {
               child.lazy = false;
@@ -645,6 +667,8 @@
     var loadOnlyDirectAncestors = options["directAncestors"] ? !!options["directAncestors"] : false;
     var fullDetail = options["descendantsFullDetail"] ? !!options["descendantsFullDetail"] : false;
     var sortBy = options["sortBy"] ? options["sortBy"] : "header_ssort+ASC"
+    var extraFields = options["extraFields"] ? options["extraFields"] : []
+    var nodeMarkerPredicates = options["nodeMarkerPredicates"] ? options["nodeMarkerPredicates"] : []
     const dfd = $.Deferred();
     const fieldList = [
       "header",
@@ -655,7 +679,7 @@
       "ancestor_id_closest_"+plugin.settings.perspective+"_path",
       "ancestor_ids_closest_"+plugin.settings.perspective,
       "level_"+plugin.settings.perspective+"_i",
-    ].join(",");
+    ].concat(extraFields).join(",");
     var url = plugin.settings.termIndex + "/select?";
     if(loadOnlyDirectAncestors) {
       if(plugin.settings.featureId){
@@ -710,7 +734,7 @@
       if(response.numFound > 0){
         var doc = response.docs[0];
         if (loadDescendants && plugin.settings.featureId) {
-          const featureChildren = plugin.getDescendantTree(plugin.settings.featureId,fullDetail,sortBy);
+          const featureChildren = plugin.getDescendantTree(plugin.settings.featureId,fullDetail,sortBy, extraFields, nodeMarkerPredicates);
           featureChildren.then(function(value){ dfd.resolve(buildTree(doc, value)) });
         } else {
           if(response.numFound > 1){
@@ -731,7 +755,7 @@
     });
     return dfd.promise();
   }
-  Plugin.getDescendantTree = function getDescendantTree(featureId,fullDetail,sortBy){
+  Plugin.getDescendantTree = function getDescendantTree(featureId,fullDetail,sortBy, extraFields = [], nodeMarkerPredicates =  []){
     const plugin = this;
     fullDetail = fullDetail || false;
     const dfd = $.Deferred();
@@ -745,10 +769,11 @@
       "caption_eng",
       "related_"+plugin.settings.domain+"_feature_type_s",
       "related_"+plugin.settings.domain+"_relation_label_s"
-    ].join(",");
+    ].concat(extraFields).join(",");
     if(plugin.settings.domain == "places"){
       fieldList += ",related_subjects_t";
     }
+    var sortByQuery = sortBy ? sortBy : "related_"+plugin.settings.domain+"_header_s+ASC";
     var url = plugin.settings.termIndex + "/select?" +
       //V3 child count
       "&q=" + "{!child of=block_type:parent}id:" + featureId +
@@ -766,7 +791,7 @@
       "&indent=true" +
       "&wt=json" +
       "&json.wrf=?" +
-      "&sort=related_"+plugin.settings.domain+"_header_s+ASC" +
+      "&sort="+ sortByQuery +
       "&rows=" + SOLR_ROW_LIMIT;
     $.ajax({
       url: url,

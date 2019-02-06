@@ -14,3 +14,4 @@
 //= require typeahead/typeahead.jquery.min
 //= require kmaps_engine/jquery.kmaps-typeahead
 //= require kmaps_typeahead/kmaps-util
+//= require kmaps_engine/kmaps-simple-typeahead

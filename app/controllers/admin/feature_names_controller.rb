@@ -38,7 +38,7 @@ class Admin::FeatureNamesController < AclController
       feature.update_is_name_position_overriden
       feature.update_cached_feature_names
     end
-    render :nothing => true
+    render plain: ''
   end
   
   # Overwrite the default destroy method so we can redirect_to(:back)
