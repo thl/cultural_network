@@ -3,6 +3,6 @@ class PreferencesController < ApplicationController
   
   def edit
     session[:name_preferences][:filter] = params[:name_preferences_filter]
-    render :nothing => true, :status => 200
+    render plain: ''
   end
 end

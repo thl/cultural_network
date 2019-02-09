@@ -2,7 +2,7 @@
 <%= javascript_on_load do %>
   jQuery('#featureNamesList').ajaxSortable({
     action: '<%= set_priorities_admin_feature_names_path %>',
-    object_id: <%= @feature.id.to_s %>
+    object_id: <%= @feature.id %>
   });
 <% end
    add_breadcrumb_item feature_link(@feature)
@@ -32,7 +32,7 @@
        <th><%= ts 'priorit.y' %></th>
      </tr>
 <%   list.sort_by{ |l| l.position }.each do |item| %>
-       <tr id="feature_name_<%= item.id.to_s %>">
+       <tr id="feature_name_<%= item.id %>">
          <td class="centerText">
 <%       if @locating_relation %>
 <%=        form_tag new_admin_feature_name_feature_name_relation_path(@feature), {:method=>:get} %>
@@ -49,7 +49,7 @@
          <td><%= def_if_blank(item, :language) %></td>
          <td><%= def_if_blank(item, :writing_system) %></td>
          <td><%= fn_relationship(item) %></td>
-         <td class="sortable-priority-value"><%= item.position.to_s %></td>
+         <td class="sortable-priority-value"><%= item.position %></td>
        </tr>
 <%   end %>
      </table>

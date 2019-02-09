@@ -40,6 +40,8 @@
       mandalaURL: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
       solrUtils: {}, //requires solr-utils.js library
       language: 'eng',
+      extraFields: [],
+      nodeMarkerPredicates: [], //A predicate is: {field:, value:, operation: 'eq', mark: 'nonInteractive'}
     };
 
   // The actual plugin constructor
@@ -66,6 +68,8 @@
         directAncestors: plugin.options.directAncestors,
         descendantsFullDetail: plugin.options.descendantsFullDetail,
         sortBy: plugin.options.sortBy,
+        extraFields: plugin.options.extraFields,
+        nodeMarkerPredicates: plugin.options.nodeMarkerPredicates,
       };
       // Place initialization logic here
       // You already have access to the DOM element and the options via the instance,
@@ -97,8 +101,12 @@
         activate: function(event, data){
           var node = data.node,
             orgEvent = data.originalEvent;
-          if(node.data.href){
-            window.location.href=node.data.href;
+          if(node.data.marks.includes('nonInteractiveNode')) {
+            node.toggleExpanded();
+          } else {
+            if(node.data.href){
+              window.location.href=node.data.href;
+            }
           }
         },
         lazyLoad: function(event,data){
@@ -127,10 +135,8 @@
               current_title+"</a>";
             if(parentPath == ""){
               return current_link;
-              return current_title;
             }
             return parentPath + "/" + current_link;
-            return parentPath + "/" + current_title;
           }, "");
           if(plugin.options.displayPopup){
             var pop_container = $('<span class="popover-kmaps" data-app="places" data-id="'+key+'"><span class="popover-kmaps-tip"></span><span class="icon shanticon-menu3"></span></span>');
@@ -182,9 +188,9 @@
       if(!plugin.options.directAncestors) {
         var ancestorPath = keyPath.split("/"+plugin.options.domain+"-");
         ancestorPath.shift();
-        return plugin.options.solrUtils.getDescendantsInPath(ancestorPath.join("/"),ancestorPath.length+1,plugin.options.sortBy);
+        return plugin.options.solrUtils.getDescendantsInPath(ancestorPath.join("/"),ancestorPath.length+1,plugin.options.sortBy,plugin.options.extraFields,plugin.options.nodeMarkerPredicates);
       }
-      return plugin.options.solrUtils.getDescendantTree(featureId,plugin.options.descendantsFullDetail,plugin.options.sortBy);
+      return plugin.options.solrUtils.getDescendantTree(featureId,plugin.options.descendantsFullDetail,plugin.options.sortBay,plugin.options.extraFields, plugin.options.nodeMarkerPredicates);
     }
   };
 
