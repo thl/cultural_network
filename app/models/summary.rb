@@ -23,6 +23,6 @@ class Summary < ActiveRecord::Base
   include KmapsEngine::IsCitable
 
   def plain_content
-    ActionController::Base.helpers.strip_tags(content)
+    content.strip_tags
   end
 end
