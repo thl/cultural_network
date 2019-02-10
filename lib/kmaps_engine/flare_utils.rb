@@ -5,10 +5,8 @@ module KmapsEngine
     include KmapsEngine::ProgressBar
     
     INTERVAL = 100
-    START_HOUR=8
-    END_HOUR = 17
     
-    def reindex_all(from:, to:, daylight:, log_level:)
+    def reindex_all(from:, to:, daylight:)
       from_i = from.blank? ? nil : from.to_i
       to_i = to.blank? ? nil : to.to_i
       features = Feature.where(is_public: true).order(:fid)
@@ -16,8 +14,6 @@ module KmapsEngine
       features = features.where(['fid <= ?', to_i]) if !to_i.nil?
       count = 0
       current = 0
-      self.log = ActiveSupport::Logger.new("log/reindexing_#{Rails.env}.log")
-      self.log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
       self.log.debug { "#{Time.now}: Starting reindexing." }
       ipc_reader, ipc_writer = IO.pipe('ASCII-8BIT')
       ipc_writer.set_encoding('ASCII-8BIT')
@@ -123,32 +119,5 @@ module KmapsEngine
       self.log.debug "#{Time.now}: Reindexing done."
       STDOUT.flush
     end
-    
-    def self.wait_if_business_hours(daylight)
-      return if daylight.blank?
-      now = self.now
-      end_time = self.end_time
-      if now.wday<6 && self.start_time<now && now<end_time
-        delay = self.end_time-now
-        puts "#{Time.now}: Resting until #{end_time}..."
-        sleep(delay)
-      end
-    end
-    
-    private
-    
-    def self.now
-      Time.now
-    end
-    
-    def self.start_time
-      now = self.now
-      Time.new(now.year, now.month, now.day, START_HOUR)
-    end
-    
-    def self.end_time
-      now = self.now
-      Time.new(now.year, now.month, now.day, END_HOUR)
-    end    
   end
 end

@@ -1,6 +1,12 @@
 module KmapsEngine
   module ProgressBar
     extend ActiveSupport::Concern
+
+    STATUS_LENGTH = 36
+    FID_LENGTH = 7
+    START_HOUR = 8
+    END_HOUR = 17
+    
     included do
       attr_accessor :feature
       attr_accessor :log
@@ -10,16 +16,10 @@ module KmapsEngine
       attr_accessor :output
     end
 
-    STATUS_LENGTH = 36
-    FID_LENGTH = 7
-
-    START_HOUR = 8
-    END_HOUR = 17
-
-    def initialize(log_file, log_level)
+    def initialize(log_file = nil, log_level = nil)
       self.output = STDERR.tty? ? STDERR : STDOUT
       self.reset_progress_bar
-      create_log(log_file, log_level)
+      create_log(log_file, log_level) if !log_file.blank?
     end
 
     def create_log(log_file, log_level)
@@ -74,9 +74,9 @@ module KmapsEngine
         return if daylight.blank?
         now = self.now
         end_time = self.end_time
-        if now.wday<6 && self.start_time<now && now<end_time
+        if !(now.saturday? || now.sunday?) && self.start_time<now && now<end_time
           delay = self.end_time - now
-          puts "#{Time.now}: Resting until #{end_time}..."
+          self.log.debug { "#{Time.now}: Resting until #{end_time}..." }
           sleep(delay)
         end
       end
