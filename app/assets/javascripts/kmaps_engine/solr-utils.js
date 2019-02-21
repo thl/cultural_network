@@ -166,7 +166,7 @@
     });
     return dfd.promise();
   }
-  Plugin.addSubjectsSummaryItems = function addPlacesSummaryItems(feature_label,featuresPath,group_key,data){
+  Plugin.addSubjectsSummaryItems = function addSubjectsSummaryItems(feature_label,featuresPath,group_key,data){
     var plugin = this;
     var container = $('.'+plugin.settings.domain+'-in-'+plugin.settings.domain);
 
@@ -235,6 +235,9 @@
             acc[node_type] =  [];
           }
           var relation_label = currentNode["related_"+ plugin.settings.domain +"_relation_label_s"];
+          if(relation_label === undefined){
+            return acc;
+          }
           if(acc[node_type][relation_label] === undefined){
             acc[node_type][relation_label] = [];
           }
