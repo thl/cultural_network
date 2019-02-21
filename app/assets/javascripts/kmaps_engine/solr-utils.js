@@ -146,6 +146,9 @@
             acc[node_type] =  [];
           }
           var relation_label = currentNode["related_"+ plugin.settings.domain +"_relation_label_s"];
+          if(relation_label === undefined){
+            return acc;
+          }
           if(acc[node_type][relation_label] === undefined){
             acc[node_type][relation_label] = [];
           }
