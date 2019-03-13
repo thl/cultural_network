@@ -23,7 +23,7 @@ module KmapsEngine
       while current< total
         limit = current + INTERVAL
         limit = total if limit > total
-        FlareUtils.wait_if_business_hours(daylight)
+        self.wait_if_business_hours(daylight)
         sid = Spawnling.new do
           self.log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
           for i in current...limit
@@ -77,7 +77,7 @@ module KmapsEngine
       while current<total
         limit = current + INTERVAL
         limit = total if limit > total
-        FlareUtils.wait_if_business_hours(daylight)
+        self.wait_if_business_hours(daylight)
         sid = Spawnling.new do
           self.log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
           for i in current...limit

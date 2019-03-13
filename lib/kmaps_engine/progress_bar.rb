@@ -67,21 +67,18 @@ module KmapsEngine
       end
     end
 
+    def wait_if_business_hours(daylight)
+      return if daylight.blank?
+      now = self.class.now
+      end_time = self.class.end_time
+      if !(now.saturday? || now.sunday?) && self.class.start_time<now && now<end_time
+        delay = self.class.end_time - now
+        self.log.debug { "#{Time.now}: Resting until #{end_time}..." }
+        sleep(delay)
+      end
+    end
 
     module ClassMethods
-
-      def wait_if_business_hours(daylight)
-        return if daylight.blank?
-        now = self.now
-        end_time = self.end_time
-        if !(now.saturday? || now.sunday?) && self.start_time<now && now<end_time
-          delay = self.end_time - now
-          self.log.debug { "#{Time.now}: Resting until #{end_time}..." }
-          sleep(delay)
-        end
-      end
-
-      protected
 
       def now
         Time.now
