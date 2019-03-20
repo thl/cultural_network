@@ -126,7 +126,7 @@
           var theIdPath = data.node.data.path;
           //var displayPath = data.node.data.displayPath;
           var displayPath = data.node.getParentList(true,true).reduce(function(parentPath,ancestor) {
-            var title_match = ancestor.title.match(/<strong>(.*?)<\/strong>/);
+            var title_match = ancestor.title;
             var current_title = "";
             if(title_match != null){
               current_title = title_match[0];
