@@ -96,7 +96,8 @@ end
 
 role = AuthenticatedSystem::Role.find_by(title: 'System Administrator')
 role = AuthenticatedSystem::Role.create(title: 'System Administrator') if role.nil?
-role.users << u
+users = role.users
+users << u if !users.include? u
 
 p = role.permissions.find_by(title: 'authenticated_system/roles/index')
 p = role.permissions.create(title: 'authenticated_system/roles/index') if p.nil?
