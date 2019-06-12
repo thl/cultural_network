@@ -16,15 +16,19 @@ module KmapsEngine
       attr_accessor :output
     end
 
-    def initialize(log_file = nil, log_level = nil)
+    def initialize(log = nil, log_level = nil)
       self.output = STDERR.tty? ? STDERR : STDOUT
       self.reset_progress_bar
-      create_log(log_file, log_level) if !log_file.blank?
+      create_log(log, log_level) if !log.nil?
     end
 
-    def create_log(log_file, log_level)
-      self.log = ActiveSupport::Logger.new(log_file)
-      self.log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
+    def create_log(log, log_level)
+      if log.instance_of? ActiveSupport::Logger
+        self.log = log
+      else
+        self.log = ActiveSupport::Logger.new(log)
+        self.log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
+      end
     end
 
     def close_log

@@ -49,13 +49,20 @@ module KmapsEngine
 
     def add_info_source(field_prefix, citable)
       info_source = nil
+      return if self.fields.keys.find{|k| !k.nil? && k.starts_with?("#{field_prefix}.info_source")}.nil?
       begin
         info_source_id = self.fields.delete("#{field_prefix}.info_source.id")
         if info_source_id.blank?
           info_source_code = self.fields.delete("#{field_prefix}.info_source.code")
           if info_source_code.blank?
             source_name = self.fields.delete("#{field_prefix}.info_source.oral.fullname")
-            if !source_name.blank?
+            if source_name.blank?
+              source_title = self.fields.delete("#{field_prefix}.info_source.title")
+              if !source_title.blank?
+                info_source = InfoSource.where(title: source_title).first
+                info_source_type = 'InfoSource'
+              end
+            else
               info_source = OralSource.find_by_name(source_name)
               info_source_type = 'OralSource'
               self.say "Oral source with name #{source_name} was not found." if info_source.nil?
@@ -148,6 +155,7 @@ module KmapsEngine
     # Valid columns: .note, .title
     def add_note(field_prefix, notable)
       prefix = "#{field_prefix}.note"
+      return if self.fields.keys.find{|k| !k.nil? && k.starts_with?(prefix)}.nil?
       author_name = self.fields.delete("#{prefix}.author.fullname")
       author = author_name.blank? ? nil : AuthenticatedSystem::Person.find_by(fullname: author_name)
       note_str = self.fields.delete("#{prefix}.content")

@@ -48,6 +48,7 @@ class Importation
   end
   
   def add_date(field_prefix, dateable)
+    return if self.fields.keys.find{|k| !k.nil? && k.starts_with?("#{field_prefix}.time_units")}.nil?
     date = self.fields.delete("#{field_prefix}.time_units.date")
     calendar_id = self.fields.delete("#{field_prefix}.time_units.calendar_id") || 1
     frequency_id = self.fields.delete("#{field_prefix}.time_units.frequency_id")

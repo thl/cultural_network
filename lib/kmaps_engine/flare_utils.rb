@@ -71,8 +71,9 @@ module KmapsEngine
       ipc_reader, ipc_writer = IO.pipe('ASCII-8BIT')
       ipc_writer.set_encoding('ASCII-8BIT')
       total = fids.size
-      self.log.debug { "#{Time.now}: Starting reindexing." }
       puts "#{Time.now}: Indexing of #{total} items about to start..."
+      self.log.debug { "#{Time.now}: Starting reindexing." }
+      self.log.debug { "#{Time.now}: Features to index: #{fids.join(', ')}." }
       STDOUT.flush
       while current<total
         limit = current + INTERVAL
