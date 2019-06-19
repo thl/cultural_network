@@ -55,22 +55,16 @@
 <% end
    unless object.parents.empty? %>
 <%=  content_tag(:h3, ts('parent.this', :count => :many)) %>
-<%   (object.parents).each do |parent| %>
      <div class="row">
-<%=    parent.name %>
-<%=    render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => parent.relations.select {|r| r.child_node == object}, :parent => parent, :options => {:hide_child => true, :hide_related_to => true} } %>
+<%=    render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => object.parent_relations, :options => {:hide_child => true} } %>
      </div>
 <%   end
-   end
    unless object.children.empty? %>
 <%=  content_tag(:h3, ts('child', :count => :many)) %>
-<%   (object.children).each do |child| %>
        <div class="row">
-<%=      ts 'snippet.feature.name.has_transliteration', :what => "\'#{object.name}\'", :whom => link_to(child.name, admin_feature_name_path(child)) %>
- <%=     render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => child.relations.select {|r| r.parent_node == object} } %>
+<%=     render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => object.child_relations, options: { hide_related_to: true}} %>
        </div>
-<%   end
-   end %>
+<%   end %>
 </fieldset>
     </div> <!-- END panel-body -->
   </div> <!-- END collapseOne -->

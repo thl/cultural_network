@@ -1,7 +1,6 @@
 # Kmaps engine network view localization file for English.
 en:
     about: 'About'
-    child: 'Child'
     choose:
         from: 'choose from %{what}'
         record: 'choose %{what}'
