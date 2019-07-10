@@ -33,6 +33,7 @@
       perspective: "pol.admin.hier",
       descendants: false,
       directAncestors: true,
+      hideAncestors: false,
       descendantsFullDetail: true,
       sortBy: 'header_ssort+ASC',
       initialScrollToActive: false,
@@ -101,8 +102,10 @@
         activate: function(event, data){
           var node = data.node,
             orgEvent = data.originalEvent;
-          if(node.data.marks.includes('nonInteractiveNode')) {
+          if(node.data.marks && node.data.marks.includes('nonInteractiveNode')) {
             node.toggleExpanded();
+          } else if(node.data.marks && node.data.marks.includes('customActionNode')) {
+             return;
           } else {
             if(node.data.href){
               window.location.href=node.data.href;
@@ -178,7 +181,9 @@
     },
     getAncestorTree: function(options){
       const plugin = this;
-      if(plugin.options.directAncestors) {
+      if(plugin.options.hideAncestors) {
+        return plugin.options.solrUtils.getDescendantTree(plugin.options.featureId,plugin.options.descendantsFullDetail,plugin.options.sortBay,plugin.options.extraFields, plugin.options.nodeMarkerPredicates);
+      } else if(plugin.options.directAncestors) {
         return plugin.options.solrUtils.getAncestorTree(options);
       }
       return plugin.options.solrUtils.getFullAncestorTree(options);
