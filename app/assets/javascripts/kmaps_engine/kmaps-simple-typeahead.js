@@ -331,6 +331,10 @@
       }
     },
 
+    updateAdditionalFilters: function (filters) {
+      this.settings.additional_filters = filters;
+    },
+
     mergeParams: function (params) {
       this.params = params;
     },
