@@ -2,21 +2,19 @@ require 'csv'
 module KmapsEngine
   class FeatureNameMatch
 
-    def initialize
-    end
-
     public
 
     def self.match(source, options={})
       options[:matched_filename] ||= "tmp/matched_name_results.csv"
       options[:unmatched_filename] ||= "tmp/unmatched_name_results.csv"
-      matched_filename = Rails.root(options[:matched_filename]).to_s
-      unmatched_filename = Rails.root(options[:unmatched_filename]).to_s
+      matched_filename = Rails.root.join(options[:matched_filename]).to_s
+      unmatched_filename = Rails.root.join(options[:unmatched_filename]).to_s
       limit = options[:limit].blank? ? false : options[:limit].to_i
       matched_items = []
       unmatched_items = []
       rows_done = 0
-      CSV.open(source, 'r', ",") do |columns|
+      rows = CSV.read(source, headers: false, col_sep: ",")
+      rows.each do |columns|
         if !limit || (rows_done < limit)
           external_id = columns[0].strip
           name = format_name(columns[1])
@@ -33,20 +31,16 @@ module KmapsEngine
         end
         rows_done += 1
       end
-      matched_file = File.open(matched_filename, 'wb')
-      CSV::Writer.generate(matched_file) do |csv|
+      CSV.open(matched_filename, 'wb') do |csv|
         matched_items.each do |columns|
           csv << columns
         end
       end
-      matched_file.close
-      unmatched_file = File.open(unmatched_filename, 'wb')
-      CSV::Writer.generate(unmatched_file) do |csv|
+      CSV.open(unmatched_filename, 'wb') do |csv|
         unmatched_items.each do |columns|
           csv << columns
         end
       end
-      unmatched_file.close
       puts "- Found: #{matched_items.length}\n"
       puts "- Not found: #{unmatched_items.length}\n"
       puts "- Wrote matched results to:\n"
@@ -57,8 +51,13 @@ module KmapsEngine
 
     def self.find_feature_by_name(name)
       return nil if name.blank?
-      feature = Feature.search(name, :scope => 'name', :match => 'exactly').paginate(:limit => 1, :page =>1)
-      feature = feature.first if feature.is_a?(Array)
+      search = Search.new(filter: name, scope: 'name', match: 'exactly')
+      feature = Feature.search(search).paginate(total_entries: 1, page: 1)
+      if feature.size > 0
+          feature = feature.first
+      else
+        feature = nil
+      end
       feature
     end
 

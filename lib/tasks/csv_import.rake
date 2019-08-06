@@ -26,15 +26,14 @@ namespace :db do
   
   namespace :feature_name_match do
     csv_desc = "Find feature matches based on names in a CSV and associate them with an ID in the CSV.\n" +
-      "The CSV should have columns like \"external_id, name1, name2, name3\", where external_id can be anything," +
-      " and there can be any number of name[N]'s.\n"+
-      "The output is a CSV file with columns like \"external_id, FID\".\n"+
-      "Syntax: rake db:feature_name_match:match SOURCE=csv-file-name OUTPUT=output-csv-file-name"
+      "The CSV should have columns like \"external_id, name1, name2\", where external_id can be anything," +
+      "The output is two CSV files with columns like \"external_id, FID\".\n"+
+      "The out files are located in tmp matched_name_results.csv and unmatched_name_results.csv.\n"+
+      "Syntax: rake db:feature_name_match:match SOURCE=csv-file-name"
     desc csv_desc
-    task :match do
+    task match: :environment do
       source = ENV['SOURCE']
       options = {}
-      options[:output] = ENV['OUTPUT']
       options[:limit] = ENV['LIMIT']
       if source.blank?
         puts "Please specify a source.\n"+
