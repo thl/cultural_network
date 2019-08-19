@@ -24,16 +24,16 @@ class SessionsController < ApplicationController
   def change_language
     case params[:id]
     when 'bo'
-      session[:language] = 'bo'
+      session['language'] = 'bo'
       self.current_view_id = View.get_by_code('pri.tib.sec.chi').id
     when 'dz'
-      session[:language] = 'dz'
+      session['language'] = 'dz'
       self.current_view_id = View.get_by_code('pri.tib.sec.roman').id
     when 'zh'
-      session[:language] = 'zh'
+      session['language'] = 'zh'
       self.current_view_id = View.get_by_code('simp.chi').id
     when 'en'
-      session[:language] = 'en'
+      session['language'] = 'en'
       self.current_view_id = View.get_by_code(default_view_code).id
     end
     redirect_back fallback_location: root_url

@@ -1,12 +1,12 @@
 <% use_session ||= false
    # This partial will only use the session store features as its results if use_session is true
-   # and the session[:search] variables aren't blank
-   if use_session && !session[:search][:page].blank?
+   # and the session['search'] variables aren't blank
+   if use_session && !session['search']['page'].blank?
      # Create a "fake" WillPaginate collection that has the same properties as a Feature collection would
-     pagination_collection = WillPaginate::Collection.new(session[:search][:page], session[:search][:per_page], session[:search][:total_entries])  
+     pagination_collection = WillPaginate::Collection.new(session['search']['page'], session['search']['per_page'], session['search']['total_entries'])  
      # This is necessary for calculations involving Collection.length to be correct
      pagination_collection.replace(features)
-     search_params = session[:search][:params]
+     search_params = session['search']['params']
      # Otherwise, just use the actual Feature collection in will_paginate
    else
      pagination_collection = features

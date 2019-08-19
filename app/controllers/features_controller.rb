@@ -2,7 +2,7 @@ class FeaturesController < ApplicationController
   caches_page :show, :if => Proc.new { |c| c.request.format.xml? || c.request.format.json? || c.request.format.csv? }
   #
   def index
-    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface].blank? || session[:interface][:context_id].blank?
+    @feature = Feature.find(session['interface']['context_id']) unless session['interface'].blank? || session['interface']['context_id'].blank?
     @tab_options = {:entity => @feature}
     @current_tab_id = :home
     
@@ -27,7 +27,7 @@ class FeaturesController < ApplicationController
         if @feature.nil?
           redirect_to features_url
         else
-          session[:interface][:context_id] = @feature.id unless @feature.nil?
+          session['interface']['context_id'] = @feature.id unless @feature.nil?
           @tab_options = {:entity => @feature}
           @current_tab_id = :place
         end
@@ -259,7 +259,7 @@ class FeaturesController < ApplicationController
     if @feature.nil?
       redirect_to features_url
     else
-      session[:interface][:context_id] = @feature.id unless @feature.nil?
+      session['interface']['context_id'] = @feature.id unless @feature.nil?
       @tab_options = {:entity => @feature}
       @current_tab_id = :related
     end
@@ -298,16 +298,16 @@ class FeaturesController < ApplicationController
       
   def set_session_variables
     defaults = {
-      :menu_item => "search",
-      :advanced_search => "0"
+      'menu_item' => 'search',
+      'advanced_search' => '0'
     }
     valid_keys = defaults.keys
     
-    session[:interface] = {} if session[:interface].nil?
+    session['interface'] = {} if session['interface'].nil?
     params.each do |key, value|
-      session[:interface][key.to_sym] = value if valid_keys.include?(key.to_sym)
+      session['interface'][key] = value if valid_keys.include?(key)
     end
-    render :text => ""
+    render :text => '' 
   end
   
   protected

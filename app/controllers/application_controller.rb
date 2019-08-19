@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_common_variables
-    session[:interface] ||= {}
+    session['interface'] ||= {}
 
     # Allow for views and perspectives to be set by GET params.  It might be possible to simplify this code...
     if params[:perspective_id] || params[:view_id]

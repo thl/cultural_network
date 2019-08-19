@@ -113,6 +113,6 @@ module FeaturesHelper
   end
   
   def active_menu_item
-    !session[:interface].blank? && !session[:interface][:menu_item].blank? ? session[:interface][:menu_item] : 'browse'
+    !session['interface'].blank? && !session['interface']['menu_item'].blank? ? session['interface']['menu_item'] : 'browse'
   end
 end
