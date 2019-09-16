@@ -35,9 +35,11 @@ module FeatureExtensionForNamePositioning
     when 'simp.chi'
       # If a writing system =hans name is available, show it
       name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id)
+      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id) if name.nil?
     when 'trad.chi'
       # If a writing system=hant name is available, show it
       name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id)
+      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
     when 'deva'
       # If a writing system =deva name is available, show it
       name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('deva').id)
