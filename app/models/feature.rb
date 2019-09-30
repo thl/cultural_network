@@ -67,10 +67,6 @@ class Feature < ActiveRecord::Base
     end
   end
   
-  def self.associated_models
-    @@associated_models
-  end
-  
   def parent_by_perspective(perspective)
     parent_relation = FeatureRelation.where(child_node_id: self.id, perspective_id: perspective.id, feature_relation_type_id: FeatureRelationType.hierarchy_ids).select(:parent_node_id).order(:created_at).first
     parent_relation.nil? ? nil : parent_relation.parent_node
@@ -166,34 +162,6 @@ class Feature < ActiveRecord::Base
     end
     feature_ids.collect{|fid| Feature.find(fid)}
   end
-  
-  #
-  #
-  #
-  def self.current_roots(current_perspective, current_view)
-    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", expires_in: 1.day) do
-      joins(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').roots.find_all do |r|
-#      self.includes(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').scoping do
- #       roots.find_all do |r|
-          # if ANY of the child relations are current, return true to nab this Feature
-        r.child_relations.any? {|cr| cr.perspective==current_perspective }
-      end.collect(&:id)
-    #  end
-    end
-    feature_ids.collect{ |fid| Feature.find(fid) }.sort_by{ |f| [f.position, f.prioritized_name(current_view).name] }
-  end
-
-  def self.current_roots_by_perspective(current_perspective)
-    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", expires_in: 1.day) do
-      self.where('features.is_blank' => false).scoping do
-        self.roots.select do |r|
-          # if ANY of the child relations are current, return true to nab this Feature
-          r.child_relations.any? {|cr| cr.perspective==current_perspective }
-        end
-      end.collect(&:id)
-    end
-    feature_ids.collect{ |fid| Feature.find(fid) }
-  end
 
   #
   #
@@ -202,28 +170,6 @@ class Feature < ActiveRecord::Base
     return children.includes([{cached_feature_names: :feature_name}, :parent_relations]).references([{cached_feature_names: :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(include: [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
-  end
-  
-  # currently only option accepted is 'only_hierarchical'
-  def self.descendants_by_perspective_with_parent(fids, perspective, options ={})
-    pending = fids.collect{|fid| Feature.get_by_fid(fid)}
-    des = pending.collect{|f| [f, nil]}
-    des_ids = pending.collect(&:id)
-    conditions = {perspective_id: perspective.id}
-    conditions[:feature_relation_type_id] = FeatureRelationType.hierarchy_ids if options[:only_hierarchical]
-    while !pending.empty?
-      e = pending.pop
-      conditions[:parent_node_id] = e.id
-      FeatureRelation.where(conditions).each do |r|
-        c = r.child_node
-        if !des_ids.include? c.id
-          des_ids << c.id
-          des << [c, e, r]
-          pending.push(c)
-        end
-      end
-    end
-    des
   end
   
   def descendants_by_perspective_with_parent(perspective)
@@ -246,6 +192,24 @@ class Feature < ActiveRecord::Base
       end
     end
     des
+  end
+  
+  def recursive_descendants_with_depth(level = 0)
+    res = [[self, level]]
+    FeatureRelation.where(parent_node_id: self.id).joins(:child_node).order('features.position').each do |r|
+      c = r.child_node
+      res += c.recursive_descendants_with_depth(level+1)
+    end
+    res
+  end
+  
+  def recursive_descendants_by_perspective_with_depth(perspective, level = 0)
+    res = [[self, level]]
+    FeatureRelation.where(parent_node_id: self.id, perspective_id: perspective.id).joins(:child_node).order('features.position').each do |r|
+      c = r.child_node
+      res += c.recursive_descendants_by_perspective_with_depth(perspective, level+1)
+    end
+    res
   end
   
   def all_descendants
@@ -317,60 +281,6 @@ class Feature < ActiveRecord::Base
   #
   #
   #
-  def self.generate_pid
-    KmapsEngine::FeaturePidGenerator.next
-  end
-  
-  #
-  # given a "context_id" (Feature.id), this method only searches
-  # the context's descendants. It returns an array
-  # where the first element is the context Feature
-  # and the second element is the collection of matching descendants.
-  #
-  # context_id - the id of a Feature
-  # filter - any string filter value
-  # options - the standard find(:all) options
-  #
-  def self.contextual_search(string_context_id, filter, search_options={})
-    context_id = string_context_id.to_i # for some reason this parameter has been especially susceptible to SQL injection attack payload
-    results = self.search(filter, search_options)
-    results = results.where(['(features.id = ? OR features.ancestor_ids LIKE ?)', context_id, "%.#{context_id}.%"]) if !context_id.blank?
-
-    # the context feature might not be returned
-    # use detect to find a feature.id match against the context_id
-    # if it isn't found, just do a standard find:
-    context_feature = results.detect {|i| i.id.to_s==context_id} || find(context_id) rescue nil
-    [context_feature, results]
-  end
-  
-  # 
-  # A basic search method that uses a single value for filtering on multiple columns
-  # filter_value is used as the value to filter on
-  # options - the standard arguments sent to ActiveRecord::Base.paginate (WillPaginate gem)
-  # See http://api.rubyonrails.com/classes/ActiveRecord/Base.html#M001416
-  # 
-  def self.search(search)
-    # Setup the base rules
-    if search.scope && search.scope == 'name'
-      conditions = build_like_conditions(%W(feature_names.name), search.filter, {match: search.match})
-    else
-      conditions = build_like_conditions(%W(descriptions.content feature_names.name), search.filter, {match: search.match})
-    end
-    if !conditions.blank?
-      fid = search.filter.gsub(/[^\d]/, '')
-      if !fid.blank?
-        conditions[0] << ' OR features.fid = ?'
-        conditions << fid.to_i
-      end
-    end
-    search_results = self.where(conditions).includes([:names, :descriptions]).references([:names, :descriptions]).order('features.position')
-    search_results = search_results.where('descriptions.content IS NOT NULL') if search.has_descriptions
-    return search_results
-  end
-  
-  def self.name_search(filter_value)
-    Feature.includes(:names).references(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
-  end
   
   def pictures_url
     kmap_path('pictures')
@@ -391,31 +301,10 @@ class Feature < ActiveRecord::Base
     relations.collect{|relation| relation.parent_node_id == self.id ? relation.child_node : relation.parent_node}
   end
   
-  #= Shapes ==============================
-  # A Feature has_many Shapes
-  # A Shape belongs_to (a) Feature
-  
-    
   def associated?
     @@associated_models.any?{|model| model.find_by(feature_id: self.id)} || !Shape.find_by(fid: self.fid).nil?
   end
   
-  def self.blank
-    Feature.all.reject{|f| f.associated? }
-  end
-  
-  def self.associated
-    Feature.all.select{|f| f.associated? }
-  end
-  
-  def self.get_by_fid(fid)
-    feature_id = Rails.cache.fetch("features-fid/#{fid}", expires_in: 1.day) do
-      feature = self.find_by(fid: fid)
-      feature.nil? ? nil : feature.id
-    end
-    feature_id.nil? ? nil : Feature.find(feature_id)
-  end
-    
   def association_notes_for(association_type, options={})
     conditions = {notable_type: self.class.name, notable_id: self.id, association_type: association_type, is_public: true}
     conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
@@ -495,7 +384,169 @@ class Feature < ActiveRecord::Base
       parents:          facet_hash['parent'],
       children:         facet_hash['child'] }
   end
+  
+  def self.associated_models
+    @@associated_models
+  end
+  
+  #
+  #
+  #
+  def self.current_roots(current_perspective, current_view)
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", expires_in: 1.day) do
+      joins(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').roots.find_all do |r|
+#      self.includes(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').scoping do
+ #       roots.find_all do |r|
+          # if ANY of the child relations are current, return true to nab this Feature
+        r.child_relations.any? {|cr| cr.perspective==current_perspective }
+      end.collect(&:id)
+    #  end
+    end
+    feature_ids.collect{ |fid| Feature.find(fid) }.sort_by{ |f| [f.position, f.prioritized_name(current_view).name] }
+  end
 
+  def self.current_roots_by_perspective(current_perspective)
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", expires_in: 1.day) do
+      self.where('features.is_blank' => false).scoping do
+        self.roots.select do |r|
+          # if ANY of the child relations are current, return true to nab this Feature
+          r.child_relations.any? {|cr| cr.perspective==current_perspective }
+        end
+      end.collect(&:id)
+    end
+    feature_ids.collect{ |fid| Feature.find(fid) }
+  end
+  
+  # currently only option accepted is 'only_hierarchical'
+  def self.descendants_with_parent(fids)
+    pending = fids.collect{|fid| Feature.get_by_fid(fid)}
+    des = pending.collect{|f| [f, nil]}
+    des_ids = pending.collect(&:id)
+    while !pending.empty?
+      e = pending.pop
+      FeatureRelation.where(parent_node_id: e.id).each do |r|
+        c = r.child_node
+        if !des_ids.include? c.id
+          des_ids << c.id
+          des << [c, e, r]
+          pending.push(c)
+        end
+      end
+    end
+    des
+  end
+  
+  def self.recursive_descendants_with_depth(fids)
+    res = []
+    fids.each do |fid|
+      f = Feature.get_by_fid(fid)
+      res += f.recursive_descendants_with_depth
+    end
+    res
+  end
+  
+  def self.recursive_descendants_by_perspective_with_depth(fids, perspective)
+    res = []
+    fids.each do |fid|
+      f = Feature.get_by_fid(fid)
+      res += f.recursive_descendants_by_perspective_with_depth(perspective)
+    end
+    res
+  end
+  
+  # currently only option accepted is 'only_hierarchical'
+  def self.descendants_by_perspective_with_parent(fids, perspective, options ={})
+    pending = fids.collect{|fid| Feature.get_by_fid(fid)}
+    des = pending.collect{|f| [f, nil]}
+    des_ids = pending.collect(&:id)
+    conditions = {perspective_id: perspective.id}
+    conditions[:feature_relation_type_id] = FeatureRelationType.hierarchy_ids if options[:only_hierarchical]
+    while !pending.empty?
+      e = pending.pop
+      conditions[:parent_node_id] = e.id
+      FeatureRelation.where(conditions).each do |r|
+        c = r.child_node
+        if !des_ids.include? c.id
+          des_ids << c.id
+          des << [c, e, r]
+          pending.push(c)
+        end
+      end
+    end
+    des
+  end
+  
+  def self.generate_pid
+    KmapsEngine::FeaturePidGenerator.next
+  end
+  
+  #
+  # given a "context_id" (Feature.id), this method only searches
+  # the context's descendants. It returns an array
+  # where the first element is the context Feature
+  # and the second element is the collection of matching descendants.
+  #
+  # context_id - the id of a Feature
+  # filter - any string filter value
+  # options - the standard find(:all) options
+  #
+  def self.contextual_search(string_context_id, filter, search_options={})
+    context_id = string_context_id.to_i # for some reason this parameter has been especially susceptible to SQL injection attack payload
+    results = self.search(filter, search_options)
+    results = results.where(['(features.id = ? OR features.ancestor_ids LIKE ?)', context_id, "%.#{context_id}.%"]) if !context_id.blank?
+
+    # the context feature might not be returned
+    # use detect to find a feature.id match against the context_id
+    # if it isn't found, just do a standard find:
+    context_feature = results.detect {|i| i.id.to_s==context_id} || find(context_id) rescue nil
+    [context_feature, results]
+  end
+  
+  # 
+  # A basic search method that uses a single value for filtering on multiple columns
+  # filter_value is used as the value to filter on
+  # options - the standard arguments sent to ActiveRecord::Base.paginate (WillPaginate gem)
+  # See http://api.rubyonrails.com/classes/ActiveRecord/Base.html#M001416
+  # 
+  def self.search(search)
+    # Setup the base rules
+    if search.scope && search.scope == 'name'
+      conditions = build_like_conditions(%W(feature_names.name), search.filter, {match: search.match})
+    else
+      conditions = build_like_conditions(%W(descriptions.content feature_names.name), search.filter, {match: search.match})
+    end
+    if !conditions.blank?
+      fid = search.filter.gsub(/[^\d]/, '')
+      if !fid.blank?
+        conditions[0] << ' OR features.fid = ?'
+        conditions << fid.to_i
+      end
+    end
+    search_results = self.where(conditions).includes([:names, :descriptions]).references([:names, :descriptions]).order('features.position')
+    search_results = search_results.where('descriptions.content IS NOT NULL') if search.has_descriptions
+    return search_results
+  end
+  
+  def self.name_search(filter_value)
+    Feature.includes(:names).references(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
+  end
+  
+  def self.blank
+    Feature.all.reject{|f| f.associated? }
+  end
+  
+  def self.associated
+    Feature.all.select{|f| f.associated? }
+  end
+  
+  def self.get_by_fid(fid)
+    feature_id = Rails.cache.fetch("features-fid/#{fid}", expires_in: 1.day) do
+      feature = self.find_by(fid: fid)
+      feature.nil? ? nil : feature.id
+    end
+    feature_id.nil? ? nil : Feature.find(feature_id)
+  end
+  
   private
   
   def document_for_rsolr

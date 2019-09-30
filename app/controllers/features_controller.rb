@@ -238,16 +238,22 @@ class FeaturesController < ApplicationController
   end
   
   def descendants
-    feature = Feature.get_by_fid(params[:id])
-    @features_with_parents = feature.descendants_with_parent
+    fids = params[:id].split(/\D+/)
+    perspective_code = params[:perspective_code]
+    perspective = perspective_code.blank? ? nil : Perspective.get_by_code(perspective_code)
+    if fids.size == 1
+      feature = Feature.get_by_fid(fids.first)
+      @features_with_parents = perspective.nil? ? feature.recursive_descendants_with_depth : feature.recursive_descendants_by_perspective_with_depth(perspective)
+    else
+      @features_with_parents = perspective.nil? ? Feature.recursive_descendants_with_depth(fids) : Feature.recursive_descendants_by_perspective_with_depth(fids, perspective)
+    end
     view_codes_str = params[:view_code]
     view_codes = view_codes_str.blank? ? [] : view_codes_str.split(',')
     if view_codes.empty?
       @view = current_view
-    elsif view_codes.size == 1
-      @view = View.get_by_code(view_codes.first)
     else
-      @view = view_codes.collect{ |v| View.get_by_code(v) }
+      @view = view_codes.collect{ |code| View.get_by_code(code) }
+      @view = @view.first if @view.size==1
     end
     respond_to do |format|
       format.txt
