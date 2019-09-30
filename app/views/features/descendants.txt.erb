@@ -2,6 +2,9 @@
      f = a[0]
      depth = a[1]
      views = @view.instance_of?(Array) ? @view : [@view]
-     names = @view.collect{ |v| f.prioritized_name(v).name }.uniq %>
+     names = @view.collect do |v|
+			 n = f.prioritized_name(v)
+			 n.nil? ? f.pid : n.name
+		 end.uniq %>
 <%= depth==0 ? '*' : '  ' * depth %><%=  names.join('; ') %> {<%= f.fid %>}
 <% end %>
