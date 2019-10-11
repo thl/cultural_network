@@ -19,41 +19,30 @@ class Admin::FeatureRelationsController < AclController
     get_perspectives
   end
   
-  #create.before :process_feature_relation_type_id_mark
-  update.before do
-    process_feature_relation_type_id_mark
-    get_perspectives
+  update do
+    failure.wants.html do
+      get_perspectives
+      render action: 'edit'
+    end
   end
   
   destroy.wants.html { redirect_to admin_feature_url(parent_object.fid) }
   
-  #
-  # The create.before wasn't being called (couldn't figure out why not; update.before works
-  # fine), so create is done manually for now. This should be fixed.  
-  #
-  def create
-    process_feature_relation_type_id_mark
-    @object = FeatureRelation.new(feature_relation_params)
-
-    respond_to do |format|
-      if @object.save
-        flash[:notice] = 'Feature Relation was successfully created.'
-        format.html { redirect_to(polymorphic_url [:admin, parent_object, object]) }
-        format.xml  { render :xml => @object, :status => :created, :location => @object }
-      else
-        get_perspectives
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @object.errors, :status => :unprocessable_entity }
-      end
+  create do
+    wants.html { redirect_to(polymorphic_url [:admin, parent_object, object]) }
+    failure.wants.html do
+      get_perspectives
+      render action: 'new'
     end
   end
-  
+
   new_action.wants.html { redirect_if_unauthorized }
   
   protected
   
   # Only allow a trusted parameter "white list" through.
   def feature_relation_params
+    process_feature_relation_type_id_mark
     params.require(:feature_relation).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
   end
   

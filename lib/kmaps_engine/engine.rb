@@ -27,7 +27,6 @@ module KmapsEngine
       require 'kmaps_engine/array_ext'
       require 'kmaps_engine/import/importation.rb'
       require 'kmaps_engine/extensions/user_model.rb'
-      require 'kmaps_engine/resource_object_authentication.rb'
       
       ActiveRecord::Base.send :include, ActiveRecord::KmapsEngine::Extension
       Array.send :include, KmapsEngine::ArrayExtension
