@@ -3,7 +3,7 @@ class Admin::FeaturesController < AclController
   resource_controller
   
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
-  
+
   def initialize
     super
     @guest_perms = []

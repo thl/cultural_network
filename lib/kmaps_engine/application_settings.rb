@@ -32,5 +32,13 @@ module KmapsEngine
         str
       end
     end
+
+    def self.disable_cache_expiration?
+      Rails.cache.fetch("application_settings/#{InterfaceUtils::Server.get_domain}/disable_cache_expiration", :expires_in => 1.day) do
+        str = InterfaceUtils::ApplicationSettings.settings['disable.cache.expiration']
+        str = '' if str.blank?
+        return str.downcase == 'yes'
+      end
+    end
   end
 end

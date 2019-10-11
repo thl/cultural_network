@@ -16,7 +16,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   end
   
   def expire_cache(record)
-    return if record.skip_update
+    return if record.skip_update || KmapsEngine::ApplicationSettings.disable_cache_expiration?
     Spawnling.new do
       already_reindexed = []
       if record.instance_of? Feature
