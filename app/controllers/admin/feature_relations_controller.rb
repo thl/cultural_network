@@ -42,8 +42,12 @@ class Admin::FeatureRelationsController < AclController
   
   # Only allow a trusted parameter "white list" through.
   def feature_relation_params
-    process_feature_relation_type_id_mark
-    params.require(:feature_relation).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
+    if defined?(super)
+      super
+    else
+      process_feature_relation_type_id_mark
+      params.require(:feature_relation).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
+    end
   end
   
   private
