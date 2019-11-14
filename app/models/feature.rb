@@ -406,6 +406,7 @@ class Feature < ActiveRecord::Base
   end
 
   def self.current_roots_by_perspective(current_perspective)
+    return super if defined?(super)
     feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", expires_in: 1.day) do
       self.where('features.is_blank' => false).scoping do
         self.roots.select do |r|
