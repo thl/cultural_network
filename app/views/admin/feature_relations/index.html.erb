@@ -7,7 +7,7 @@
   <div class="right highlight">
 <% if parent_object
    # Don't provide a way to create a new relation if there is no parent_object
-%><%= link_to ts('select.relation', :what => Feature.model_name.human, :whom => feature_link(parent_object)) %>
+%><%= link_to ts('select.relation', :what => Feature.model_name.human, :whom => fname_labels(parent_object)), locate_for_relation_admin_feature_path(parent_object.fid) %>
 <% else %>
 <%=  ts 'creat.e.requirement', :what => FeatureRelation.model_name.human, :whom => Feature.model_name.human %>
 <% end %>

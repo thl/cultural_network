@@ -110,8 +110,13 @@ class FeatureRelation < ActiveRecord::Base
   end
   
   def self.search(filter_value)
+    int_value = filter_value.to_i
+    if int_value==0
+      query = self.where(build_like_conditions(%W(role), filter_value))
+    else
+      query = self.where(['parents.fid = ? OR children.fid = ?', int_value, int_value])
+    end
     # need to do a join here (not :include) because we're searching parents and children feature.pids
-    self.where(build_like_conditions(%W(role parents.fid children.fid), filter_value)
-    ).joins('LEFT JOIN features parents ON parents.id=feature_relations.parent_node_id LEFT JOIN features children ON children.id=feature_relations.child_node_id')
+    query.joins('LEFT JOIN features parents ON parents.id=feature_relations.parent_node_id LEFT JOIN features children ON children.id=feature_relations.child_node_id')
   end
 end
