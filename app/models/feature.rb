@@ -642,7 +642,7 @@ class Feature < ActiveRecord::Base
       end
     end
     child_documents = doc['_childDocuments_']
-    child_documents += names.recursive_roots_with_path.collect do |np|
+    name_documents = names.recursive_roots_with_path.collect do |np|
       name = np.first
       path = np.second
       uid = "#{FeatureName.uid_prefix}-#{name.id}"
@@ -660,12 +660,15 @@ class Feature < ActiveRecord::Base
         "related_#{FeatureName.uid_prefix}_relationship_s" => name.pp_display_string,
         block_type: ['child']
       }
+      etymology = name.etymology
+      child_document["related_#{FeatureName.uid_prefix}_etymology_s"] = etymology if !etymology.blank?
       if !writing_system.nil?
         child_document["related_#{FeatureName.uid_prefix}_writing_system_s"] = writing_system.name
         child_document["related_#{FeatureName.uid_prefix}_writing_system_code_s"] = writing_system.code
       end
       child_document
     end
+    child_documents += name_documents
     doc['_childDocuments_'] = child_documents
     doc
   end
