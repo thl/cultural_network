@@ -1,5 +1,10 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
+  def new
+    reset_session
+    redirect_to root_url
+  end
+  
   # GET /session/edit
   def edit
     @session = Session.new(
@@ -42,6 +47,7 @@ class SessionsController < ApplicationController
   def change_perspective
     perspective = Perspective.find(params[:id])
     self.current_perspective_id = perspective.id if !perspective.nil?
+    session['interface']['context_id'] = nil
     redirect_back fallback_location: root_url
   end
   
