@@ -114,8 +114,9 @@ module ApplicationHelper
   #
   #
   def f_label(feature, html_attrs={})
+    v = View.get_by_code(default_view_code)
     html_attrs[:class] = html_attrs[:class].blank? ? 'feature_name' : "#{html_attrs[:class]} feature_name"
-    html_attrs[:title] ||= h(feature.name)
+    html_attrs[:title] ||= feature.prioritized_name(v).name
     content_tag(:span, fname_labels(feature), html_attrs)
   end
 

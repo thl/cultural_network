@@ -39,8 +39,7 @@ Rails.application.routes.draw do
     resources :feature_name_relations, concerns: :citable_notable_dateable
     resources :feature_relations, concerns: :citable_notable_dateable
     resources :features do
-      resources :affiliations
-      resources :citations
+      resources :affiliations, :citations
       resources :time_units do
         get :new_form, on: :collection
       end
