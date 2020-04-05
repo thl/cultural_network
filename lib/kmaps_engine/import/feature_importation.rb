@@ -247,6 +247,8 @@ module KmapsEngine
       prioritized_names = self.feature.prioritized_names
       delete_feature_names = self.fields.delete('feature_names.delete')
       association_notes = self.feature.association_notes
+      name_added = false
+      name_changed = false
       if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
         names.clear
         association_notes.delete(association_notes.where(:association_type => 'FeatureName'))
@@ -262,13 +264,12 @@ module KmapsEngine
             self.say "No name specified to replace #{replace_feature_names} for feature #{self.feature.pid}."
           else
             name.update_attributes(name: name_str, skip_update: true)
+            name_changed = true
           end
         end
       end
-      name_added = false
       name_positions_with_changed_relations = Array.new
       relations_pending_save = Array.new
-      name_changed = false
       delete_is_primary = self.fields.delete('feature_names.is_primary.delete')
       if !delete_is_primary.blank? && delete_is_primary.downcase == 'yes'
         names.where(:is_primary_for_romanization => true).each do |name|
@@ -512,6 +513,7 @@ module KmapsEngine
 
       # running triggers for feature_name_relation
       name_positions_with_changed_relations.each{|pos| name[pos].update_hierarchy if !name[pos].nil?}
+      return name_changed || name_added
     end
 
     # Up to four optional geocode types can be specified. For each geocode type the required columns are
