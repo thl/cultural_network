@@ -238,15 +238,32 @@ module KmapsEngine
     # You can also explicitly specify "i.feature_name_relations.is_phonetic" and
     # "i.feature_name_relations.is_orthographic" but it will
     # inferred otherwise.
+    # If feature_names.delete is "yes", all names and relations will be deleted.
+    # If feature_names.replace is not blank, it will be searched and replaced by
+    # feature_names.name (no i. prefix)
+    
     def process_names(total)
       names = self.feature.names
       prioritized_names = self.feature.prioritized_names
-      # If feature_names.delete is "yes", all names and relations will be deleted.
       delete_feature_names = self.fields.delete('feature_names.delete')
       association_notes = self.feature.association_notes
       if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
         names.clear
         association_notes.delete(association_notes.where(:association_type => 'FeatureName'))
+      end
+      replace_feature_names = self.fields.delete('feature_names.replace')
+      if !replace_feature_names.blank?
+        name = names.find_by(name: replace_feature_names)
+        if name.nil?
+          self.say "Feature name to be replaced #{replace_feature_names} does not exist for feature #{self.feature.pid}"
+        else
+          name_str = self.fields.delete('feature_names.name')
+          if name_str.blank?
+            self.say "No name specified to replace #{replace_feature_names} for feature #{self.feature.pid}."
+          else
+            name.update_attributes(name: name_str, skip_update: true)
+          end
+        end
       end
       name_added = false
       name_positions_with_changed_relations = Array.new

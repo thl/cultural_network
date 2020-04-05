@@ -18,6 +18,9 @@ module KmapsEngine
         if !limit || (rows_done < limit)
           external_id = columns[0].strip
           name = format_name(columns[1])
+          if name.is_tibetan_word?
+            name = name.tibetan_cleanup
+          end
           feature = find_feature_by_name(name)
           if feature.nil?
             second_name = format_name(columns[2]) unless columns[2].blank?
@@ -49,16 +52,9 @@ module KmapsEngine
       puts "#{unmatched_filename}\n"
     end
 
-    def self.find_feature_by_name(name)
-      return nil if name.blank?
-      search = Search.new(filter: name, scope: 'name', match: 'exactly')
-      feature = Feature.search(search).paginate(total_entries: 1, page: 1)
-      if feature.size > 0
-          feature = feature.first
-      else
-        feature = nil
-      end
-      feature
+    def self.find_feature_by_name(name_str)
+      name = FeatureName.where(name: name_str).first
+      name.nil? ? nil : name.feature
     end
 
     def self.format_name(name)
