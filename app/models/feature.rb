@@ -541,11 +541,18 @@ class Feature < ActiveRecord::Base
   end
   
   def self.get_by_fid(fid)
-    feature_id = Rails.cache.fetch("features-fid/#{fid}", expires_in: 1.day) do
+    key = "features-fid/#{fid}"
+    feature_id = Rails.cache.fetch(key, expires_in: 1.day) do
       feature = self.find_by(fid: fid)
       feature.nil? ? nil : feature.id
     end
-    feature_id.nil? ? nil : Feature.find(feature_id)
+    # TODO: this won't be necessary when upgrading to rails 6.0 using skip_nil
+    if feature_id.nil?
+      Rails.cache.delete(key)
+      return nil
+    else
+      return Feature.find(feature_id)
+    end
   end
   
   private
