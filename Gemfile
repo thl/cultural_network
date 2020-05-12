@@ -1,4 +1,5 @@
-source "http://rubygems.org"
+source 'https://rubygems.org'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Declare your gem's dependencies in kmaps_engine.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
