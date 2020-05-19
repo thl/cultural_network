@@ -19,7 +19,7 @@ module KmapsEngine
       self.wait_if_business_hours(daylight)
       features.each do |f|
         begin
-          if f.index!
+          if f.queued_index(priority: Flare::IndexerJob::LOW)
             self.log.debug { "#{Time.now}: Reindexed #{f.pid}." }
           else
             self.say "#{Time.now}: #{f.pid} failed."
@@ -49,7 +49,7 @@ module KmapsEngine
       fids.each do |fid|
         begin
           f = Feature.get_by_fid(fid)
-          if f.index!
+          if f.queued_index(priority: Flare::IndexerJob::LOW)
             name = f.prioritized_name(view)
             self.log.debug { "#{Time.now}: Reindexed #{name.name if !name.blank?} (#{f.pid})." }
           else

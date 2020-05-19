@@ -33,7 +33,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         Rails.cache.delete("features/#{f.fid}/ancestors_by_perspective/#{perspective_id}")
         Rails.cache.delete("features/#{f.fid}/closest_ancestors_by_perspective/#{perspective_id}")
         if f.is_public? && !already_reindexed.include?(f.fid)
-          f.index!
+          f.queued_index
           already_reindexed << f.fid
         end
       end
@@ -45,18 +45,18 @@ class FeatureSweeper < ActionController::Caching::Sweeper
     if feature.destroyed?
       feature.remove!
     elsif feature.is_public? && !already_reindexed.include?(feature.fid)
-      feature.index!
+      feature.queued_index
       already_reindexed << feature.fid
     end
     feature.parents.each do |f|
       if f.is_public? && !already_reindexed.include?(f.fid)
-        f.index!
+        f.queued_index
         already_reindexed << f.fid
       end
     end
     feature.children.each do |f|
       if f.is_public? && !already_reindexed.include?(f.fid)
-        f.index!
+        f.queued_index
         already_reindexed << f.fid
       end
     end
