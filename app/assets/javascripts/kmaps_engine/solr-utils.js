@@ -902,6 +902,44 @@
     return dfd.promise();
   }
 
+  Plugin.getRelatedMandalaTexts = function(){
+    var plugin = this;
+    var dfd = $.Deferred();
+    var relatedUrl =
+      plugin.settings.assetIndex + '/select?q=asset_type:texts* AND kmapid_strict:' + plugin.settings.domain+'-'+plugin.settings.featureId + '&wt=json&json.wrf=?';
+    $.ajax({
+      type: "GET",
+      url: relatedUrl,
+      dataType: "jsonp",
+      timeout: 90000,
+      error: function (e) {
+        console.error(e);
+      },
+      beforeSend: function () {
+      },
+      success: function (data) {
+        const response = data.response;
+        if(response.numFound > 0){
+          const result = response.docs.reduce(function(acc,currentNode,index){
+            var currentElement = {
+              id: currentNode["id"],
+              uid: currentNode["uid"],
+              title: currentNode["title"][0],
+              related: currentNode["kmapid_strict"]
+            };
+            var resultado = acc.concat([currentElement]);
+            return acc.concat([currentElement]);
+          }, []);
+          dfd.resolve(result);
+        } else {
+          dfd.resolve([]);
+        }
+      }
+    });
+    return dfd.promise();
+  };
+
+
   // END - Relations tree functions
   return Plugin;
 } )( jQuery, window, document );

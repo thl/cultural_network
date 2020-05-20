@@ -40,6 +40,7 @@ class Feature < ActiveRecord::Base
   has_many :collections, through: :affiliations
   has_many :citations, as: :citable, dependent: :destroy
   has_many :descriptions, dependent: :destroy
+  has_many :essays, dependent: :destroy
   has_many :geo_codes, class_name: 'FeatureGeoCode', dependent: :destroy # naming inconsistency here (see feature_object_types association) ?
   has_many :geo_code_types, through: :geo_codes
   has_many :illustrations, dependent: :destroy
@@ -573,6 +574,10 @@ class Feature < ActiveRecord::Base
       end
       doc["caption_#{c.language.code}_#{c.id}_content_t"] = c.content
       doc["caption_#{c.language.code}_#{c.id}_citation_references_ss"] = c.citations.collect { |ci| ci.info_source.bibliographic_reference }
+    end
+    mandala_text_mapping = Language.mandala_text_mappings.invert
+    self.essays.each do |e|
+      doc["homepage_text_#{mandala_text_mapping[e.language.id]}_s"] = e.text_id
     end
     self.summaries.each do |s|
       if doc["summary_#{s.language.code}"].blank?

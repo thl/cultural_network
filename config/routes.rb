@@ -51,7 +51,7 @@ Rails.application.routes.draw do
       collection do
         get 'prioritize_feature_names/:id', to: 'feature_names#prioritize', as: :prioritize_feature_names
       end
-      resources :captions, :feature_geo_codes, :feature_names, :feature_relations, :illustrations, :summaries
+      resources :captions, :essays, :feature_geo_codes, :feature_names, :feature_relations, :illustrations, :summaries
       resources :association_notes, concerns: :add_author
       resources :descriptions, concerns: :add_author
     end

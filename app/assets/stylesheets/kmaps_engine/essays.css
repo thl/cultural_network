@@ -1,0 +1,10 @@
+.essays-form-fields input#text_title {
+    padding-left: 0;
+    width: 90%;
+}
+.essays-form-fields .row, .twitter-typeahead {
+ margin: 0 0 0.2rem 1rem;
+}
+.essays-form-fields .row {
+  padding-top: 10px;
+}

@@ -10,6 +10,7 @@
  *
  *= require_self
  *= require interface_utils/application
+ *= require kmaps_engine/essays
  *= require kmaps_engine/node-tree
  *= require kmaps_engine/main
  *= require kmaps_tree/kmapstree

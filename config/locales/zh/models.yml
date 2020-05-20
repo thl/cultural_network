@@ -30,6 +30,9 @@ zh:
             description:
                 one: '文章'
                 other: '文章'
+            essay:
+                one: 'homepage text'
+                other: 'homepage texts'
             external_picture:
                 one: 'external picture'
                 other: 'external pictures'
@@ -92,6 +95,9 @@ zh:
             description:
                 content: '题目'
                 is_primary: '是主要的'
+                title: '文章标题'
+            essay:
+                content: '题目'
                 title: '文章标题'
             external_picture:
                 place_id: 'Place (Places Dictionary FID)'

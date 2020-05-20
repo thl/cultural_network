@@ -1,0 +1,40 @@
+<div class="essays-form-fields">
+<% if object.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(object.errors.count, "error") %> prohibited this essay from being saved:</h2>
+
+      <ul>
+        <% object.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+<% end %>
+<fieldset>
+  <legend><%= ts(:for, what: t('information.general'), whom: Essay.model_name.human.titleize) %></legend>
+  <div class="row">
+    <%= form.label :text_title, Essay.model_name.human.titleize %>
+    <br/>
+    <br/>
+    <%= form.hidden_field :text_id, id: :text_id %>
+    <p>Select one of the texts associated with this <%= Feature.model_name.human %>:</p>
+  </div>
+  <div class="row" id="mandala_text_options_js">
+    <p>Loading Associated Texts...</p>
+  </div>
+  <br class="clear"/>
+  <p><b><%= form.label :language_id, Language.model_name.human.titleize.s %></b></p><br/>
+  <div class="row">
+  <%= form.collection_select :language_id, @languages, :id, :to_s, {include_blank: false}, class: 'form-control form-select ss-select selectpicker' %>
+  </div>
+</fieldset>
+</div> <!-- END - subject-term-associations-form-fields -->
+<%= content_tag :div, '', id: 'essay_js_data', data: {
+ asset_index: ShantiIntegration::Text.config.url,
+ feature_id: object.feature.fid,
+ domain: Feature.uid_prefix,
+ feature_type: Feature.model_name.human,
+ available_languages: Language.available_as_locales.map { |l| {code: l.code, id: l.id} },
+ mandala_map_languages: Language.mandala_text_mappings
+} %>
+<%= javascript_include_tag 'kmaps_engine/essays_admin' %>
