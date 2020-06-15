@@ -30,6 +30,9 @@ en:
             description:
                 one: 'essay'
                 other: 'essays'
+            essay:
+                one: 'homepage text'
+                other: 'homepage texts'
             external_picture:
                 one: 'external picture'
                 other: 'external pictures'
@@ -93,6 +96,9 @@ en:
                 content: 'Content'
                 is_primary: 'Primary?'
                 title: 'Essay Title'
+            essay:
+                content: 'Content'
+                title: 'Title'
             external_picture:
                 place_id: 'Place (Places Dictionary FID)'
             feature_geo_code:

@@ -59,6 +59,15 @@
 <%      end %>
       </div> <!-- END resource-overview-image -->
 <%  end %>
+<% current_essay = feature.essays.where(language: Language.current).first
+   if !current_essay.nil? %>
+ <div class="feature_essay">
+   <% essay_content = current_essay.text.content
+      if !essay_content.blank? %>
+   <%= essay_content.html_safe %>
+   <% end %>
+ </div>
+<% end %>
 <div id="accordion" class="panel-group">
   <section class="panel panel-default">
     <div class="panel-heading">

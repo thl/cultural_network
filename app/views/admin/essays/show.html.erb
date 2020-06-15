@@ -1,0 +1,24 @@
+<% add_breadcrumb_item feature_link(object.feature)
+   add_breadcrumb_item link_to 'essays', admin_feature_essays_path(object.feature)
+%>
+<section class="panel panel-content">
+  <div class="panel-heading">
+     <h6><%= Essay.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
+    <p id="notice"><%= notice %></p>
+
+    <p>
+    <strong>Text ID:</strong>
+    <%= object.text_id %>
+    </p>
+
+    <p>
+    <strong><%= Essay.human_attribute_name(:title).s %></strong>
+    <%= object.text.title %>
+    </p>
+
+     <%= link_to ts('edit.this'), edit_admin_feature_essay_path(object.feature,object), class: 'btn btn-primary form-submit' %> |
+     <%=  link_to ts('cancel.this'), admin_feature_path(object.feature.fid), class: 'btn btn-primary form-submit', id: 'edit-cancel' %>
+  </div> <!-- END panel-body -->
+ </section> <!-- END panel -->

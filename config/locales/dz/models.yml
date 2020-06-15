@@ -30,6 +30,9 @@ dz:
             description:
                 one: 'essay'
                 other: 'essays'
+            essay:
+                one: 'homepage text'
+                other: 'homepage texts'
             external_picture:
                 one: 'external picture'
                 other: 'external pictures'
@@ -92,6 +95,9 @@ dz:
             description:
                 content: 'Content'
                 is_primary: 'Primary?'
+                title: 'Essay Title'
+            essay:
+                content: 'Content'
                 title: 'Essay Title'
             external_picture:
                 place_id: 'Place (Places Dictionary FID)'

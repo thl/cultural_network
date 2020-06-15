@@ -1,0 +1,22 @@
+<% if list.empty? %>
+<%= empty_collection_message "No #{Essay.model_name.human(:count => :many).titleize} found." %>
+<% else %>
+   <table class="listGrid">
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= Essay.model_name.human.titleize.s %></th>
+       <th><%= Essay.human_attribute_name('title')%></th>
+     </tr>
+<%   list.each do |item| %>
+     <tr>
+       <td class="centerText">
+<%=      list_actions_for_item(item, :delete_path => admin_feature_essay_path(item.feature, item),
+         :edit_path => edit_admin_feature_essay_path(item.feature, item),
+         :view_path => admin_feature_essay_path(item.feature, item)) %>
+       </td>
+       <td><%= item.text_id %></td>
+       <td><%= item.text.title %></td>
+     </tr>
+   <%   end %>
+   </table>
+ <% end %>

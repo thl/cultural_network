@@ -56,6 +56,20 @@ class Language < SimpleProp
     self.find_by(['code LIKE ?', "#{I18n.locale}%"])
   end
 
+  def self.available_as_locales
+    self.where("code ILIKE ANY ( array[?] )", I18n.available_locales.map {|loc| "#{loc}%"}).order('name')
+  end
+
+  def self.mandala_text_mappings
+    @@mandala_text_lang ||= {
+      "subjects-570"   => self.find_by(['code LIKE ?', "eng"]).id,
+      "subjects-676"   => self.find_by(['code LIKE ?', "dzo"]).id,
+      "subjects-9237"  => self.find_by(['code LIKE ?', "zho"]).id,
+      "subjects-638"   => self.find_by(['code LIKE ?', "bod"]).id,
+      "subjects-4233"  => self.find_by(['code LIKE ?', "bod"]).id
+    }
+  end
+
   def lacks_transcription_system?
     Language.lacks_transcription_system_id? self.id
   end
