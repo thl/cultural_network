@@ -8,13 +8,11 @@ class Admin::CitationsController < AclController
     @guest_perms = []
   end
   
-  new_action.before do
-    object.citable_type = parent_object.class.name
-  end
+  new_action.before { object.citable_type = parent_object.class.name }
   
-  create.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }
-  update.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }
-  destroy.wants.html { redirect_to polymorphic_url([:admin, object.citable]) }
+  create.wants.html { redirect_to polymorphic_url([:admin, parent_object, object.citable, object]) }
+  update.wants.html { redirect_to polymorphic_url([:admin, parent_object, object.citable, object]) }
+  destroy.wants.html { redirect_to polymorphic_url([:admin, parent_object, object.citable]) }
   create.before { object.info_source_type = params[:info_source_type] }
   
   protected
