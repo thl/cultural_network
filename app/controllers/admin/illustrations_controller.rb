@@ -17,13 +17,15 @@ class Admin::IllustrationsController < AclController
     end
   end
   
-  create.after do
-    object.ensure_one_primary
+  create.after { object.ensure_one_primary }
+  
+  update.before do
+    picture_params = params[:illustration][:picture].permit(:caption, :url, :place_id)
+    params[:illustration].delete(:picture)
+    object.picture.update_attributes(picture_params)
   end
   
-  update.after do
-    object.ensure_one_primary
-  end
+  update.after { object.ensure_one_primary }
   
   destroy.after do
     primary_illustrations = parent_object.illustrations.where(:is_primary => true)
@@ -51,6 +53,6 @@ class Admin::IllustrationsController < AclController
   
   # Only allow a trusted parameter "white list" through.
   def illustration_params
-    params.require(:illustration).permit(:feature_id, :is_primary, :picture_id, :picture_type, picture: [:caption, :url, :place_id])
+    params.require(:illustration).permit(:feature_id, :is_primary, :picture_id, :picture_type)
   end
 end
