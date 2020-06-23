@@ -19,6 +19,8 @@ class Admin::IllustrationsController < AclController
   
   create.after { object.ensure_one_primary }
   
+  # This callback should be unnecesary, but unfortunately as of Rails 5.2, nested attributes don't seem to work with
+  # a polymorphic belongs_to relationship. This is unrelated to resource controller.
   update.before do
     picture_params = params[:illustration][:picture].permit(:caption, :url, :place_id)
     params[:illustration].delete(:picture)
