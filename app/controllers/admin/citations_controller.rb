@@ -10,12 +10,21 @@ class Admin::CitationsController < AclController
   
   new_action.before { object.citable_type = parent_object.class.name }
   
-  create.wants.html { redirect_to polymorphic_url([:admin, parent_object, object.citable, object]) }
-  update.wants.html { redirect_to polymorphic_url([:admin, parent_object, object.citable, object]) }
-  destroy.wants.html { redirect_to polymorphic_url([:admin, parent_object, object.citable]) }
+  create.wants.html { redirect_to polymorphic_url(stacked_parents) }
+  update.wants.html { redirect_to polymorphic_url(stacked_parents) }
+  destroy.wants.html { redirect_to polymorphic_url(stacked_parents) }
   create.before { object.info_source_type = params[:info_source_type] }
   
   protected
+  
+  def stacked_parents
+    array = [:admin]
+    if !parent_object.instance_of?(Feature) && parent_object.respond_to?(:feature)
+      array << parent_object.feature
+    end
+    array << parent_object
+    array
+  end
   
   def parent_association
     parent_object.citations # ResourceController needs this for the parent association

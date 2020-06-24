@@ -109,6 +109,13 @@ class FeatureRelation < ActiveRecord::Base
     node == self.parent_node
   end
   
+  #
+  # Returns the feature that owns this FeatureNameRelation
+  #
+  def feature
+    self.child_node
+  end
+  
   def self.search(filter_value)
     int_value = filter_value.to_i
     if int_value==0
