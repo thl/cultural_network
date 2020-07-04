@@ -15,9 +15,9 @@ class Admin::NotesController < AclController
   
   edit.before {@authors = AuthenticatedSystem::Person.order('fullname') }
 
-  create.wants.html { redirect_to polymorphic_url(stacked_parents) }
-  update.wants.html { redirect_to polymorphic_url(stacked_parents) }
-  destroy.wants.html { redirect_to polymorphic_url(stacked_parents) }
+  create.wants.html { redirect_to polymorphic_url(helpers.stacked_parents) }
+  update.wants.html { redirect_to polymorphic_url(helpers.stacked_parents) }
+  destroy.wants.html { redirect_to polymorphic_url(helpers.stacked_parents) }
   
   def add_author
     @authors = AuthenticatedSystem::Person.order('fullname')
@@ -25,15 +25,6 @@ class Admin::NotesController < AclController
   end
     
   protected
-  
-  def stacked_parents
-    array = [:admin]
-    if !parent_object.instance_of?(Feature) && parent_object.respond_to?(:feature)
-      array << parent_object.feature
-    end
-    array << parent_object
-    array
-  end
   
   def parent_association
     parent_object.notes # ResourceController needs this for the parent association

@@ -30,6 +30,15 @@ module AdminHelper
     ('<span class="listActions">'+items.join(' | ')+'</span>').html_safe
   end
   
+  def stacked_parents
+    array = [:admin]
+    if !parent_object.instance_of?(Feature) && parent_object.respond_to?(:feature)
+      array << parent_object.feature
+    end
+    array << parent_object
+    array
+  end
+  
   def name_preferences_admin_resources
     menu = {}
     if authorized?(admin_alt_spelling_systems_path) || authorized?(admin_languages_path) || authorized?(admin_orthographic_systems_path) || authorized?(admin_phonetic_systems_path) || authorized?(admin_writing_systems_path)
