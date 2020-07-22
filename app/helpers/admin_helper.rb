@@ -351,7 +351,8 @@ module AdminHelper
   #
   def feature_link(feature, *args)
     v = View.get_by_code(default_view_code)
-    link_to(fname_labels(feature), admin_feature_path(feature.fid, *args), {class: :featureLabel, title: feature.prioritized_name(v).name})
+    name = feature.prioritized_name(v)
+    link_to(fname_labels(feature), admin_feature_path(feature.fid, *args), {class: :featureLabel, title: name.nil? ? feature.fid : name.name })
   end
 
   def feature_names_sorted(feature_names)

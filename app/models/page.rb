@@ -17,6 +17,12 @@ class Page < ActiveRecord::Base
   belongs_to :citation
   has_many :imports, :as => 'item', :dependent => :destroy
   
+  validate :presence_of_some_data
+  
+  def presence_of_some_data
+    errors.add(:base, 'All fields cannot be blank!') if volume.nil? && start_page.nil? && start_line.nil? && end_page.nil? && end_line.nil?
+  end
+  
   def to_s
     s = volume.nil? ? '' : "#{volume}: "
     s << start_page.to_s if !start_page.nil?

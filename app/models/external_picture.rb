@@ -13,6 +13,8 @@
 class ExternalPicture < ActiveRecord::Base
   has_many :illustrations, :as => :picture, :dependent => :destroy
   
+  validates :url, presence: true
+  
   def width
     nil
   end
