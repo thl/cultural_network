@@ -84,6 +84,7 @@
  feature_id: uid,
  domain: Feature.uid_prefix,
  perspective: current_perspective.code,
+ view: current_view.code,
  tree: Feature.uid_prefix,
  features_path: ((defined?(admin) && admin) ? admin_features_path+"/%%ID%%" : features_path+"/%%ID%%"),
  mandala_path: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
@@ -98,6 +99,7 @@
     featureId: $('#menu_js_data').data('featureId'),
     domain: $('#menu_js_data').data('domain'),
     perspective: $('#menu_js_data').data('perspective'),
+    view: $('#menu_js_data').data('view'),
     tree: $('#menu_js_data').data('tree'), //places
     featuresPath: $('#menu_js_data').data('featuresPath'),
   });
