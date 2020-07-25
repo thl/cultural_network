@@ -298,8 +298,7 @@ module AdminHelper
             {
               :delete_path => admin_feature_feature_name_path(name.feature, name),
               :edit_path   => edit_admin_feature_feature_name_path(name.feature, name),
-              :manage_path => admin_feature_feature_name_path(name.feature, name),
-              :hide_view   => true
+              :view_path => admin_feature_feature_name_path(name.feature, name),
             }
           )
       end

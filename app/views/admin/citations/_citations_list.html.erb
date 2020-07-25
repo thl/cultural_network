@@ -47,7 +47,7 @@
 <%       end
        end %>
        </td>
-       <td><%= item.notes.html_safe %></td>
+       <td><%= item.notes.html_safe if !item.notes.blank? %></td>
      </tr>
 <%   end %>
    </table>
