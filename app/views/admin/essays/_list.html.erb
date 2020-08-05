@@ -6,6 +6,7 @@
        <th class="listActionsCol"></th>
        <th><%= Essay.model_name.human.titleize.s %></th>
        <th><%= Essay.human_attribute_name('title')%></th>
+       <th><%= Language.model_name.human.titleize.s%></th>
      </tr>
 <%   list.each do |item| %>
      <tr>
@@ -16,6 +17,7 @@
        </td>
        <td><%= item.text_id %></td>
        <td><%= item.text.title %></td>
+       <td><%= item.language %></td>
      </tr>
    <%   end %>
    </table>
