@@ -5,7 +5,7 @@
     <h6><%= Note.model_name.human.titleize.s %></h6>
   </div>
   <div class="panel-body">
-<%= form_for [:admin, object] do |f| %>
+<%= form_for [:admin, parent_object, object] do |f| %>
 <%=   f.hidden_field :notable_id %>
 <%=   f.hidden_field :notable_type %>
 <%=   render partial: 'form_fields', locals: {f: f,object: object} %>

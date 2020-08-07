@@ -6,7 +6,7 @@
     <h6><%= Note.model_name.human.titleize.s %></h6>
   </div>
   <div class="panel-body">
-<%= form_for object, url: object_path, method: :put do |f| %>
+<%= form_for object, url: polymorphic_path([:admin, parent_object, object]), method: :put do |f| %>
 <%=   render partial: 'form_fields', locals: {f: f, object: object} %>
 <%=   link_to ts('cancel.this'), polymorphic_path(stacked_parents), class: 'btn btn-primary form-submit', id: 'edit-cancel' %>
 | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %>

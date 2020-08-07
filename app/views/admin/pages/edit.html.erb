@@ -4,5 +4,5 @@
     add_breadcrumb_item ts('edit.this') %>
 <%= form_for object, :url=>object_path, :method => :put do |f| %>
 <%=  render :partial=>'form_fields', :locals=>{:f=>f,:object=>object} %>
-<%=  link_to ts('cancel.this'), polymorphic_path(stacked_parents) %> | <%= globalized_submit_tag 'update.this' %>
+<%=  link_to ts('cancel.this'), polymorphic_path([:admin, parent_object.citable, parent_object]) %> | <%= globalized_submit_tag 'update.this' %>
 <% end %>
