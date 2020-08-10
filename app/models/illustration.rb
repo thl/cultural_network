@@ -26,10 +26,11 @@ class Illustration < ActiveRecord::Base
   validate :presence_of_external_picture
   
   def presence_of_external_picture
-    if self.picture_type.start_with?('MmsIntegration')
+    if !self.picture_type.blank? && self.picture_type.start_with?('MmsIntegration')
       picture = self.picture_type.constantize.find(self.picture_id)
       errors.add(:base, 'MMS record could not be found!') if picture.nil?
     end
+    self.picture.errors.to_a.each { |e| self.errors.add(:base, e) } if !self.picture.valid?
   end
   
   alias :_picture picture
