@@ -43,8 +43,14 @@ module ApplicationHelper
       ancestors_list ||= @feature.closest_ancestors_by_perspective(current_perspective)
       list = ancestors_list.collect do |r|
         name = r.prioritized_name(current_view)
-        name = name.nil? ? r.pid : name.name
-        link_to(name, feature_path(r.fid))
+        options = {}
+        if name.nil?
+          name_str = r.pid
+        else
+          name_str = name.name
+          options[:class] = 'non-capitalizable' if !name.orthographic_system_code.blank?
+        end
+        link_to(name_str, feature_path(r.fid), options)
       end
       list = [link_to("#{ts('app.short')}:".html_safe, root_path)] + list[0...list.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [list.last]
       content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
@@ -151,8 +157,10 @@ module ApplicationHelper
   end
 
   def fname_label(feature_name)
-    css_class=feature_name.writing_system.nil? ? nil : feature_name.writing_system.code
-    content_tag(:span, h(feature_name.to_s), {:class=>css_class})
+    css_classes = []
+    css_classes << feature_name.writing_system.code if !feature_name.writing_system.nil?
+    css_classes << 'non-capitalizable' if !feature_name.orthographic_system_code.blank?
+    content_tag(:span, h(feature_name.to_s), { class: css_classes.join(' ') })
   end
 
   def description_title(d)
