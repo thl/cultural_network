@@ -100,6 +100,13 @@ class FeatureName < ActiveRecord::Base
     r.code
   end
   
+  def orthographic_system_code
+    r = parent_relations.first
+    return nil if r.nil?
+    o = r.orthographic_system
+    return o.nil? ? nil : o.code
+  end
+  
   def display_string
     return 'Original' if is_original?
     parent_relations.first.display_string

@@ -41,3 +41,8 @@ div.row.row-offcanvas.row-offcanvas-left { margin-left: 0px; margin-right: 0px; 
     background: #fafafa;
     color: #555;
 }
+
+/* The class non-capitalizable is applied when content should not be capitalized, e.g. for names in ortographic transliterations. */
+.breadcrumb li .non-capitalizable {
+  text-transform: none;
+}
