@@ -13,13 +13,13 @@ module KmapsEngine
         Kernel.const_get(name.classify).all.map(&:destroy)
       end
 
-      #Feature.find(:all).each {|f| f.destroy}
-      #FeatureObjectType.find(:all).each {|f| f.destroy}
-      #FeatureRelation.find(:all).each {|f| f.destroy}
-      #FeatureName.find(:all).each {|f| f.destroy}
-      #FeatureNameRelation.find(:all).each {|f| f.destroy}
-      #Timespan.find(:all).each {|f| f.destroy}
-      #ObjectType.find(:all).each {|ft| ft.destroy}
+      #Feature.all.each {|f| f.destroy}
+      #FeatureObjectType.all.each {|f| f.destroy}
+      #FeatureRelation.all.each {|f| f.destroy}
+      #FeatureName.all.each {|f| f.destroy}
+      #FeatureNameRelation.all.each {|f| f.destroy}
+      #Timespan.all.each {|f| f.destroy}
+      #ObjectType.all.each {|ft| ft.destroy}
     end
 
     def self.load_thesaurus
@@ -28,7 +28,7 @@ module KmapsEngine
       #  feature_type.save
       #end
 
-      #puts "Vocabulary.find(:all).size = #{Vocabulary.find(:all).size}"
+      #puts "Vocabulary.all.size = #{Vocabulary.all.size}"
     end
 
     def self.all(datasource)
