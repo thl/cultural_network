@@ -1,7 +1,6 @@
 # Kmaps engine network view localization file for Chinese.
 zh:
     about: '关于'
-    child: '儿童'
     choose:
         from: '从%{what}中选择'
         record: '选择%{what}'
@@ -50,6 +49,7 @@ zh:
             location: '确定关系'
             ship:
                 between: '%{this}和%{that}的关系'
+                s_to: '%{this} to %{that} Relationships'
                 this: '关系'
                 to: '和%{what}的关系'
             this:
@@ -65,8 +65,12 @@ zh:
             primary: '''*''标识主要短文'
             with: '仅显示含有短文的词条'
         feature:
+            browse_summary:
+              one: '%{who} has %{how_many} other %{what} directly related to it, which is presented here.'
+              other: '%{who} has %{how_many} other %{what} directly related to it, which are presented here.'
             name:
                 has_transliteration: '%{what} 的转写为%{whom}'
+                related: '目前未与任何其它特征名称'
                 resource: '使用特征的资源'
         title: '使用首字母大写 (例： An Exciting...)'
     suffix:

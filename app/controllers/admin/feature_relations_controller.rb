@@ -46,7 +46,7 @@ class Admin::FeatureRelationsController < AclController
       super
     else
       process_feature_relation_type_id_mark
-      params.require(:feature_relation).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update)
+      params.require(:feature_relation).permit(:perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id)
     end
   end
   

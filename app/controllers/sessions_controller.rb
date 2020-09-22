@@ -12,7 +12,6 @@ class SessionsController < ApplicationController
       :view_id => self.current_view.id,
       :show_feature_details => self.current_show_feature_details,
       :show_advanced_search => self.current_show_advanced_search)
-    @perspectives = Perspective.find_all_public
     @views = View.order('name')
   end
     

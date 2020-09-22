@@ -1,7 +1,6 @@
 # Kmaps engine network view localization file for Tibetan.
 bo:
     about: 'འབྲེལ་ཡོད་ཀྱི།'
-    child: 'བྱིས་པ།'
     choose:
         from: '%{what}ཡི་ནང་འདེམས་པ།'
         record: '%{what}འདེམས་པ། '
@@ -50,6 +49,7 @@ bo:
             location: 'འབྲེལ་བ་གཏན་འཁེལ་བ།'
             ship:
                 between: '%{this}དང་%{that}ཡི་འབྲེལ་བ།'
+                s_to: '%{this} to %{that} Relationships'
                 this: 'འབྲེལ་བ།'
                 to: 'དང་%{that}ཡི་འབྲེལ་བ།'
             this:
@@ -65,8 +65,12 @@ bo:
             primary: 'གཙོ་བོའི་རྩོམ་ཐུང་གི་ངོ་རྟགས།'
             with: 'རྩོམ་ཐུང་ཡོད་པའི་ས་བཅད་ཁོ་ན་མངོན་པ།'
         feature:
+            browse_summary:
+              one: '%{who} has %{how_many} other %{what} directly related to it, which is presented here.'
+              other: '%{who} has %{how_many} other %{what} directly related to it, which are presented here.'
             name:
                 has_transliteration: '%{what} ཡི་ཕབ་བསྒྱུར་ནི་%{whom}ཡིན།'
+                not_related: 'དགོངས་པ་མ་ཚོམས།   ཁྱད་ཆོས་འདི་མིག་སྔར་འབྲེལ་ཡོད་ཀྱི་ཁྱད་ཆོས་གང་དང་ཡང་འབྲེལ་མིན་འདུག།'
                 resource: 'ཁྱད་ཆོས་ཀྱི་ཐོན་ཁུངས་སྤྱད་པ།'
         title: 'ཆེ་བྲིས་ཀ་མད་སྤྱོད་རོགས།༼ དཔེར་ན་An Exciting..༽'
     suffix:

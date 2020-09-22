@@ -1,7 +1,6 @@
 # Kmaps engine network view localization file for Dzongkha.
 dz:
     about: 'About'
-    child: 'Child'
     choose:
         from: 'choose from %{what}'
         record: 'choose %{what}'
@@ -50,6 +49,7 @@ dz:
             location: 'locating relation'
             ship:
                 between: 'Relationship between %{this} and %{that}'
+                s_to: '%{this} to %{that} Relationships'
                 this: 'Relationship'
                 to: 'relationship to %{what}'
             this:
@@ -65,8 +65,12 @@ dz:
             primary: '''*'' denotes a primary essay'
             with: 'Show only entries with essays'
         feature:
+            browse_summary:
+              one: '%{who} has %{how_many} other %{what} directly related to it, which is presented here.'
+              other: '%{who} has %{how_many} other %{what} directly related to it, which are presented here.'
             name:
                 has_transliteration: '%{what} has a transliteration of %{whom}'
+                not_related: 'Sorry, this name does not currently have any related names.'
                 resource: 'resource that uses one'
         title: 'Use title case for capitalization (e.g. An Exciting...)'
     suffix:

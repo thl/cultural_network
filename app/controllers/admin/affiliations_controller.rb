@@ -28,7 +28,6 @@ class Admin::AffiliationsController < AclController
   
   def get_collections
     @collections = Collection.order('name')
-    @perspectives = Perspective.order('name')
   end
 
 end

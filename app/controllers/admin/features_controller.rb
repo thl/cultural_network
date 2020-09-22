@@ -60,7 +60,7 @@ class Admin::FeaturesController < AclController
     # Remove the Feature that is currently looking for a relation
     # (shouldn't be possible to relate to itself)
     @collection = @collection.where.not(is_public: 0, fid: object.fid)
-    render :action=>:index
+    render action: :index
   end
   
   def set_primary_description
