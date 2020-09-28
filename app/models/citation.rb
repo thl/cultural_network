@@ -74,7 +74,8 @@ class Citation < ActiveRecord::Base
       end
       source_str = "#{source.prioritized_title} (#{source_str})"
     else
-      source_str = ([source.bibliographic_reference] + self.pages.collect(&:to_s)).join(', ') + '.'
+      bibliographic_reference = source.nil? ? self.info_source_id.to_s : source.bibliographic_reference
+      source_str = ([bibliographic_reference] + self.pages.collect(&:to_s)).join(', ') + '.'
     end
     return source_str
   end

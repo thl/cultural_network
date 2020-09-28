@@ -573,7 +573,7 @@ class Feature < ActiveRecord::Base
         doc["caption_#{c.language.code}"] << c.content
       end
       doc["caption_#{c.language.code}_#{c.id}_content_t"] = c.content
-      doc["caption_#{c.language.code}_#{c.id}_citation_references_ss"] = c.citations.collect { |ci| ci.info_source.bibliographic_reference }
+      doc["caption_#{c.language.code}_#{c.id}_citation_references_ss"] = c.citations.collect { |ci| ci.bibliographic_reference }
     end
     mandala_text_mapping = Language.mandala_text_mappings.invert
     self.essays.each do |e|
@@ -586,7 +586,7 @@ class Feature < ActiveRecord::Base
         doc["summary_#{s.language.code}"] << s.content
       end
       doc["summary_#{s.language.code}_#{s.id}_content_t"] = s.content
-      doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = s.citations.collect { |c| c.info_source.bibliographic_reference }
+      doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = s.citations.collect { |c| c.bibliographic_reference }
     end
     self.illustrations.each do |i|
       p = illustration.picture
@@ -676,10 +676,10 @@ class Feature < ActiveRecord::Base
         "related_#{FeatureName.uid_prefix}_relationship_s" => name.pp_display_string,
         block_type: ['child']
       }
-      citation_references = name.citations.collect { |c| c.info_source.bibliographic_reference }
+      citation_references = name.citations.collect { |c| c.bibliographic_reference }
       child_document["related_#{FeatureName.uid_prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
       parent_relation = name.parent_relations.first #TODO: add other relationships, currently just the first
-      citation_references = parent_relation.nil? ? nil : parent_relation.citations.collect { |c| c.info_source.bibliographic_reference }
+      citation_references = parent_relation.nil? ? nil : parent_relation.citations.collect { |c| c.bibliographic_reference }
       child_document["related_#{FeatureName.uid_prefix}_relationship_#{parent_relation.id}_citation_references_ss"] = citation_references if !citation_references.blank?
       etymology = name.etymology
       child_document["related_#{FeatureName.uid_prefix}_etymology_s"] = etymology if !etymology.blank?
