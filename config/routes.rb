@@ -123,7 +123,6 @@ Rails.application.routes.draw do
   resources :feature_names, concerns: :notable_citable, only: [:index, :show]
   resources :feature_name_relations, concerns: :notable_citable
   resources :feature_relations, concerns: :notable_citable
-  resources :media, only: 'show', path: 'media_objects'
   resources :time_units, concerns: :notable_citable
   root to: 'features#index'
 end
