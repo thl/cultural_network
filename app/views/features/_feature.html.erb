@@ -20,11 +20,11 @@
       if place.nil?
       location = nil
     else
-      location = link_to place.header, PlacesIntegration::Feature.element_url(place.id, format: 'html')
+      location = link_to place.header, PlacesIntegration::Feature.element_url(place.id, format: '')
     location_plain = place.header
       parent_place = place.context_feature
     if !parent_place.nil?
-        location << ", #{link_to parent_place.header, PlacesIntegration::Feature.element_url(parent_place.id, format: 'html')}".html_safe
+        location << ", #{link_to parent_place.header, PlacesIntegration::Feature.element_url(parent_place.id, format: '')}".html_safe
       location_plain << ", #{parent_place.header}"
       end
     end
@@ -50,7 +50,7 @@
         rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width
     html_options[:width] = rendered_width
         if picture.instance_of?(MmsIntegration::Picture) %>
-<%=     link_to image_tag(picture.url, html_options), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
+<%=     link_to image_tag(picture.url, html_options), MmsIntegration::Medium.element_url(picture.id, format: '') %>
 <%      else %>
 <%=       link_to image_tag(picture.url, html_options), picture.url %>
 <%      end
