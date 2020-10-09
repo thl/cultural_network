@@ -537,4 +537,9 @@ module ApplicationHelper
     end
     @contextual_feature = feature
   end
+  
+  def search_instance
+    @search_form ||= Search.defaults
+    @search_form
+  end
 end

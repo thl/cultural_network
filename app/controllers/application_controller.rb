@@ -51,7 +51,6 @@ class ApplicationController < ActionController::Base
     @session = Session.new(perspective_id: self.current_perspective.nil? ? nil : self.current_perspective.id, view_id: self.current_view.nil? ? nil : self.current_view.id, language: I18n.locale)
     @perspectives = Perspective.find_all_public
     @views = View.order('name')
-    @search_form = Search.defaults
   end
   
 end
