@@ -1,2 +1,2 @@
 xml.instruct!
-xml << render(:partial => 'feature.xml.builder', :object => @feature) if !@feature.nil?
+xml << render(:partial => 'feature.xml.builder', :object => @feature)

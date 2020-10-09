@@ -32,7 +32,7 @@ class FeaturesController < ApplicationController
           @current_tab_id = :place
         end
       end
-      format.xml
+      format.xml { render plain: '' if @feature.nil? }
       format.csv do
         @features_with_parents = @feature.descendants_with_parent
       end
