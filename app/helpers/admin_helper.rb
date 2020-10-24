@@ -453,7 +453,6 @@ module AdminHelper
   def citation_list_fieldset(options={})
     object = options[:object] || @object
     html = "<fieldset>
-      <legend>Citations</legend>
       <div class='left highlight'>
         #{new_item_link(new_polymorphic_path([:admin, object, :citation]), 'New Citation')}
       </div>
