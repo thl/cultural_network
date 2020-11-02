@@ -566,6 +566,7 @@ class Feature < ActiveRecord::Base
     name = self.prioritized_name(v)
     doc[:header] = name.nil? ? self.pid : name.name
     doc[:position_i] = self.position
+    doc[:projects_ss] = self.affiliations.collect{ |a| a.collection.code }
     self.captions.each do |c|
       if doc["caption_#{c.language.code}"].blank?
         doc["caption_#{c.language.code}"] = [c.content]
@@ -589,7 +590,7 @@ class Feature < ActiveRecord::Base
       doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = s.citations.collect { |c| c.bibliographic_reference }
     end
     self.illustrations.each do |i|
-      p = illustration.picture
+      p = i.picture
       doc["illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url"] = p.url
     end
     doc[:created_at] = self.created_at.utc.iso8601
