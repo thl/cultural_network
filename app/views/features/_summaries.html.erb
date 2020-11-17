@@ -1,0 +1,13 @@
+<% summary = feature.summary
+   if summary.nil?
+     caption = feature.caption
+     if !caption.nil? %>
+     <div class="summary-overview">
+<%=    caption.content.html_safe %>
+     </div>
+<%   end
+   else %>
+     <div class="summary-overview">
+<%=    summary.content.html_safe %>
+     </div>
+<% end %>

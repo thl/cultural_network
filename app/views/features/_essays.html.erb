@@ -1,0 +1,31 @@
+<% essays = feature.essays
+   current_language = Language.current
+   if !essays.empty? %>
+   <div class="hometext-menu">
+<%   essay_languages = feature.essays.select(:language_id).distinct.collect {|e| e.language } %>
+<%=  label_tag(:language_language_id,"View home page text for specific language:") %>
+<%=  select_tag(:language_language_id, options_for_select(feature.essays.collect { |e| [e.language.name, e.text_id] })) %>
+   </div>
+<% end
+   current_essay = feature.essays.where(language: current_language).first
+   if !current_essay.nil? %>
+   <div id="feature_essay">
+<%   essay_content = current_essay.text.content
+     if !essay_content.blank? %>
+<%=    essay_content.html_safe %>
+<%   end %>
+   </div>
+<%= javascript_on_load do %>
+      $("#language_language_id").val("<%= current_essay.text_id %>");
+      $("#language_language_id").change(function(e){
+        console.log($(this).val());
+        var text_id = $(this).val();
+        $.ajax({
+        url: "https://texts-dev.shanti.virginia.edu/shanti_texts/node_ajax/"+text_id,
+        dataType: "jsonp",
+        }).done(function(data){
+        $("#feature_essay").html(data);
+        });
+      });
+<%  end
+  end %>

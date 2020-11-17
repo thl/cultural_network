@@ -141,9 +141,9 @@
 <% end %>
     <section class="panel panel-default">
       <div class="panel-heading">
-        <h6><a href="#collapseNine" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Essay.model_name.human(:count => :many).titleize.s %></a></h6>
+        <h6><a href="#collapseEssays" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Essay.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
-      <div id="collapseNine" class="panel-collapse collapse">
+      <div id="collapseEssays" class="panel-collapse collapse">
         <div class="panel-body">
           <p>Homepage texts appear on the main overview place for the <%= Feature.model_name.human %>. Add texts to Mandala Texts first; see <a href="https://confluence.its.virginia.edu/display/KB/Texts+in+Mandala">this guide</a> for help. Homepage texts also need to be labeled using the <%= Feature.model_name.human %>; see <a href="https://confluence.its.virginia.edu/display/KB/Join+Related+Resources">this guide</a> for help.</p>
           <br class="clear"/>

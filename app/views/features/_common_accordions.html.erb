@@ -1,0 +1,41 @@
+<section class="panel panel-default">
+  <div class="panel-heading">
+    <h6><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapseNames" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(count: feature.names.size).titleize.s %></a></h6>
+  </div>
+  <div id="collapseNames" class="panel-collapse collapse in">
+    <div class="panel-body">
+<%=   feature_name_ul(feature,false) %>
+      <dl class="no-style">
+<%      feature.names.roots.order('position').each do |name| %>
+<%=     "<dt><strong>#{ts(:for, what: FeatureName.human_attribute_name(:etymology), whom: name.name.to_s)}:</dt></strong><dd>#{name.etymology.s}</dd>".html_safe unless name.etymology.blank? %>
+<%      end %>
+      </dl>
+<%=   note_popup_link_list_for(feature, {association_type: FeatureName.name}) %>
+<%=   citation_popup_link_list_for(feature) %>
+    </div>
+  </div>
+</section>
+<section class="panel panel-default">
+  <div class="panel-heading">
+    <h6><a href="#collapseIds" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'id.this', count: :many %></a></h6>
+  </div>
+  <div id="collapseIds" class="panel-collapse collapse">
+    <div class="panel-body">
+<%  if show_old_pid %>
+      <p><%= "#{ts :current, what: Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
+      <p><%= "#{Feature.human_attribute_name(:old_pid).s}: #{feature.old_pid}" %></p>
+<%  else %>
+      <p><%= "#{Feature.human_attribute_name(:pid).s}: #{feature.pid}" %></p>
+<%  end %>
+<%  feature.geo_codes.each do |geo_code| %>
+    <p>
+<%=   geo_code %>: <%= geo_code.geo_code_value %>
+<%=   note_popup_link_for(geo_code) %>
+<%=   citation_popup_link_for(geo_code) %>
+<%=   time_units_for(geo_code) %>
+    </p>
+<%  end %>
+<%= note_popup_link_list_for(feature, {association_type: FeatureGeoCode.name}) %>
+    </div>
+  </div>
+</section>
