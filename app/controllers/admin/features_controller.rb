@@ -48,12 +48,13 @@ class Admin::FeaturesController < AclController
     end
   end
   
-  update.before { |r| update_primary_description }
+  update.before { update_primary_description }
 
   new_action.wants.html { render('admin/features/select_ancestor') if @parent.nil?  }
   create.wants.html  { redirect_to admin_feature_url(object.fid) }
   update.wants.html  { redirect_to admin_feature_url(object.fid) }
-  destroy.wants.html { redirect_to admin_root_url }
+  destroy.before { @parent = object.closest_parent_by_perspective(current_perspective) }
+  destroy.wants.html { redirect_to @parent.nil? ? admin_root_url : admin_feature_url(@parent.fid) }
   
   def locate_for_relation
     @locating_relation=true
