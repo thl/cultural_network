@@ -37,7 +37,8 @@ class FeaturesController < ApplicationController
         @features_with_parents = @feature.descendants_with_parent
       end
       format.js
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+      # use @feature.document_for_rsolr.to_json to get json designed for solr. Make sure document_for_rsolr is not private!
     end
   end
 

@@ -94,11 +94,17 @@ module FeaturesHelper
   
   def feature_name_display(name, options={})
     if options[:show_association_links]
-      name_notes_link = note_popup_link_for(name)
-      name_citations_link = citation_popup_link_for(name)
-      name_time_units_link = time_units_for(name)
+      name_notes_links = [note_popup_link_for(name)]
+      name_citations_links = [citation_popup_link_for(name)]
+      name_time_units_links = [time_units_for(name)]
+      name.parent_relations.each do |r|
+        name_notes_links << note_popup_link_for(r)
+        name_citations_links << citation_popup_link_for(r)
+        name_time_units_links << time_units_for(r)
+      end
+      links = (name_notes_links + name_citations_links + name_time_units_links).reject(&:blank?)
     end
-    "#{name.detailed_name.s}#{name_notes_link}#{name_citations_link}#{name_time_units_link}"
+    "#{name.detailed_name.s}#{links.join}"
   end
   
   def feature_name_header(feature)
