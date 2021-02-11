@@ -52,6 +52,14 @@ class Note < ActiveRecord::Base
     self.where(build_like_conditions(%W(notes.content notes.custom_note_title note_titles.title), filter_value)).includes(:note_title).references(:note_title)
   end
   
+  def rsolr_document_tags(document, prefix)
+    title = self.title
+    document["#{prefix}_note_#{self.id}_title_s"] if !title.blank?
+    authors = self.authors
+    document["#{prefix}_note_#{self.id}_authors_ss"] = authors.collect(&:fullname) if !authors.blank?
+    document["#{prefix}_note_#{self.id}_content_t"] = self.content
+  end
+  
   private
   
   # Notes can have one of two types of titles: a custom title, or a title from the list of note_titles.
