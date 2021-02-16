@@ -670,32 +670,33 @@ class Feature < ActiveRecord::Base
       path = np.second
       uid = "#{FeatureName.uid_prefix}-#{name.id}"
       writing_system = name.writing_system
+      prefix = "related_#{FeatureName.uid_prefix}"
       child_document =
       { id: "#{self.uid}_#{uid}",
         origin_uid_s: self.uid,
         block_child_type: ["related_names"],
         #tree: FeatureName.uid_prefix,
-        "related_#{FeatureName.uid_prefix}_id_s" => uid,
-        "related_#{FeatureName.uid_prefix}_header_s" => name.name,
-        "related_#{FeatureName.uid_prefix}_path_s" => path.join('/'),
-        "related_#{FeatureName.uid_prefix}_level_i" => path.size,
-        "related_#{FeatureName.uid_prefix}_language_s" => name.language.name,
-        "related_#{FeatureName.uid_prefix}_relationship_s" => name.pp_display_string,
+        "#{prefix}_id_s" => uid,
+        "#{prefix}_header_s" => name.name,
+        "#{prefix}_path_s" => path.join('/'),
+        "#{prefix}_level_i" => path.size,
+        "#{prefix}_language_s" => name.language.name,
+        "#{prefix}_relationship_s" => name.pp_display_string,
         block_type: ['child']
       }
       citation_references = name.citations.collect { |c| c.bibliographic_reference }
       child_document["related_#{FeatureName.uid_prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
-      name.notes.each { |n| n.rsolr_document_tags(child_document, "related_#{FeatureName.uid_prefix}") }
+      name.notes.each { |n| n.rsolr_document_tags(child_document, prefix) }
       name.parent_relations.each do |r|
         citation_references = r.nil? ? nil : r.citations.collect { |c| c.bibliographic_reference }
-        child_document["related_#{FeatureName.uid_prefix}_relationship_#{r.id}_citation_references_ss"] = citation_references if !citation_references.blank?
-        r.notes.each { |n| n.rsolr_document_tags(child_document, "related_#{FeatureName.uid_prefix}_relationship_#{r.id}") }
+        child_document["#{prefix}_relationship_#{r.id}_citation_references_ss"] = citation_references if !citation_references.blank?
+        r.notes.each { |n| n.rsolr_document_tags(child_document, "#{prefix}_relationship_#{r.id}") }
       end
       etymology = name.etymology
-      child_document["related_#{FeatureName.uid_prefix}_etymology_s"] = etymology if !etymology.blank?
+      child_document["#{prefix}_etymology_s"] = etymology if !etymology.blank?
       if !writing_system.nil?
-        child_document["related_#{FeatureName.uid_prefix}_writing_system_s"] = writing_system.name
-        child_document["related_#{FeatureName.uid_prefix}_writing_system_code_s"] = writing_system.code
+        child_document["#{prefix}_writing_system_s"] = writing_system.name
+        child_document["#{prefix}_writing_system_code_s"] = writing_system.code
       end
       child_document
     end
@@ -708,6 +709,7 @@ class Feature < ActiveRecord::Base
     per = Perspective.get_by_code(KmapsEngine::ApplicationSettings.default_perspective_code)
     v = View.get_by_code(KmapsEngine::ApplicationSettings.default_view_code)
     hierarchy = self.closest_ancestors_by_perspective(per)
+    prefix = "related_#{Feature.uid_prefix}"
     doc = { tree: Feature.uid_prefix,
       block_type: ['parent'],
       '_childDocuments_'  =>  self.all_parent_relations.collect do |pr|
@@ -717,16 +719,16 @@ class Feature < ActiveRecord::Base
         relation_tag = { id: "#{self.uid}_#{pr.feature_relation_type.code}_#{parent.fid}",
           related_uid_s: parent.uid,
           origin_uid_s: self.uid,
-          block_child_type: ["related_#{Feature.uid_prefix}"],
-          "related_#{Feature.uid_prefix}_id_s" => "#{Feature.uid_prefix}-#{parent.fid}",
-          "related_#{Feature.uid_prefix}_header_s" => name_str,
-          "related_#{Feature.uid_prefix}_path_s" => pr.parent_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
-          "related_#{Feature.uid_prefix}_relation_label_s" => pr.feature_relation_type.asymmetric_label,
-          "related_#{Feature.uid_prefix}_relation_code_s" => pr.feature_relation_type.code,
+          block_child_type: [prefix],
+          "#{prefix}_id_s" => "#{Feature.uid_prefix}-#{parent.fid}",
+          "#{prefix}_header_s" => name_str,
+          "#{prefix}_path_s" => pr.parent_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+          "#{prefix}_relation_label_s" => pr.feature_relation_type.asymmetric_label,
+          "#{prefix}_relation_code_s" => pr.feature_relation_type.code,
           related_kmaps_node_type: 'parent',
           block_type: ['child']
         }
-        pr.notes.each { |n| n.rsolr_document_tags(relation_tag, "related_#{Feature.uid_prefix}") }
+        pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
         relation_tag
       end + self.all_child_relations.collect do |pr|
         name = pr.child_node.prioritized_name(v)
@@ -735,16 +737,16 @@ class Feature < ActiveRecord::Base
         relation_tag = { id: "#{self.uid}_#{pr.feature_relation_type.asymmetric_code}_#{child.fid}",
           related_uid_s: child.uid,
           origin_uid_s: self.uid,
-          block_child_type: ["related_#{Feature.uid_prefix}"],
-          "related_#{Feature.uid_prefix}_id_s" => "#{Feature.uid_prefix}-#{child.fid}",
-          "related_#{Feature.uid_prefix}_header_s" => name_str,
-          "related_#{Feature.uid_prefix}_path_s" => pr.child_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
-          "related_#{Feature.uid_prefix}_relation_label_s" => pr.feature_relation_type.label,
-          "related_#{Feature.uid_prefix}_relation_code_s" => pr.feature_relation_type.asymmetric_code,
+          block_child_type: [prefix],
+          "#{prefix}_id_s" => "#{Feature.uid_prefix}-#{child.fid}",
+          "#{prefix}_header_s" => name_str,
+          "#{prefix}_path_s" => pr.child_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+          "#{prefix}_relation_label_s" => pr.feature_relation_type.label,
+          "#{prefix}_relation_code_s" => pr.feature_relation_type.asymmetric_code,
           related_kmaps_node_type: 'child',
           block_type: ['child']
         }
-        pr.notes.each { |n| n.rsolr_document_tags(relation_tag, "related_#{Feature.uid_prefix}") }
+        pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
         relation_tag
       end }
     doc
