@@ -728,6 +728,8 @@ class Feature < ActiveRecord::Base
           related_kmaps_node_type: 'parent',
           block_type: ['child']
         }
+        p_rel_citation_references = pr.citations.collect { |c| c.bibliographic_reference }
+        relation_tag["#{prefix}_relation_citation_references_ss"] = p_rel_citation_references if !p_rel_citation_references.blank?
         pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
         relation_tag
       end + self.all_child_relations.collect do |pr|
@@ -746,6 +748,8 @@ class Feature < ActiveRecord::Base
           related_kmaps_node_type: 'child',
           block_type: ['child']
         }
+        p_rel_citation_references = pr.citations.collect { |c| c.bibliographic_reference }
+        relation_tag["#{prefix}_relation_citation_references_ss"] = p_rel_citation_references if !p_rel_citation_references.blank?
         pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
         relation_tag
       end }
