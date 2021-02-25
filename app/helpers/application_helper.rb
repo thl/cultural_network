@@ -199,6 +199,7 @@ module ApplicationHelper
       ""
     end
   end
+  
   def citation_popup_link_for(object, options={})
     if object.respond_to?(:citations) && !object.citations.blank?
       content_tag :span, class: 'has-draggable-popups citation-popup-link' do

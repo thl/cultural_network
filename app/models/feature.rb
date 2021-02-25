@@ -567,6 +567,8 @@ class Feature < ActiveRecord::Base
     doc[:header] = name.nil? ? self.pid : name.name
     doc[:position_i] = self.position
     doc[:projects_ss] = self.affiliations.collect{ |a| a.collection.code }
+    time_units = self.time_units_ordered_by_date.collect { |t| t.to_s }
+    doc[:time_units_ss] = time_units if !time_units.blank?
     self.captions.each do |c|
       if doc["caption_#{c.language.code}"].blank?
         doc["caption_#{c.language.code}"] = [c.content]
@@ -574,7 +576,8 @@ class Feature < ActiveRecord::Base
         doc["caption_#{c.language.code}"] << c.content
       end
       doc["caption_#{c.language.code}_#{c.id}_content_t"] = c.content
-      doc["caption_#{c.language.code}_#{c.id}_citation_references_ss"] = c.citations.collect { |ci| ci.bibliographic_reference }
+      citation_references = c.citations.collect { |ci| ci.bibliographic_reference }
+      doc["caption_#{c.language.code}_#{c.id}_citation_references_ss"] = citation_references if !citation_references.blank?
     end
     mandala_text_mapping = Language.mandala_text_mappings.invert
     self.essays.each do |e|
@@ -587,7 +590,8 @@ class Feature < ActiveRecord::Base
         doc["summary_#{s.language.code}"] << s.content
       end
       doc["summary_#{s.language.code}_#{s.id}_content_t"] = s.content
-      doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = s.citations.collect { |c| c.bibliographic_reference }
+      citation_references = s.citations.collect { |c| c.bibliographic_reference }
+      doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = citation_references if !citation_references.blank?
     end
     self.illustrations.each do |i|
       p = i.picture
@@ -661,7 +665,10 @@ class Feature < ActiveRecord::Base
     geo_codes = self.geo_codes
     geo_codes.each do |c|
       doc["code_#{c.geo_code_type.code}_value_s"] = c.geo_code_value
-      doc["code_#{c.geo_code_type.code}_citation_references_ss"] = c.citations.collect { |c| c.bibliographic_reference }
+      citation_references = c.citations.collect { |c| c.bibliographic_reference }
+      doc["code_#{c.geo_code_type.code}_citation_references_ss"] = citation_references if !citation_references.blank?
+      time_units = c.time_units_ordered_by_date.collect { |t| t.to_s }
+      doc["code_#{c.geo_code_type.code}_time_units_ss"] = time_units if !time_units.blank?
       c.notes.each { |n| n.rsolr_document_tags(doc, "code_#{c.geo_code_type.code}") }
     end
     child_documents = doc['_childDocuments_']
@@ -685,7 +692,9 @@ class Feature < ActiveRecord::Base
         block_type: ['child']
       }
       citation_references = name.citations.collect { |c| c.bibliographic_reference }
-      child_document["related_#{FeatureName.uid_prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
+      child_document["#{prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
+      time_units = name.time_units_ordered_by_date.collect { |t| t.to_s }
+      child_document["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
       name.notes.each { |n| n.rsolr_document_tags(child_document, prefix) }
       name.parent_relations.each do |r|
         citation_references = r.nil? ? nil : r.citations.collect { |c| c.bibliographic_reference }
@@ -730,6 +739,8 @@ class Feature < ActiveRecord::Base
         }
         p_rel_citation_references = pr.citations.collect { |c| c.bibliographic_reference }
         relation_tag["#{prefix}_relation_citation_references_ss"] = p_rel_citation_references if !p_rel_citation_references.blank?
+        time_units = pr.time_units_ordered_by_date.collect { |t| t.to_s }
+        relation_tag["#{prefix}_relation_time_units_ss"] = time_units if !time_units.blank?
         pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
         relation_tag
       end + self.all_child_relations.collect do |pr|
@@ -750,6 +761,8 @@ class Feature < ActiveRecord::Base
         }
         p_rel_citation_references = pr.citations.collect { |c| c.bibliographic_reference }
         relation_tag["#{prefix}_relation_citation_references_ss"] = p_rel_citation_references if !p_rel_citation_references.blank?
+        time_units = pr.time_units_ordered_by_date.collect { |t| t.to_s }
+        relation_tag["#{prefix}_relation_time_units_ss"] = time_units if !time_units.blank?
         pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
         relation_tag
       end }
