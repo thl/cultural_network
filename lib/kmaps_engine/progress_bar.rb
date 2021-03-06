@@ -1,11 +1,12 @@
+require 'flare/time_utils'
+
 module KmapsEngine
   module ProgressBar
     extend ActiveSupport::Concern
+    include Flare::TimeUtils
 
     STATUS_LENGTH = 36
     FID_LENGTH = 7
-    START_HOUR = 8
-    END_HOUR = 17
     
     included do
       attr_accessor :feature
@@ -70,33 +71,8 @@ module KmapsEngine
         end
       end
     end
-
-    def wait_if_business_hours(daylight)
-      return if daylight.blank?
-      now = self.class.now
-      end_time = self.class.end_time
-      if !(now.saturday? || now.sunday?) && self.class.start_time<now && now<end_time
-        delay = self.class.end_time - now
-        self.log.debug { "#{Time.now}: Resting until #{end_time}..." }
-        sleep(delay)
-      end
-    end
-
+    
     module ClassMethods
-
-      def now
-        Time.now
-      end
-
-      def start_time
-        now = self.now
-        Time.new(now.year, now.month, now.day, START_HOUR)
-      end
-
-      def end_time
-        now = self.now
-        Time.new(now.year, now.month, now.day, END_HOUR)
-      end
     end
   end
 end
