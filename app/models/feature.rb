@@ -593,7 +593,9 @@ class Feature < ActiveRecord::Base
       citation_references = s.citations.collect { |c| c.bibliographic_reference }
       doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = citation_references if !citation_references.blank?
     end
-    self.illustrations.each do |i|
+    # just adding main illustration
+    i = self.illustration
+    if !i.nil?
       p = i.picture
       doc["illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url"] = p.url
     end
@@ -723,13 +725,13 @@ class Feature < ActiveRecord::Base
       block_type: ['parent'],
       '_childDocuments_'  =>  self.all_parent_relations.collect do |pr|
         name = pr.parent_node.prioritized_name(v)
-        name_str = name.nil? ? nil : name.name
+        name_str = name.nil? ? pr.parent_node.pid : name.name
         parent = pr.parent_node
         relation_tag = { id: "#{self.uid}_#{pr.feature_relation_type.code}_#{parent.fid}",
           related_uid_s: parent.uid,
           origin_uid_s: self.uid,
           block_child_type: [prefix],
-          "#{prefix}_id_s" => "#{Feature.uid_prefix}-#{parent.fid}",
+          "#{prefix}_id_s" => parent.uid,
           "#{prefix}_header_s" => name_str,
           "#{prefix}_path_s" => pr.parent_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
           "#{prefix}_relation_label_s" => pr.feature_relation_type.asymmetric_label,
@@ -745,7 +747,7 @@ class Feature < ActiveRecord::Base
         relation_tag
       end + self.all_child_relations.collect do |pr|
         name = pr.child_node.prioritized_name(v)
-        name_str = name.nil? ? nil : name.name
+        name_str = name.nil? ? pr.child_node.pid : name.name
         child = pr.child_node
         relation_tag = { id: "#{self.uid}_#{pr.feature_relation_type.asymmetric_code}_#{child.fid}",
           related_uid_s: child.uid,

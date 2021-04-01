@@ -1,19 +1,8 @@
+require 'kmaps_engine/family_tree_utils'
 namespace :util do
   
-  desc 'Synchronizes all of the ancestor/descendant data within the hiearchical models'
-  task :reset_ancestor_ids=>:environment do
-    [Feature,FeatureRelation,FeatureName,FeatureNameRelation].each do |c|
-      puts ''
-      puts "Reseting #{c.to_s.titleize} ancestor ids"
-      #c.update_hierarchy
-      c.reset_ancestor_ids
-    end
+  desc 'Synchronizes all of the ancestor data for features. rake util:reset_feature_ancestor_ids [FROM=fid] [TO=fid] [DAYLIGHT=daylight] [LOG_LEVEL=0..5]'
+  task reset_feature_ancestor_ids: :environment do
+    KmapsEngine::FamilyTreeUtils.new("log/reindexing_#{Rails.env}.log", ENV['LOG_LEVEL']).reset_feature_ancestor_ids(from: ENV['FROM'], to: ENV['TO'], daylight: ENV['DAYLIGHT'])
   end
-  
-  desc 'Synchronizes all of the ancestor data for features'
-  task :reset_feature_ancestor_ids=>:environment do
-    puts ''
-    puts "Reseting feature ancestor ids"
-    Feature.reset_ancestor_ids
-  end  
 end
