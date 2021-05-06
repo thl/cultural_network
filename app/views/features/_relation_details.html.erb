@@ -1,10 +1,11 @@
       <section class="panel panel-content">
         <div class="panel-body">
           <p>
-          <%= ts('snippet.feature.browse_summary', who: "<strong>#{feature_label}</strong>",
-                 how_many: "<strong class='relatedCountContainer'>#{related_features_counts[:related_features]}</strong>",
-                 what: Feature.model_name.human(count: related_features_counts[:related_features]),
-                 count: related_features_counts[:related_features]) %> See the relationships tab if you instead prefer to browse  all subordinate and superordinate categories for <%= feature_label %>.
+<%=       ts('snippet.feature.browse_summary', who: "<strong>#{feature_label}</strong>",
+             how_many: "<strong class='relatedCountContainer'>#{related_features_count}</strong>",
+             what: Feature.model_name.human(count: related_features_count),
+             count: related_features_count) %>
+<%=       message if defined? message %>
           <hr />
           </p>
           <div class='tab-content-loading' style="display:none">Loading...</div>
