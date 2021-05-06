@@ -442,8 +442,8 @@ figcaption .center-caption {
 
 /*--- bullets ---*/
 /*.texts-list li::before,*/
-.kmaps-list-columns:not(.subjects-in-subjects) ul li::before,
-.places-in-subjects.kmaps-list-columns li::before{
+.kmaps-list-columns:not(.subjects-in-subjects):not(.terms-in-terms):not(.places-in-places) ul li::before,
+.places-in-subjects.kmaps-list-columns li::before {
   content: '';
   width: 5px;
   height: 5px;
@@ -484,6 +484,10 @@ figcaption .center-caption {
   margin-left: -2.5rem;
 }
 
+.terms-in-terms.kmaps-list-columns ul li::before{
+  margin-left: -2.5rem;
+}
+
 /*.texts-list li.dontend::before,*/
 /*.places-in-places.kmaps-list-columns ul > li::before,*/
 .places-in-places.kmaps-list-columns ul li.dontend::before,
@@ -515,8 +519,13 @@ figcaption .center-caption {
   margin-bottom: 0;
 }
 
+.terms-in-terms.kmaps-list-columns ul{
+  margin-bottom: 0;
+}
+
 .places-in-subjects.kmaps-list-columns ul,
-.subjects-in-subjects.kmaps-list-columns ul{
+.subjects-in-subjects.kmaps-list-columns ul,
+.terms-in-terms.kmaps-list-columns ul {
   margin-left:1.5rem;
 }
 
@@ -540,7 +549,8 @@ figcaption .center-caption {
 }
 
 .subjects-in-places.kmaps-list-columns .column > ul > li,
-.subjects-in-subjects.kmaps-list-columns .column > ul > li{
+.subjects-in-subjects.kmaps-list-columns .column > ul > li,
+.terms-in-terms.kmaps-list-columns .column > ul > li {
   margin-bottom:0.5rem;
 }
 
@@ -550,6 +560,7 @@ figcaption .center-caption {
 }
 
 .places-in-places.kmaps-list-columns .column > ul > li,
+.terms-in-terms.kmaps-list-columns .column > ul > li,
 .subjects-in-places.kmaps-list-columns .column > ul > li {
   list-style-type: none;
   font-weight: bold;
@@ -569,10 +580,15 @@ figcaption .center-caption {
   margin-left:0;
 }
 
+.terms-in-terms.kmaps-list-columns ul:nth-child(1) > li{
+  margin-left:0;
+}
+
 /*--- list popovers ---*/
 .places-in-places.kmaps-list-columns .popover-kmaps,
 .subjects-in-places.kmaps-list-columns .popover-kmaps,
-.subjects-in-subjects.kmaps-list-columns .popover-kmaps{
+.subjects-in-subjects.kmaps-list-columns .popover-kmaps,
+.terms-in-terms.kmaps-list-columns .popover-kmaps {
   position: relative;
   top: .35rem;
 }
@@ -599,6 +615,10 @@ figcaption .center-caption {
   bottom: 1.3rem;
 }
 
+.terms-in-terms.kmaps-list-columns .popover-kmaps-tip{
+  position: relative;
+  bottom: 1.3rem;
+}
 
 /* New - fancytree use in content-section for Places-inPlaces and Subjects-in-Subjects, etc */
 .relation_tree_container .fancytree-container .popover.related-resources-popover{

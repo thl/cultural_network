@@ -170,6 +170,7 @@
     });
     return dfd.promise();
   }
+  
   Plugin.addSubjectsSummaryItems = function addSubjectsSummaryItems(feature_label,featuresPath,group_key,data){
     var plugin = this;
     var container = $('.'+plugin.settings.domain+'-in-'+plugin.settings.domain);
@@ -202,6 +203,7 @@
             container.append(feature_block);
     }
   };
+  
   Plugin.getSubjectsSummaryElements = function getSubjectsSummaryElements(){
     var plugin = this;
     var dfd = $.Deferred();
@@ -209,7 +211,7 @@
     var fieldList = [
       "header",
       "id",
-      "related_"+ plugin.settings.domain +"_feature_type_s",
+      "related_kmaps_node_type",
       "related_"+ plugin.settings.domain +"_relation_label_s"
     ].join(",");
     if(plugin.settings.domain == "places"){
@@ -217,7 +219,7 @@
     }
     var getSummaryElementsUrl = plugin.settings.termIndex + "/select?" +
       "&q=" + "{!child of=block_type:parent}id:" + plugin.settings.featureId +
-      "&fl=related_"+plugin.settings.domain+"_feature_types_t,uid,related_"+plugin.settings.domain+"_id_s,related_"+plugin.settings.domain+"_header_s" +","+ fieldList +
+      "&fl=uid,related_"+plugin.settings.domain+"_id_s,related_"+plugin.settings.domain+"_header_s" +","+ fieldList +
       "&rows=" + SOLR_ROW_LIMIT +
       "&indent=true" +
       "&wt=json" +
@@ -256,6 +258,97 @@
     });
     return dfd.promise();
   }
+  
+  Plugin.addTermsSummaryItems = function addTermsSummaryItems(feature_label,featuresPath,group_key,data){
+    var plugin = this;
+    var container = $('.'+plugin.settings.domain+'-in-'+plugin.settings.domain);
+
+    var feature_name = feature_label;
+    for(var key in data[group_key]){ //parent,child, other
+            var feature_block = jQuery('<div></div>').addClass('feature-block');
+            var header = jQuery('<h6></h6>').addClass('dontend').append(jQuery('<span class="glyphicon"></span> '));
+            header.append(feature_name +" "+ key);
+            var relation_subject_list = jQuery('<ul style="list-stype:none;" class="collapsibleList"></ul>');
+            var relation_subject_item = jQuery('<li class="collapsible_list_header"></li>');
+            relation_subject_item.append(header);
+            var related_subject_list = jQuery('<ul></ul>');
+            var feature_count = 0;
+            var sortedFeatures = data[group_key][key];
+            for(var related_subject_index in sortedFeatures){
+              var relation = jQuery('<li class="dontsplit"></li>');
+                var currNode = sortedFeatures[related_subject_index];
+                var currNodeID = currNode["related_"+plugin.settings.domain+"_id_s"].replace(plugin.settings.domain+"-","");
+                relation.append("<a href="+featuresPath.replace("%%ID%%",currNodeID)+">"+currNode["related_"+plugin.settings.domain+"_header_s"]+"</a>");
+                var pop_container = jQuery('<span class="popover-kmaps" data-id="'+plugin.settings.domain+'-'+currNodeID+'"><span class="popover-kmaps-tip"></span><span class="icon shanticon-menu3"></span></span>');
+                relation.append(jQuery(pop_container));
+                related_subject_list.append(relation);
+                feature_count++;
+            }
+            relation_subject_item.append(related_subject_list);
+            relation_subject_list.append(relation_subject_item);
+            if(feature_count == 1) {relation_subject_list.addClass('dontsplit');}
+            feature_block.append(relation_subject_list);
+            container.append(feature_block);
+    }
+  };
+  
+  Plugin.getTermsSummaryElements = function getTermsSummaryElements(){
+    var plugin = this;
+    var dfd = $.Deferred();
+    var SOLR_ROW_LIMIT = 200;
+    var fieldList = [
+      "header",
+      "id",
+      "related_kmaps_node_type",
+      "related_"+ plugin.settings.domain +"_relation_code_s",
+      "related_"+ plugin.settings.domain +"_relation_label_s"
+    ].join(",");
+    if(plugin.settings.domain != "subjects"){
+      fieldList += ",related_subjects_t";
+    }
+    var getSummaryElementsUrl = plugin.settings.termIndex + "/select?" +
+      "&q=" + "{!child of=block_type:parent}id:" + plugin.settings.featureId +
+      "&fl=uid,related_"+plugin.settings.domain+"_id_s,related_"+plugin.settings.domain+"_header_s" +","+ fieldList +
+      "&rows=" + SOLR_ROW_LIMIT +
+      "&indent=true" +
+      "&wt=json" +
+      "&json.wrf=?" +
+      "&sort=related_"+plugin.settings.domain+"_header_s+asc";
+    $.ajax({
+      url: getSummaryElementsUrl,
+      dataType: 'jsonp',
+      jsonp: 'json.wrf',
+    }).done(function(data){
+      var response = data.response;
+      if(response.numFound > 0){
+        var result = response.docs.reduce(function(acc,currentNode,index){
+          var node_type = currentNode["related_kmaps_node_type"] ;
+          if(node_type === undefined) {
+            node_type = "other";
+          }
+          if(acc[node_type] === undefined){
+            acc[node_type] =  [];
+          }
+          var relation_label = currentNode["related_"+ plugin.settings.domain +"_relation_label_s"];
+		  var relation_code = currentNode["related_"+ plugin.settings.domain +"_relation_code_s"];
+          if(relation_code == 'heads' || relation_label === undefined){
+            return acc;
+          }
+          if(acc[node_type][relation_label] === undefined){
+            acc[node_type][relation_label] = [];
+          }
+          var node_id = currentNode['related_'+plugin.settings.domain+'_id_s'];
+          acc[node_type][relation_label][node_id] = currentNode;
+          return acc;
+        }, []);
+        dfd.resolve(result);
+      } else {
+        dfd.resolve([]);
+      }
+    });
+    return dfd.promise();
+  }
+  
   //Popup functions
   Plugin.getNodeInfo =    function getNodeInfo(currentFeatureId,featuresPath) {
     var plugin = this;

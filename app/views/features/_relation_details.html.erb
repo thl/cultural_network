@@ -1,0 +1,20 @@
+      <section class="panel panel-content">
+        <div class="panel-body">
+          <p>
+          <%= ts('snippet.feature.browse_summary', who: "<strong>#{feature_label}</strong>",
+                 how_many: "<strong class='relatedCountContainer'>#{related_features_counts[:related_features]}</strong>",
+                 what: Feature.model_name.human(count: related_features_counts[:related_features]),
+                 count: related_features_counts[:related_features]) %> See the relationships tab if you instead prefer to browse  all subordinate and superordinate categories for <%= feature_label %>.
+          <hr />
+          </p>
+          <div class='tab-content-loading' style="display:none">Loading...</div>
+          <div class="collapsible_btns_container" style="display:none" >
+            <h5> <span class="collapsible_all_btn collapsible_expand_all">Expand all</span> / <span class="collapsible_all_btn collapsible_collapse_all">Collapse all</span> </h5>
+          </div>
+        <div class="<%= Feature.uid_prefix %>-in-<%= Feature.uid_prefix %> kmaps-list-columns related-features has-ajax-pagination has-hash-feature-links"> </div> <!-- END  subjects-in-subjects -->
+        <div class="collapsible_btns_container" style="display:none">
+          <h5> <span class="collapsible_all_btn collapsible_expand_all">Expand all</span> / <span class="collapsible_all_btn collapsible_collapse_all">Collapse all</span> </h5>
+        </div>
+        <br />
+        </div> <!-- END panel-body -->
+      </section> <!-- END panel -->
