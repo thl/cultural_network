@@ -11,6 +11,6 @@
 
 class XmlDocument < ActiveRecord::Base
   
-  belongs_to :feature
+  belongs_to :feature, touch: true
   
 end

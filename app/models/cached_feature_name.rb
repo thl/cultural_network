@@ -11,6 +11,8 @@
 #
 
 class CachedFeatureName < ActiveRecord::Base
+  attr_accessor :skip_update
+  
   validates_presence_of :feature_id, :view_id
   
   belongs_to :feature

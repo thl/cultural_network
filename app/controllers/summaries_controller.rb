@@ -1,6 +1,4 @@
 class SummariesController < ApplicationController
-  caches_page :show, :index
-  
   before_action :find_feature
   
   def show

@@ -13,7 +13,7 @@
 #
 
 class FeatureGeoCode < ActiveRecord::Base
-  belongs_to :feature
+  belongs_to :feature, touch: true
   belongs_to :geo_code_type
   has_many :imports, :as => 'item', :dependent => :destroy
 

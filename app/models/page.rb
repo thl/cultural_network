@@ -14,7 +14,7 @@
 #
 
 class Page < ActiveRecord::Base
-  belongs_to :citation
+  belongs_to :citation, touch: true
   has_many :imports, :as => 'item', :dependent => :destroy
   
   validate :presence_of_some_data
@@ -36,5 +36,9 @@ class Page < ActiveRecord::Base
       end
     end
     s
+  end
+  
+  def feature
+    self.citation.feature
   end
 end

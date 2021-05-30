@@ -23,7 +23,7 @@ class Citation < ActiveRecord::Base
   #
   #
   belongs_to :info_source, polymorphic: true
-  belongs_to :citable, polymorphic: true
+  belongs_to :citable, polymorphic: true, touch: true
   has_many :pages, dependent: :destroy
   has_many :web_pages, dependent: :destroy
   has_many :imports, as: 'item', dependent: :destroy
@@ -78,5 +78,9 @@ class Citation < ActiveRecord::Base
       source_str = ([bibliographic_reference] + self.pages.collect(&:to_s)).join(', ') + '.'
     end
     return source_str
+  end
+  
+  def feature
+    self.citable.feature
   end
 end

@@ -2,7 +2,6 @@ class Admin::DescriptionsController < AclController
   include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   
-  cache_sweeper :description_sweeper, :only => [:update, :destroy]
   belongs_to :feature
   before_action :collection
 

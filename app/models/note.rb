@@ -19,7 +19,7 @@ class Note < ActiveRecord::Base
   # a better approach to this?
   include ApplicationHelper
   
-  belongs_to :notable, polymorphic: true
+  belongs_to :notable, polymorphic: true, touch: true
   belongs_to :note_title, optional: true
   has_and_belongs_to_many :authors, class_name: 'AuthenticatedSystem::Person', join_table: 'authors_notes', association_foreign_key: 'author_id'
   has_many :imports, as: 'item', dependent: :destroy
@@ -59,6 +59,10 @@ class Note < ActiveRecord::Base
     authors = self.authors
     document["#{prefix_}note_#{self.id}_authors_ss"] = authors.collect(&:fullname) if !authors.blank?
     document["#{prefix_}note_#{self.id}_content_t"] = self.content
+  end
+  
+  def feature
+    self.notable.feature
   end
   
   private

@@ -26,7 +26,7 @@ class FeatureName < ActiveRecord::Base
       feature = record.feature
       record.ensure_one_primary
       views = feature.update_cached_feature_names
-      views = (views + CachedFeatureName.where(feature_name_id: record.id).select(:view_id).collect(&:view_id)).uniq if record.name_changed?
+      # views = (views + CachedFeatureName.where(feature_name_id: record.id).select(:view_id).collect(&:view_id)).uniq if record.name_changed?
     end
   end #{ |record| record.update_hierarchy
   
@@ -65,7 +65,7 @@ class FeatureName < ActiveRecord::Base
   # Associations
   #
   
-  belongs_to :feature
+  belongs_to :feature, touch: true
   belongs_to :language
   belongs_to :writing_system, optional: true
   belongs_to :type, class_name: 'FeatureNameType', foreign_key: :feature_name_type_id, optional: true

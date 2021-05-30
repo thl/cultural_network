@@ -15,7 +15,7 @@
 #
 
 class Timespan < ActiveRecord::Base
-  belongs_to :dateable, :polymorphic=>true
+  belongs_to :dateable, polymorphic: true, touch: true
   
   def to_s
     id.to_s

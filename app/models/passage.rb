@@ -13,7 +13,11 @@
 class Passage < ApplicationRecord
   include KmapsEngine::IsCitable
 
-  belongs_to :context, polymorphic: true
+  belongs_to :context, polymorphic: true, touch: true
 
   validates_presence_of :content
+  
+  def feature
+    self.context.feature
+  end
 end

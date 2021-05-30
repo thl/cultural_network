@@ -1,5 +1,4 @@
 class DescriptionsController < ApplicationController
-  caches_page :show, :index, :if => Proc.new { |c| c.request.format.xml? }
   before_action :find_feature
  
   def contract

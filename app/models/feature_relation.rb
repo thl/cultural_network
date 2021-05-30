@@ -36,14 +36,7 @@ class FeatureRelation < ActiveRecord::Base
   after_destroy do |record|
     if !record.skip_update && record.perspective.is_public?
       Spawnling.new do
-        is_root = false
-        [record.parent_node, record.child_node].each do |r|
-          if !r.nil?
-            r.update_hierarchy
-            is_root = true if r.is_public==1 && r.ancestors.blank?
-          end
-        end
-        Rails.cache.delete_matched("features/current_roots/#{record.perspective_id}/*") if is_root
+        [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
       end
     end
   end

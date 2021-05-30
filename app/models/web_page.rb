@@ -11,7 +11,7 @@
 #
 
 class WebPage < ActiveRecord::Base
-  belongs_to :citation
+  belongs_to :citation, touch: true
   has_many :imports, :as => 'item', :dependent => :destroy
   
   def web_url
@@ -24,10 +24,13 @@ class WebPage < ActiveRecord::Base
     domain = self.web_url
     domain = domain[0...domain.size-1] if domain.end_with?('/') && path.start_with?('/')
     "#{domain}#{path}"
-    
   end
   
   def to_s
     "#{self.title} (#{self.full_path})"
-  end  
+  end
+  
+  def feature
+    self.citation.feature
+  end
 end

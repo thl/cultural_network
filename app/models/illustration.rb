@@ -12,7 +12,7 @@
 #
 
 class Illustration < ActiveRecord::Base
-  belongs_to :feature
+  belongs_to :feature, touch: true
   belongs_to :picture, :polymorphic => true
   
   before_destroy {|record| record.picture.destroy if record.picture.instance_of?(ExternalPicture)}

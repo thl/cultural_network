@@ -1,6 +1,5 @@
 class CodesController < ApplicationController
   before_action :find_feature
-  caches_page :index
   
   def index
     @geo_codes = @feature.geo_codes

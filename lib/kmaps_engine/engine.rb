@@ -14,12 +14,14 @@ module KmapsEngine
     end
     
     initializer :sweepers do |config|
-      sweeper_folder = File.join('..', '..', 'app', 'sweepers')
-      require_relative File.join(sweeper_folder, 'feature_sweeper')
-      require_relative File.join(sweeper_folder, 'description_sweeper')
-      require_relative File.join(sweeper_folder, 'caption_sweeper')
-      require_relative File.join(sweeper_folder, 'summary_sweeper')
-      require_relative File.join(sweeper_folder, 'feature_geo_code_sweeper')
+      #sweeper_folder = File.join('..', '..', 'app', 'sweepers')
+      #require_relative File.join(sweeper_folder, 'feature_sweeper')
+      #require_relative File.join(sweeper_folder, 'feature_relation_sweeper')
+      #require_relative File.join(sweeper_folder, 'summary_sweeper')
+      observers = [FeatureSweeper, FeatureRelationSweeper, SummarySweeper]
+      Rails.application.config.active_record.observers ||= []
+      Rails.application.config.active_record.observers += observers
+      observers.each { |o| o.instance }
     end
     
     initializer :loader do |config|

@@ -12,7 +12,7 @@
 #
 
 class Summary < ActiveRecord::Base
-  belongs_to :feature
+  belongs_to :feature, touch: true
   belongs_to :language
   belongs_to :author, :class_name => 'AuthenticatedSystem::Person'
   has_many :imports, :as => 'item', :dependent => :destroy

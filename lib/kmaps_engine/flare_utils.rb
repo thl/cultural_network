@@ -65,5 +65,41 @@ module KmapsEngine
       puts "#{Time.now}: Reindexing done."
       self.log.debug "#{Time.now}: Reindexing done."
     end
+    
+    def self.index_cleanup
+      query = "tree:#{Feature.uid_prefix}"
+      numFound = Feature.search_by(query)['numFound']
+      puts 'Fetching uids from index.'
+      resp = Feature.search_by(query, fl: 'uid', rows: numFound)['docs']
+      features_indexed = resp.collect{|f| f['uid'].split('-').last.to_i}
+      puts 'Fetching uids from db.'
+      features_in_db = Feature.all.where(is_public: 1).order(:fid).select(:fid).distinct.collect(&:fid)
+      features_not_indexed = features_in_db - features_indexed
+      features_indexed_not_in_db = features_indexed - features_in_db
+      puts "Indexing #{features_indexed_not_in_db.size} features not in index."
+      features_not_indexed.each { |fid| Feature.get_by_fid(fid).queued_index }
+      puts "Deleting #{features_not_indexed.size} docs not in db."
+      Feature.remove!(features_indexed_not_in_db)
+    end
+    
+    def self.reindex_stale_since_all(additional_classes = [])
+      d = DateTime.parse(Feature.oldest_document['_timestamp_'])
+      classes = [Affiliation, CachedFeatureName, Caption, Citation, Description, Essay, Feature, FeatureGeoCode, FeatureNameRelation, FeatureName, FeatureRelation, Illustration, Note, Page, Passage, Summary, TimeUnit, WebPage] + additional_classes
+      fids = []
+      classes.each do |klass|
+        a = klass.where(['updated_at > ?', d])
+        puts "Reindexing #{Feature.model_name.human(count: :many)} for #{a.count} #{klass.model_name.human(count: :many)}."
+        a.each do |e|
+          f = e.feature
+          if !fids.include? f.fid
+            doc = f.search
+            fids << f.fid if doc.nil? || f.updated_at > DateTime.parse(doc['_timestamp_'])
+          end
+        end
+      end
+      fids.uniq!
+      puts "Reindexing a total of #{fids.size} features."
+      fids.each{|fid| Feature.get_by_fid(fid).queued_index }
+    end
   end
 end

@@ -556,6 +556,10 @@ class Feature < ActiveRecord::Base
     end
   end
   
+  def feature
+    self
+  end
+  
   private
   
   def document_for_rsolr

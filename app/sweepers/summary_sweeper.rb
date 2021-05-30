@@ -10,6 +10,10 @@ class SummarySweeper < ActionController::Caching::Sweeper
     expire_cache(record)
   end
   
+  def after_touch(record)
+    expire_cache(record)
+  end
+  
   def after_destroy(record)
     expire_cache(record)
   end
@@ -19,10 +23,8 @@ class SummarySweeper < ActionController::Caching::Sweeper
     options = {:only_path => true}
     FORMATS.each do |format|
       options[:format] = format
-      expire_full_path_page feature_url(feature.fid, options)
       expire_full_path_page feature_summary_url(feature.fid, summary, options)
       expire_full_path_page feature_summaries_url(feature.fid, options)
     end
-    feature.queued_index
   end
 end

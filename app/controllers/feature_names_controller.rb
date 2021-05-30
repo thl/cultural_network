@@ -1,6 +1,4 @@
 class FeatureNamesController < ApplicationController
-  caches_page :index, :show
-  
   before_action :find_feature
   
   def show

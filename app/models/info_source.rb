@@ -13,8 +13,6 @@
 
 class InfoSource < ActiveRecord::Base
   has_many :citations
-  has_many :feature_geo_codes
-  has_many :feature_names
   
   # Validation
   validates_presence_of :code

@@ -15,7 +15,7 @@ class Affiliation < ActiveRecord::Base
   attr_accessor :skip_update
   
   belongs_to :collection
-  belongs_to :feature
+  belongs_to :feature, touch: true
   belongs_to :perspective, optional: true
   
   validates_uniqueness_of :collection_id, scope: :feature_id

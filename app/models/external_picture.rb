@@ -15,6 +15,10 @@ class ExternalPicture < ActiveRecord::Base
   
   validates :url, presence: true
   
+  after_save do |record|
+    illustrations.each { |illustration| illustration.touch }
+  end
+  
   def width
     nil
   end
