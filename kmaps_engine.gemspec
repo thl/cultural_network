@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   # Use postgresql as the database for Active Record
   s.add_dependency 'pg'
   # Use Puma as the app server
-  s.add_dependency 'puma', '~> 3.11'
+  s.add_dependency 'puma', '>= 3.11'
   # Use Uglifier as compressor for JavaScript assets
   s.add_dependency 'uglifier', '~> 4.1', '>= 4.1.20'
   # See https://github.com/rails/execjs#readme for more supported runtimes
