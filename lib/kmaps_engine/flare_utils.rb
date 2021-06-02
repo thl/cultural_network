@@ -87,8 +87,13 @@ module KmapsEngine
     def self.reindex_stale_since_all(additional_classes = [])
       d = DateTime.parse(Feature.oldest_document['_timestamp_'])
       classes = [Affiliation, CachedFeatureName, Caption, Citation, Description, Essay, Feature, FeatureGeoCode, FeatureNameRelation, FeatureName, FeatureRelation, Illustration, Note, Page, Passage, Summary, TimeUnit, WebPage] + additional_classes
-      fids = []
-      checked_fids = []
+      puts 'Fetching index timestamps.'
+      query = "tree:#{Feature.uid_prefix}"
+      numFound = Feature.search_by(query)['numFound']
+      resp = Feature.search_by(query, fl: 'uid,_timestamp_', rows: numFound)['docs']
+      timestamps = {}
+      resp.collect{|f| timestamps[f['uid'].split('-').last.to_i] = f['_timestamp_']}
+      count = 0
       classes.each do |klass|
         begin
           a = klass.where(['updated_at > ?', d]).includes(:feature)
@@ -99,19 +104,16 @@ module KmapsEngine
         puts "Reindexing #{Feature.model_name.human(count: :many)} for #{a.count} #{klass.model_name.human(count: :many)}."
         a.each do |e|
           f = e.feature
-          if !checked_fids.include? f.fid
-            checked_fids << f.fid
-            if !fids.include? f.fid
-              doc = f.search
-              if doc.nil? || f.updated_at > DateTime.parse(doc['_timestamp_'])
-                fids << f.fid
-                f.queued_index
-              end
+          if timestamps[f.fid].nil? || !timestamps[f.fid].instance_of?(DateTime)
+            timestamps[f.fid] = timestamps[f.fid].nil? ? f.updated_at - 1.day : DateTime.parse(timestamps[f.fid])
+            if f.updated_at > timestamps[f.fid]
+              f.queued_index
+              count += 1
             end
           end
         end
       end
-      puts "Reindexing a total of #{fids.size} features."
+      puts "Reindexing a total of #{count} features."
     end
   end
 end
