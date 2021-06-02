@@ -90,7 +90,12 @@ module KmapsEngine
       fids = []
       checked_fids = []
       classes.each do |klass|
-        a = klass.where(['updated_at > ?', d])
+        begin
+          a = klass.where(['updated_at > ?', d]).includes(:feature)
+          a.first
+        rescue ActiveRecord::AssociationNotFoundError => e
+          a = klass.where(['updated_at > ?', d])
+        end
         puts "Reindexing #{Feature.model_name.human(count: :many)} for #{a.count} #{klass.model_name.human(count: :many)}."
         a.each do |e|
           f = e.feature
