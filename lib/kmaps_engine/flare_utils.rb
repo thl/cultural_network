@@ -104,7 +104,7 @@ module KmapsEngine
         puts "Reindexing #{Feature.model_name.human(count: :many)} for #{a.count} #{klass.model_name.human(count: :many)}."
         a.each do |e|
           f = e.feature
-          if timestamps[f.fid].nil? || !timestamps[f.fid].instance_of?(DateTime)
+          if timestamps[f.fid].nil? || timestamps[f.fid].instance_of?(String)
             timestamps[f.fid] = timestamps[f.fid].nil? ? f.updated_at - 1.day : DateTime.parse(timestamps[f.fid])
             if f.updated_at > timestamps[f.fid]
               f.queued_index
