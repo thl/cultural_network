@@ -38,6 +38,6 @@ class Admin::NotesController < AclController
   
   # Only allow a trusted parameter "white list" through.
   def note_params
-    params.require(:note).permit(:custom_note_title, :note_title_id, :content, :is_public, :id, :author_ids, :notable_type, :notable_id)
+    params.require(:note).permit(:custom_note_title, :note_title_id, :content, :is_public, :id, :notable_type, :notable_id, author_ids: [])
   end
 end
