@@ -1,4 +1,4 @@
 <div class="dropdown">
-<%= select_tag 'association_note[author_ids][]', options_for_select(@authors.collect{|a| [a.fullname, a.id] }, selected.nil? ? nil : selected), class: 'form-control form-select ss-select selectpicker' %>
+<%= select_tag 'association_note[author_ids][]', options_for_select(@authors.collect{|a| [a.fullname, a.id] }, selected.nil? ? nil : selected), include_blank: true, class: 'form-control form-select ss-select selectpicker' %>
 <%= link_to ts(:remove), '#', onclick: "$(this).parents('.dropdown:first').remove()" %>
 </div>
