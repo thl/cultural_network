@@ -631,8 +631,8 @@ class Feature < ActiveRecord::Base
       doc["ancestor_id_#{p.code}_path"] = path.join('/')
       doc[tag] = hierarchy.collect do |f|
         pn = f.prioritized_name(v)
-        pn.nil? ? nil : pn.name
-      end.reject(&:nil?)
+        pn.nil? ? f.fid : pn.name
+      end
       doc[id_tag] = hierarchy.collect{ |f| f.fid }
       doc[uid_tag] = hierarchy.collect{ |f| f.uid }
     end
