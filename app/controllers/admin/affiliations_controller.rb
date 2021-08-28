@@ -2,7 +2,7 @@ class Admin::AffiliationsController < AclController
   resource_controller
   
   belongs_to :feature
-  before_action :collection
+  before_action :get_collections
   
   def initialize
     super
