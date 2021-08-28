@@ -33,7 +33,7 @@ class Affiliation < ActiveRecord::Base
   end
   
   before_destroy do |record|
-    if !record.skip_update && record.descendants?
+    if !record.skip_update && record.valid? && record.descendants?
       perspective = record.perspective
       descendants = record.perspective.nil? ? record.feature.all_descendants : record.feature.descendants_by_perspective_with_parent(record.perspective).collect(&:first)
       descendants.each do |f|
