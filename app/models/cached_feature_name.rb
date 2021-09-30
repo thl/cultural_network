@@ -3,11 +3,15 @@
 # Table name: cached_feature_names
 #
 #  id              :integer          not null, primary key
-#  feature_id      :integer          not null
-#  view_id         :integer          not null
-#  feature_name_id :integer
 #  created_at      :datetime
 #  updated_at      :datetime
+#  feature_id      :integer          not null
+#  feature_name_id :integer
+#  view_id         :integer          not null
+#
+# Indexes
+#
+#  index_cached_feature_names_on_feature_id_and_view_id  (feature_id,view_id) UNIQUE
 #
 
 class CachedFeatureName < ActiveRecord::Base

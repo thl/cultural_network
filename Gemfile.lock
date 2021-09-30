@@ -1,23 +1,23 @@
 GIT
   remote: https://github.com/shanti-uva/flare.git
-  revision: 02439efff39e3daed9494b661d5fa19f75761e1e
-  tag: v1.2.9
+  revision: e4561eb025ea63c72a3cd878c18785c89173ffc1
+  tag: v1.3.2
   specs:
-    flare (1.2.9)
+    flare (1.3.2)
       activeresource
       daemons
       delayed_job_active_record
       faraday (~> 0.11.0)
       pg
-      rails (~> 5.2.4, >= 5.2.4.2)
+      rails (~> 5.2.4)
       rsolr (~> 2.0.0.pre3)
 
 GIT
   remote: https://github.com/thl/acts_as_family_tree.git
-  revision: 901d1e39e80d80089bd4b24cdfac7074bd5e549b
-  tag: v1.2.0
+  revision: 1c4ebf37a75e88af81f43e4c60c6c4aa54e4bc7e
+  tag: v1.2.1
   specs:
-    acts_as_family_tree (1.2.0)
+    acts_as_family_tree (1.2.1)
       rails (>= 4.0)
 
 GIT
@@ -30,12 +30,12 @@ GIT
 
 GIT
   remote: https://github.com/thl/complex_dates.git
-  revision: b23cf72f394327d19ee5bb8675beeb109c5c3fd7
-  tag: v2.3.0
+  revision: ded33097751aa7c9a8edf53dbacb61d37e32520e
+  tag: v2.3.5
   specs:
-    complex_dates (2.3.0)
+    complex_dates (2.3.5)
       pg
-      rails (>= 4.0)
+      rails (>= 5.0)
 
 GIT
   remote: https://github.com/thl/interface_utils.git
@@ -48,7 +48,7 @@ GIT
 PATH
   remote: .
   specs:
-    kmaps_engine (5.9.3)
+    kmaps_engine (6.3.2)
       annotate
       bootsnap (>= 1.1.0)
       coffee-rails (~> 4.2)
@@ -57,7 +57,7 @@ PATH
       jbuilder (~> 2.5)
       memcache-client
       pg
-      puma (~> 3.11)
+      puma (>= 3.11)
       rails (~> 5.2.3)
       turbolinks (~> 5)
       uglifier (~> 4.1, >= 4.1.20)
@@ -123,7 +123,7 @@ GEM
       activerecord (>= 3.2, < 7.0)
       rake (>= 10.4, < 14.0)
     arel (9.0.0)
-    bootsnap (1.4.6)
+    bootsnap (1.9.1)
       msgpack (~> 1.0)
     builder (3.2.4)
     coffee-rails (4.2.2)
@@ -135,18 +135,18 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.6)
     crass (1.0.6)
-    daemons (1.3.1)
-    delayed_job (4.1.8)
-      activesupport (>= 3.0, < 6.1)
-    delayed_job_active_record (4.1.4)
-      activerecord (>= 3.0, < 6.1)
+    daemons (1.4.1)
+    delayed_job (4.1.9)
+      activesupport (>= 3.0, < 6.2)
+    delayed_job_active_record (4.1.6)
+      activerecord (>= 3.0, < 6.2)
       delayed_job (>= 3.0, < 5)
     diff-lcs (1.3)
     erubi (1.9.0)
-    exception_notification (4.4.1)
+    exception_notification (4.4.3)
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
-    execjs (2.7.0)
+    execjs (2.8.1)
     faraday (0.11.0)
       multipart-post (>= 1.2, < 3)
     globalid (0.4.2)
@@ -154,7 +154,7 @@ GEM
     hpricot (0.8.6)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
-    jbuilder (2.10.0)
+    jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
@@ -169,17 +169,22 @@ GEM
       mimemagic (~> 0.3.2)
     memcache-client (1.8.5)
     method_source (1.0.0)
-    mimemagic (0.3.5)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.6.1)
     minitest (5.14.1)
-    msgpack (1.3.3)
+    msgpack (1.4.2)
     multipart-post (2.1.1)
     nio4r (2.5.2)
-    nokogiri (1.10.9)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.12.5)
+      mini_portile2 (~> 2.6.1)
+      racc (~> 1.4)
     pg (1.2.3)
-    puma (3.12.6)
+    puma (5.5.0)
+      nio4r (~> 2.0)
+    racc (1.5.2)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -249,7 +254,7 @@ GEM
     websocket-driver (0.7.2)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    will_paginate (3.3.0)
+    will_paginate (3.3.1)
 
 PLATFORMS
   ruby
@@ -258,10 +263,10 @@ DEPENDENCIES
   actionpack-action_caching
   actionpack-page_caching
   activeresource
-  acts_as_family_tree (= 1.2.0)!
+  acts_as_family_tree (= 1.2.1)!
   authenticated_system (= 2.4.0)!
-  complex_dates (= 2.3.0)!
-  flare (= 1.2.9)!
+  complex_dates (= 2.3.5)!
+  flare (= 1.3.2)!
   interface_utils (= 2.3.9)!
   jquery-rails
   kmaps_engine!

@@ -3,12 +3,12 @@
 # Table name: captions
 #
 #  id          :integer          not null, primary key
-#  language_id :integer          not null
 #  content     :text             not null
-#  author_id   :integer          not null
-#  feature_id  :integer          not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  author_id   :integer          not null
+#  feature_id  :integer          not null
+#  language_id :integer          not null
 #
 
 class Caption < ActiveRecord::Base  

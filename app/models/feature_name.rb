@@ -3,17 +3,23 @@
 # Table name: feature_names
 #
 #  id                          :integer          not null, primary key
-#  feature_id                  :integer          not null
-#  name                        :string(255)      not null
-#  feature_name_type_id        :integer
 #  ancestor_ids                :string(255)
-#  position                    :integer          default(0)
 #  etymology                   :text
-#  writing_system_id           :integer
-#  language_id                 :integer          not null
+#  is_primary_for_romanization :boolean          default(FALSE)
+#  name                        :string(255)      not null
+#  position                    :integer          default(0)
 #  created_at                  :datetime
 #  updated_at                  :datetime
-#  is_primary_for_romanization :boolean          default(FALSE)
+#  feature_id                  :integer          not null
+#  feature_name_type_id        :integer
+#  language_id                 :integer          not null
+#  writing_system_id           :integer
+#
+# Indexes
+#
+#  feature_names_ancestor_ids_idx  (ancestor_ids)
+#  feature_names_feature_id_idx    (feature_id)
+#  feature_names_name_idx          (name)
 #
 
 class FeatureName < ActiveRecord::Base

@@ -3,15 +3,15 @@
 # Table name: notes
 #
 #  id                :integer          not null, primary key
-#  notable_type      :string(255)
-#  notable_id        :integer
-#  note_title_id     :integer
+#  association_type  :string(255)
+#  content           :text             not null
 #  custom_note_title :string(255)
-#  content           :text
+#  is_public         :boolean          default(TRUE)
+#  notable_type      :string           not null
 #  created_at        :datetime
 #  updated_at        :datetime
-#  association_type  :string(255)
-#  is_public         :boolean          default(TRUE)
+#  notable_id        :integer          not null
+#  note_title_id     :integer
 #
 
 class Note < ActiveRecord::Base

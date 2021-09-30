@@ -4,10 +4,10 @@
 #
 #  id          :integer          not null, primary key
 #  filename    :string(255)      not null
-#  task_id     :integer          not null
 #  imported_at :datetime         not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  task_id     :integer          not null
 #
 
 class ImportedSpreadsheet < ActiveRecord::Base

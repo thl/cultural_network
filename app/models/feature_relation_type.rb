@@ -3,18 +3,19 @@
 # Table name: feature_relation_types
 #
 #  id               :integer          not null, primary key
-#  is_symmetric     :boolean
-#  label            :string(255)      not null
+#  asymmetric_code  :string(255)
 #  asymmetric_label :string(255)
-#  created_at       :datetime
-#  updated_at       :datetime
 #  code             :string(255)      not null
 #  is_hierarchical  :boolean          default(FALSE), not null
-#  asymmetric_code  :string(255)
+#  is_symmetric     :boolean
+#  label            :string(255)      not null
+#  created_at       :datetime
+#  updated_at       :datetime
 #
 
 class FeatureRelationType < ActiveRecord::Base
   has_many :feature_relations, :dependent => :destroy
+  has_many :imports, as: 'item', dependent: :destroy
   
   before_save :set_asymmetric_label
   

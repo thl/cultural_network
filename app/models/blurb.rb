@@ -4,8 +4,8 @@
 #
 #  id         :integer          not null, primary key
 #  code       :string(255)
-#  title      :string(255)
 #  content    :text
+#  title      :string(255)
 #  created_at :datetime
 #  updated_at :datetime
 #

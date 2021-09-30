@@ -3,12 +3,16 @@
 # Table name: affiliations
 #
 #  id             :integer          not null, primary key
-#  collection_id  :integer          not null
-#  feature_id     :integer          not null
-#  perspective_id :integer
 #  descendants    :boolean          default(TRUE), not null
 #  created_at     :datetime
 #  updated_at     :datetime
+#  collection_id  :integer          not null
+#  feature_id     :integer          not null
+#  perspective_id :integer
+#
+# Indexes
+#
+#  affiliations_on_dependencies  (collection_id,feature_id,perspective_id) UNIQUE
 #
 
 class Affiliation < ActiveRecord::Base

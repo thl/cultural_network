@@ -3,12 +3,12 @@
 # Table name: illustrations
 #
 #  id           :integer          not null, primary key
-#  feature_id   :integer          not null
-#  picture_id   :integer          not null
-#  picture_type :string(255)      not null
 #  is_primary   :boolean          default(TRUE), not null
+#  picture_type :string(255)      not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  feature_id   :integer          not null
+#  picture_id   :integer          not null
 #
 
 class Illustration < ActiveRecord::Base

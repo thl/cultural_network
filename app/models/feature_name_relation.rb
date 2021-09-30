@@ -3,18 +3,23 @@
 # Table name: feature_name_relations
 #
 #  id                     :integer          not null, primary key
-#  child_node_id          :integer          not null
-#  parent_node_id         :integer          not null
 #  ancestor_ids           :string(255)
-#  is_phonetic            :integer
-#  is_orthographic        :integer
-#  is_translation         :integer
 #  is_alt_spelling        :integer
-#  phonetic_system_id     :integer
-#  orthographic_system_id :integer
-#  alt_spelling_system_id :integer
+#  is_orthographic        :integer
+#  is_phonetic            :integer
+#  is_translation         :integer
 #  created_at             :datetime
 #  updated_at             :datetime
+#  alt_spelling_system_id :integer
+#  child_node_id          :integer          not null
+#  orthographic_system_id :integer
+#  parent_node_id         :integer          not null
+#  phonetic_system_id     :integer
+#
+# Indexes
+#
+#  feature_name_relations_child_node_id_idx   (child_node_id)
+#  feature_name_relations_parent_node_id_idx  (parent_node_id)
 #
 
 class FeatureNameRelation < ActiveRecord::Base

@@ -3,12 +3,16 @@
 # Table name: info_sources
 #
 #  id             :integer          not null, primary key
-#  code           :string(255)      not null
-#  title          :string(255)
 #  agent          :string(255)
+#  code           :string(255)      not null
 #  date_published :date
+#  title          :string(255)
 #  created_at     :datetime
 #  updated_at     :datetime
+#
+# Indexes
+#
+#  info_sources_code_key  (code) UNIQUE
 #
 
 class InfoSource < ActiveRecord::Base

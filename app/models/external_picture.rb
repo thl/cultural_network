@@ -3,8 +3,8 @@
 # Table name: external_pictures
 #
 #  id         :integer          not null, primary key
-#  url        :string(255)      not null
 #  caption    :text
+#  url        :string(255)      not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  place_id   :integer

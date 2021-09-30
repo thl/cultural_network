@@ -3,14 +3,14 @@
 # Table name: pages
 #
 #  id          :integer          not null, primary key
-#  citation_id :integer
-#  volume      :integer
-#  start_page  :integer
-#  start_line  :integer
-#  end_page    :integer
 #  end_line    :integer
+#  end_page    :integer
+#  start_line  :integer
+#  start_page  :integer
+#  volume      :integer
 #  created_at  :datetime
 #  updated_at  :datetime
+#  citation_id :integer          not null
 #
 
 class Page < ActiveRecord::Base

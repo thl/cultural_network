@@ -3,13 +3,18 @@
 # Table name: citations
 #
 #  id               :integer          not null, primary key
-#  info_source_id   :integer
-#  citable_type     :string(255)
-#  citable_id       :integer
+#  citable_type     :string           not null
+#  info_source_type :string(255)      not null
 #  notes            :text
 #  created_at       :datetime
 #  updated_at       :datetime
-#  info_source_type :string(255)      not null
+#  citable_id       :integer          not null
+#  info_source_id   :integer          not null
+#
+# Indexes
+#
+#  citations_1_idx               (citable_id,citable_type)
+#  citations_info_source_id_idx  (info_source_id)
 #
 
 class Citation < ActiveRecord::Base

@@ -3,13 +3,17 @@
 # Table name: perspectives
 #
 #  id          :integer          not null, primary key
-#  name        :string(255)
 #  code        :string(255)
 #  description :text
-#  notes       :text
 #  is_public   :boolean          default(FALSE)
+#  name        :string(255)
+#  notes       :text
 #  created_at  :datetime
 #  updated_at  :datetime
+#
+# Indexes
+#
+#  index_perspectives_on_code  (code)
 #
 
 class Perspective < ActiveRecord::Base

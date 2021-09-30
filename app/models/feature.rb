@@ -3,15 +3,21 @@
 # Table name: features
 #
 #  id                         :integer          not null, primary key
-#  is_public                  :integer
-#  position                   :integer          default(0)
 #  ancestor_ids               :string(255)
+#  fid                        :integer          not null
+#  is_blank                   :boolean          default(FALSE), not null
+#  is_name_position_overriden :boolean          default(FALSE), not null
+#  is_public                  :integer
+#  old_pid                    :string(255)
+#  position                   :integer          default(0)
 #  created_at                 :datetime
 #  updated_at                 :datetime
-#  old_pid                    :string(255)
-#  is_blank                   :boolean          default(FALSE), not null
-#  fid                        :integer          not null
-#  is_name_position_overriden :boolean          default(FALSE), not null
+#
+# Indexes
+#
+#  features_ancestor_ids_idx  (ancestor_ids)
+#  features_fid               (fid) UNIQUE
+#  features_is_public_idx     (is_public)
 #
 
 class Feature < ActiveRecord::Base

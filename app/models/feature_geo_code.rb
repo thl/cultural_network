@@ -3,13 +3,13 @@
 # Table name: feature_geo_codes
 #
 #  id               :integer          not null, primary key
-#  feature_id       :integer
-#  geo_code_type_id :integer
-#  timespan_id      :integer
-#  geo_code_value   :string(255)
+#  geo_code_value   :string           not null
 #  notes            :text
 #  created_at       :datetime
 #  updated_at       :datetime
+#  feature_id       :integer          not null
+#  geo_code_type_id :integer          not null
+#  timespan_id      :integer
 #
 
 class FeatureGeoCode < ActiveRecord::Base

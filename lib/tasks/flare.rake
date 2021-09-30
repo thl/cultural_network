@@ -9,7 +9,7 @@ namespace :kmaps_engine do
     
     desc "Deletes from index features not in db and indexes features in db not in index."
     task :cleanup => :environment do
-      KmapsEngine::FlareUtils.index_cleanup
+      KmapsEngine::FlareUtils.new("log/cleaning_#{Rails.env}.log", ENV['LOG_LEVEL']).index_cleanup
     end
     
     desc "Reindexes features updated after last full reindex."

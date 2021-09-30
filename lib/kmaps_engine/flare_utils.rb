@@ -66,9 +66,10 @@ module KmapsEngine
       self.log.debug "#{Time.now}: Reindexing done."
     end
     
-    def self.index_cleanup
+    def index_cleanup
       query = "tree:#{Feature.uid_prefix}"
       numFound = Feature.search_by(query)['numFound']
+      self.log.debug { "#{Time.now}: Starting cleanup." }
       puts 'Fetching uids from index.'
       resp = Feature.search_by(query, fl: 'uid', rows: numFound)['docs']
       features_indexed = resp.collect{|f| f['uid'].split('-').last.to_i}
@@ -76,11 +77,40 @@ module KmapsEngine
       features_in_db = Feature.all.where(is_public: 1).order(:fid).select(:fid).distinct.collect(&:fid)
       features_not_indexed = features_in_db - features_indexed
       features_indexed_not_in_db = features_indexed - features_in_db
-      puts "Indexing #{features_indexed_not_in_db.size} features not in index."
-      features_not_indexed.each { |fid| Feature.get_by_fid(fid).queued_index }
-      puts "Deleting #{features_not_indexed.size} docs not in db."
+      i = 0
+      total = features_not_indexed.size
+      puts "Indexing #{total} features not in index."
+      self.log.debug { "#{Time.now}: Features to index: #{features_not_indexed.join(', ')}." }
+      features_not_indexed.each do |fid|
+        begin
+          Feature.get_by_fid(fid).queued_index(priority: Flare::IndexerJob::LOW)
+          self.log.debug { "#{Time.now}: Reindexed #{fid}." }
+          self.progress_bar(num: i, total: total, current: fid)
+        rescue Exception => e
+          self.log.fatal { "#{Time.now}: An error occured when processing #{fid}:" }
+          self.say "#{Time.now}: #{fid} failed."
+          self.log.fatal { e.message }
+          self.log.fatal { e.backtrace.join("\n") }
+        end
+        i += 1
+      end
+      puts "Deleting #{features_indexed_not_in_db.size} docs not in db."
+      self.log.debug { "#{Time.now}: Features to delete: #{features_indexed_not_in_db.join(', ')}." }
       slices = features_indexed_not_in_db.each_slice(10).to_a
-      slices.each{ |s| Feature.remove(s)}
+      i = 0
+      total = slices.size
+      slices.each do |s|
+        begin
+          Feature.remove(s)
+          self.progress_bar(num: i, total: total, current: s.first)
+        rescue Exception => e
+          self.log.fatal { "#{Time.now}: An error occured when processing #{s}:" }
+          self.say "#{Time.now}: #{s} failed."
+          self.log.fatal { e.message }
+          self.log.fatal { e.backtrace.join("\n") }
+        end
+        i += 1
+      end
       Feature.commit
     end
     

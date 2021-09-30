@@ -3,15 +3,23 @@
 # Table name: feature_relations
 #
 #  id                       :integer          not null, primary key
-#  child_node_id            :integer          not null
-#  parent_node_id           :integer          not null
 #  ancestor_ids             :string(255)
 #  notes                    :text
 #  role                     :string(20)
-#  perspective_id           :integer          not null
 #  created_at               :datetime
 #  updated_at               :datetime
+#  child_node_id            :integer          not null
 #  feature_relation_type_id :integer          not null
+#  parent_node_id           :integer          not null
+#  perspective_id           :integer          not null
+#
+# Indexes
+#
+#  feature_relations_ancestor_ids_idx    (ancestor_ids)
+#  feature_relations_child_node_id_idx   (child_node_id)
+#  feature_relations_parent_node_id_idx  (parent_node_id)
+#  feature_relations_perspective_id_idx  (perspective_id)
+#  feature_relations_role_idx            (role)
 #
 
 class FeatureRelation < ActiveRecord::Base

@@ -3,15 +3,21 @@
 # Table name: timespans
 #
 #  id              :integer          not null, primary key
-#  start_date      :date
+#  dateable_type   :string           not null
 #  end_date        :date
-#  start_date_fuzz :integer
 #  end_date_fuzz   :integer
 #  is_current      :integer
-#  dateable_id     :integer
-#  dateable_type   :string(255)
+#  start_date      :date
+#  start_date_fuzz :integer
 #  created_at      :datetime
 #  updated_at      :datetime
+#  dateable_id     :integer          not null
+#
+# Indexes
+#
+#  timespans_1_idx           (dateable_id,dateable_type)
+#  timespans_end_date_idx    (end_date)
+#  timespans_start_date_idx  (start_date)
 #
 
 class Timespan < ActiveRecord::Base
