@@ -2,8 +2,8 @@
 #
 # Table name: importation_tasks
 #
-#  id         :integer          not null, primary key
-#  task_code  :string(255)      not null
+#  id         :bigint           not null, primary key
+#  task_code  :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

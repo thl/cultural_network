@@ -31,7 +31,7 @@ const POPUP_TYPE_INFO = 1;
       featuresPath: "/features/%%ID%%",
       domain: "places",
       featureId: "",
-      mandalaURL: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
+      mandalaURL: "https://mandala.library.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
       solrUtils: {}, //requires solr-utils.js library
       type: POPUP_TYPE_ASSET, // {asset, info}
       infoUrl: "",

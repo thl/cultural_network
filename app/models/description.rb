@@ -2,11 +2,11 @@
 #
 # Table name: descriptions
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  content     :text             not null
 #  is_primary  :boolean          default(FALSE), not null
-#  source_url  :string(255)
-#  title       :string(255)
+#  source_url  :string
+#  title       :string
 #  created_at  :datetime
 #  updated_at  :datetime
 #  feature_id  :integer          not null

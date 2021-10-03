@@ -2,11 +2,12 @@
 #
 # Table name: info_sources
 #
-#  id             :integer          not null, primary key
-#  agent          :string(255)
-#  code           :string(255)      not null
+#  id             :bigint           not null, primary key
+#  agent          :string
+#  code           :string           not null
 #  date_published :date
-#  title          :string(255)
+#  processed      :boolean          default(FALSE), not null
+#  title          :string
 #  created_at     :datetime
 #  updated_at     :datetime
 #

@@ -1,6 +1,5 @@
 class Importation
-  attr_accessor :spreadsheet
-  attr_accessor :fields
+  attr_accessor :spreadsheet, :fields
   
   def self.to_date(str)
     response = Hash.new

@@ -2,11 +2,11 @@
 #
 # Table name: feature_names
 #
-#  id                          :integer          not null, primary key
-#  ancestor_ids                :string(255)
+#  id                          :bigint           not null, primary key
+#  ancestor_ids                :string
 #  etymology                   :text
 #  is_primary_for_romanization :boolean          default(FALSE)
-#  name                        :string(255)      not null
+#  name                        :string           not null
 #  position                    :integer          default(0)
 #  created_at                  :datetime
 #  updated_at                  :datetime
@@ -65,7 +65,6 @@ class FeatureName < ActiveRecord::Base
   include KmapsEngine::IsCitable
   extend IsDateable
   include KmapsEngine::IsNotable
-  include KmapsEngine::HasPassages
   
   #
   # Associations

@@ -2,8 +2,8 @@
 #
 # Table name: feature_name_relations
 #
-#  id                     :integer          not null, primary key
-#  ancestor_ids           :string(255)
+#  id                     :bigint           not null, primary key
+#  ancestor_ids           :string
 #  is_alt_spelling        :integer
 #  is_orthographic        :integer
 #  is_phonetic            :integer

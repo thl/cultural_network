@@ -2,7 +2,7 @@
 #
 # Table name: xml_documents
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  document   :text             not null
 #  created_at :datetime
 #  updated_at :datetime

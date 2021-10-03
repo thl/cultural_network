@@ -2,9 +2,9 @@
 #
 # Table name: external_pictures
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  caption    :text
-#  url        :string(255)      not null
+#  url        :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  place_id   :integer

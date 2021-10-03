@@ -2,15 +2,16 @@
 #
 # Table name: feature_relation_types
 #
-#  id               :integer          not null, primary key
-#  asymmetric_code  :string(255)
-#  asymmetric_label :string(255)
-#  code             :string(255)      not null
+#  id               :bigint           not null, primary key
+#  asymmetric_code  :string
+#  asymmetric_label :string
+#  code             :string           not null
 #  is_hierarchical  :boolean          default(FALSE), not null
 #  is_symmetric     :boolean
-#  label            :string(255)      not null
+#  label            :string           not null
 #  created_at       :datetime
 #  updated_at       :datetime
+#  branch_id        :integer
 #
 
 class FeatureRelationType < ActiveRecord::Base

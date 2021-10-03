@@ -2,7 +2,7 @@
 #
 # Table name: cached_feature_names
 #
-#  id              :integer          not null, primary key
+#  id              :bigint           not null, primary key
 #  created_at      :datetime
 #  updated_at      :datetime
 #  feature_id      :integer          not null

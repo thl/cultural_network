@@ -2,9 +2,9 @@
 #
 # Table name: citations
 #
-#  id               :integer          not null, primary key
+#  id               :bigint           not null, primary key
 #  citable_type     :string           not null
-#  info_source_type :string(255)      not null
+#  info_source_type :string           not null
 #  notes            :text
 #  created_at       :datetime
 #  updated_at       :datetime

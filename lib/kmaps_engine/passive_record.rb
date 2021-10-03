@@ -25,6 +25,14 @@ module KmapsEngine
         i = @list.find_index{ |e| e.id == id }
         return i.nil? ? nil : @list[i]
       end
+      
+      def where(conditions_hash)
+        @list.select do |e|
+          condition = true
+          conditions_hash.each_pair{|key, value| condition &&= e.send(key)==value }
+          condition
+        end
+      end
   
       def all
         @list

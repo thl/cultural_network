@@ -2,8 +2,8 @@
 #
 # Table name: imported_spreadsheets
 #
-#  id          :integer          not null, primary key
-#  filename    :string(255)      not null
+#  id          :bigint           not null, primary key
+#  filename    :string           not null
 #  imported_at :datetime         not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null

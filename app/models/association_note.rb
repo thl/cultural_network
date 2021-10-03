@@ -2,10 +2,10 @@
 #
 # Table name: notes
 #
-#  id                :integer          not null, primary key
-#  association_type  :string(255)
+#  id                :bigint           not null, primary key
+#  association_type  :string
 #  content           :text             not null
-#  custom_note_title :string(255)
+#  custom_note_title :string
 #  is_public         :boolean          default(TRUE)
 #  notable_type      :string           not null
 #  created_at        :datetime

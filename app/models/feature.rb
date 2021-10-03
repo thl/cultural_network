@@ -2,13 +2,13 @@
 #
 # Table name: features
 #
-#  id                         :integer          not null, primary key
-#  ancestor_ids               :string(255)
+#  id                         :bigint           not null, primary key
+#  ancestor_ids               :string
 #  fid                        :integer          not null
 #  is_blank                   :boolean          default(FALSE), not null
 #  is_name_position_overriden :boolean          default(FALSE), not null
 #  is_public                  :integer
-#  old_pid                    :string(255)
+#  old_pid                    :string
 #  position                   :integer          default(0)
 #  created_at                 :datetime
 #  updated_at                 :datetime

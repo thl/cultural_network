@@ -2,7 +2,7 @@
 #
 # Table name: affiliations
 #
-#  id             :integer          not null, primary key
+#  id             :bigint           not null, primary key
 #  descendants    :boolean          default(TRUE), not null
 #  created_at     :datetime
 #  updated_at     :datetime

@@ -2,12 +2,12 @@
 #
 # Table name: simple_props
 #
-#  id          :integer          not null, primary key
-#  code        :string(255)
+#  id          :bigint           not null, primary key
+#  code        :string
 #  description :text
-#  name        :string(255)
+#  name        :string
 #  notes       :text
-#  type        :string(255)
+#  type        :string
 #  created_at  :datetime
 #  updated_at  :datetime
 #

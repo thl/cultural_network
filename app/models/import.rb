@@ -2,8 +2,8 @@
 #
 # Table name: imports
 #
-#  id             :integer          not null, primary key
-#  item_type      :string(255)      not null
+#  id             :bigint           not null, primary key
+#  item_type      :string           not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  item_id        :integer          not null

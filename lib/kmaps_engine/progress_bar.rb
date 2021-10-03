@@ -9,12 +9,7 @@ module KmapsEngine
     FID_LENGTH = 7
     
     included do
-      attr_accessor :feature
-      attr_accessor :log
-      attr_accessor :bar
-      attr_accessor :num_errors
-      attr_accessor :valid_point
-      attr_accessor :output
+      attr_accessor :feature, :log, :bar, :num_errors, :valid_point, :output
     end
 
     def initialize(log = nil, log_level = nil)

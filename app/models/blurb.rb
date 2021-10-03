@@ -2,10 +2,10 @@
 #
 # Table name: blurbs
 #
-#  id         :integer          not null, primary key
-#  code       :string(255)
+#  id         :bigint           not null, primary key
+#  code       :string
 #  content    :text
-#  title      :string(255)
+#  title      :string
 #  created_at :datetime
 #  updated_at :datetime
 #

@@ -2,7 +2,7 @@
 #
 # Table name: feature_geo_codes
 #
-#  id               :integer          not null, primary key
+#  id               :bigint           not null, primary key
 #  geo_code_value   :string           not null
 #  notes            :text
 #  created_at       :datetime

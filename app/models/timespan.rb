@@ -2,7 +2,7 @@
 #
 # Table name: timespans
 #
-#  id              :integer          not null, primary key
+#  id              :bigint           not null, primary key
 #  dateable_type   :string           not null
 #  end_date        :date
 #  end_date_fuzz   :integer

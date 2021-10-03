@@ -2,9 +2,9 @@
 #
 # Table name: web_pages
 #
-#  id          :integer          not null, primary key
-#  path        :string(255)      not null
-#  title       :string(255)      not null
+#  id          :bigint           not null, primary key
+#  path        :string           not null
+#  title       :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  citation_id :integer          not null

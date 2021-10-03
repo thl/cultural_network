@@ -2,9 +2,9 @@
 #
 # Table name: illustrations
 #
-#  id           :integer          not null, primary key
+#  id           :bigint           not null, primary key
 #  is_primary   :boolean          default(TRUE), not null
-#  picture_type :string(255)      not null
+#  picture_type :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  feature_id   :integer          not null

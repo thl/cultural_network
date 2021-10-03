@@ -2,8 +2,8 @@
 #
 # Table name: note_titles
 #
-#  id         :integer          not null, primary key
-#  title      :string(255)
+#  id         :bigint           not null, primary key
+#  title      :string
 #  created_at :datetime
 #  updated_at :datetime
 #

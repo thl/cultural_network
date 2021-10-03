@@ -2,8 +2,8 @@
 #
 # Table name: feature_relations
 #
-#  id                       :integer          not null, primary key
-#  ancestor_ids             :string(255)
+#  id                       :bigint           not null, primary key
+#  ancestor_ids             :string
 #  notes                    :text
 #  role                     :string(20)
 #  created_at               :datetime

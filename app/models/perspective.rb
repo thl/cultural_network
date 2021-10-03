@@ -2,11 +2,11 @@
 #
 # Table name: perspectives
 #
-#  id          :integer          not null, primary key
-#  code        :string(255)
+#  id          :bigint           not null, primary key
+#  code        :string
 #  description :text
 #  is_public   :boolean          default(FALSE)
-#  name        :string(255)
+#  name        :string
 #  notes       :text
 #  created_at  :datetime
 #  updated_at  :datetime
