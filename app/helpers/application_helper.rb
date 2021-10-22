@@ -411,10 +411,10 @@ module ApplicationHelper
   def join_with_and(list)
     size = list.size
     case size
-    when 0 then nil
+    when 0 then ''
     when 1 then list.first
     when 2 then list.join(' and ')
-    when 3 then [list[0..size-2].join(', '), list[size-1]].join(', and ')
+    else [list[0..size-2].join(', '), list[size-1]].join(', and ')
     end.s
   end
 
