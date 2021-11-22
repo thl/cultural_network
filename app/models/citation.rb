@@ -85,6 +85,13 @@ class Citation < ActiveRecord::Base
     return source_str
   end
   
+  def rsolr_document_tags_for_notes(document, prefix)
+    if !self.notes.blank?
+      document["#{prefix}_citation_#{self.id}_note_t"] = self.notes
+      document["#{prefix}_citation_#{self.id}_reference_s"] = self.bibliographic_reference
+    end
+  end
+  
   def feature
     self.citable.feature
   end

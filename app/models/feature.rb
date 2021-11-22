@@ -587,8 +587,10 @@ class Feature < ActiveRecord::Base
         doc["caption_#{c.language.code}"] << c.content
       end
       doc["caption_#{c.language.code}_#{c.id}_content_t"] = c.content
-      citation_references = c.citations.collect { |ci| ci.bibliographic_reference }
+      citations = c.citations
+      citation_references = citations.collect { |ci| ci.bibliographic_reference }
       doc["caption_#{c.language.code}_#{c.id}_citation_references_ss"] = citation_references if !citation_references.blank?
+      citations.each{ |ci| ci.rsolr_document_tags_for_notes(doc, "caption_#{c.language.code}_#{c.id}") }
     end
     mandala_text_mapping = Language.mandala_text_mappings.invert
     self.essays.each do |e|
@@ -601,8 +603,10 @@ class Feature < ActiveRecord::Base
         doc["summary_#{s.language.code}"] << s.content
       end
       doc["summary_#{s.language.code}_#{s.id}_content_t"] = s.content
-      citation_references = s.citations.collect { |c| c.bibliographic_reference }
+      citations = s.citations
+      citation_references = citations.collect { |c| c.bibliographic_reference }
       doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = citation_references if !citation_references.blank?
+      citations.each{ |ci| ci.rsolr_document_tags_for_notes(doc, "summary_#{s.language.code}_#{s.id}") }
     end
     # just adding main illustration
     i = self.illustration
@@ -678,8 +682,10 @@ class Feature < ActiveRecord::Base
     geo_codes = self.geo_codes
     geo_codes.each do |c|
       doc["code_#{c.geo_code_type.code}_value_s"] = c.geo_code_value
-      citation_references = c.citations.collect { |c| c.bibliographic_reference }
+      citations = c.citations
+      citation_references = citations.collect { |c| c.bibliographic_reference }
       doc["code_#{c.geo_code_type.code}_citation_references_ss"] = citation_references if !citation_references.blank?
+      citations.each{ |ci| ci.rsolr_document_tags_for_notes(doc, "code_#{c.geo_code_type.code}") }
       time_units = c.time_units_ordered_by_date.collect { |t| t.to_s }
       doc["code_#{c.geo_code_type.code}_time_units_ss"] = time_units if !time_units.blank?
       c.notes.each { |n| n.rsolr_document_tags(doc, "code_#{c.geo_code_type.code}") }
@@ -704,14 +710,19 @@ class Feature < ActiveRecord::Base
         "#{prefix}_relationship_s" => name.pp_display_string,
         block_type: ['child']
       }
-      citation_references = name.citations.collect { |c| c.bibliographic_reference }
+      citations = name.citations
+      citation_references = citations.collect { |c| c.bibliographic_reference }
       child_document["#{prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
+      citations.each{ |ci| ci.rsolr_document_tags_for_notes(child_document, prefix) }
       time_units = name.time_units_ordered_by_date.collect { |t| t.to_s }
       child_document["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
       name.notes.each { |n| n.rsolr_document_tags(child_document, prefix) }
       name.parent_relations.each do |r|
-        citation_references = r.nil? ? nil : r.citations.collect { |c| c.bibliographic_reference }
+        next if r.nil?
+        citations = r.citations
+        citation_references = citations.collect { |c| c.bibliographic_reference }
         child_document["#{prefix}_relationship_#{r.id}_citation_references_ss"] = citation_references if !citation_references.blank?
+        citations.each{ |ci| ci.rsolr_document_tags_for_notes(child_document, "#{prefix}_relationship_#{r.id}") }
         r.notes.each { |n| n.rsolr_document_tags(child_document, "#{prefix}_relationship_#{r.id}") }
       end
       etymology = name.etymology
@@ -750,8 +761,10 @@ class Feature < ActiveRecord::Base
           related_kmaps_node_type: 'parent',
           block_type: ['child']
         }
-        p_rel_citation_references = pr.citations.collect { |c| c.bibliographic_reference }
+        citations = pr.citations
+        p_rel_citation_references = citations.collect { |c| c.bibliographic_reference }
         relation_tag["#{prefix}_relation_citation_references_ss"] = p_rel_citation_references if !p_rel_citation_references.blank?
+        citations.each{ |ci| ci.rsolr_document_tags_for_notes(relation_tag, "#{prefix}_relation") }
         time_units = pr.time_units_ordered_by_date.collect { |t| t.to_s }
         relation_tag["#{prefix}_relation_time_units_ss"] = time_units if !time_units.blank?
         pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
@@ -772,8 +785,10 @@ class Feature < ActiveRecord::Base
           related_kmaps_node_type: 'child',
           block_type: ['child']
         }
-        p_rel_citation_references = pr.citations.collect { |c| c.bibliographic_reference }
+        citations = pr.citations
+        p_rel_citation_references = citations.collect { |c| c.bibliographic_reference }
         relation_tag["#{prefix}_relation_citation_references_ss"] = p_rel_citation_references if !p_rel_citation_references.blank?
+        citations.each{ |ci| ci.rsolr_document_tags_for_notes(relation_tag, "#{prefix}_relation") }
         time_units = pr.time_units_ordered_by_date.collect { |t| t.to_s }
         relation_tag["#{prefix}_relation_time_units_ss"] = time_units if !time_units.blank?
         pr.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
