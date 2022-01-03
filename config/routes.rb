@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'solr/show'
   concern :notable_citable do
     resources :notes, :citations
   end
@@ -123,6 +124,7 @@ Rails.application.routes.draw do
   resources :feature_names, concerns: :notable_citable, only: [:index, :show]
   resources :feature_name_relations, concerns: :notable_citable
   resources :feature_relations, concerns: :notable_citable
+  resources :solr, only: :show
   resources :time_units, concerns: :notable_citable
   root to: 'features#index'
 end

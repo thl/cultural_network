@@ -567,8 +567,6 @@ class Feature < ActiveRecord::Base
     self
   end
   
-  private
-  
   def document_for_rsolr
     doc = defined?(super) ? super : nested_documents_for_rsolr
     v = View.get_by_code(KmapsEngine::ApplicationSettings.default_view_code)
@@ -737,6 +735,8 @@ class Feature < ActiveRecord::Base
     doc['_childDocuments_'] = child_documents
     doc
   end
+  
+  private
   
   def nested_documents_for_rsolr
     per = Perspective.get_by_code(KmapsEngine::ApplicationSettings.default_perspective_code)
