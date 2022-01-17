@@ -4,12 +4,17 @@ module KmapsEngine
   class FlareUtils
     include KmapsEngine::ProgressBar
     
-    def reindex_all(from:, to:, daylight:)
-      from_i = from.blank? ? nil : from.to_i
-      to_i = to.blank? ? nil : to.to_i
-      features = Feature.where(is_public: true).order(:fid)
-      features = features.where(['fid >= ?', from_i]) if !from_i.nil?
-      features = features.where(['fid <= ?', to_i]) if !to_i.nil?
+    def reindex_all(from:, to:, daylight:, fids:)
+      if !fids.blank?
+        fids_i = fids.split(',').collect{ |e| e.strip.to_i }.reject{ |e| e.nil? || e==0 }
+        features = fids_i.collect{ |fid| Feature.get_by_fid(fid) }
+      else
+        from_i = from.blank? ? nil : from.to_i
+        to_i = to.blank? ? nil : to.to_i
+        features = Feature.where(is_public: true).order(:fid)
+        features = features.where(['fid >= ?', from_i]) if !from_i.nil?
+        features = features.where(['fid <= ?', to_i]) if !to_i.nil?
+      end
       i = 0
       self.log.debug { "#{Time.now}: Starting reindexing." }
       total = features.size
@@ -17,15 +22,14 @@ module KmapsEngine
       self.wait_if_business_hours(daylight)
       features.each do |f|
         begin
-          if f.queued_index(priority: Flare::IndexerJob::LOW)
+          result = block_given? ? yield(f) : f.queued_index(priority: Flare::IndexerJob::LOW)
+          if result
             self.log.debug { "#{Time.now}: Reindexed #{f.pid}." }
           else
             self.say "#{Time.now}: #{f.pid} failed."
           end
           self.progress_bar(num: i, total: total, current: f.pid)
         rescue Exception => e
-          STDOUT.flush
-          self.log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
           self.say "#{Time.now}: #{f.pid} failed."
           self.log.fatal { e.message }
           self.log.fatal { e.backtrace.join("\n") }

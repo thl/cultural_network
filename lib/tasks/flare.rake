@@ -2,9 +2,9 @@ require 'kmaps_engine/flare_utils'
 
 namespace :kmaps_engine do
   namespace :flare do
-    desc "Reindex all features in solr. rake kmaps_engine:flare:reindex_all [FROM=fid] [TO=fid] [DAYLIGHT=daylight] [LOG_LEVEL=0..5]"
+    desc "Reindex all features in solr. rake kmaps_engine:flare:reindex_all [FROM=fid] [TO=fid] [FIDS=fid1,fid2,...] [DAYLIGHT=daylight] [LOG_LEVEL=0..5]"
     task :reindex_all => :environment do
-      KmapsEngine::FlareUtils.new("log/reindexing_#{Rails.env}.log", ENV['LOG_LEVEL']).reindex_all(from: ENV['FROM'], to: ENV['TO'], daylight: ENV['DAYLIGHT'])
+      KmapsEngine::FlareUtils.new("log/reindexing_#{Rails.env}.log", ENV['LOG_LEVEL']).reindex_all(from: ENV['FROM'], to: ENV['TO'], fids: ENV['FIDS'], daylight: ENV['DAYLIGHT'])
     end
     
     desc "Deletes from index features not in db and indexes features in db not in index."
