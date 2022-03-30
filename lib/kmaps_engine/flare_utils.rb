@@ -120,7 +120,7 @@ module KmapsEngine
     
     def self.reindex_stale_since_all(additional_classes = [])
       d = DateTime.parse(Feature.oldest_document['_timestamp_'])
-      classes = [Affiliation, CachedFeatureName, Caption, Citation, Description, Essay, Feature, FeatureGeoCode, FeatureNameRelation, FeatureName, FeatureRelation, Illustration, Note, Page, Passage, Summary, TimeUnit, WebPage] + additional_classes
+      classes = [Affiliation, CachedFeatureName, Caption, Citation, Description, Essay, Feature, FeatureGeoCode, FeatureNameRelation, FeatureName, FeatureRelation, Illustration, Note, Page, Summary, TimeUnit, WebPage] + additional_classes
       puts 'Fetching index timestamps.'
       query = "tree:#{Feature.uid_prefix}"
       numFound = Feature.search_by(query)['numFound']
@@ -135,7 +135,7 @@ module KmapsEngine
         rescue ActiveRecord::AssociationNotFoundError => e
           a = klass.where(['updated_at > ?', d])
         end
-        puts "Reindexing #{Feature.model_name.human(count: :many)} for #{a.count} #{klass.model_name.human(count: :many)}."
+        puts "Analyzing #{Feature.model_name.human(count: :many)} for #{a.count} #{klass.model_name.human(count: :many)}."
         a.each do |e|
           f = e.feature
           if timestamps[f.fid].nil? || timestamps[f.fid].instance_of?(String)
