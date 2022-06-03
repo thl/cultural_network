@@ -26,20 +26,61 @@ class Illustration < ActiveRecord::Base
   validate :presence_of_external_picture
   
   def presence_of_external_picture
-    if !self.picture_type.blank? && self.picture_type.start_with?('MmsIntegration')
-      picture = self.picture_type.constantize.find(self.picture_id)
-      errors.add(:base, 'MMS record could not be found!') if picture.nil?
+    picture = self.picture
+    picture_type = self.picture_type
+    if picture_type.start_with?('MmsIntegration') || picture_type.start_with?('ShantiIntegration')
+      errors.add(:base, 'Record could not be found!') if picture.nil?
     end
-    self.picture.errors.to_a.each { |e| self.errors.add(:base, e) } if !self.picture.valid?
+    picture.errors.to_a.each { |e| self.errors.add(:base, e) } if !picture.nil? && !picture.valid?
   end
   
   alias :_picture picture
   def picture
-    self.picture_type == 'MmsIntegration::Picture' ? MmsIntegration::Picture.find(picture_id) : _picture
+    case self.picture_type
+    when 'MmsIntegration::Picture'
+      MmsIntegration::Picture.find(picture_id)
+    when 'ShantiIntegration::Image'
+      ShantiIntegration::Image.find(picture_id)
+    else
+      _picture
+    end
+  end
+  
+  def thumb_url
+    case self.picture_type
+    when 'ShantiIntegration::Image'
+      picture.url_thumb
+    when 'MmsIntegration::Picture'
+      picture.image.url
+    else
+      picture.url
+    end
+  end
+  
+  def picture_url
+    case self.picture_type
+    when 'ShantiIntegration::Image'
+      picture.url_html
+    when 'MmsIntegration::Picture'
+      picture.get_url(nil, :format => '')
+    else
+      picture.url
+    end
+  end
+  
+  def picture_uid
+    case self.picture_type
+    when 'ShantiIntegration::Image'
+      return picture.uid
+    when 'MmsIntegration::Picture'
+      p = MmsIntegration::Picture.flare_search(i.picture_id)
+      return p['uid'] if !p.nil?
+    end
+    return ''
   end
   
   def to_s
-    self.picture.instance_of?(MmsIntegration::Picture) ? self.picture.get_url(nil, :format => '') : self.picture.url
+    self.picture_url
   end
   
   def ensure_one_primary

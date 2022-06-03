@@ -35,7 +35,7 @@ class Feature < ActiveRecord::Base
   # acts_as_solr fields: [:pid]
   
   acts_as_family_tree :node, -> { where(feature_relation_type_id: FeatureRelationType.hierarchy_ids) }, tree_class: 'FeatureRelation'
-  acts_as_indexable { |f| ShantiIntegration::Indexer.trigger("uid:#{f.uid}") }
+  acts_as_indexable #{ |f| ShantiIntegration::Indexer.trigger("uid:#{f.uid}") }
   
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
   has_many :affiliations, dependent: :destroy
@@ -50,11 +50,16 @@ class Feature < ActiveRecord::Base
   has_many :essays, dependent: :destroy
   has_many :geo_codes, class_name: 'FeatureGeoCode', dependent: :destroy # naming inconsistency here (see feature_object_types association) ?
   has_many :geo_code_types, through: :geo_codes
-  has_many :illustrations, dependent: :destroy
   has_one  :illustration, -> { where(is_primary: true) }
   has_many :imports, as: 'item', dependent: :destroy
   has_many :summaries, dependent: :destroy
   has_one  :xml_document, class_name: 'XmlDocument', dependent: :destroy
+  
+  has_many :illustrations, dependent: :destroy do
+    def primary_first
+      order('is_primary DESC')
+    end
+  end
   
   # This fetches root *FeatureNames* (names that don't have parents),
   # within the scope of the current feature
@@ -606,11 +611,10 @@ class Feature < ActiveRecord::Base
       doc["summary_#{s.language.code}_#{s.id}_citation_references_ss"] = citation_references if !citation_references.blank?
       citations.each{ |ci| ci.rsolr_document_tags_for_notes(doc, "summary_#{s.language.code}_#{s.id}") }
     end
-    # just adding main illustration
-    i = self.illustration
-    if !i.nil?
-      p = i.picture
-      doc["illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url"] = p.url
+    ils = self.illustrations.primary_first
+    if !ils.blank?
+      doc[:illustrations_images_thumb_ss] = ils.collect(&:thumb_url)
+      doc[:illustrations_images_uid_ss] = ils.collect(&:picture_uid)
     end
     doc[:created_at] = self.created_at.utc.iso8601
     doc[:updated_at] = self.updated_at.utc.iso8601

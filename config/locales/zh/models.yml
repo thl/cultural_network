@@ -42,6 +42,9 @@ zh:
             feature_name_type:
                 one: '名称类型'
                 other: '名称类型'
+            illustration:
+                one: 'illustration'
+                other: 'illustrations'
             language:
                 one: '语言'
                 other: '语言'
@@ -111,6 +114,8 @@ zh:
                 is_orthographic: '正字?'
                 is_phonetic: '音译?'
                 is_translation: '翻译?'
+            illustration:
+                picture_id: 'Image ID'
             feature_relation_type:
                 asymmetric_code: '非对称代码'
                 asymmetric_label: '非对称标签'

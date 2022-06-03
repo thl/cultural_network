@@ -11,7 +11,7 @@ namespace :db do
       end
     end
     desc "Dump entire db."
-    task :write => :environment do 
+    task write: :environment do
       dir = Rails.root.join('db', 'backup')
       FileUtils.mkdir_p(dir)
       FileUtils.chdir(dir)
@@ -25,7 +25,7 @@ namespace :db do
         end
       end
     end
-    task :read => [:environment, 'db:schema:load'] do
+    task read: [:environment, 'db:schema:load'] do
       dir = Rails.root.join('db', 'backup')
       FileUtils.mkdir_p(dir)
       FileUtils.chdir(dir)
@@ -40,7 +40,7 @@ namespace :db do
       end
     end
     desc "Set postgresql sequence currval to highest id for each table"
-    task :set_sequences => :environment do
+    task set_sequences: :environment do
       if ActiveRecord::Base.connection.adapter_name.downcase == "postgresql"
         interesting_tables.each do |tbl|
           puts "Setting sequence's currval to highest id for #{tbl}"

@@ -35,12 +35,16 @@
       <div class="resource-overview-image">
 <%    html_options = { class: 'img-responsive img-thumbnail' }
       html_options[:alt] = caption_plain if !caption_plain.nil?
-      rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width
+			if picture.instance_of? ShantiIntegration::Image
+				rendered_width = 200
+			else
+	      rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width
+			end
       html_options[:width] = rendered_width
-      if picture.instance_of?(MmsIntegration::Picture) %>
-<%=     link_to image_tag(picture.url, html_options), MmsIntegration::Medium.element_url(picture.id, format: '') %>
-<%    else %>
+      if picture.instance_of?(ExternalPicture) %>
 <%=     link_to image_tag(picture.url, html_options), picture.url %>
+<%    else %>
+<%=     link_to image_tag(illustration.thumb_url, html_options), illustration.picture_url %>
 <%    end
       if !caption_plain.nil? %>
         <p class = "view-on-map"><%= caption_plain %></p>

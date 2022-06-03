@@ -10,8 +10,8 @@ class Admin::IllustrationsController < AclController
   end
   
   create.before do
-    if params[:picture_type]=="MmsIntegration::Picture"
-      object.picture_type = 'MmsIntegration::Picture'
+    if params[:picture_type]=='MmsIntegration::Picture' || params[:picture_type]=='ShantiIntegration::Image'
+      object.picture_type = params[:picture_type]
     else
       object.picture = ExternalPicture.create(external_picture_params)
     end

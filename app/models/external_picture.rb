@@ -26,4 +26,29 @@ class ExternalPicture < ActiveRecord::Base
   def height
     nil
   end
+  
+  def shanti_image?
+    @array ||= url.split('/')
+    i = @array.find_index{|e| e.starts_with? 'cicada'}
+    !i.nil?
+  end
+  
+  def shanti_image
+    return nil if !self.shanti_image?
+    i = @array.find_index{|e| e.starts_with? 'shanti-image'}
+    e = @array[i]
+    id = e.split('-').last.to_i
+    id==0 ? nil : ExternalPicture.from_shanti_image(id)
+  end
+  
+  def self.from_shanti_image(id)
+    uri = URI("https://images.mandala.library.virginia.edu/api/imginfo/siid/#{id}")
+    response = Net::HTTP.get(uri)
+    json = JSON.parse(response)
+    nid_str = json['nid']
+    return nil if nid_str.nil?
+    nid = nid_str.to_i
+    shanti_image = ShantiIntegration::Image.find(nid)
+    shanti_image.nil? ? nid : shanti_image
+  end
 end

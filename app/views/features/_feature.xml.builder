@@ -60,16 +60,11 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   end
   xml.illustrations(:type => 'array') do
     feature.illustrations.each do |illustration|
-      picture = illustration.picture
-      options = {:id => picture.id}
-      if picture.instance_of?(MmsIntegration::Picture)
-        options[:url] = MmsIntegration::Medium.element_url(picture.id, :format => params['format'])
-        options[:type] = 'mms'
-      else
+      options = { id: illustration.picture_id, type: illustration.picture_type, url: illustration.picture_url }
+      if illustration.picture_type=='ExternalPicture'
+        picture = illustration.picture
         options[:width] = picture.width
         options[:height] = picture.height
-        options[:url] = picture.url
-        options[:type] = 'external'
       end
       xml.picture(options)
     end

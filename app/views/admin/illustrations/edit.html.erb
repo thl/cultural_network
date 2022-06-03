@@ -28,6 +28,11 @@
 <%=       f.label :picture_id, MmsIntegration::Picture.human_name.titleize.s %>
 <%=       f.text_field :picture_id, class: [:text, 'text-full form-control form-text'] %>
         </div>
+<%    elsif object.picture.instance_of?(ShantiIntegration::Image) %>
+        <div class="row">
+<%=       f.label :picture_id, ShantiIntegration::Image.model_name.human.s %>
+<%=       f.text_field :picture_id, class: [:text, 'text-full form-control form-text'] %>
+        </div>
 <%    else %>
 <%=     f.fields_for :picture, object.picture do |picture_fields| %>
           <div class="row">
@@ -42,7 +47,6 @@
 <%=         picture_fields.label :place_id, ExternalPicture.human_attribute_name(:place_id).s %>
 <%=         picture_fields.text_field :place_id, class: [:text, 'text-full form-control form-text'] %>
         </div>
-
 <%      end
       end %>
     <div class="row">

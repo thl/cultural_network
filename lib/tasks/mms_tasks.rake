@@ -13,5 +13,17 @@ namespace :kmaps_engine do
         puts 'User and password needed! Use MMS_USER= to set user from command-line.'
       end
     end
+    
+    desc "Convert mms illustrations to mandala images."
+    task convert_mms_illustrations_to_mandala: :environment do |t|
+      require_relative '../kmaps_engine/illustration_processing.rb'
+      KmapsEngine::IllustrationProcessing.do_convert_mms_to_mandala
+    end
+    
+    desc "Convert external illustrations to mandala images."
+    task convert_external_illustrations_to_mandala: :environment do |t|
+      require_relative '../kmaps_engine/illustration_processing.rb'
+      KmapsEngine::IllustrationProcessing.do_convert_external_to_mandala
+    end
   end
 end

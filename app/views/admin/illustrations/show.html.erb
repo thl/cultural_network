@@ -13,25 +13,30 @@
     <span><%= def_if_blank(object, :feature, :name) %></span>
   </div>
   <div class="row">
-<%= image_tag(object.picture.url) %>
+<%= image_tag(object.thumb_url) %>
   </div>
-<% if object.picture.instance_of?(MmsIntegration::Picture) %>
+<% if object.picture.instance_of?(ShantiIntegration::Image) %>
+     <div class="row">
+       <label><%= ShantiIntegration::Image.model_name.human.s %></label>
+       <span><%= object.picture.id %></span>
+     </div>
+<% elsif object.picture.instance_of?(MmsIntegration::Picture) %>
      <div class="row">
        <label><%= MmsIntegration::Picture.human_name.titleize.s %></label>
        <span><%= object.picture.id %></span>
      </div>
+	   <div class="row">
+	     <label><%= ExternalPicture.human_attribute_name(:place_id).s %></label>
+	     <span><%= object.picture.place_id %></span>
+	   </div>
 <% end %>
   <div class="row">
     <label><%= ExternalPicture.human_attribute_name(:url).s %></label>
-    <span><%= object.picture.url %></span>
+    <span><%= object.to_s %></span>
   </div>
   <div class="row">
     <label><%= ExternalPicture.human_attribute_name(:caption).s %></label>
     <span><%= object.picture.caption %></span>
-  </div>
-  <div class="row">
-    <label><%= ExternalPicture.human_attribute_name(:place_id).s %></label>
-    <span><%= object.picture.place_id %></span>
   </div>
   <div class="row">
     <label><%= Illustration.human_attribute_name(:is_primary).s %></label>

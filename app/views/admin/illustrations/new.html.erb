@@ -26,10 +26,10 @@
       </div>
       <div class="row">
 <%=     label :picture_type, Illustration.human_attribute_name(:picture_type).s %>
-<%=     select_tag(:picture_type, options_for_select([['External','ExternalPicture'],['MMS','MmsIntegration::Picture']]), class: 'form-control form-select ss-select selectpicker') %>
+<%=     select_tag(:picture_type, options_for_select([['Mandala','ShantiIntegration::Image'],['External','ExternalPicture'],['MMS','MmsIntegration::Picture']]), class: 'form-control form-select ss-select selectpicker') %>
       </div>
-      <div class="row mms">
-<%=     f.label :picture_id, MmsIntegration::Picture.human_name.titleize.s %>
+      <div class="row internal">
+<%=     f.label :picture_id, Illustration.human_attribute_name(:picture_id).s %>
 <%=     f.text_field :picture_id, class: [:text, 'text-full form-control form-text'] %>
       </div>
       <div class="row external">
@@ -52,14 +52,14 @@
 <%=   link_to ts('cancel.this'), collection_path, class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'creat.e.this', class: 'btn btn-primary form-submit' %>
 <%  end %>
 <%= javascript_on_load do %>
-      $(".mms").hide();
+      $(".external").hide();
       $("#picture_type").change(function() {
-      if ($("#picture_type").val()=="MmsIntegration::Picture") {
-        $(".external").hide();
-        $(".mms").show();
-      } else {
+      if ($("#picture_type").val()=="ExternalPicture") {
         $(".external").show();
-        $(".mms").hide();
+        $(".internal").hide();
+      } else {
+        $(".external").hide();
+        $(".internal").show();
     }
       });
 <%  end %>

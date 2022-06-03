@@ -42,6 +42,9 @@ bo:
             feature_name_type:
                 one: 'མིང་གི་རིགས།'
                 other: 'མིང་གི་རིགས་ཁག '
+            illustration:
+                one: 'illustration'
+                other: 'illustrations'
             language:
                 one: 'སྐད་ཡིག'
                 other: 'སྐད་ཡིག་གི་སྡེ།'
@@ -118,6 +121,8 @@ bo:
                 is_hierarchical: 'རིམ་འབྱེད་ཀྱི་རྣམ་པ།'
                 is_symmetric: 'ཆ་འགྲིག་གི་རྣམ་པ།'
                 label: 'གདོང་འཛར།'
+            illustration:
+                picture_id: 'Image ID'
             note:
                 custom_note_title: 'མཚན་ཉིད་རང་འཇོག་གི་ཁ་བྱང་།'
                 is_public: 'སྤྱི་སྤྱོད་པའམ།'

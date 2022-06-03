@@ -42,6 +42,9 @@ dz:
             feature_name_type:
                 one: 'name type'
                 other: 'name types'
+            illustration:
+                one: 'illustration'
+                other: 'illustrations'
             language:
                 one: 'language'
                 other: 'languages'
@@ -118,6 +121,8 @@ dz:
                 is_hierarchical: 'Hierarchical?'
                 is_symmetric: 'Symmetric?'
                 label: 'Label'
+            illustration:
+                picture_id: 'Image ID'
             note:
                 custom_note_title: 'Custom Title'
                 is_public: 'Public?'
