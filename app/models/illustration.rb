@@ -73,8 +73,7 @@ class Illustration < ActiveRecord::Base
     when 'ShantiIntegration::Image'
       return picture.uid
     when 'MmsIntegration::Picture'
-      p = MmsIntegration::Picture.flare_search(i.picture_id)
-      return p['uid'] if !p.nil?
+      return "mms-#{self.picture_id}"
     end
     return ''
   end
