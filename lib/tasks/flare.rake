@@ -21,7 +21,7 @@ namespace :kmaps_engine do
     task fs_reindex_all: :environment do
       force = true
       force_str = ENV['FORCE']
-      force = force_str.strip.downcase=='false' if !force_str.blank?
+      force = !(force_str.strip.downcase=='false') if !force_str.blank?
       KmapsEngine::FlareUtils.new("log/reindexing_#{Rails.env}.log", ENV['LOG_LEVEL']).reindex_all(from: ENV['FROM'], to: ENV['TO'], fids: ENV['FIDS'], daylight: ENV['DAYLIGHT']) do |f|
         f.fs_index(force)
       end
