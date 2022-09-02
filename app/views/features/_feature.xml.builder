@@ -26,6 +26,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   per = Perspective.get_by_code(default_perspective_code)
   hierarchy = feature.closest_ancestors_by_perspective(per)
   xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
+  xml.codes(type: 'array') { xml << render(partial: 'codes/stripped_geo_code.xml.builder', collection: feature.geo_codes, as: :geo_code) } if !feature.geo_codes.empty?
   per = Perspective.get_by_code('cult.reg')
   if !per.nil?
     hierarchy = feature.closest_ancestors_by_perspective(per)
