@@ -15,8 +15,8 @@ module KmapsEngine
     # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, 
     # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic, BOTH DEPRECATED AND USELESS
     # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
-    # feature_relations.delete, [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code,
-    # [i.]perspectives.code/name, feature_relations.replace
+    # feature_relations.delete, [i.]feature_relations.related_feature.fid or [i.]feature_relations.related_feature.name,
+    # [i.]feature_relations.type.code, [i.]perspectives.code/name, feature_relations.replace
     # descriptions.delete, [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname, [i.]descriptions.language.code/name
     # [i.]captions:
     # content, author.fullname
@@ -47,9 +47,10 @@ module KmapsEngine
     # Note fields:
     # .note, .title
 
-    def add_info_source(field_prefix, citable)
+
+    def get_info_source(field_prefix)
       info_source = nil
-      return if self.fields.keys.find{|k| !k.nil? && k.starts_with?("#{field_prefix}.info_source")}.nil?
+      return nil if self.fields.keys.find{|k| !k.nil? && k.starts_with?("#{field_prefix}.info_source")}.nil?
       begin
         info_source_id = self.fields.delete("#{field_prefix}.info_source.id")
         if info_source_id.blank?
@@ -60,96 +61,100 @@ module KmapsEngine
               source_title = self.fields.delete("#{field_prefix}.info_source.title")
               if !source_title.blank?
                 info_source = InfoSource.where(title: source_title).first
-                info_source_type = 'InfoSource'
               end
             else
               info_source = OralSource.find_by_name(source_name)
-              info_source_type = 'OralSource'
               self.say "Oral source with name #{source_name} was not found." if info_source.nil?
             end
           else
             info_source = MmsIntegration::Document.find_by_original_medium_id(info_source_code)
-            info_source_type = 'MmsIntegration::Medium'
             self.say "Info source with code #{info_source_code} was not found." if info_source.nil?
           end
         else
           info_source = MmsIntegration::Medium.find(info_source_id)
-          info_source_type = 'MmsIntegration::Medium'
           self.say "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
         end              
       rescue Exception => e
         self.say e.to_s
       end
-      if !info_source.nil?
-        notes = self.fields.delete("#{field_prefix}.info_source.note")
-        citations = citable.citations
-        conditions = {info_source_id: info_source.id, info_source_type: info_source_type}
-        citation = citations.find_by(conditions)
-        if citation.nil?
-          citation = citations.new(conditions.merge(notes: notes))
-          citation.info_source_type = info_source_type
-          citation.citable_type = citable.class.name
-          citation.save
+      return info_source
+    end
+    
+    def process_info_source(field_prefix, citable, info_source)
+      info_source_type = info_source.class.name
+      notes = self.fields.delete("#{field_prefix}.info_source.note")
+      citations = citable.citations
+      conditions = {info_source_id: info_source.id, info_source_type: info_source_type}
+      citation = citations.find_by(conditions)
+      if citation.nil?
+        citation = citations.new(conditions.merge(notes: notes))
+        citation.info_source_type = info_source_type
+        citation.citable_type = citable.class.name
+        citation.save
+        self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+      else
+        if !notes.nil?
+          citation.update_attribute(:notes, notes)
           self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
-        else
-          if !notes.nil?
-            citation.update_attribute(:notes, notes)
-            self.spreadsheet.imports.create(:item => citation) if citation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
-          end
         end
-        if citation.nil?
-          self.say "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
-        elsif info_source_type.start_with?('MmsIntegration')
-          0.upto(2) do |j|
-            prefix = j==0 ? "#{field_prefix}.info_source" : "#{field_prefix}.info_source.#{j}"
-            case info_source.type
-            when 'OnlineResource'
-              pages = citation.web_pages
-              path = self.fields.delete("#{prefix}.path")
-              name = self.fields.delete("#{prefix}.name")
-              if !(path.blank? || name.blank?)
-                conditions = { :path => path, :title => name }
-                page = pages.find_by(conditions)
-                if page.nil?
-                  page = pages.create(conditions)
-                  self.spreadsheet.imports.create(:item => page) if page.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+      end
+      if citation.nil?
+        self.say "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."
+      elsif info_source_type.start_with?('MmsIntegration')
+        0.upto(2) do |j|
+          prefix = j==0 ? "#{field_prefix}.info_source" : "#{field_prefix}.info_source.#{j}"
+          case info_source.type
+          when 'OnlineResource'
+            pages = citation.web_pages
+            path = self.fields.delete("#{prefix}.path")
+            name = self.fields.delete("#{prefix}.name")
+            if !(path.blank? || name.blank?)
+              conditions = { :path => path, :title => name }
+              page = pages.find_by(conditions)
+              if page.nil?
+                page = pages.create(conditions)
+                self.spreadsheet.imports.create(:item => page) if page.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
+              end
+            end
+          when 'Document'
+            pages = citation.pages
+            volume_str = self.fields.delete("#{prefix}.volume")
+            pages_range = self.fields.delete("#{prefix}.pages")
+            if !volume_str.blank? || !pages_range.blank?
+              volume = nil
+              start_page = nil
+              end_page = nil
+              if !pages_range.blank?
+                page_array = pages_range.split('-')
+                start_page_str = page_array.shift
+                end_page_str = page_array.shift
+                if !start_page_str.nil?
+                  start_page_str.strip!
+                  start_page = start_page_str.to_i if !start_page_str.blank?
+                end
+                if !end_page_str.nil?
+                  end_page_str.strip!
+                  end_page = end_page_str.to_i if !end_page_str.blank?
                 end
               end
-            when 'Document'
-              pages = citation.pages
-              volume_str = self.fields.delete("#{prefix}.volume")
-              pages_range = self.fields.delete("#{prefix}.pages")
-              if !volume_str.blank? || !pages_range.blank?
-                volume = nil
-                start_page = nil
-                end_page = nil
-                if !pages_range.blank?
-                  page_array = pages_range.split('-')
-                  start_page_str = page_array.shift
-                  end_page_str = page_array.shift
-                  if !start_page_str.nil?
-                    start_page_str.strip!
-                    start_page = start_page_str.to_i if !start_page_str.blank?
-                  end
-                  if !end_page_str.nil?
-                    end_page_str.strip!
-                    end_page = end_page_str.to_i if !end_page_str.blank?
-                  end
-                end
-                if !volume_str.blank?
-                  volume = volume_str.to_i if !volume_str.blank?
-                end
-                conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
-                page = pages.find_by(conditions)
-                if page.nil?
-                  page = pages.create(conditions)
-                  self.spreadsheet.imports.create(item: page) if page.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
-                end
+              if !volume_str.blank?
+                volume = volume_str.to_i if !volume_str.blank?
+              end
+              conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
+              page = pages.find_by(conditions)
+              if page.nil?
+                page = pages.create(conditions)
+                self.spreadsheet.imports.create(item: page) if page.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
               end
             end
           end
         end
       end
+    end
+    
+    def add_info_source(field_prefix, citable)
+      info_source = self.get_info_source(field_prefix)
+      self.process_info_source(field_prefix, citable, info_source) if !info_source.nil?
     end
 
     # Valid columns: .note, .title
@@ -241,7 +246,6 @@ module KmapsEngine
     # If feature_names.delete is "yes", all names and relations will be deleted.
     # If feature_names.replace is not blank, it will be searched and replaced by
     # feature_names.name (no i. prefix)
-    
     def process_names(total)
       names = self.feature.names
       prioritized_names = self.feature.prioritized_names
@@ -557,7 +561,7 @@ module KmapsEngine
       end
     end
 
-    # The optional column "feature_relations.related_feature.fid" can specify the THL ID for parent feature.
+    # The optional column "feature_relations.related_feature.fid/feature_relations.related_feature.name" can specify the THL ID for parent feature.
     # If such parent is specified, the following columns are required:
     # "perspectives.code"/"perspectives.name", "feature_relations.type.code"
     def process_feature_relations(n)
@@ -576,10 +580,23 @@ module KmapsEngine
       0.upto(n) do |i|
         prefix = i>0 ? "#{i}." : ''
         parent_fid = self.fields.delete("#{prefix}feature_relations.related_feature.fid")
-        next if parent_fid.blank?
-        parent = Feature.get_by_fid(parent_fid)
+        if parent_fid.blank?
+          parent_str = self.fields.delete("#{prefix}feature_relations.related_feature.name")
+          if parent_str.blank?
+            next
+          else
+            if parent_str.is_tibetan_word?
+              tibetan_str = parent_str.tibetan_cleanup
+            else
+              next
+            end
+            parent = Feature.search_bod_expression(tibetan_str)
+          end
+        else
+          parent = Feature.get_by_fid(parent_fid)
+        end
         if parent.nil?
-          self.say "Parent feature with THL #{parent_fid} not found."
+          self.say "Parent #{parent_fid || parent_str} not found."
           next
         end
         perspective_code = self.fields.delete("#{prefix}perspectives.code")

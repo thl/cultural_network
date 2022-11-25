@@ -40,4 +40,8 @@ class InfoSource < ActiveRecord::Base
     raise "Info source #{code} not found." if info_source.nil? && !code.blank?
     info_source
   end
+  
+  def bibliographic_reference
+    return self.title
+  end
 end
