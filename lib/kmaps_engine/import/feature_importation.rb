@@ -67,7 +67,7 @@ module KmapsEngine
               self.say "Oral source with name #{source_name} was not found." if info_source.nil?
             end
           else
-            info_source = MmsIntegration::Document.find_by_original_medium_id(info_source_code)
+            info_source = InfoSource.get_by_code(info_source_code)
             self.say "Info source with code #{info_source_code} was not found." if info_source.nil?
           end
         else
