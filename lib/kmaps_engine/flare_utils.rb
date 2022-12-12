@@ -105,7 +105,7 @@ module KmapsEngine
       total = slices.size
       slices.each do |s|
         begin
-          Feature.remove(s)
+          Feature.remove(s) if Feature.post_to_index? # still need to handle fs delete
           self.progress_bar(num: i, total: total, current: s.first)
         rescue Exception => e
           self.log.fatal { "#{Time.now}: An error occured when processing #{s}:" }
