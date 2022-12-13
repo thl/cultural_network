@@ -116,10 +116,16 @@
             //val = val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             var val = orig_val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\,\/\\\^\$\|]/g, " ");
             val = settings.case_sensitive ? val : val.toLowerCase();
-            orig_val = val.replace(/[\s]+/g, '\\ '); //val.replace(/[\s\u0f0b\u0f0d]+/g, '\\ ');
+            val = val.replace(/[\s]+/g, '\\ '); //val.replace(/[\s\u0f0b\u0f0d]+/g, '\\ ');
+            orig_val = val;
+            var size = orig_val.length;
+            if (size>1 && orig_val.charAt(size-1)=="\u0f0b") {
+              val = val.substring(0, val.length-1);
+              orig_val = orig_val.substring(0, size-1);
+            }
             switch(settings.match_criterion){
               case 'begins':
-                val = ""+val+"*";
+                val = val+"*";
                 break;
               case 'exactly':
                 val = "\""+val+"\"";
@@ -127,11 +133,11 @@
               case 'contains': //do nothing
                 val = "*"+val+"*";
             }
-            if (val) {
-              var solr_query = "name:" + orig_val + " OR name:" + orig_val + "/ OR name_tibt:\"" + orig_val + "\" OR " + settings.autocomplete_field + ':' + val.replace(/[\s\u0f0b\u0f0d]+/g, '\\ ');
+            if (orig_val) {
+              var solr_query = "name:" + orig_val + " OR name:" + orig_val + "/ OR name_tibt:\"" + orig_val + "\" OR " + settings.autocomplete_field + ':' + val.replace(/[\u0f0b\u0f0d]+/g, '\\ ');
               if(settings.search_fields){
                 solr_query = settings.search_fields.reduce(function(full_query,search_field){
-                  return full_query + " OR " + search_field + ":" + val.replace(/[\s\u0f0b\u0f0d]+/g, '\\ ') + " OR " + search_field + ":" + val.replace(/[\s]+/g, '\\ ');
+                  return full_query + " OR " + search_field + ":" + val;
                 },solr_query);
               }
               extras = {
