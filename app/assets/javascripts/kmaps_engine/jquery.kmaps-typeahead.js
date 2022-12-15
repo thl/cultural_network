@@ -117,12 +117,11 @@
             var val = orig_val.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\,\/\\\^\$\|]/g, " ");
             val = settings.case_sensitive ? val : val.toLowerCase();
             val = val.replace(/[\s]+/g, '\\ '); //val.replace(/[\s\u0f0b\u0f0d]+/g, '\\ ');
-            orig_val = val;
-            var size = orig_val.length;
-            if (size>1 && orig_val.charAt(size-1)=="\u0f0b") {
-              val = val.substring(0, val.length-1);
-              orig_val = orig_val.substring(0, size-1);
+            var size = val.length;
+            if (size>1 && val.charAt(size-1)=="\u0f0b") {
+              val = val.substring(0, size-1);
             }
+            orig_val = val;
             switch(settings.match_criterion){
               case 'begins':
                 val = val+"*";
