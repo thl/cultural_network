@@ -37,8 +37,7 @@ zh:
         with: '以%{what}为前缀'
     priorit:
         y: '优先权'
-        ization_of:
-            names: '按名称优先化'
+        ization_of: '按%{what}称优先化'
     read_more: '阅读更多'
     referenced: '%{what} 参考'
     relat:

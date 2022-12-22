@@ -37,8 +37,7 @@ en:
         with: 'Prefix with %{what}'
     priorit:
         y: 'Priority'
-        ization_of:
-            names: 'Prioritization of Names'
+        ization_of: 'prioritization of %{what}'
     read_more: 'Read more'
     referenced: '%{what} referenced'
     relat:

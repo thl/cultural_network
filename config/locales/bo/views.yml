@@ -37,8 +37,7 @@ bo:
         with: '%{what}ཡིས་ཚིག་འགོ་བྱས་པ།'
     priorit:
         y: 'སྔོན་ཐོབ་དབང་ཆ།'
-        ization_of:
-            names: 'མིང་གཞིར་བཟུང་དམིགས་སུ་བཀར་བ།'
+        ization_of: '%{what}གཞིར་བཟུང་དམིགས་སུ་བཀར་བ།'
     read_more: 'དེ་བས་མང་བ་ཀློག་པ།'
     referenced: '%{what}དཔྱད་གཞི།'
     relat:

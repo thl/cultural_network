@@ -6,10 +6,10 @@
   });
 <% end
    add_breadcrumb_item feature_link(@feature)
-   add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.names')) %>
+   add_breadcrumb_item ts('change.record', what: t('priorit.ization_of', what: FeatureName.model_name.human(count: :many))) %>
 <section class="panel panel-content">
   <div class="panel-heading">
-    <h6><%= ts('change.record', :what => t('priorit.ization_of.names')) %>: <%= f_label(@feature) %></h6>
+    <h6><%= ts('change.record', what: t('priorit.ization_of', what: FeatureName.model_name.human(count: :many))) %>: <%= f_label(@feature) %></h6>
   </div>
   <div class="panel-body">
 <p class="page-tip"><%= ts 'snippet.feature.name.drag_priority' %></p>
@@ -51,8 +51,8 @@
 <%   end %>
      </table>
 <% end %>
-<div class="returnLink">
+    <div class="returnLink">
 <%= link_to "&#8592; #{ts 'snippet.feature.return'}".html_safe, admin_feature_path(@feature.fid) %>
-</div>
+    </div>
   </div> <!-- END panel-body -->
 </section> <!-- END panel -->

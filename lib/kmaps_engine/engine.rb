@@ -18,7 +18,7 @@ module KmapsEngine
       #require_relative File.join(sweeper_folder, 'feature_sweeper')
       #require_relative File.join(sweeper_folder, 'feature_relation_sweeper')
       #require_relative File.join(sweeper_folder, 'summary_sweeper')
-      observers = [FeatureSweeper, FeatureRelationSweeper, SummarySweeper]
+      observers = [FeatureSweeper, FeatureRelationSweeper, SummarySweeper, PerspectiveSweeper, ViewSweeper]
       Rails.application.config.active_record.observers ||= []
       Rails.application.config.active_record.observers += observers
       observers.each { |o| o.instance }
