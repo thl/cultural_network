@@ -753,15 +753,16 @@ class Feature < ActiveRecord::Base
         name = pr.parent_node.prioritized_name(v)
         name_str = name.nil? ? pr.parent_node.pid : name.name
         parent = pr.parent_node
-        relation_tag = { id: "#{self.uid}_#{pr.feature_relation_type.code}_#{parent.fid}",
+        relation_type = pr.feature_relation_type
+        relation_tag = { id: "#{self.uid}_#{relation_type.code}_#{parent.fid}",
           related_uid_s: parent.uid,
           origin_uid_s: self.uid,
           block_child_type: [prefix],
           "#{prefix}_id_s" => parent.uid,
           "#{prefix}_header_s" => name_str,
           "#{prefix}_path_s" => pr.parent_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
-          "#{prefix}_relation_label_s" => pr.feature_relation_type.asymmetric_label,
-          "#{prefix}_relation_code_s" => pr.feature_relation_type.code,
+          "#{prefix}_relation_label_s" => relation_type.is_symmetric ? relation_type.label : relation_type.asymmetric_label,
+          "#{prefix}_relation_code_s" => relation_type.code,
           related_kmaps_node_type: 'parent',
           block_type: ['child']
         }
@@ -777,15 +778,17 @@ class Feature < ActiveRecord::Base
         name = pr.child_node.prioritized_name(v)
         name_str = name.nil? ? pr.child_node.pid : name.name
         child = pr.child_node
-        relation_tag = { id: "#{self.uid}_#{pr.feature_relation_type.asymmetric_code}_#{child.fid}",
+        relation_type = pr.feature_relation_type
+        code = relation_type.is_symmetric ? relation_type.code : relation_type.asymmetric_code
+        relation_tag = { id: "#{self.uid}_#{code}_#{child.fid}",
           related_uid_s: child.uid,
           origin_uid_s: self.uid,
           block_child_type: [prefix],
           "#{prefix}_id_s" => "#{Feature.uid_prefix}-#{child.fid}",
           "#{prefix}_header_s" => name_str,
           "#{prefix}_path_s" => pr.child_node.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
-          "#{prefix}_relation_label_s" => pr.feature_relation_type.label,
-          "#{prefix}_relation_code_s" => pr.feature_relation_type.asymmetric_code,
+          "#{prefix}_relation_label_s" => relation_type.label,
+          "#{prefix}_relation_code_s" => code,
           related_kmaps_node_type: 'child',
           block_type: ['child']
         }
