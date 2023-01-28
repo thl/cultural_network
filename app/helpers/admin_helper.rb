@@ -31,12 +31,16 @@ module AdminHelper
   end
   
   def stacked_parents
-    array = [:admin]
-    if !parent_object.instance_of?(Feature) && parent_object.respond_to?(:feature)
-      array << parent_object.feature
+    if defined?(extended_stacked_parents)
+      extended_stacked_parents
+    else
+      array = [:admin]
+      if !parent_object.instance_of?(Feature) && parent_object.respond_to?(:feature)
+        array << parent_object.feature
+      end
+      array << parent_object
+      array
     end
-    array << parent_object
-    array
   end
   
   def name_preferences_admin_resources

@@ -13,7 +13,7 @@
   </div>
   <div class="row">
     <label><%= Note.model_name.human.titleize.s %></label>
-    <span><%= def_if_blank object, :content %></span>
+    <span><%= def_if_blank(object, :content).html_safe %></span>
   </div>
   <div class="row">
     <label><%= Note.human_attribute_name(:is_public).s %>: </label> <span><%= object.is_public? ? ts(:affirmation) : ts(:negation) %></span>

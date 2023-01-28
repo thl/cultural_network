@@ -4,6 +4,6 @@
 <%= ts('by.record', :whom => @note.authors.collect(&:fullname).join(", ")) if @note.authors.size > 0 %> (<%= @note.updated_at.to_date.to_formatted_s(:long) %>)
   </p>
   <div>
-<%= @note.content %>
+<%= @note.content.html_safe %>
   </div>
 </div>

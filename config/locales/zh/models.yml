@@ -94,6 +94,7 @@ zh:
                 string_value: '文本值'
             citation:
                 info_source_id: '信息来源'
+                info_source_type: 'Source Type'
                 notes: '注释'
             description:
                 content: '题目'

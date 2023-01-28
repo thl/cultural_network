@@ -190,28 +190,40 @@ module ApplicationHelper
       end
     end
     if defined?(notes) && !notes.nil?
-      content_tag :span, class: 'has-draggable-popups note-popup-link' do
-        link_to("", link_url,
+      str = content_tag(:span, class: 'has-draggable-popups note-popup-link') do
+        link_to('', link_url,
                :class => 'popup-link-icon note-popup-link-icon shanticon-stack draggable-pop no-view-alone overflow-y-auto height-350',
                :title => Note.model_name.human(count: notes.count).titleize,  data: {'js-kmaps-popup' => link_url })
-      end.html_safe
+      end
+      str << javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")
+      str.html_safe
     else
-      ""
+      ''
     end
   end
   
   def citation_popup_link_for(object, options={})
     if object.respond_to?(:citations) && !object.citations.blank?
-      content_tag :span, class: 'has-draggable-popups citation-popup-link' do
+      str = content_tag(:span, class: 'has-draggable-popups citation-popup-link') do
         link_url = polymorphic_path([object, :citations])
         link_to('', link_url,
                class: 'popup-link-icon citation-popup-link-icon shanticon-sources draggable-pop no-view-alone overflow-y-auto height-350',
                title: Citation.model_name.human(count: object.citations.count).titleize,
                data: {'js-kmaps-popup' => link_url })
-      end.html_safe
+      end
+      str << javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")
+      str.html_safe
     else
       ''
     end
+  end
+  
+  def info_popup_link_for(header, content, height=350)
+    str = content_tag(:span, class: 'has-draggable-popups citation-popup-link') do
+      link_to('', '', class: "fa fa-info-circle draggable-pop no-view-alone overflow-y-auto height-#{height}", title: header, data: {header: header, content: content})
+    end
+    str << javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")
+    str.html_safe
   end
 
   #
@@ -267,20 +279,21 @@ module ApplicationHelper
     link_title = "#{note_title}#{note_authors}#{note_date}"
     link_url = polymorphic_path([note.notable, note])
     link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-    "<span class='has-draggable-popups'>
-      #{link_to(link_title, link_url, class: link_classes, title: h(note_title))}
-    </span>".html_safe
+    str = "<span class='has-draggable-popups'>#{link_to(link_title, link_url, class: link_classes, title: h(note_title))}</span>"
+    str << javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")
+    str.html_safe
   end
+  
   def citation_popup_link(citation)
-    citation_citable_type = citation.citable_type.nil? ? "Citation" : citation.citable_type
+    citation_citable_type = citation.citable_type.nil? ? 'Citation' : citation.citable_type
     citation_info_source_type = citation.info_source_type
     citation_date = " (#{formatted_date(citation.updated_at)})"
     link_title = "#{citation_citable_type}-#{citation_info_source_type}#{citation_date}"
     link_url = polymorphic_path([citation.citable, citation])
     link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-    "<span class='has-draggable-popups'>
-      #{link_to(link_title, link_url, class: link_classes, title: h(citation_citable_type))}
-    </span>".html_safe
+    str = "<span class='has-draggable-popups'>#{link_to(link_title, link_url, class: link_classes, title: h(citation_citable_type))}</span>"
+    str << javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")
+    str.html_safe
   end
 
   def feature_assets_popup(feature_id)

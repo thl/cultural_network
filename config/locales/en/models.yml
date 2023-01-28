@@ -93,7 +93,8 @@ en:
                 show_root: 'Show Master Subject'
                 string_value: 'Text Value'
             citation:
-                info_source_id: 'Info Source'
+                info_source_id: 'Source ID'
+                info_source_type: 'Source Type'
                 notes: 'Notes'
             description:
                 content: 'Content'

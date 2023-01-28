@@ -94,6 +94,7 @@ bo:
                 string_value: 'དཔེ་ཆའི་གྲངས་ཐང་།'
             citation:
                 info_source_id: 'ཆ་འཕ༹ྲིན་ཁུངས།'
+                info_source_type: 'Source Type'
                 notes: 'མཆན་འགྲེལ།'
             description:
                 content: 'ཁ་བྱང་།'
