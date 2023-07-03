@@ -734,7 +734,7 @@
                   marks.push(marker['mark']);
                 }
               } else if(marker['operation'] == '!includes') {
-                if (!currentNode[marker['field']].includes(marker['value'])) {
+                if (currentNode[marker['field']]!=undefined && !currentNode[marker['field']].includes(marker['value'])) { // first condition is when data is corrupt
                   marks.push(marker['mark']);
                 }
               } else if(marker['operation'] == 'markAll') {
