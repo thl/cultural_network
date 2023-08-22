@@ -12,7 +12,5 @@ require 'kmaps_engine/session_manager'
 require 'kmaps_engine/simple_prop_cache'
 require 'kmaps_engine/simple_props_controller_helper'
 
-I18n.load_path += Dir[File.join(__dir__, '..', 'config', 'locales', '**', '*.yml')]
-
 module KmapsEngine
 end

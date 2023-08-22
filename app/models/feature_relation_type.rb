@@ -80,4 +80,6 @@ class FeatureRelationType < ActiveRecord::Base
     end
     frt_id.nil? ? nil : FeatureRelationType.find(frt_id)
   end
+  
+  ActiveSupport.run_load_hooks(:feature_relation_type, FeatureRelationType)
 end

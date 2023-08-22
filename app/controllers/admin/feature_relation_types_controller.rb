@@ -29,4 +29,6 @@ class Admin::FeatureRelationTypesController < AclController
       params.require(:feature_relation_type).permit(:is_hierarchical, :is_symmetric, :label, :asymmetric_label, :code, :asymmetric_code)
     end
   end
+  
+  ActiveSupport.run_load_hooks(:admin_feature_relation_types_controller, Admin::FeatureRelationTypesController)
 end

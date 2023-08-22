@@ -91,4 +91,6 @@ class Admin::FeatureRelationsController < AclController
     @perspectives = parent_object.affiliations_by_user(current_user, descendants: true).collect(&:perspective)
     @perspectives = Perspective.order(:name) if current_user.admin? || @perspectives.include?(nil)
   end
+  
+  ActiveSupport.run_load_hooks(:admin_feature_relations_controller, Admin::FeatureRelationsController)
 end

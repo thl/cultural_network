@@ -17,24 +17,24 @@ Gem::Specification.new do |s|
   
   # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
   #s.add_dependency 'rails', '5.1.4'
-  s.add_dependency 'rails', '~> 5.2.3'
+  s.add_dependency 'rails' #, '~> 5.2.3'
   # Use postgresql as the database for Active Record
   s.add_dependency 'pg'
   # Use Puma as the app server
-  s.add_dependency 'puma', '>= 3.11'
+  s.add_dependency 'puma', '~> 5.0'
   # Use Uglifier as compressor for JavaScript assets
-  s.add_dependency 'uglifier', '~> 4.1', '>= 4.1.20'
+  # s.add_dependency 'uglifier', '~> 4.1', '>= 4.1.20'
   # See https://github.com/rails/execjs#readme for more supported runtimes
   # gem 'therubyracer', platforms: :ruby
 
   # Use CoffeeScript for .coffee assets and views
-  s.add_dependency 'coffee-rails', '~> 4.2'
+  # s.add_dependency 'coffee-rails', '~> 4.2'
   # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
   s.add_dependency 'turbolinks', '~> 5'
   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-  s.add_dependency 'jbuilder', '~> 2.5'
+  s.add_dependency 'jbuilder', '~> 2.7'
   # Reduces boot times through caching; required in config/boot.rb
-  s.add_dependency 'bootsnap', '>= 1.1.0' #, require: false
+  s.add_dependency 'bootsnap', '>= 1.4.4'#, require: false
   
   # Use Redis adapter to run Action Cable in production
   # gem 'redis', '~> 3.0'

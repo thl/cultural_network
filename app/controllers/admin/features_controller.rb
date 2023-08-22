@@ -116,4 +116,6 @@ class Admin::FeaturesController < AclController
       feat.descriptions.update_all("is_primary = true","id=#{primary_desc.id}")
     end
   end
+  
+  ActiveSupport.run_load_hooks(:admin_features_controller, Admin::FeaturesController)
 end

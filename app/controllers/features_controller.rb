@@ -375,4 +375,6 @@ class FeaturesController < ApplicationController
     end
     "#{c.request.path}?#{p.join('&')}"
   end
+  
+  ActiveSupport.run_load_hooks(:features_controller, FeaturesController)
 end

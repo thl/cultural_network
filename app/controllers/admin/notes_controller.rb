@@ -40,4 +40,6 @@ class Admin::NotesController < AclController
   def note_params
     params.require(:note).permit(:custom_note_title, :note_title_id, :content, :is_public, :id, :notable_type, :notable_id, author_ids: [])
   end
+  
+  ActiveSupport.run_load_hooks(:admin_notes_controller, Admin::NotesController)
 end

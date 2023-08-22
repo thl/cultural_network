@@ -10,7 +10,7 @@ module KmapsEngine
         'kmaps_engine/iframe.js', 'kmaps_engine/jquery.ajax.sortable.js',
         'kmaps_engine/admin.css', 'kmaps_engine/public.css', 'kmaps_engine/xml-books.css',
         'kmaps_engine/scholar.css', 'kmaps_engine/popular.css', 'kmaps_engine/main-image.js', 'kmaps_engine/gallery.css', 'gallery/default-skin.png','gallery/default-skin.svg','kmaps_tree/jquery.fancytree-all.min.js', 'kmaps_tree/kmapstree.css','kmaps_tree/icons.gif'])
-      Rails.application.config.assets.precompile.concat(['collapsible_list/jquery.kmapsCollapsibleList.js','collapsible_list/kmaps_collapsible_list.css.scss'])
+      Rails.application.config.assets.precompile.concat(['collapsible_list/jquery.kmapsCollapsibleList.js','collapsible_list/kmaps_collapsible_list.css'])
     end
     
     initializer :sweepers do |config|
@@ -25,15 +25,10 @@ module KmapsEngine
     end
     
     initializer :loader do |config|
-      require 'active_record/kmaps_engine/extension'
       require 'kmaps_engine/array_ext'
       require 'kmaps_engine/import/importation.rb'
-      require 'kmaps_engine/extensions/user_model.rb'
       
-      ActiveRecord::Base.send :include, ActiveRecord::KmapsEngine::Extension
       Array.send :include, KmapsEngine::ArrayExtension
-      AuthenticatedSystem::User.send :include, KmapsEngine::Extension::UserModel
-      
       Sprockets::Context.send :include, Rails.application.routes.url_helpers
     end
 

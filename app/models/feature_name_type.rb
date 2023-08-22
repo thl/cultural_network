@@ -21,7 +21,7 @@ class FeatureNameType < SimpleProp
   
   # Link up the FeatureNames associated with this type
   # by using the FeatureName.feature_name_type_id value
-  has_many :feature_names, :class_name=>'FeatureName', :source=>:feature_name_type_id, :dependent => :nullify
+  has_many :feature_names, dependent: :nullify
   
   #
   #
