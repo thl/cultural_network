@@ -27,14 +27,10 @@ Gem::Specification.new do |s|
   # See https://github.com/rails/execjs#readme for more supported runtimes
   # gem 'therubyracer', platforms: :ruby
 
-  # Use CoffeeScript for .coffee assets and views
-  # s.add_dependency 'coffee-rails', '~> 4.2'
-  # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-  s.add_dependency 'turbolinks', '~> 5'
   # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-  s.add_dependency 'jbuilder', '~> 2.7'
+  s.add_dependency 'jbuilder'
   # Reduces boot times through caching; required in config/boot.rb
-  s.add_dependency 'bootsnap', '>= 1.4.4'#, require: false
+  s.add_dependency 'bootsnap' #, require: false
   
   # Use Redis adapter to run Action Cable in production
   # gem 'redis', '~> 3.0'

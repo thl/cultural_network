@@ -1,4 +1,4 @@
-class Admin::XMLDocumentsController < AclController
+class Admin::XmlDocumentsController < AclController
   resource_controller
   
   def initialize
