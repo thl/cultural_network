@@ -85,14 +85,14 @@ module FeaturesHelper
       completed << name
       html += '<li style="margin-left:1em; list-style:none;">'
       html += '<b>&gt;</b>&nbsp;' unless name.is_original?
-      html += (use_links ? link_to(feature_name_display(name), admin_feature_name_path(name)) : feature_name_display(name, {:show_association_links => true}))
+      html += (use_links ? link_to(feature_name_display(name), admin_feature_name_path(name)) : feature_name_display(name, show_association_links: true))
       html += feature_name_ul(nil, use_links, name.children.order('position'), completed)
       html += '</li>'
     end
     (html.blank? ? '' : "<ul style='margin:0; margin-top: 5px;'>#{html}</ul>").html_safe
   end
   
-  def feature_name_display(name, options={})
+  def feature_name_display(name, **options)
     if options[:show_association_links]
       name_notes_links = [note_popup_link_for(name)]
       name_citations_links = [citation_popup_link_for(name)]

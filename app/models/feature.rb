@@ -318,7 +318,7 @@ class Feature < ActiveRecord::Base
     @@associated_models.any?{|model| model.find_by(feature_id: self.id)} || !Shape.find_by(fid: self.fid).nil?
   end
   
-  def association_notes_for(association_type, options={})
+  def association_notes_for(association_type, **options)
     conditions = {notable_type: self.class.name, notable_id: self.id, association_type: association_type, is_public: true}
     conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
     AssociationNote.where(conditions)
@@ -359,12 +359,12 @@ class Feature < ActiveRecord::Base
     current_language.nil? ? nil : self.captions.find_by(language_id: current_language.id)
   end
   
-  def affiliations_by_user(user, options = {})
-    Affiliation.where(options.merge(feature_id: self.id, collection_id: user.collections.collect(&:id)))
+  def affiliations_by_user(user, **options)
+    Affiliation.where(**options.merge(feature_id: self.id, collection_id: user.collections.collect(&:id)))
   end
   
-  def authorized?(user, options = {})
-    !affiliations_by_user(user, options).empty?
+  def authorized?(user, **options)
+    !affiliations_by_user(user, **options).empty?
   end
   
   def authorized_for_descendants?(user)
@@ -469,7 +469,7 @@ class Feature < ActiveRecord::Base
   end
   
   # currently only option accepted is 'only_hierarchical'
-  def self.descendants_by_perspective_with_parent(fids, perspective, options ={})
+  def self.descendants_by_perspective_with_parent(fids, perspective, **options)
     pending = fids.collect{|fid| Feature.get_by_fid(fid)}
     des = pending.collect{|f| [f, nil]}
     des_ids = pending.collect(&:id)
@@ -504,7 +504,7 @@ class Feature < ActiveRecord::Base
   # filter - any string filter value
   # options - the standard find(:all) options
   #
-  def self.contextual_search(string_context_id, filter, search_options={})
+  def self.contextual_search(string_context_id, filter, **search_options)
     context_id = string_context_id.to_i # for some reason this parameter has been especially susceptible to SQL injection attack payload
     results = self.search(filter, search_options)
     results = results.where(['(features.id = ? OR features.ancestor_ids LIKE ?)', context_id, "%.#{context_id}.%"]) if !context_id.blank?
@@ -525,9 +525,9 @@ class Feature < ActiveRecord::Base
   def self.search(search)
     # Setup the base rules
     if search.scope && search.scope == 'name'
-      conditions = build_like_conditions(%W(feature_names.name), search.filter, {match: search.match})
+      conditions = build_like_conditions(%W(feature_names.name), search.filter, match: search.match)
     else
-      conditions = build_like_conditions(%W(descriptions.content feature_names.name), search.filter, {match: search.match})
+      conditions = build_like_conditions(%W(descriptions.content feature_names.name), search.filter, match: search.match)
     end
     if !conditions.blank?
       fid = search.filter.gsub(/[^\d]/, '')
@@ -804,7 +804,7 @@ class Feature < ActiveRecord::Base
     doc
   end
   
-  def self.name_search_options(filter_value, options = {})
+  def self.name_search_options(filter_value, **options)
   end
   
   ActiveSupport.run_load_hooks(:feature, Feature)

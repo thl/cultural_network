@@ -25,8 +25,8 @@
        parent = object.instance_of?(Feature) ? object : (!parent_object.nil? && parent_object.instance_of?(Feature) ? parent_object : item.parent_node)
        parent_path = admin_feature_feature_relation_path(parent, item)
        path = admin_feature_relation_path(item) %>
-<%=    list_actions_for_item item, :view_path => parent_path, :delete_path => parent_path,
-         :edit_path => edit_admin_feature_feature_relation_path(parent, item) %>
+<%=    list_actions_for_item item, view_path: parent_path, delete_path: parent_path,
+         edit_path: edit_admin_feature_feature_relation_path(parent, item) %>
        </td>
        <td class="leftText">
 <%     # if there is a parent_object (feature id in the url)

@@ -10,7 +10,7 @@
 <%=     "<dt><strong>#{ts(:for, what: FeatureName.human_attribute_name(:etymology), whom: name.name.to_s)}:</dt></strong><dd>#{name.etymology.s}</dd>".html_safe unless name.etymology.blank? %>
 <%      end %>
       </dl>
-<%=   note_popup_link_list_for(feature, {association_type: FeatureName.name}) %>
+<%=   note_popup_link_list_for(feature, association_type: FeatureName.name) %>
 <%=   citation_popup_link_list_for(feature) %>
     </div>
   </div>
@@ -35,7 +35,7 @@
 <%=   time_units_for(geo_code) %>
     </p>
 <%  end %>
-<%= note_popup_link_list_for(feature, {association_type: FeatureGeoCode.name}) %>
+<%= note_popup_link_list_for(feature, association_type: FeatureGeoCode.name) %>
     </div>
   </div>
 </section>

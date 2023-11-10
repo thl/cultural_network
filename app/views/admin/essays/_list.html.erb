@@ -11,9 +11,9 @@
 <%   list.each do |item| %>
      <tr>
        <td class="centerText">
-<%=      list_actions_for_item(item, :delete_path => admin_feature_essay_path(item.feature, item),
-         :edit_path => edit_admin_feature_essay_path(item.feature, item),
-         :view_path => admin_feature_essay_path(item.feature, item)) %>
+<%=      list_actions_for_item(item, delete_path: admin_feature_essay_path(item.feature, item),
+         edit_path: edit_admin_feature_essay_path(item.feature, item),
+         view_path: admin_feature_essay_path(item.feature, item)) %>
        </td>
        <td><%= item.text_id %></td>
        <td><%= item.text.title %></td>

@@ -15,7 +15,7 @@ module ActiveRecord
         # generic helper method used for building "LIKE" conditions
         # on mulitple columns, using a single filter value
         #
-        def build_like_conditions(fields, filter_value, options = {})
+        def build_like_conditions(fields, filter_value, **options)
 
           #
           # if filter_value is blank, no point in building the LIKE conditions

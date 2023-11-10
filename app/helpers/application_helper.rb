@@ -119,7 +119,7 @@ module ApplicationHelper
   #
   #
   #
-  def f_label(feature, html_attrs={})
+  def f_label(feature, **html_attrs)
     v = View.get_by_code(default_view_code)
     html_attrs[:class] = html_attrs[:class].blank? ? 'feature_name' : "#{html_attrs[:class]} feature_name"
     prioritized_name = feature.prioritized_name(v)
@@ -130,7 +130,7 @@ module ApplicationHelper
   #
   #
   #
-  def f_link(feature, url, html_attrs={}, options={})
+  def f_link(feature, url, html_attrs={}, **options)
     html_attrs[:class] = html_attrs[:class].blank? ? 'feature_name' : "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)
     # url = url_for iframe_feature_path(feature.id) if current_page?(Rails.application.routes.recognize_path iframe_feature_path(feature.id))
@@ -177,7 +177,7 @@ module ApplicationHelper
   #
   #
   #
-  def note_popup_link_for(object, options={})
+  def note_popup_link_for(object, **options)
     if options[:association_type].blank?
       if object.respond_to?(:notes) && object.public_notes.length > 0
         notes = object.public_notes
@@ -202,7 +202,7 @@ module ApplicationHelper
     end
   end
   
-  def citation_popup_link_for(object, options={})
+  def citation_popup_link_for(object, **options)
     if object.respond_to?(:citations) && !object.citations.blank?
       str = content_tag(:span, class: 'has-draggable-popups citation-popup-link') do
         link_url = polymorphic_path([object, :citations])
@@ -229,7 +229,7 @@ module ApplicationHelper
   #
   #
   #
-  def note_popup_link_list_for(object, options={})
+  def note_popup_link_list_for(object, **options)
     unless options[:association_type].blank?
       if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
         notes = object.association_notes_for(options[:association_type])
@@ -251,7 +251,7 @@ module ApplicationHelper
     end
   end
 
-  def citation_popup_link_list_for(object, options={})
+  def citation_popup_link_list_for(object, **options)
     if object.respond_to?(:citations) && !object.citations.empty?
       citations = object.citations
       link_url = polymorphic_path([object, :citations])
@@ -306,7 +306,7 @@ module ApplicationHelper
   #
   #
   #
-  def time_units_for(object, options={})
+  def time_units_for(object, **options)
     if has_time_units(object)
       time_units_list = object.time_units_ordered_by_date.collect{|tu| "#{tu}#{note_popup_link_for(tu)}" }.reject{|str| str.blank?}.join("; ")
       "<span class='time-units'>(#{time_units_list})</span>".html_safe
@@ -485,7 +485,7 @@ module ApplicationHelper
   end
 
   # Override the default page_entries_info from will_paginate
-  def page_entries_info(collection, options = {})
+  def page_entries_info(collection, **options)
     entry_name = options[:entry_name] ||
       (collection.empty?? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
     (if collection.total_pages < 2

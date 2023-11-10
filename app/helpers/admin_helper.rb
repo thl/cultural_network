@@ -3,10 +3,10 @@ module AdminHelper
     params[:controller] =~ /^(admin|authenticated_system\/[^s])/
   end
 
-  def admin_textarea(form_builder, field, options={})
+  def admin_textarea(form_builder, field, **options)
     options[:cols] ||= 70
     options[:rows] ||= 10
-    form_builder.text_area(field, options)
+    form_builder.text_area(field, **options)
   end
 
   #
@@ -16,7 +16,7 @@ module AdminHelper
     request.env['PATH_INFO']
   end
 
-  def list_actions_for_item(item, options={})
+  def list_actions_for_item(item, **options)
     options[:edit_path] ||= edit_object_path(item)
     options[:view_path] ||= object_path(item)
     options[:delete_path] ||= object_path(item)
@@ -105,7 +105,7 @@ module AdminHelper
     select_tag :resources, options_for_select(admin_resources.sort, path), id: :SelectNav, class: 'form-control form-select ss-select selectpicker'
   end
 
-  def resource_search_form(extra_hidden_fields={})
+  def resource_search_form(**extra_hidden_fields)
     #extra_hidden_fields[:page] = params[:page] # keep the current page when clearing?
     html = "<div>"
     html += form_tag '', :method=>:get
@@ -123,7 +123,7 @@ module AdminHelper
   #
   # This is set on top of the column headers in a list table
   #
-  def pagination_row(options={})
+  def pagination_row(**options)
     # switch between the pagination and a non-breaking space:
     content = @collection.total_pages > 1 ? will_paginate(@collection) : '&nbsp;'
     "<tr>
@@ -299,12 +299,9 @@ module AdminHelper
         html += '</form>'
       else
         html += list_actions_for_item(name,
-            {
-              :delete_path => admin_feature_feature_name_path(name.feature, name),
-              :edit_path   => edit_admin_feature_feature_name_path(name.feature, name),
-              :view_path => admin_feature_feature_name_path(name.feature, name),
-            }
-          )
+              delete_path: admin_feature_feature_name_path(name.feature, name),
+              edit_path:   edit_admin_feature_feature_name_path(name.feature, name),
+              view_path:   admin_feature_feature_name_path(name.feature, name))
       end
       html +=  '</td>'
       padding = name.all_parents.size * 25
@@ -409,7 +406,7 @@ module AdminHelper
   #
   # Express the relationship relative to the "feature" arg node
   #
-  def feature_relation_role_label(feature, relation, opts={})
+  def feature_relation_role_label(feature, relation, **opts)
     options={
       :use_first=>true,:use_second=>true,:use_relation=>true,
       :link_first=>true,:link_second=>true,:link_relation=>true
@@ -434,7 +431,7 @@ module AdminHelper
     end
   end
 
-  def association_note_list_fieldset(association_type, options={})
+  def association_note_list_fieldset(association_type, **options)
     "<h4>General Notes</h4>
       #{highlighted_new_item_link new_polymorphic_path([:admin, @object, :association_note], :association_type => association_type), 'New Note'}
       <br class='clear'/>
@@ -454,7 +451,7 @@ module AdminHelper
     html.html_safe
   end
 
-  def citation_list_fieldset(options={})
+  def citation_list_fieldset(**options)
     object = options[:object] || @object
     html = "<fieldset>
       <div class='left highlight'>
@@ -466,7 +463,7 @@ module AdminHelper
     html.html_safe
   end
 
-  def time_unit_list_fieldset(options={})
+  def time_unit_list_fieldset(**options)
     object = options[:object] || @object
     html = "<fieldset>
       <legend>Dates</legend>
@@ -507,7 +504,7 @@ module AdminHelper
     end
   end
 
-  def new_note_link_for(object, options={})
+  def new_note_link_for(object, **options)
     if object.respond_to?(:notes)
       new_item_link new_polymorphic_path([:admin, object, :note]), options[:include_text] ? "New Note" : ""
     else
@@ -515,7 +512,7 @@ module AdminHelper
     end
   end
 
-  def new_time_unit_link_for(object, options={})
+  def new_time_unit_link_for(object, **options)
     if object.respond_to?(:time_units)
       new_item_link new_polymorphic_path([:admin, object, :time_unit]), options[:include_text] ? "New Date" : ""
     else

@@ -22,7 +22,7 @@ module KmapsEngine
     #
     #
     #
-    def citation_attributes=(attrs={})
+    def citation_attributes=(**attrs)
       begin
         o = citations.find(attrs[:id])
         if attrs[:marked_for_deletion].to_s == '1'
@@ -31,7 +31,7 @@ module KmapsEngine
           o.attributes=attrs
         end
       rescue
-        citations.build(attrs)
+        citations.build(**attrs)
       end
     end
   end

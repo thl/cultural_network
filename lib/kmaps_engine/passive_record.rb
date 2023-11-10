@@ -9,11 +9,11 @@ module KmapsEngine
     
     module ClassMethods
       
-      def create(attributes = {})
+      def create(**attributes)
         @list ||= []
         @next_id ||= 1
         
-        item = self.new(attributes.merge(id: @next_id))
+        item = self.new(**attributes.merge(id: @next_id))
         if !item.nil?
           @list << item
           @next_id += 1

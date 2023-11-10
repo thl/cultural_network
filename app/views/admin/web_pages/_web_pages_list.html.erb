@@ -13,7 +13,7 @@
      <tr>
        <td class="listActionsCol">
 <%       path = polymorphic_path([:admin, item.citation, item]) %>
-<%=      list_actions_for_item(item, :delete_path => path, :view_path => path, :edit_path => edit_polymorphic_path([:admin, item.citation, item])) %>
+<%=      list_actions_for_item(item, delete_path: path, view_path: path, edit_path: edit_polymorphic_path([:admin, item.citation, item])) %>
        </td>    
        <td><%= item.title %></td>
        <td><%= item.full_path %></td>

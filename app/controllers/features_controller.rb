@@ -335,12 +335,12 @@ class FeaturesController < ApplicationController
     ('fid' == params[:search_scope])
   end
   
-  def perform_contextual_search(options, search_options={})
+  def perform_contextual_search(options, **search_options)
     @context_feature, @features = Feature.contextual_search(
       params[:context_id],
       params[:filter],
       options,
-      search_options
+      **search_options
       )
   end
   
@@ -348,7 +348,7 @@ class FeaturesController < ApplicationController
     Feature.search(search)
   end
   
-  def api_render(features, options={})
+  def api_render(features, **options)
     collection = {}
     collection[:features] = features.collect{|f| api_format_feature(f)}
     collection[:page] = params[:page] || 1

@@ -4,7 +4,7 @@ module KmapsEngine
 
     public
 
-    def self.match(source, options={})
+    def self.match(source, **options)
       options[:matched_filename] ||= "tmp/matched_name_results.csv"
       options[:unmatched_filename] ||= "tmp/unmatched_name_results.csv"
       matched_filename = Rails.root.join(options[:matched_filename]).to_s
