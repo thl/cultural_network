@@ -13,7 +13,7 @@ class FeaturesController < ApplicationController
       format.html
       format.js
       format.xml  #{ render :xml => Feature.current_roots(Perspective.get_by_code(default_perspective_code), View.get_by_code(default_view_code)).to_xml }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'index', format: 'xml')) }
     end
   end
 
@@ -37,7 +37,7 @@ class FeaturesController < ApplicationController
         @features_with_parents = @feature.descendants_with_parent
       end
       format.js
-      format.json { render json: Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'show', format: 'xml')) }
       # use @feature.document_for_rsolr.to_json to get json designed for solr. Make sure document_for_rsolr is not private!
     end
   end
@@ -72,9 +72,9 @@ class FeaturesController < ApplicationController
     @features =  feature_array.collect{|feature_id| Feature.get_by_fid(feature_id.to_i)}.find_all{|f| f && f.is_public==1}
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     respond_to do |format|
-      format.html { render :action => 'staff_show' }
-      format.xml  { render :action => 'index' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+      format.html { render action: 'staff_show' }
+      format.xml  { render action: 'index' }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'index', format: 'xml')), callback: params[:callback] }
     end
   end
 
@@ -85,9 +85,9 @@ class FeaturesController < ApplicationController
     @features = params[:old_pids].split(/\D+/).find_all{|p| p && !p.blank?}.collect{|p| Feature.find_by(old_pid: "f#{p}")}.find_all{|f| f}
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     respond_to do |format|
-      format.html { render :action => 'staff_show' }
-      format.xml  { render :action => 'index' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
+      format.html { render action: 'staff_show' }
+      format.xml  { render action: 'index' }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'index', format: 'xml')), callback: params[:callback] }
     end
   end
   
@@ -116,7 +116,7 @@ class FeaturesController < ApplicationController
       format.html { render :action => 'paginated_show' }
       format.xml  { render :action => 'paginated_show' }
       format.json do
-        render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')), :callback => params[:callback]
+        render json: Hash.from_xml(render_to_string(action: 'paginated_show', format: 'xml')), callback: params[:callback]
       end
     end
   end
@@ -160,7 +160,7 @@ class FeaturesController < ApplicationController
       format.html { render :action => 'paginated_show' }
       format.xml  { render :action => 'paginated_show' }
       format.json do
-        h = Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
+        h = Hash.from_xml(render_to_string(action: 'paginated_show', format: 'xml'))
         h[:page] = params[:page] || 1
         h[:total_pages] = @features.total_pages
         render :json => h, :callback => params[:callback]
@@ -180,7 +180,7 @@ class FeaturesController < ApplicationController
     end
     respond_to do |format|
       format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'children.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'children', format: 'xml')) }
     end
   end
   
@@ -202,7 +202,7 @@ class FeaturesController < ApplicationController
     end
     respond_to do |format|
       format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'list.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'list', format: 'xml')) }
     end
   end
   
@@ -217,7 +217,7 @@ class FeaturesController < ApplicationController
     end
     respond_to do |format|
       format.xml { render 'all_collection' if params_id.nil? }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => params_id.nil? ? 'all_collection.xml.builder' : 'all.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: params_id.nil? ? 'all_collection' : 'all', format: 'xml')) }
     end
   end
   
@@ -234,7 +234,7 @@ class FeaturesController < ApplicationController
     end
     respond_to do |format|
       format.xml { render 'nested_collection' if params_id.nil? }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => params_id.nil? ? 'nested_collection.xml.builder' : 'nested.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: params_id.nil? ? 'nested_collection' : 'nested', format: 'xml')) }
     end
   end
   
@@ -274,7 +274,7 @@ class FeaturesController < ApplicationController
       format.html
       format.xml
       format.js
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'related.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'related', format: 'xml')) }
     end
   end
   

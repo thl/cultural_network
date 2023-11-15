@@ -1,1 +1,1 @@
-xml << render(:partial => 'description.xml.builder', :object => @description)
+xml << render(partial: 'description', format: 'xml', object: @description)

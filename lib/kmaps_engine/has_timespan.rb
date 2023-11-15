@@ -21,7 +21,7 @@ module KmapsEngine
         # Allow a timespan to be updated/create
         #
         def timespan_attributes=(timespan_attrs)
-          self.timespan ? self.timespan.update_attributes(timespan_attrs) : self.build_timespan(timespan_attrs)
+          self.timespan ? self.timespan.update(timespan_attrs) : self.build_timespan(timespan_attrs)
         end
       end
     end

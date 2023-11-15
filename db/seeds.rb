@@ -91,7 +91,7 @@ u = AuthenticatedSystem::User.find_by(login: a[:login])
 if u.nil?
   u = person.create_user(a)
 else
-  u.update_attributes(a)
+  u.update(a)
 end
 
 role = AuthenticatedSystem::Role.find_by(title: 'System Administrator')

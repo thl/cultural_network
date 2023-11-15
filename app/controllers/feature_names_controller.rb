@@ -5,7 +5,7 @@ class FeatureNamesController < ApplicationController
     @name = FeatureName.find(params[:id])
     respond_to do |format|
       format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'show', format: 'xml')) }
     end
   end
   
@@ -18,18 +18,18 @@ class FeatureNamesController < ApplicationController
       respond_to do |format|
         format.csv
         format.xml
-        format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
+        format.json { render json: Hash.from_xml(render_to_string(action: 'index', format: 'xml')) }
       end
     else
       respond_to do |format|
         format.csv { render :action => 'index_by_feature' }
         format.xml do
           @names = @feature.names.roots.order('position')
-          render :action => 'index_by_feature.xml.builder'
+          render action: 'index_by_feature', format: 'xml'
         end
         format.json do
           @names = @feature.names.roots.order('position')
-          render :json => Hash.from_xml(render_to_string(:action => 'index_by_feature.xml.builder'))
+          render json: Hash.from_xml(render_to_string(action: 'index_by_feature', format: 'xml'))
         end
       end
     end

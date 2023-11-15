@@ -9,5 +9,5 @@ xml.feature do
   xml.header(header)
   caption = feature.caption
   xml.caption(caption.nil? ? nil : caption.content)
-  xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
+  xml.ancestors(type: 'array') { xml << render(partial: 'stripped_feature', format: 'xml', collection: hierarchy, as: :feature) if !hierarchy.empty? }
 end

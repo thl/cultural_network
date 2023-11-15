@@ -66,7 +66,7 @@ module KmapsEngine
               if description.nil?
                 description = descriptions.create(attributes.merge({:source_url => source_url}))
               else
-                description.update_attributes(attributes)
+                description.update(attributes)
               end
               prefix = 'descriptions'
               0.upto(2) do |i|

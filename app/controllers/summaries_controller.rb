@@ -4,16 +4,16 @@ class SummariesController < ApplicationController
   def show
     @summary = Summary.find(params[:id])
     respond_to do |format|
-      format.xml  { render :xml  => @summary }
-      format.json { render :json => @summary } #Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+      format.xml  { render xml: @summary }
+      format.json { render json: @summary } #Hash.from_xml(render_to_string(action: 'show', format: 'xml')) }
     end
   end
 
   def index
     @summaries = @feature.summaries
     respond_to do |format|
-      format.xml  { render :xml  => @summaries }
-      format.json { render :json => @summaries } #Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
+      format.xml  { render xml: @summaries }
+      format.json { render json: @summaries } #Hash.from_xml(render_to_string(action: 'index', format: 'xml')) }
     end
   end
   

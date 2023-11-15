@@ -24,7 +24,7 @@ class Admin::IllustrationsController < AclController
   update.before do
     picture_params = params[:illustration][:picture].permit(:caption, :url, :place_id)
     params[:illustration].delete(:picture)
-    object.picture.update_attributes(picture_params)
+    object.picture.update(picture_params)
   end
   
   update.after { object.ensure_one_primary }

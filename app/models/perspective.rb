@@ -54,7 +54,7 @@ class Perspective < ActiveRecord::Base
   
   def self.update_or_create(attributes)
     r = self.find_by(code: attributes[:code])
-    r.nil? ? self.create(attributes) : r.update_attributes(attributes)
+    r.nil? ? self.create(attributes) : r.update(attributes)
   end
   
   ActiveSupport.run_load_hooks(:perspective, Perspective)

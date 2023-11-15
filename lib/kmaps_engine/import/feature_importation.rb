@@ -261,7 +261,7 @@ module KmapsEngine
           if name_str.blank?
             self.say "No name specified to replace #{replace_feature_names} for feature #{self.feature.pid}."
           else
-            name.update_attributes(name: name_str, skip_update: true)
+            name.update(name: name_str, skip_update: true)
             name_changed = true
           end
         end
@@ -272,7 +272,7 @@ module KmapsEngine
       if !delete_is_primary.blank? && delete_is_primary.downcase == 'yes'
         names.where(:is_primary_for_romanization => true).each do |name|
           name_changed = true if !name_changed
-          name.update_attributes(:is_primary_for_romanization => false, :skip_update => true)
+          name.update(:is_primary_for_romanization => false, :skip_update => true)
         end
       end    
       # feature_names.note can be used to add general notes to all names of a feature
@@ -417,7 +417,7 @@ module KmapsEngine
                   name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
                 end
               else
-                name_relation.update_attributes(:phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :is_phonetic => 1, :orthographic_system_id => nil, :is_orthographic => 0, :is_translation => is_translation)
+                name_relation.update(:phonetic_system_id => phonetic_system.nil? ? nil : phonetic_system.id, :is_phonetic => 1, :orthographic_system_id => nil, :is_orthographic => 0, :is_translation => is_translation)
               end
               self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             end                
@@ -439,7 +439,7 @@ module KmapsEngine
                 end
               elsif !phonetic_system.nil? && phonetic_system.code=='tib.to.chi.transcrip'
                 # only update if its tibetan
-                name_relation.update_attributes(:phonetic_system_id => nil, :is_phonetic => 0, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :is_orthographic => 1, :is_translation => is_translation, :parent_node_id => name[n].id)
+                name_relation.update(:phonetic_system_id => nil, :is_phonetic => 0, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :is_orthographic => 1, :is_translation => is_translation, :parent_node_id => name[n].id)
                 self.spreadsheet.imports.create(:item => name_relation) if name_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
               end
               # pinyin should be a child of the traditional and not the simplified chinese
@@ -698,7 +698,7 @@ module KmapsEngine
               description = descriptions.create(attributes)
             end
           else
-            description.update_attributes(attributes)
+            description.update(attributes)
           end
           if !description.nil?
             self.spreadsheet.imports.create(:item => description) if description.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
@@ -748,7 +748,7 @@ module KmapsEngine
             caption = captions.create(conditions.merge(attributes))
           else
             self.say "Caption #{caption_content} overwrites previous content #{caption.content} for #{feature.fid}."
-            caption.update_attributes(attributes)
+            caption.update(attributes)
           end
           if caption.id.nil?
             self.say "Caption #{caption_content} not saved for #{feature.fid}.- #{caption.errors.messages}"
@@ -799,7 +799,7 @@ module KmapsEngine
             summary = summaries.create(conditions.merge(attributes))
           else
             self.say "Summary #{summary_content} overwrites previous content #{summary.content} for #{feature.fid}."
-            summary.update_attributes(attributes)
+            summary.update(attributes)
           end
           if summary.id.nil?
             self.say "Summary #{summary_content} not saved for #{feature.fid}."

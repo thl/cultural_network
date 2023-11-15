@@ -11,7 +11,7 @@ module KmapsEngine
         else
           attrs = { picture_id: image.id, picture_type: 'ShantiIntegration::Image' }
         end
-        i.update_attributes(attrs)
+        i.update(attrs)
       end
     end
     
@@ -28,7 +28,7 @@ module KmapsEngine
         else
           attrs = { picture_id: image.id, picture_type: 'ShantiIntegration::Image' }
         end
-        i.update_attributes(attrs)
+        i.update(attrs)
       end
     end
   end

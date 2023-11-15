@@ -79,7 +79,7 @@ class Importation
               complex_date.save
               time_unit = TimeUnit.create(attrs.merge(dateable_type: dateable.class.to_s, dateable_id: dateable.id, date_id: complex_date.id))
             else
-              time_unit.update_attributes(attrs)
+              time_unit.update(attrs)
             end
             self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
@@ -101,7 +101,7 @@ class Importation
               #time_unit = time_units.create(attrs.merge(:start_date_id => complex_start_date.nil? ? nil : complex_start_date.id, :end_date_id => complex_end_date.nil? ? nil : complex_end_date.id))
               time_unit = TimeUnit.create(attrs.merge(dateable_type: dateable.class.to_s, dateable_id: dateable.id, start_date_id: complex_start_date.nil? ? nil : complex_start_date.id, end_date_id: complex_end_date.nil? ? nil : complex_end_date.id))
             else
-              time_unit.update_attributes(attrs)
+              time_unit.update(attrs)
             end
             self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
           end
@@ -130,7 +130,7 @@ class Importation
                 complex_date = ComplexDate.create(complex_date_attributes)
                 time_unit = TimeUnit.create(attrs.merge(dateable_type: dateable.class.to_s, dateable_id: dateable.id, date_id: complex_date.id))
               else
-                time_unit.update_attributes(attrs)
+                time_unit.update(attrs)
               end
               self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
             else
@@ -143,7 +143,7 @@ class Importation
                 complex_end_date = ComplexDate.create(complex_end_date_attributes)
                 time_unit = TimeUnit.create(attrs.merge(dateable_type: dateable.class.to_s, dateable_id: dateable.id, start_date_id: complex_start_date.nil? ? nil : complex_start_date.id, end_date_id: complex_end_date.nil? ? nil : complex_end_date.id))
               else
-                time_unit.update_attributes(attrs)
+                time_unit.update(attrs)
               end
             end
           end
@@ -155,7 +155,7 @@ class Importation
             complex_date = ComplexDate.create(complex_date_attributes)
             time_unit = TimeUnit.create(attrs.merge(dateable_type: dateable.class.to_s, dateable_id: dateable.id, date_id: complex_date.id))
           else
-            time_unit.update_attributes(attrs)
+            time_unit.update(attrs)
           end
           self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
@@ -174,7 +174,7 @@ class Importation
           complex_date.save
           time_unit = TimeUnit.create(attrs.merge(dateable_type: dateable.class.to_s, dateable_id: dateable.id, date_id: complex_date.id))
         else
-          time_unit.update_attributes(attrs)
+          time_unit.update(attrs)
         end
         self.spreadsheet.imports.create(:item => time_unit) if time_unit.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
       end

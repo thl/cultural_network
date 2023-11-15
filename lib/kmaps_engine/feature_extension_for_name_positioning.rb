@@ -220,13 +220,13 @@ module FeatureExtensionForNamePositioning
       names = self.names
       updated = false
       self.names.where(:position => 0).order('created_at').inject(names.maximum(:position)+1) do |pos, name|
-        name.update_attributes(:position => pos, :skip_update => true)
+        name.update(:position => pos, :skip_update => true)
         updated = true if !updated
         pos + 1
       end
       self.names.order('position, created_at').inject(1) do |pos, name|
         if name.position!=pos
-          name.update_attributes(:position => pos, :skip_update => true)
+          name.update(:position => pos, :skip_update => true)
           updated = true if !updated
         end
         pos + 1
@@ -269,7 +269,7 @@ module FeatureExtensionForNamePositioning
       if name.position != pos
         updated = true if !updated
         name = FeatureName.find(name.id)
-        name.update_attributes(:position => pos, :skip_update => true)
+        name.update(:position => pos, :skip_update => true)
       end
     end
     return updated ? self.update_cached_feature_names : []

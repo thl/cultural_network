@@ -5,7 +5,7 @@ class CodesController < ApplicationController
     @geo_codes = @feature.geo_codes
     respond_to do |format|
       format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'index', format: 'xml')) }
     end
   end
   

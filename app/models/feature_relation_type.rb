@@ -26,7 +26,7 @@ class FeatureRelationType < ActiveRecord::Base
   
   def self.update_or_create(attributes)
     r = self.find_by(code: attributes[:code])
-    r.nil? ? self.create(attributes) : r.update_attributes(attributes)
+    r.nil? ? self.create(attributes) : r.update(attributes)
   end
   
   # Creates options for a select, marking either the asymmetric label or the original label's id

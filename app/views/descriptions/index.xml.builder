@@ -1,3 +1,3 @@
-xml.descriptions(:type => 'array') do
-  xml << render(:partial => 'description.xml.builder', :collection => @descriptions) if !@descriptions.empty?
+xml.descriptions(type: 'array') do
+  xml << render(partial: 'description', format: 'xml', collection: @descriptions) if !@descriptions.empty?
 end

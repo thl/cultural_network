@@ -69,7 +69,7 @@ class Admin::NoteTitlesController < AclController
     @object = NoteTitle.find(params[:id])
 
     respond_to do |format|
-      if @object.update_attributes(params[:note_title])
+      if @object.update(params[:note_title])
         flash[:notice] = 'Note Title was successfully updated.'
         format.html { redirect_to(admin_note_title_url(@object)) }
         format.xml  { head :ok }

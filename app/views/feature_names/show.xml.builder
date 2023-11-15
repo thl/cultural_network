@@ -1,2 +1,2 @@
 xml.instruct!
-xml << render(:partial => 'name.xml.builder', :object => @name)
+xml << render(partial: 'name', format: 'xml', object: @name)

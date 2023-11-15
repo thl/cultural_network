@@ -1,3 +1,3 @@
 xml.notes(type: 'array') do
-  xml << render(partial: 'notes/note.xml.builder', collection: notes) if !notes.empty?
+  xml << render(partial: 'notes/note', format: 'xml', collection: notes) if !notes.empty?
 end

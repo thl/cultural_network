@@ -6,13 +6,13 @@ children = feature.children.where(:is_public => 1).sort_by do |f|
   n = f.prioritized_name(view)
   [f.position, n.nil? ? f.pid : n.name]
 end
-options = { :id => feature.fid, :db_id => feature.id, :header => header }
+options = { id: feature.fid, db_id: feature.id, header: header }
 if children.empty?
   xml.feature(options)
 else
   xml.feature(options) do # , :pid => feature.pid
-    xml.features(:type => 'array') do
-      xml << render(:partial => 'recursive_stripped_feature.xml.builder', :collection => children, :as => :feature) if !children.empty?
+    xml.features(type: 'array') do
+      xml << render(partial: 'recursive_stripped_feature', format: 'xml', collection: children, as: :feature) if !children.empty?
     end
   end
 end

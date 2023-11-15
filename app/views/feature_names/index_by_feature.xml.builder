@@ -1,2 +1,2 @@
 xml.instruct!
-xml << render(:partial => 'index.xml.builder', :locals => { :names => @names })
+xml << render(partial: 'index', format: 'xml', locals: { names: @names })
