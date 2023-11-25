@@ -23,11 +23,7 @@ module KmapsEngine
       features.each do |f|
         begin
           result = block_given? ? yield(f) : f.queued_index(priority: Flare::IndexerJob::LOW)
-          if result
-            self.log.debug { "#{Time.now}: Reindexed #{f.pid}." }
-          else
-            self.say "#{Time.now}: #{f.pid} failed."
-          end
+          self.log.debug { "#{Time.now}: Reindexed #{f.pid}." }
           self.progress_bar(num: i, total: total, current: f.pid)
         rescue Exception => e
           self.say "#{Time.now}: #{f.pid} failed."

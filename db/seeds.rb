@@ -110,14 +110,6 @@ p = role.permissions.create(title: 'authenticated_system/roles/update') if p.nil
 p = role.permissions.find_by(title: 'admin/default/index')
 p = role.permissions.create(title: 'admin/default/index') if p.nil?
 
-[ { name: 'Popular Standard (romanization)',         code: 'roman.popular' },
-  { name: 'Scholarly Standard (romanization)',       code: 'roman.scholar' },
-  { name: 'Chinese Characters (simplified)',         code: 'simp.chi' },
-  { name: 'Tibetan Script (secondary romanization)', code: 'pri.tib.sec.roman' },
-  { name: 'Tibetan Script (secondary Chinese)',      code: 'pri.tib.sec.chi' },
-  { name: 'Devanagari Script',                       code: 'deva' }
-].each{|a| View.update_or_create(a)}
-
 [ { name: 'Dzongkha', :code => 'dzongkha'},
   { name: 'Devanagari script',              code: 'deva' },
   { name: 'Tibetan script',                 code: 'tibt' },

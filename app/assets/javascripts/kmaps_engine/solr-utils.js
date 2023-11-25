@@ -583,7 +583,12 @@
       const response = data.response;
       const buildAncestorTree = async function buildAncestorTree(doc,children) {
         var ancestorsKey  = "ancestor_id_" + plugin.settings.perspective+"_path";
-        var ancestorNodes = doc[ancestorsKey].split("/");
+        var ancestorNodes
+        if (doc[ancestorsKey] === undefined) {
+          ancestorNodes = []
+        } else {
+          ancestorNodes = doc[ancestorsKey].split("/");
+        }
         if( doc["level_"+plugin.settings.perspective+"_i"] === undefined ) {
           var lastElementIndex = ancestorNodes.length - 1 ;
           plugin.settings.featureId = plugin.settings.domain+"-"+ancestorNodes[lastElementIndex];
@@ -632,7 +637,12 @@
         if (loadDescendants && plugin.settings.featureId) {
           var ancestorsKey  = "ancestor_id_" + plugin.settings.perspective+"_path";
           var currentLevelTag  = "level_" + plugin.settings.perspective+"_i";
-          var ancestorNodes = doc[ancestorsKey].split("/");
+          var ancestorNodes
+          if (doc[ancestorsKey] === undefined) {
+            ancestorNodes = []
+          } else {
+            ancestorNodes = doc[ancestorsKey].split("/");
+          }
           var currentLevel = doc[currentLevelTag];
           if( doc[currentLevelTag] === undefined ) {
             currentLevel  = ancestorNodes.length;

@@ -18,9 +18,6 @@ en:
             caption:
                 one: 'caption'
                 other: 'captions'
-            category_feature:
-                one: 'subject'
-                other: 'subjects'
             citation:
                 one: 'citation'
                 other: 'citations'
@@ -86,12 +83,6 @@ en:
                 code: 'Code'
                 content: 'Content'
                 title: 'Title'
-            category_feature:
-                label: 'Label'
-                numeric_value: 'Numeric Value'
-                show_parent: 'Show Subject''s Immediate Parent'
-                show_root: 'Show Master Subject'
-                string_value: 'Text Value'
             citation:
                 info_source_id: 'Source ID'
                 info_source_type: 'Source Type'

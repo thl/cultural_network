@@ -18,9 +18,6 @@ zh:
             caption:
                 one: 'caption'
                 other: 'captions'
-            category_feature:
-                one: '主题或特点'
-                other: '主题和特点'
             citation:
                 one: '引用'
                 other: '引用'
@@ -86,12 +83,6 @@ zh:
                 code: '代码'
                 content: '内容'
                 title: '标签'
-            category_feature:
-                label: '数值'
-                numeric_value: '优先权'
-                show_parent: '显示类别中的父系'
-                show_root: '显示知识库最上层'
-                string_value: '文本值'
             citation:
                 info_source_id: '信息来源'
                 info_source_type: 'Source Type'

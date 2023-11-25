@@ -206,7 +206,7 @@ module KmapsEngine
           return false
         end
       end
-      self.feature = Feature.find(feature.id)
+      self.feature = feature
       return true
     end
     

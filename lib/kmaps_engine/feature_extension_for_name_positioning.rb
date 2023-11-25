@@ -21,32 +21,6 @@ module FeatureExtensionForNamePositioning
     name_id.nil? ? nil : FeatureName.find(name_id)
   end
   
-  def calculate_prioritized_name(current_view)
-    all_names = prioritized_names
-    case current_view.code
-    when 'roman.scholar'
-      name = scholarly_prioritized_name(all_names)
-    when 'pri.tib.sec.roman'
-      name = tibetan_prioritized_name(all_names)
-    when 'pri.tib.sec.chi'
-      # If a writing system =tibt or writing system =Dzongkha name is available, show it
-      name = tibetan_prioritized_name(all_names)
-      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
-    when 'simp.chi'
-      # If a writing system =hans name is available, show it
-      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id)
-      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id) if name.nil?
-    when 'trad.chi'
-      # If a writing system=hant name is available, show it
-      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id)
-      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
-    when 'deva'
-      # If a writing system =deva name is available, show it
-      name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('deva').id)
-    end
-    name || popular_prioritized_name(all_names)
-  end
-  
   def tibetan_prioritized_name(all_names = prioritized_names)
     # If a writing system =tibt or writing system =Dzongkha name is available, show it
     HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('tibt').id)

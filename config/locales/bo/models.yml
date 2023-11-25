@@ -18,9 +18,6 @@ bo:
             caption:
                 one: 'caption'
                 other: 'captions'
-            category_feature:
-                one: 'བརྗོད་བྱ་གཙོ་བ།'
-                other: 'བརྗོད་བྱ་གཙོ་བ།'
             citation:
                 one: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
                 other: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
@@ -86,12 +83,6 @@ bo:
                 code: 'ཚབ་ཨང་།'
                 content: 'ནང་དོན།'
                 title: 'གདོང་འཛར།'
-            category_feature:
-                label: 'གྲངས་འབོར།'
-                numeric_value: 'སྔོན་སྤྱོད་རིམ་པ།'
-                show_parent: 'རིགས་དབྱེའི་ཁྲོད་ཀྱི་ཆོ་རིགས་འཆར་བ།'
-                show_root: 'ཤེས་བྱའི་མཛོད་ཀྱི་གོང་གྲས་རྣམས་འཆར་བ།'
-                string_value: 'དཔེ་ཆའི་གྲངས་ཐང་།'
             citation:
                 info_source_id: 'ཆ་འཕ༹ྲིན་ཁུངས།'
                 info_source_type: 'Source Type'
