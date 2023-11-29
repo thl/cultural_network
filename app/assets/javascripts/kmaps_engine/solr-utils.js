@@ -331,7 +331,7 @@
           }
           var relation_label = currentNode["related_"+ plugin.settings.domain +"_relation_label_s"];
 		  var relation_code = currentNode["related_"+ plugin.settings.domain +"_relation_code_s"];
-          if(relation_code == 'heads' || relation_label === undefined){
+          if(relation_code == 'heads' || relation_code == 'is.beginning.of' || relation_label === undefined){
             return acc;
           }
           if(acc[node_type][relation_label] === undefined){
