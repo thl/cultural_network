@@ -212,9 +212,11 @@ module KmapsEngine
     
     # Valid columns: features.position
     def process_feature
+      options = { is_blank: false, is_public: true, skip_update: true }
       self.add_date('features', self.feature)
       position = self.fields.delete('features.position')
-      self.feature.update_attribute(:position, position) if !position.blank?
+      options[:position] = position if !position.blank?
+      self.feature.update(options)
     end
 
     # Name is optional. If there is a name, then the required column (for i varying from
