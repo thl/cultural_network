@@ -44,8 +44,7 @@ class FeatureRelationSweeper < ActionController::Caching::Sweeper
     elsif record.instance_of?(Feature)
       feature = record
     end
-    return 
-re.nil?
+    return if feature.nil? || feature.skip_update
     feature.parents.each do |f|
       if f.is_public? && !already_reindexed.include?(f.fid)
         f.queued_index

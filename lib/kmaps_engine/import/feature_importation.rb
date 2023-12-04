@@ -638,6 +638,7 @@ module KmapsEngine
         conditions.merge!(:feature_relation_type_id => relation_type.id, :perspective_id => perspective.id) if !replace_relations
         feature_relation = FeatureRelation.find_by(conditions)
         changed = false
+        parent.skip_update = true
         if feature_relation.nil?
           feature_relation = FeatureRelation.create(conditions.merge({:skip_update => true}))
           self.spreadsheet.imports.create(:item => feature_relation) if feature_relation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
