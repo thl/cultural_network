@@ -21,7 +21,7 @@
 #
 
 class Feature < ActiveRecord::Base
-  attr_accessor :skip_update
+  #attr_accessor :skip_update
   
   include FeatureExtensionForNamePositioning
   extend IsDateable
@@ -743,6 +743,21 @@ class Feature < ActiveRecord::Base
     child_documents += name_documents
     doc['_childDocuments_'] = child_documents
     doc
+  end
+  
+  def skip_update=(value)
+    @skip_update=value
+    Rails.cache.write("features/#{self.fid}/skip_update", @skip_update, expires_in: 1.hour)
+  end
+
+  def skip_update
+    Rails.cache.fetch("features/#{self.fid}/skip_update", expires_in: 1.hour) do
+      if defined?(@skip_update)
+        @skip_update
+      else
+        @skip_update = false
+      end
+    end
   end
   
   private
