@@ -5,7 +5,7 @@
      <tr>
        <th class="listActionsCol"></th>
        <th><%= Language.model_name.human.titleize.s %></th>
-       <th><%= Citation.model_name.human.titleize.s %></th>
+       <th><%= Citation.model_name.human(:count => :many).titleize.s %></th>
      </tr>
 <%   list.each do |item| %>
      <tr>

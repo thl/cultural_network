@@ -34,7 +34,7 @@ class FeatureRelationSweeper < ActionController::Caching::Sweeper
         Rails.cache.delete("features/#{f.fid}/closest_hierarchical_feature_by_perspective/#{perspective_id}")
         Rails.cache.delete("features/#{f.fid}/ancestors_by_perspective/#{perspective_id}")
         Rails.cache.delete("features/#{f.fid}/closest_ancestors_by_perspective/#{perspective_id}")
-        if f.is_public? && !already_reindexed.include?(f.fid)
+        if !f.skip_update && f.is_public? && !already_reindexed.include?(f.fid)
           f.queued_index
           already_reindexed << f.fid
         end
