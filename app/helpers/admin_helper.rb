@@ -313,6 +313,7 @@ module AdminHelper
       html += '<td>' + fn_relationship(name).to_s + '</td>'
       html += '<td>' + note_link_list_for(name) + new_note_link_for(name) + '</td>'
       html += '<td>' + time_unit_link_list_for(name) + new_time_unit_link_for(name) + '</td>'
+      html += '<td>' + accordion_citation_list_fieldset(object: name) + '</td>'
       html += '<td>' + name.position.to_s + '</td>'
       html += '</tr>'
       html += feature_name_tr(nil, name.children, completed).to_s
@@ -458,6 +459,14 @@ module AdminHelper
       <br class='clear'/>
       #{render :partial => 'admin/citations/citations_list', :locals => { :list => object.citations, :options => {:hide_type => true, :hide_type_value => true} }}
     </fieldset>"
+    html.html_safe
+  end
+
+  def accordion_citation_list_fieldset(**options)
+    object = options[:object] || @object
+    html = ""
+    html = "#{render :partial => 'admin/citations/accordion_citations_list', :locals => { :list => object.citations} } " if object.citations.any?
+    html = html + "#{new_item_link(new_polymorphic_path([:admin, object, :citation]), '')}"
     html.html_safe
   end
 
