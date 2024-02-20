@@ -180,7 +180,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_children(current_perspective, current_view)
-    return children.includes([{cached_feature_names: :feature_name}, :parent_relations]).references([{cached_feature_names: :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(include: [:names, :parent_relations])
+    return children.joins([{cached_feature_names: :feature_name}, :parent_relations]).references([{cached_feature_names: :feature_name}, :parent_relations]).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(include: [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -254,7 +254,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_parents(current_perspective, current_view)
-    return parents.includes(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # parents(include: [:names, :child_relations])
+    return parents.joins(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # parents(include: [:names, :child_relations])
       c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -413,7 +413,7 @@ class Feature < ActiveRecord::Base
   def self.current_roots(current_perspective, current_view)
     feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id if !current_perspective.nil?}/#{current_view.id if !current_view.nil?}", expires_in: 1.day) do
       joins(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').roots.find_all do |r|
-#      self.includes(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').scoping do
+#      self.joins(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).where(is_blank: false, cached_feature_names: {view_id: current_view.id}).order('feature_names.name').scoping do
  #       roots.find_all do |r|
           # if ANY of the child relations are current, return true to nab this Feature
         r.child_relations.any? {|cr| cr.perspective==current_perspective }
@@ -541,13 +541,13 @@ class Feature < ActiveRecord::Base
         conditions << fid.to_i
       end
     end
-    search_results = self.where(conditions).includes([:names, :descriptions]).references([:names, :descriptions]).order('features.position')
+    search_results = self.where(conditions).joins([:names, :descriptions]).references([:names, :descriptions]).order('features.position')
     search_results = search_results.where('descriptions.content IS NOT NULL') if search.has_descriptions
     return search_results
   end
   
   def self.name_search(filter_value)
-    Feature.includes(:names).references(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
+    Feature.joins(:names).references(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
   end
   
   def self.blank
